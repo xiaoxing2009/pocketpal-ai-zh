@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {LlamaContext} from 'llama.rn';
+import {LlamaContext} from '@pocketpalai/llama.rn';
 import {render, fireEvent, act, waitFor} from '../../../../jest/test-utils';
 import {ChatScreen} from '../ChatScreen';
 
@@ -13,7 +13,7 @@ describe('ChatScreen', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    llamaRN = require('llama.rn');
+    llamaRN = require('@pocketpalai/llama.rn');
   });
 
   it('renders correctly when model is not loaded', () => {

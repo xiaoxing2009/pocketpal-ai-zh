@@ -7,7 +7,7 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 
-import {CompletionParams} from 'llama.rn';
+import {CompletionParams} from '@pocketpalai/llama.rn';
 import LinearGradient from 'react-native-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
 import {

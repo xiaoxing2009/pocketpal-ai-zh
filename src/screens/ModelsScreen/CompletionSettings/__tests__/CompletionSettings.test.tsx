@@ -33,6 +33,18 @@ describe('CompletionSettings', () => {
     const tfsZSlider = getByTestId('tfs_z-slider');
     expect(tfsZSlider.props.value).toBe(1);
 
+    expect(getByTestId('min_p-slider')).toBeTruthy();
+    const minPSlider = getByTestId('min_p-slider');
+    expect(minPSlider.props.value).toBe(0.05);
+
+    expect(getByTestId('xtc_threshold-slider')).toBeTruthy();
+    const xtcThresholdSlider = getByTestId('xtc_threshold-slider');
+    expect(xtcThresholdSlider.props.value).toBe(0.1);
+
+    expect(getByTestId('xtc_probability-slider')).toBeTruthy();
+    const xtcProbabilitySlider = getByTestId('xtc_probability-slider');
+    expect(xtcProbabilitySlider.props.value).toBe(0.01);
+
     expect(getByTestId('typical_p-slider')).toBeTruthy();
     const typicalPSlider = getByTestId('typical_p-slider');
     expect(typicalPSlider.props.value).toBe(1);

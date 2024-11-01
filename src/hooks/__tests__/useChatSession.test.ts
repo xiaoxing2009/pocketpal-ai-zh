@@ -1,4 +1,4 @@
-import {LlamaContext} from 'llama.rn';
+import {LlamaContext} from '@pocketpalai/llama.rn';
 import {renderHook, act} from '@testing-library/react-native';
 
 import {textMessage} from '../../../jest/fixtures';
@@ -48,7 +48,13 @@ describe('useChatSession', () => {
 
   it('should handle model not loaded scenario', async () => {
     const {result} = renderHook(() =>
-      useChatSession(null, {current: null}, [], textMessage.author, assistant),
+      useChatSession(
+        undefined,
+        {current: null},
+        [],
+        textMessage.author,
+        assistant,
+      ),
     );
 
     await act(async () => {

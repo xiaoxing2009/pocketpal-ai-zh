@@ -1723,6 +1723,11 @@
   resolved "https://registry.yarnpkg.com/@pkgjs/parseargs/-/parseargs-0.11.0.tgz#a77ea742fab25775145434eb1d2328cf5013ac33"
   integrity sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==
 
+"@pocketpalai/llama.rn@^0.3.12":
+  version "0.3.12"
+  resolved "https://registry.yarnpkg.com/@pocketpalai/llama.rn/-/llama.rn-0.3.12.tgz#378bdff95b87a49eccaac2bef368c5ed4c1511e8"
+  integrity sha512-1nEwiiXlfA5M1JOeokhtXe1jC2mxyNKD5l973Q8cnT67BwDJjsAPQtozqXC17CaxjLiuSfD42ypf1qYf4KMyCg==
+
 "@react-native-async-storage/async-storage@^1.23.1":
   version "1.24.0"
   resolved "https://registry.yarnpkg.com/@react-native-async-storage/async-storage/-/async-storage-1.24.0.tgz#888efbc62a26f7d9464b32f4d3027b7f2771999b"
@@ -5643,11 +5648,6 @@ lines-and-columns@^1.1.6:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/lines-and-columns/-/lines-and-columns-1.2.4.tgz#eca284f75d2965079309dc0ad9255abb2ebc1632"
   integrity sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==
-
-llama.rn@^0.3.11:
-  version "0.3.11"
-  resolved "https://registry.yarnpkg.com/llama.rn/-/llama.rn-0.3.11.tgz#6b28cb1818476dac1e1f58c316ca38f531e8e56a"
-  integrity sha512-yg60pZMsPx7zkaCNryI52n8uHDGp7/T06YqpOq+VtaUgY16rbzSxm/YmdG1e/QlsDuh6B8akBr/4J7nKuEt8bQ==
 
 locate-path@^3.0.0:
   version "3.0.0"

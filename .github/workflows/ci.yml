@@ -82,7 +82,13 @@ jobs:
           cache: 'gradle'
 
       - name: Build Android
-        run: yarn build:android
+        run: yarn build:android # TODO: change to build:android:release
+
+      - name: Upload Android APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-debug-apk # TODO: change to release-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
 
   # Job for iOS build
   build-ios:

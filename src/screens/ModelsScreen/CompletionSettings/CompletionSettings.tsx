@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {ScrollView, View} from 'react-native';
 
-import {CompletionParams} from 'llama.rn';
+import {CompletionParams} from '@pocketpalai/llama.rn';
 import Slider from '@react-native-community/slider';
 import {Card, Text, Switch, TextInput, Divider, Chip} from 'react-native-paper';
 
@@ -97,6 +97,9 @@ export const CompletionSettings: React.FC<Props> = ({settings, onChange}) => {
           {renderSlider('top_k', 1, 128, 1)}
           {renderSlider('top_p', 0, 1)}
           {renderSlider('tfs_z', 0, 2)}
+          {renderSlider('min_p', 0, 1)}
+          {renderSlider('xtc_threshold', 0, 1)}
+          {renderSlider('xtc_probability', 0, 1)}
           {renderSlider('typical_p', 0, 2)}
           {renderSlider('penalty_last_n', 0, 256, 1)}
           {renderSlider('penalty_repeat', 0, 2)}

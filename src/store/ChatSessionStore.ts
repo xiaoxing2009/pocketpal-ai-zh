@@ -2,7 +2,7 @@ import {makeAutoObservable, runInAction} from 'mobx';
 import RNFS from 'react-native-fs';
 import {format, isToday, isYesterday} from 'date-fns';
 import {MessageType} from '../utils/types';
-import {LlamaContext} from 'llama.rn';
+import {LlamaContext} from '@pocketpalai/llama.rn';
 import {assistant} from '../utils/chat';
 
 const NEW_SESSION_TITLE = 'New Session';

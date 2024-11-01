@@ -6,7 +6,7 @@ import {v4 as uuidv4} from 'uuid';
 import RNFS from 'react-native-fs';
 import {makePersistable} from 'mobx-persist-store';
 import {computed, makeAutoObservable, ObservableMap, runInAction} from 'mobx';
-import {CompletionParams, LlamaContext, initLlama} from 'llama.rn';
+import {CompletionParams, LlamaContext, initLlama} from '@pocketpalai/llama.rn';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {bytesToGB, hasEnoughSpace} from '../utils';

@@ -3,7 +3,7 @@ import {ColorValue, ImageURISource, TextStyle} from 'react-native';
 
 import {MD3Theme} from 'react-native-paper';
 import {TemplateConfig} from 'chat-formatter';
-import {CompletionParams, TokenData} from 'llama.rn';
+import {CompletionParams, TokenData} from '@pocketpalai/llama.rn';
 import {PreviewData} from '@flyerhq/react-native-link-preview';
 import {MD3Colors, MD3Typescale} from 'react-native-paper/lib/typescript/types';
 

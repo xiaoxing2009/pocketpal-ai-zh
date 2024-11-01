@@ -1,5 +1,6 @@
 import {Model} from '../utils/types';
 import {chatTemplates, defaultCompletionParams} from '../utils/chat';
+import {Platform} from 'react-native';
 
 export const MODEL_LIST_VERSION = 5;
 
@@ -332,6 +333,94 @@ export const defaultModels: Model[] = [
       stop: ['<|im_end|>'],
     },
   },
+  ...(Platform.OS === 'android'
+    ? [
+        {
+          id: 'default-llama-3.2-1b-instruct-q4_0_4_4.gguf',
+          name: 'llama-3.2-1b-instruct (Q4_0_4_4)',
+          type: 'Llama',
+          size: '0.77',
+          params: '1.23',
+          isDownloaded: false,
+          downloadUrl:
+            'https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF/resolve/main/Llama-3.2-1B-Instruct-Q4_0_4_4.gguf?download=true',
+          hfUrl: 'https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF',
+          progress: 0,
+          filename: 'default-llama-3.2-1b-instruct-q4_0_4_4.gguf',
+          isLocal: false,
+          defaultChatTemplate: {...chatTemplates.llama32},
+          chatTemplate: chatTemplates.llama32,
+          defaultCompletionSettings: {
+            ...defaultCompletionParams,
+            n_predict: 500,
+            temperature: 0.5,
+            stop: ['<|eot_id|>'],
+          },
+          completionSettings: {
+            ...defaultCompletionParams,
+            n_predict: 500,
+            temperature: 0.5,
+            stop: ['<|eot_id|>'],
+          },
+        },
+        {
+          id: 'default-llama-3.2-1b-instruct-q4_0_4_8.gguf',
+          name: 'llama-3.2-1b-instruct (Q4_0_4_8)',
+          type: 'Llama',
+          size: '0.77',
+          params: '1.23',
+          isDownloaded: false,
+          downloadUrl:
+            'https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF/resolve/main/Llama-3.2-1B-Instruct-Q4_0_4_8.gguf?download=true',
+          hfUrl: 'https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF',
+          progress: 0,
+          filename: 'default-llama-3.2-1b-instruct-q4_0_4_8.gguf',
+          isLocal: false,
+          defaultChatTemplate: {...chatTemplates.llama32},
+          chatTemplate: chatTemplates.llama32,
+          defaultCompletionSettings: {
+            ...defaultCompletionParams,
+            n_predict: 500,
+            temperature: 0.5,
+            stop: ['<|eot_id|>'],
+          },
+          completionSettings: {
+            ...defaultCompletionParams,
+            n_predict: 500,
+            temperature: 0.5,
+            stop: ['<|eot_id|>'],
+          },
+        },
+        {
+          id: 'default-llama-3.2-1b-instruct-q4_0_8_8.gguf',
+          name: 'llama-3.2-1b-instruct (Q4_0_8_8)',
+          type: 'Llama',
+          size: '0.77',
+          params: '1.23',
+          isDownloaded: false,
+          downloadUrl:
+            'https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF/resolve/main/Llama-3.2-1B-Instruct-Q4_0_8_8.gguf?download=true',
+          hfUrl: 'https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF',
+          progress: 0,
+          filename: 'default-llama-3.2-1b-instruct-q4_0_8_8.gguf',
+          isLocal: false,
+          defaultChatTemplate: {...chatTemplates.llama32},
+          chatTemplate: chatTemplates.llama32,
+          defaultCompletionSettings: {
+            ...defaultCompletionParams,
+            n_predict: 500,
+            temperature: 0.5,
+            stop: ['<|eot_id|>'],
+          },
+          completionSettings: {
+            ...defaultCompletionParams,
+            n_predict: 500,
+            temperature: 0.5,
+            stop: ['<|eot_id|>'],
+          },
+        },
+      ]
+    : []),
   {
     id: 'default-llama-3.2-1b-instruct-q8_0.gguf',
     name: 'llama-3.2-1b-instruct (Q8_0)',

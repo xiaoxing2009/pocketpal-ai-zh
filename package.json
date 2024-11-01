@@ -1,6 +1,6 @@
 {
   "name": "PocketPal",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "private": true,
   "scripts": {
     "prepare": "husky",
@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@flyerhq/react-native-link-preview": "^1.6.0",
+    "@pocketpalai/llama.rn": "^0.3.12",
     "@react-native-async-storage/async-storage": "^1.23.1",
     "@react-native-clipboard/clipboard": "^1.14.0",
     "@react-native-community/slider": "^4.5.2",
@@ -36,7 +37,6 @@
     "chat-formatter": "^0.3.4",
     "date-fns": "^3.6.0",
     "dayjs": "^1.11.11",
-    "llama.rn": "^0.3.11",
     "mobx": "^6.12.3",
     "mobx-persist-store": "^1.1.5",
     "mobx-react": "^9.1.1",

@@ -1,22 +1,22 @@
 import React, {useRef, useCallback, useState} from 'react';
 
 import {toJS} from 'mobx';
+import {LlamaContext} from '@pocketpalai/llama.rn';
 import throttle from 'lodash.throttle';
-
-import {
-  applyChatTemplate,
-  chatTemplates,
-  convertToChatMessages,
-} from '../utils/chat';
 
 import {randId} from '../utils';
 import {L10nContext} from '../utils';
 import {chatSessionStore, modelStore} from '../store';
 
 import {MessageType, User} from '../utils/types';
+import {
+  applyChatTemplate,
+  chatTemplates,
+  convertToChatMessages,
+} from '../utils/chat';
 
 export const useChatSession = (
-  context: any,
+  context: LlamaContext | undefined,
   currentMessageInfo: React.MutableRefObject<{
     createdAt: number;
     id: string;
