@@ -9,7 +9,7 @@ import {computed, makeAutoObservable, ObservableMap, runInAction} from 'mobx';
 import {CompletionParams, LlamaContext, initLlama} from '@pocketpalai/llama.rn';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {bytesToGB, hasEnoughSpace} from '../utils';
+import {bytesToGB, deepMerge, hasEnoughSpace} from '../utils';
 import {defaultModels, MODEL_LIST_VERSION} from './defaultModels';
 
 import {chatTemplates} from '../utils/chat';
@@ -78,20 +78,24 @@ class ModelStore {
       const existingModelIndex = mergedModels.findIndex(
         m => m.id === defaultModel.id,
       );
-      // console.log('existingModelIndex: ', existingModelIndex);
 
       if (existingModelIndex !== -1) {
         // Merge existing model with new defaults
-        mergedModels[existingModelIndex] = {
-          ...defaultModel, // Defaults take precedence (for new fields or updates)
-          ...mergedModels[existingModelIndex], // User changes override defaults
-          chatTemplate:
-            mergedModels[existingModelIndex].chatTemplate ||
-            defaultModel.chatTemplate,
-          completionSettings:
-            mergedModels[existingModelIndex].completionSettings ||
-            defaultModel.completionSettings,
-        };
+        const existingModel = mergedModels[existingModelIndex];
+
+        // Deep merge chatTemplate and completionSettings
+        existingModel.chatTemplate = deepMerge(
+          existingModel.chatTemplate || {},
+          defaultModel.chatTemplate || {},
+        );
+
+        existingModel.completionSettings = deepMerge(
+          existingModel.completionSettings || {},
+          defaultModel.completionSettings || {},
+        );
+
+        // Merge other properties
+        mergedModels[existingModelIndex] = existingModel;
       } else {
         // Add new model if it doesn't exist
         mergedModels.push(defaultModel);

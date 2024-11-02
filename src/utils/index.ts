@@ -313,4 +313,32 @@ export async function hasEnoughSpace(model: Model): Promise<boolean> {
   }
 }
 
+/**
+ * Merges properties from the source object into the target object deeply.
+ * Only sets properties that do not already exist in the target or if the types differ.
+ *
+ * @param target - The target object to merge properties into.
+ * @param source - The source object from which properties are taken.
+ * @returns The updated target object after merging.
+ */
+export const deepMerge = (target: any, source: any): any => {
+  for (const key in source) {
+    if (source.hasOwnProperty(key)) {
+      if (typeof source[key] === 'object' && source[key] !== null) {
+        // If the property is an object, recursively merge.
+        // If target[key] is not an object, it means the property type is different so we will replace it.
+        target[key] =
+          target[key] && typeof target[key] === 'object' ? target[key] : {};
+        deepMerge(target[key], source[key]);
+      } else {
+        // Set the property in the target only if it doesn't exist or if the types differ
+        if (!(key in target) || typeof target[key] !== typeof source[key]) {
+          target[key] = source[key];
+        }
+      }
+    }
+  }
+  return target;
+};
+
 export const randId = () => Math.random().toString(36).substring(2, 11);

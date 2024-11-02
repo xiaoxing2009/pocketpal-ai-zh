@@ -2,7 +2,7 @@ import {Model} from '../utils/types';
 import {chatTemplates, defaultCompletionParams} from '../utils/chat';
 import {Platform} from 'react-native';
 
-export const MODEL_LIST_VERSION = 5;
+export const MODEL_LIST_VERSION = 6;
 
 export const defaultModels: Model[] = [
   {
