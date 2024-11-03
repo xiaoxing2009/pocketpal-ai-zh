@@ -1,7 +1,6 @@
 import {applyTemplate, Templates} from 'chat-formatter';
-import {ChatMessage, ChatTemplateConfig, MessageType} from './types';
-//import {assistant} from '../store/ChatSessionStore';
-import {CompletionParams} from '@pocketpalai/llama.rn';
+import {ChatMessage, ChatTemplateConfig, MessageType, Model} from './types';
+import {CompletionParams, LlamaContext} from '@pocketpalai/llama.rn';
 
 export const userId = 'y9d7f8pgn';
 export const assistantId = 'h3o3lc5xj';
@@ -22,21 +21,42 @@ export function convertToChatMessages(
     .reverse();
 }
 
-export function applyChatTemplate(
-  template: ChatTemplateConfig,
-  chat: ChatMessage[],
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  length: number, //TODO: inforce length of formattedChat to fit the context.
-): string {
-  const formattedChat: string = applyTemplate(chat, {
-    customTemplate: template,
-    addGenerationPrompt: template.addGenerationPrompt,
-  }) as string;
+export async function applyChatTemplate(
+  messages: ChatMessage[],
+  model: Model | null,
+  context: LlamaContext | null,
+): Promise<string> {
+  const modelChatTemplate = model?.chatTemplate;
+  const contextChatTemplate = (context?.model as any)?.metadata?.[
+    'tokenizer.chat_template'
+  ];
 
-  return formattedChat;
+  let formattedChat: string | undefined;
+
+  try {
+    if (modelChatTemplate?.chatTemplate) {
+      formattedChat = applyTemplate(messages, {
+        customTemplate: modelChatTemplate,
+        addGenerationPrompt: modelChatTemplate.addGenerationPrompt,
+      }) as string;
+    } else if (contextChatTemplate) {
+      formattedChat = await context?.getFormattedChat(messages);
+    }
+
+    if (!formattedChat) {
+      formattedChat = applyTemplate(messages, {
+        customTemplate: chatTemplates.default,
+        addGenerationPrompt: chatTemplates.default.addGenerationPrompt,
+      }) as string;
+    }
+  } catch (error) {
+    console.error('Error applying chat template:', error); // TODO: handle error
+  }
+
+  return formattedChat || ' ';
 }
 
-export const chatTemplates = {
+export const chatTemplates: Record<string, ChatTemplateConfig> = {
   danube3: {
     ...Templates.templates.danube2,
     name: 'danube3',
@@ -111,6 +131,16 @@ export const chatTemplates = {
     addGenerationPrompt: true,
     systemPrompt:
       'You are Qwen, created by Alibaba Cloud. You are a helpful assistant.',
+  },
+  smolLM: {
+    name: 'smolLM',
+    addGenerationPrompt: true,
+    systemPrompt: 'You are a helpful assistant.',
+    bosToken: '<|im_start|>',
+    eosToken: '<|im_end|>',
+    addBosToken: false,
+    addEosToken: false,
+    chatTemplate: '',
   },
 };
 

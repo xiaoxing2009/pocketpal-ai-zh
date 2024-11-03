@@ -1,6 +1,7 @@
 import {Templates} from 'chat-formatter';
 import {applyChatTemplate} from '../chat';
 import {ChatMessage, ChatTemplateConfig} from '../types';
+import {createModel} from '../../../jest/fixtures/models';
 
 const conversationWSystem: ChatMessage[] = [
   {role: 'system', content: 'System prompt. '},
@@ -18,7 +19,8 @@ describe('Test Danube2 Chat Templates', () => {
       addGenerationPrompt: true,
       name: 'danube2',
     };
-    const result = applyChatTemplate(chatTemplate, conversationWSystem, -1);
+    const model = createModel({chatTemplate: chatTemplate});
+    const result = await applyChatTemplate(conversationWSystem, model, null);
     expect(result).toBe(
       'System prompt. </s><|prompt|>Hi there!</s><|answer|>Nice to meet you!</s><|prompt|>Can I ask a question?</s><|answer|>',
     );

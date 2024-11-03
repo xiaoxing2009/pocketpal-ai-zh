@@ -9,11 +9,7 @@ import {L10nContext} from '../utils';
 import {chatSessionStore, modelStore} from '../store';
 
 import {MessageType, User} from '../utils/types';
-import {
-  applyChatTemplate,
-  chatTemplates,
-  convertToChatMessages,
-} from '../utils/chat';
+import {applyChatTemplate, convertToChatMessages} from '../utils/chat';
 
 export const useChatSession = (
   context: LlamaContext | undefined,
@@ -113,10 +109,10 @@ export const useChatSession = (
       ]),
     ];
 
-    const prompt = applyChatTemplate(
-      modelStore.activeModel?.chatTemplate || chatTemplates.default,
+    const prompt = await applyChatTemplate(
       chatMessages,
-      1000, // This is not used.
+      modelStore.activeModel ?? null,
+      context,
     );
 
     const completionParams = toJS(modelStore.activeModel?.completionSettings);
