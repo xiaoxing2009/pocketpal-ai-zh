@@ -23,6 +23,8 @@ export interface InputTopLevelProps {
    * managing media in dependencies we have no way of knowing if
    * something is uploading so you need to set this manually. */
   isAttachmentUploading?: boolean;
+  /** Whether the AI is currently streaming tokens */
+  isStreaming?: boolean;
   /** @see {@link AttachmentButtonProps.onPress} */
   onAttachmentPress?: () => void;
   /** Will be called on {@link SendButton} tap. Has {@link MessageType.PartialText} which can
@@ -49,6 +51,7 @@ export const Input = ({
   attachmentButtonProps,
   attachmentCircularActivityIndicatorProps,
   isAttachmentUploading,
+  isStreaming = false,
   onAttachmentPress,
   onSendPress,
   onStopPress,
@@ -84,6 +87,12 @@ export const Input = ({
     }
   };
 
+  const isSendButtonVisible =
+    !isStreaming &&
+    !isStopVisible &&
+    user &&
+    (sendButtonVisibilityMode === 'always' || value.trim());
+
   return (
     <View style={container}>
       {user &&
@@ -114,10 +123,7 @@ export const Input = ({
         onChangeText={handleChangeText}
         value={value}
       />
-      {sendButtonVisibilityMode === 'always' ||
-      (sendButtonVisibilityMode === 'editing' && user && value.trim()) ? (
-        <SendButton onPress={handleSend} />
-      ) : null}
+      {isSendButtonVisible ? <SendButton onPress={handleSend} /> : null}
       {isStopVisible && <StopButton onPress={onStopPress} />}
     </View>
   );

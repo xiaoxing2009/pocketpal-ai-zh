@@ -7,6 +7,7 @@ import {derivedTextMessage} from '../../../../jest/fixtures';
 import {TextMessage} from '../TextMessage';
 
 describe('text message', () => {
+  // eslint-disable-next-line jest/no-disabled-tests
   it.skip('renders preview image and handles link press', async () => {
     const link = 'https://github.com/flyerhq/';
     const getPreviewDataMock = jest
@@ -45,6 +46,7 @@ describe('text message', () => {
     openUrlMock.mockRestore();
   });
 
+  // eslint-disable-next-line jest/no-disabled-tests
   it.skip('renders preview image without https and handles link press', async () => {
     expect.assertions(2);
     const link = 'github.com/flyerhq/';

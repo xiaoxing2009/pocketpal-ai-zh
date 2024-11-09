@@ -9,6 +9,7 @@ export * from './HeaderRight';
 export * from './ImageMessage';
 export * from './Input';
 export * from './KeyboardAccessoryView';
+export * from './LoadingBubble';
 export * from './MarkdownView';
 export * from './Message';
 export * from './SendButton';
