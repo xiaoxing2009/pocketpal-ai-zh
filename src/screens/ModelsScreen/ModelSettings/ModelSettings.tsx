@@ -221,6 +221,12 @@ export const ModelSettings: React.FC<ModelSettingsProps> = ({
                   selectedTemplateName={selectedTemplateName}
                   handleChatTemplateNameChange={handleChatTemplateNameChange}
                 />
+                <Text
+                  variant="labelSmall"
+                  style={{color: theme.colors.onSurfaceVariant}}>
+                  Note: Uses Nunjucks format only. Leave empty to use model's
+                  template.
+                </Text>
               </View>
               <ScrollView
                 contentContainerStyle={styles.scrollViewContent}

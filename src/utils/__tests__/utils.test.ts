@@ -1,4 +1,11 @@
-import {deepMerge, formatBytes, getTextSizeInBytes, unwrap} from '..';
+import {
+  deepMerge,
+  extractHFModelTitle,
+  extractHFModelType,
+  formatBytes,
+  getTextSizeInBytes,
+  unwrap,
+} from '..';
 
 describe('formatBytes', () => {
   it('formats bytes correctly when the size is 0', () => {
@@ -6,9 +13,39 @@ describe('formatBytes', () => {
     expect(formatBytes(0)).toBe('0 B');
   });
 
-  it('formats bytes correctly', () => {
+  it('formats kiB correctly', () => {
     expect.assertions(1);
-    expect(formatBytes(1024)).toBe('1 kB');
+    expect(formatBytes(1024, 2, true)).toBe('1 KiB');
+  });
+
+  it('formats GiB correctly', () => {
+    expect.assertions(1);
+    expect(formatBytes(1024 * 1024 * 1024, 2, true)).toBe('1 GiB');
+  });
+
+  it('formats MB correctly', () => {
+    expect.assertions(1);
+    expect(formatBytes(1234567, 2, false)).toBe('1.23 MB');
+  });
+
+  it('formats GB correctly', () => {
+    expect.assertions(1);
+    expect(formatBytes(12345678901, 2, false)).toBe('12.35 GB');
+  });
+
+  it('formats correctly with three digits with 2 decimals', () => {
+    expect.assertions(1);
+    expect(formatBytes(1234567890, 2, false, true)).toBe('1.23 GB');
+  });
+
+  it('formats correctly with three digits with 1 decimals', () => {
+    expect.assertions(1);
+    expect(formatBytes(12345678901, 2, false, true)).toBe('12.3 GB');
+  });
+
+  it('formats correctly with three digits with 0 decimals', () => {
+    expect.assertions(1);
+    expect(formatBytes(123456789000, 2, false, true)).toBe('123 GB');
   });
 });
 
@@ -109,5 +146,49 @@ describe('deepMerge', () => {
     const source = {a: {b: {c: {e: 2, f: 4}}}};
     const result = deepMerge(target, source);
     expect(result).toEqual({a: {b: {c: {d: 1, e: 3, f: 4}}}});
+  });
+});
+
+describe('extractHFModelType', () => {
+  test('extracts model type correctly', () => {
+    expect(
+      extractHFModelType('bartowski/Llama-3.1-Nemotron-70B-Instruct-HF-GGUF'),
+    ).toBe('Llama');
+    expect(extractHFModelType('author/Giraffe-2.0-Model-Guide-Example')).toBe(
+      'Giraffe',
+    );
+    expect(extractHFModelType('foo/Bar-1.0-Test')).toBe('Bar');
+    expect(extractHFModelType('invalidInputWithoutSlashOrHyphen')).toBe(
+      'Unknown',
+    );
+    expect(extractHFModelType('slashOnly/')).toBe('Unknown');
+    expect(extractHFModelType('owner/modelWithoutSuffix')).toBe(
+      'modelWithoutSuffix',
+    );
+  });
+});
+
+describe('extractHFModelTitle', () => {
+  test('extracts model title correctly', () => {
+    expect(
+      extractHFModelTitle('bartowski/Llama-3.1-Nemotron-70B-Instruct-HF-GGUF'),
+    ).toBe('Llama-3.1-Nemotron-70B-Instruct-HF');
+    expect(
+      extractHFModelTitle('bartowski/Llama-3.1-Nemotron-70B-Instruct-HF_gguf'),
+    ).toBe('Llama-3.1-Nemotron-70B-Instruct-HF');
+    expect(
+      extractHFModelTitle('bartowski/Llama-3.1-Nemotron-70B-Instruct-HFGGUF'),
+    ).toBe('Llama-3.1-Nemotron-70B-Instruct-HF');
+    expect(extractHFModelTitle('author/Giraffe-2.0-Model-Guide-Example')).toBe(
+      'Giraffe-2.0-Model-Guide-Example',
+    );
+    expect(extractHFModelTitle('foo/Bar-1.0-Test')).toBe('Bar-1.0-Test');
+    expect(extractHFModelTitle('withoutSlashOrHyphen')).toBe(
+      'withoutSlashOrHyphen',
+    );
+    expect(extractHFModelTitle('slashOnly/')).toBe('Unknown');
+    expect(extractHFModelTitle('owner/modelWithoutSuffix')).toBe(
+      'modelWithoutSuffix',
+    );
   });
 });

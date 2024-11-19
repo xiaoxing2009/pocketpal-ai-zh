@@ -20,9 +20,21 @@ export const styles = StyleSheet.create({
     shadowRadius: 3.84,
   },
   card: {
-    margin: 6,
+    // margin: 6,
     borderRadius: 15,
     borderWidth: 1,
+    margin: 6,
+    overflow: 'visible', // This ensures the badge can overflow the card
+    position: 'relative',
+  },
+  hfBadge: {
+    position: 'absolute',
+    top: -11,
+    right: -5,
+    width: 24,
+    height: 24,
+    zIndex: 1,
+    resizeMode: 'contain',
   },
   touchableRipple: {
     zIndex: 1,
@@ -112,7 +124,17 @@ export const styles = StyleSheet.create({
     color: '#d32f2f', // Red color for the warning
     fontSize: 12,
   },
-  downloadButton: {},
+  overlayButtons: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  downloadButton: {
+    minWidth: 100,
+  },
+  removeButton: {
+    minWidth: 100,
+  },
   storageErrorText: {
     fontWeight: 'bold',
   },

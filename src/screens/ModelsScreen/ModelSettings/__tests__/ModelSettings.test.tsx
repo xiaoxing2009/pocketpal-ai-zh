@@ -85,6 +85,7 @@ describe('ModelSettings', () => {
     expect(mockProps.onChange).toHaveBeenCalledWith('addBosToken', false);
   });
 
+  // eslint-disable-next-line jest/no-disabled-tests
   it.skip('opens and closes the template dialog', async () => {
     const {getByText, queryByText} = render(<ModelSettings {...mockProps} />);
 

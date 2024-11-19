@@ -2,9 +2,9 @@ import {useEffect, useState} from 'react';
 
 import DeviceInfo from 'react-native-device-info';
 
-import {hasEnoughSpace} from '../utils';
+import {formatBytes, hasEnoughSpace} from '../utils';
 
-import {Model} from '../utils/types';
+import {Model, ModelOrigin} from '../utils/types';
 
 export const useStorageCheck = (model: Model) => {
   const [storageStatus, setStorageStatus] = useState({
@@ -17,7 +17,11 @@ export const useStorageCheck = (model: Model) => {
 
     const checkStorage = async () => {
       try {
-        if (model.isDownloaded || model.isLocal) {
+        if (
+          model.isDownloaded ||
+          model.isLocal ||
+          model.origin === ModelOrigin.LOCAL
+        ) {
           return;
         }
 
@@ -34,10 +38,9 @@ export const useStorageCheck = (model: Model) => {
 
           setStorageStatus({
             isOk: false,
-            message: `Storage low! Model ${model.size} GB > ${(
-              freeDisk /
-              1000 ** 3
-            ).toFixed(2)} GB free`,
+            message: `Storage low! Model ${formatBytes(
+              model.size,
+            )} > ${formatBytes(freeDisk)} free`,
           });
         }
       } catch (error) {

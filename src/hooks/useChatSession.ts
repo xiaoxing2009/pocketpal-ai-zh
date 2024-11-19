@@ -148,7 +148,6 @@ export const useChatSession = (
         );
       }
 
-      console.log('result: ', result);
       chatSessionStore.updateMessage(id, {
         metadata: {timings: result.timings, copyable: true},
       });

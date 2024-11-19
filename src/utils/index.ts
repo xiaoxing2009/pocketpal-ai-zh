@@ -1,32 +1,67 @@
 import * as React from 'react';
 import {ColorValue} from 'react-native';
 
+import _ from 'lodash';
 import dayjs from 'dayjs';
 import {MD3Theme} from 'react-native-paper';
 import DeviceInfo from 'react-native-device-info';
 import Blob from 'react-native/Libraries/Blob/Blob';
 
 import {l10n} from './l10n';
-import {MessageType, Model, PreviewImage, User} from './types';
+import {getHFDefaultSettings} from './chat';
+import {
+  HuggingFaceModel,
+  MessageType,
+  Model,
+  ModelFile,
+  ModelOrigin,
+  PreviewImage,
+  User,
+} from './types';
 
 export const L10nContext = React.createContext<
   (typeof l10n)[keyof typeof l10n]
 >(l10n.en);
 export const UserContext = React.createContext<User | undefined>(undefined);
 
-/** Returns text representation of a provided bytes value (e.g. 1kB, 1GB) */
-export const formatBytes = (size: number, fractionDigits = 2) => {
+/**
+ * Formats a byte value into a human-readable string with appropriate units
+ * @param size - The size in bytes to format
+ * @param fractionDigits - Number of decimal places to show (default: 2)
+ * @param useBinary - Whether to use binary (1024) or decimal (1000) units (default: false)
+ * @param threeDigits - Whether to format the number to always show 3 significant digits (default: false)
+ *                      When true:
+ *                      - Numbers >= 100 show no decimals (e.g., "234 MB")
+ *                      - Numbers >= 10 show 1 decimal (e.g., "23.4 MB")
+ *                      - Numbers < 10 show 2 decimals (e.g., "2.34 MB")
+ * @returns Formatted string with units (e.g., "1.5 MB" or "2 GiB")
+ */
+export const formatBytes = (
+  size: number,
+  fractionDigits = 2,
+  useBinary = false,
+  threeDigits = false,
+) => {
   if (size <= 0) {
     return '0 B';
   }
-  const multiple = Math.floor(Math.log(size) / Math.log(1024));
-  return (
-    parseFloat((size / Math.pow(1024, multiple)).toFixed(fractionDigits)) +
-    ' ' +
-    ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'][multiple]
-  );
-};
 
+  const base = useBinary ? 1024 : 1000;
+  const multiple = Math.floor(Math.log(size) / Math.log(base));
+
+  const units = useBinary
+    ? ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB']
+    : ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+  const value = size / Math.pow(base, multiple);
+
+  if (threeDigits) {
+    const digits = value >= 100 ? 0 : value >= 10 ? 1 : 2;
+    return value.toFixed(digits) + ' ' + units[multiple];
+  }
+
+  return parseFloat(value.toFixed(fractionDigits)) + ' ' + units[multiple];
+};
 /** Returns size in bytes of the provided text */
 export const getTextSizeInBytes = (text: string) => new Blob([text]).size;
 
@@ -267,9 +302,9 @@ export function roundToBillion(num: number) {
 }
 
 export function bytesToGB(bytes: number): string {
-  const bytesPerGiB = 1000 ** 3; // 1 GiB = 1024^3 bytes
-  const gib = bytes / bytesPerGiB;
-  return gib.toFixed(2); // Convert to string with 2 decimal places
+  const bytesPerGB = 1000 ** 3;
+  const gib = bytes / bytesPerGB;
+  return gib.toFixed(2);
 }
 
 export const getModelDescription = (
@@ -277,31 +312,35 @@ export const getModelDescription = (
   isActiveModel: boolean,
   modelStore: any,
 ): string => {
-  let size: string;
-  let params: string;
+  // Get size and params from context if the model is active.
+  // This is relevant only for local models (when we don't know size/params upfront),
+  // otherwise the values should be the same.
+  const {size, params} =
+    isActiveModel && modelStore.context?.model
+      ? {
+          size: modelStore.context.model.size,
+          params: modelStore.context.model.nParams,
+        }
+      : {
+          size: model.size,
+          params: model.params,
+        };
 
-  if (isActiveModel && modelStore.context?.model) {
-    size = `${bytesToGB((modelStore.context.model as any).size)} GB`;
-    params = `${roundToBillion((modelStore.context.model as any).nParams)} B`;
-  } else {
-    size = `${model.size} GB`;
-    params = model.params ? `${model.params} B` : 'N/A';
-  }
+  const sizeString = size > 0 ? formatBytes(size) : 'N/A';
+  const paramsString =
+    params > 0 ? formatNumber(params, 2, true, false) : 'N/A';
 
-  return `Size: ${size} | Parameters: ${params}`;
+  return `Size: ${sizeString} | Parameters: ${paramsString}`;
 };
 
 export async function hasEnoughSpace(model: Model): Promise<boolean> {
   try {
-    const requiredSizeGB = parseFloat(model.size);
+    const requiredSpaceBytes = model.size;
 
-    if (isNaN(requiredSizeGB) || requiredSizeGB <= 0) {
+    if (isNaN(requiredSpaceBytes) || requiredSpaceBytes <= 0) {
       console.error('Invalid model size:', model.size);
       return false;
     }
-
-    // Convert size from GB to bytes + buffer
-    const requiredSpaceBytes = requiredSizeGB * 1e9 + 1e7;
 
     const freeDiskBytes = await DeviceInfo.getFreeDiskStorage('important');
     // console.log('Free disk space:', freeDiskBytes);
@@ -341,4 +380,115 @@ export const deepMerge = (target: any, source: any): any => {
   return target;
 };
 
+export function timeAgo(
+  dateString: string,
+  prefix: string = 'Updated ',
+  suffix: string = ' ago',
+): string {
+  const inputDate = new Date(dateString);
+  const now = new Date();
+
+  const seconds = Math.floor((now.getTime() - inputDate.getTime()) / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  const weeks = Math.floor(days / 7);
+  const months = Math.floor(days / 30);
+  const years = Math.floor(days / 365);
+
+  if (years > 0) {
+    return `${prefix}${years} year${years > 1 ? 's' : ''}${suffix}`;
+  } else if (months > 0) {
+    return `${prefix}${months} month${months > 1 ? 's' : ''}${suffix}`;
+  } else if (weeks > 0) {
+    return `${prefix}${weeks} week${weeks > 1 ? 's' : ''}${suffix}`;
+  } else if (days > 0) {
+    return `${prefix}${days} day${days > 1 ? 's' : ''}${suffix}`;
+  } else if (hours > 0) {
+    return `${prefix}${hours} hour${hours > 1 ? 's' : ''}${suffix}`;
+  } else if (minutes > 0) {
+    return `${prefix}${minutes} minute${minutes > 1 ? 's' : ''}${suffix}`;
+  } else {
+    return `${prefix}just now`;
+  }
+}
+
+export function formatNumber(
+  num: number,
+  fractionDigits = 2,
+  uppercase = false,
+  withSpace = false,
+): string {
+  const space = withSpace ? ' ' : '';
+
+  if (num < 1000) {
+    return num.toString();
+  } else if (num < 1_000_000) {
+    const suffix = uppercase ? 'K' : 'k';
+    return `${(num / 1_000)
+      .toFixed(fractionDigits)
+      .replace(/\.?0+$/, '')}${space}${suffix}`;
+  } else if (num < 1_000_000_000) {
+    const suffix = uppercase ? 'M' : 'm';
+    return `${(num / 1_000_000)
+      .toFixed(fractionDigits)
+      .replace(/\.?0+$/, '')}${space}${suffix}`;
+  } else {
+    const suffix = uppercase ? 'B' : 'b';
+    return `${(num / 1_000_000_000)
+      .toFixed(fractionDigits)
+      .replace(/\.?0+$/, '')}${space}${suffix}`;
+  }
+}
+
+export function extractHFModelType(modelId: string): string {
+  const match = modelId.match(/\/([^-]+)/);
+  return match ? match[1] : 'Unknown';
+}
+
+export function extractHFModelTitle(modelId: string): string {
+  // Remove "GGUF", "-GGUF", or "_GGUF" at the end regardless of case
+  const sanitizedModelId = modelId.replace(/[-_]?[Gg][Gg][Uu][Ff]$/, '');
+
+  // If there is no "/" in the modelId, ie owner is not included, return sanitizedModelId
+  if (!sanitizedModelId.includes('/')) {
+    return sanitizedModelId;
+  }
+
+  // Remove owner from the modelId
+  const match = sanitizedModelId.match(/^([^/]+)\/(.+)$/);
+  return match ? match[2] : 'Unknown';
+}
+
+export function hfAsModel(
+  hfModel: HuggingFaceModel,
+  modelFile: ModelFile,
+): Model {
+  const defaultSettings = getHFDefaultSettings(hfModel);
+
+  const _model: Model = {
+    id: hfModel.id + '/' + modelFile.rfilename,
+    type: extractHFModelType(hfModel.id),
+    author: hfModel.author,
+    name: extractHFModelTitle(modelFile.rfilename),
+    size: modelFile.size ?? 0,
+    params: hfModel.specs?.gguf?.total ?? 0,
+    isDownloaded: false,
+    downloadUrl: modelFile.url ?? '',
+    hfUrl: hfModel.url ?? '',
+    progress: 0,
+    filename: modelFile.rfilename,
+    //fullPath: '',
+    isLocal: false,
+    origin: ModelOrigin.HF,
+    defaultChatTemplate: defaultSettings.chatTemplate,
+    chatTemplate: _.cloneDeep(defaultSettings.chatTemplate),
+    defaultCompletionSettings: defaultSettings.completionParams,
+    completionSettings: {...defaultSettings.completionParams},
+    hfModelFile: modelFile,
+    hfModel: hfModel,
+  };
+
+  return _model;
+}
 export const randId = () => Math.random().toString(36).substring(2, 11);

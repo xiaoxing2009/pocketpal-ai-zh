@@ -950,6 +950,10 @@ PODS:
     - React-debug
   - react-native-blob-util (0.19.11):
     - React-Core
+  - react-native-blur (4.4.1):
+    - glog
+    - RCT-Folly (= 2022.05.16.00)
+    - React-Core
   - react-native-config (1.5.3):
     - react-native-config/App (= 1.5.3)
   - react-native-config/App (1.5.3):
@@ -1147,23 +1151,29 @@ PODS:
     - React-Core
   - RNFS (2.20.0):
     - React-Core
-  - RNGestureHandler (2.20.0):
+  - RNGestureHandler (2.20.2):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
-  - RNReanimated (3.15.5):
-    - glog
-    - RCT-Folly (= 2022.05.16.00)
-    - React-Core
-    - ReactCommon/turbomodule/core
-    - RNReanimated/reanimated (= 3.15.5)
-    - RNReanimated/worklets (= 3.15.5)
-  - RNReanimated/reanimated (3.15.5):
+  - RNReanimated (3.16.1):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
     - ReactCommon/turbomodule/core
-  - RNReanimated/worklets (3.15.5):
+    - RNReanimated/reanimated (= 3.16.1)
+    - RNReanimated/worklets (= 3.16.1)
+  - RNReanimated/reanimated (3.16.1):
+    - glog
+    - RCT-Folly (= 2022.05.16.00)
+    - React-Core
+    - ReactCommon/turbomodule/core
+    - RNReanimated/reanimated/apple (= 3.16.1)
+  - RNReanimated/reanimated/apple (3.16.1):
+    - glog
+    - RCT-Folly (= 2022.05.16.00)
+    - React-Core
+    - ReactCommon/turbomodule/core
+  - RNReanimated/worklets (3.16.1):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
@@ -1238,6 +1248,7 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - react-native-blob-util (from `../node_modules/react-native-blob-util`)
+  - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - react-native-config (from `../node_modules/react-native-config`)
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
@@ -1355,6 +1366,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   react-native-blob-util:
     :path: "../node_modules/react-native-blob-util"
+  react-native-blur:
+    :path: "../node_modules/@react-native-community/blur"
   react-native-config:
     :path: "../node_modules/react-native-config"
   react-native-document-picker:
@@ -1475,6 +1488,7 @@ SPEC CHECKSUMS:
   React-logger: 7b19bdfb254772a0332d6cd4d66eceb0678b6730
   React-Mapbuffer: 6f392912435adb8fbf4c3eee0e79a0a0b4e4b717
   react-native-blob-util: 39a20f2ef11556d958dc4beb0aa07d1ef2690745
+  react-native-blur: b2b140d3d65077a1d5d26be62d9415f895592344
   react-native-config: 8f7283449bbb048902f4e764affbbf24504454af
   react-native-document-picker: 23b6a82e09199f4f109376e73d88892a8931eeea
   react-native-get-random-values: 21325b2244dfa6b58878f51f9aa42821e7ba3d06
@@ -1507,8 +1521,8 @@ SPEC CHECKSUMS:
   RNCPicker: 0b6860a6b208d4046227d2f626ad0722f99a969c
   RNDeviceInfo: e13b7d68878fba693c9fbb13ca4d56ad57d95917
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
-  RNGestureHandler: bb81850add626ddd265294323310fec6e861c96b
-  RNReanimated: a98c639fc19c83510d510cc4d952ca6960e9c22e
+  RNGestureHandler: 93938f47763bf404d697f7c5d63c280ae4d732e4
+  RNReanimated: 51ba6c9ecdde77caf364c7e5ae59a089c7dd98b3
   RNScreens: 29418ceffb585b8f0ebd363de304288c3dce8323
   RNSVG: 4590aa95758149fa27c5c83e54a6a466349a1688
   RNVectorIcons: 04d49881dab53fb3397b1129085271d9d21885c1

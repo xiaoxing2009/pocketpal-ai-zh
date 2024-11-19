@@ -16,6 +16,7 @@ const lightColors: Colors = {
   sentMessageDocumentIcon: PaperLightTheme.colors.onSurface,
   userAvatarImageBackground: 'transparent',
   userAvatarNameColors: getThemeColorsAsArray(PaperLightTheme),
+  searchBarBackground: 'rgba(118, 118, 128, 0.12)', // iOS light mode searchbar
 };
 
 export const lightTheme: Theme = {
@@ -120,6 +121,7 @@ const darkColors: Colors = {
   sentMessageDocumentIcon: MD3DarkTheme.colors.onSurface,
   userAvatarImageBackground: 'transparent',
   userAvatarNameColors: getThemeColorsAsArray(MD3DarkTheme),
+  searchBarBackground: 'rgba(28, 28, 30, 0.92)', // iOS dark mode searchbar
 };
 
 export const darkTheme: Theme = {

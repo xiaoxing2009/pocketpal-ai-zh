@@ -1,6 +1,7 @@
 export * from './AppleStyleSwipeableRow';
 export * from './AttachmentButton';
 export * from './Avatar';
+export * from './BottomSheetSearchbar';
 export * from './Bubble';
 export * from './ChatView';
 export * from './CircularActivityIndicator';
@@ -12,6 +13,9 @@ export * from './KeyboardAccessoryView';
 export * from './LoadingBubble';
 export * from './MarkdownView';
 export * from './Message';
+export * from './ModelsHeaderRight';
+export * from './ModelsResetDialog';
+export * from './Searchbar';
 export * from './SendButton';
 export * from './StopButton';
 export * from './SidebarContent';

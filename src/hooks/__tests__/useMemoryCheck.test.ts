@@ -7,6 +7,7 @@ import {largeMemoryModel, localModel} from '../../../jest/fixtures/models';
 import {useMemoryCheck} from '../useMemoryCheck';
 
 import {l10n} from '../../utils/l10n';
+import {formatBytes} from '../../utils';
 
 describe('useMemoryCheck', () => {
   beforeEach(() => {
@@ -48,7 +49,7 @@ describe('useMemoryCheck', () => {
     expect(result.current).toEqual({
       memoryWarning: l10n.en.memoryWarning.replace(
         '{{totalMemory}}',
-        (deviceInfo.totalMemory / 1000 ** 3).toFixed(2),
+        formatBytes(deviceInfo.totalMemory),
       ),
       shortMemoryWarning: l10n.en.shortMemoryWarning,
     });

@@ -138,6 +138,7 @@ export interface Colors extends MD3Colors {
   sentMessageDocumentIcon: string;
   userAvatarImageBackground: string;
   userAvatarNameColors: ColorValue[];
+  searchBarBackground: string;
 }
 
 export interface Typescale extends MD3Typescale {
@@ -207,12 +208,18 @@ export type ChatMessage = {
   content: string;
 };
 
+export enum ModelOrigin {
+  PRESET = 'preset',
+  LOCAL = 'local',
+  HF = 'hf',
+}
 export interface Model {
   id: string;
+  author: string;
   name: string;
   type?: string;
-  size: string; // Size in GB
-  params: string; // in Billion
+  size: number; // Size in bytes
+  params: number;
   isDownloaded: boolean;
   downloadUrl: string;
   hfUrl: string;
@@ -220,11 +227,17 @@ export interface Model {
   downloadSpeed?: string;
   filename: string;
   fullPath?: string; // Full path for local models
-  isLocal: boolean; // True if the model is manually added
+  /**
+   * @deprecated Use 'origin' instead.
+   */
+  isLocal: boolean; // this need to be deprecated
+  origin: ModelOrigin;
   defaultChatTemplate: ChatTemplateConfig;
   chatTemplate: ChatTemplateConfig;
   defaultCompletionSettings: CompletionParams;
   completionSettings: CompletionParams;
+  hfModelFile?: ModelFile;
+  hfModel?: HuggingFaceModel;
 }
 
 export type RootDrawerParamList = {
@@ -237,3 +250,63 @@ export type TokenNativeEvent = {
   contextId: number;
   tokenResult: TokenData;
 };
+
+export interface ModelFile {
+  rfilename: string;
+  size?: number;
+  url?: string;
+  oid?: string;
+  canFitInStorage?: boolean;
+}
+
+export interface HuggingFaceModel {
+  _id: string;
+  id: string;
+  author: string;
+  gated: boolean;
+  inference: string;
+  lastModified: string;
+  likes: number;
+  trendingScore: number;
+  private: boolean;
+  sha: string;
+  downloads: number;
+  tags: string[];
+  library_name: string;
+  createdAt: string;
+  model_id: string;
+  siblings: ModelFile[];
+  url?: string;
+  specs?: GGUFSpecs;
+}
+
+export interface HuggingFaceModelsResponse {
+  models: HuggingFaceModel[];
+  nextLink: string | null; // null if there is no next page
+}
+
+export interface ModelFileDetails {
+  type: string;
+  oid: string;
+  size: number;
+  lfs?: {
+    oid: string;
+    size: number;
+    pointerSize: number;
+  };
+  path: string;
+}
+
+export interface GGUFSpecs {
+  _id: string;
+  id: string;
+  gguf: {
+    total: number;
+    architecture: string;
+    context_length: number;
+    quantize_imatrix_file?: string;
+    chat_template?: string;
+    bos_token?: string;
+    eos_token?: string;
+  };
+}

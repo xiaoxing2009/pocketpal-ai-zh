@@ -1,4 +1,5 @@
 export const mockUiStore = {
+  colorScheme: 'light',
   autoNavigatetoChat: false,
   pageStates: {
     modelsScreen: {

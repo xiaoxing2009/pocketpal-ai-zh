@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from 'react';
-import {Linking, View} from 'react-native';
+import {Alert, Linking, View, Image} from 'react-native';
 
 import {observer} from 'mobx-react-lite';
 import {useNavigation} from '@react-navigation/native';
@@ -25,7 +25,7 @@ import {ModelSettings} from '../ModelSettings';
 import {uiStore, modelStore} from '../../../store';
 
 import {chatTemplates} from '../../../utils/chat';
-import {Model, RootDrawerParamList} from '../../../utils/types';
+import {Model, ModelOrigin, RootDrawerParamList} from '../../../utils/types';
 import {getModelDescription, L10nContext} from '../../../utils';
 
 type ChatScreenNavigationProp = DrawerNavigationProp<RootDrawerParamList>;
@@ -51,6 +51,7 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
     const isActiveModel = activeModelId === model.id;
     const isDownloaded = model.isDownloaded;
     const isDownloading = modelStore.isDownloading(model.id);
+    const isHfModel = model.origin === ModelOrigin.HF;
 
     const handleSettingsUpdate = useCallback(
       (name: string, value: any) => {
@@ -73,6 +74,24 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
       [model.id, model.completionSettings],
     );
 
+    const handleDelete = useCallback(() => {
+      if (model.isDownloaded) {
+        Alert.alert(
+          'Delete Model',
+          'Are you sure you want to delete this downloaded model?',
+          [
+            {text: 'Cancel', style: 'cancel'},
+            {
+              text: 'Delete',
+              onPress: async () => {
+                await modelStore.deleteModel(model);
+              },
+            },
+          ],
+        );
+      }
+    }, [model]);
+
     const handleReset = useCallback(() => {
       modelStore.resetModelChatTemplate(model.id);
       modelStore.resetCompletionSettings(model.id);
@@ -87,6 +106,21 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
       }
     }, [model.hfUrl]);
 
+    const handleRemove = useCallback(() => {
+      Alert.alert(
+        'Remove Model',
+        'Are you sure you want to remove this model from the list?',
+        [
+          {text: 'Cancel', style: 'cancel'},
+          {
+            text: 'Remove',
+            style: 'destructive',
+            onPress: () => modelStore.removeModelFromList(model),
+          },
+        ],
+      );
+    }, [model]);
+
     const renderDownloadOverlay = () => (
       <View style={styles.overlayContainer}>
         <View style={styles.overlay}>
@@ -98,17 +132,30 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
             style={styles.storageErrorText}>
             {storageNOkMessage}
           </HelperText>
-          {storageOk && (
-            <Button
-              testID="download-button"
-              icon="download"
-              mode="text"
-              onPress={() => modelStore.checkSpaceAndDownload(model.id)}
-              disabled={!storageOk}
-              style={styles.downloadButton}>
-              Download
-            </Button>
-          )}
+          <View style={styles.overlayButtons}>
+            {storageOk && (
+              <Button
+                testID="download-button"
+                icon="download"
+                mode="text"
+                onPress={() => modelStore.checkSpaceAndDownload(model.id)}
+                disabled={!storageOk}
+                style={styles.downloadButton}>
+                Download
+              </Button>
+            )}
+            {isHfModel && (
+              <Button
+                testID="remove-model-button"
+                icon="delete-outline"
+                mode="text"
+                textColor={colors.error}
+                onPress={handleRemove}
+                style={styles.removeButton}>
+                Remove
+              </Button>
+            )}
+          </View>
         </View>
       </View>
     );
@@ -173,6 +220,12 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
             isActiveModel && {backgroundColor: colors.tertiaryContainer},
             {borderColor: colors.primary},
           ]}>
+          {isHfModel && (
+            <Image
+              source={require('../../../assets/icon-hf.png')}
+              style={styles.hfBadge}
+            />
+          )}
           <View style={styles.cardInner}>
             <TouchableRipple
               testID={`model-card-header-${model.id}`}
@@ -190,6 +243,7 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
                         ]}>
                         {model.name}
                       </Text>
+
                       {model.hfUrl && (
                         <IconButton
                           testID="open-huggingface-url"
@@ -272,7 +326,7 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
                   icon="delete"
                   mode="text"
                   textColor={colors.error}
-                  onPress={() => modelStore.deleteModel(model.name)}
+                  onPress={() => handleDelete()}
                   style={styles.actionButton}>
                   {l10n.delete}
                 </Button>

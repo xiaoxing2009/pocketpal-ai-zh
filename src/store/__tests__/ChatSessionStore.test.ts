@@ -1,7 +1,10 @@
 jest.unmock('../ChatSessionStore'); // this is not really needed, as only importing from store is mocked.
-import {chatSessionStore} from '../ChatSessionStore';
-import RNFS from 'react-native-fs';
 import {runInAction} from 'mobx';
+import RNFS from 'react-native-fs';
+import {LlamaContext} from '@pocketpalai/llama.rn';
+
+import {chatSessionStore} from '../ChatSessionStore';
+
 import {MessageType} from '../../utils/types';
 
 describe('chatSessionStore', () => {
@@ -229,6 +232,132 @@ describe('chatSessionStore', () => {
       await chatSessionStore.saveSessionsMetadata();
 
       expect(RNFS.writeFile).toHaveBeenCalled();
+    });
+  });
+
+  describe('setActiveSession', () => {
+    it('sets the active session id', () => {
+      const sessionId = 'session1';
+      chatSessionStore.setActiveSession(sessionId);
+      expect(chatSessionStore.activeSessionId).toBe(sessionId);
+    });
+  });
+
+  describe('currentSessionMessages', () => {
+    it('returns messages for active session', () => {
+      const session = {
+        id: 'session1',
+        title: 'Session 1',
+        date: new Date().toISOString(),
+        messages: [mockMessage],
+      };
+      chatSessionStore.sessions = [session];
+      chatSessionStore.activeSessionId = session.id;
+
+      expect(chatSessionStore.currentSessionMessages).toEqual([mockMessage]);
+    });
+
+    it('returns empty array when no active session', () => {
+      expect(chatSessionStore.currentSessionMessages).toEqual([]);
+    });
+  });
+
+  describe('updateMessageToken', () => {
+    it('updates existing message with new token', () => {
+      const session = {
+        id: 'session1',
+        title: 'Session 1',
+        date: new Date().toISOString(),
+        messages: [mockMessage],
+      };
+      chatSessionStore.sessions = [session];
+      chatSessionStore.activeSessionId = session.id;
+
+      const mockContext = new LlamaContext({
+        contextId: 1,
+        gpu: false,
+        reasonNoGPU: 'Test environment',
+        model: 'mock-model',
+      });
+
+      chatSessionStore.updateMessageToken(
+        {token: ' world'},
+        Date.now(),
+        mockMessage.id,
+        mockContext,
+      );
+
+      expect(
+        (chatSessionStore.currentSessionMessages[0] as MessageType.Text).text,
+      ).toBe('Hello, world! world');
+    });
+
+    it('creates new message if id not found', () => {
+      const session = {
+        id: 'session1',
+        title: 'Session 1',
+        date: new Date().toISOString(),
+        messages: [],
+      };
+      chatSessionStore.sessions = [session];
+      chatSessionStore.activeSessionId = session.id;
+
+      const mockContext = new LlamaContext({
+        contextId: 1,
+        gpu: false,
+        reasonNoGPU: 'Test environment',
+        model: 'mock-model',
+      });
+      const newMessageId = 'new-message';
+      const createdAt = Date.now();
+
+      chatSessionStore.updateMessageToken(
+        {token: 'New message'},
+        createdAt,
+        newMessageId,
+        mockContext,
+      );
+
+      const newMessage = chatSessionStore.currentSessionMessages[0];
+      expect(newMessage.id).toBe(newMessageId);
+      expect((newMessage as MessageType.Text).text).toBe('New message');
+      expect(newMessage.metadata).toEqual({contextId: 1, copyable: true});
+    });
+  });
+
+  describe('groupedSessions', () => {
+    it('groups sessions by date categories', () => {
+      const today = new Date();
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      const lastWeek = new Date(today);
+      lastWeek.setDate(lastWeek.getDate() - 7);
+
+      chatSessionStore.sessions = [
+        {
+          id: '1',
+          title: 'Today Session',
+          date: today.toISOString(),
+          messages: [],
+        },
+        {
+          id: '2',
+          title: 'Yesterday Session',
+          date: yesterday.toISOString(),
+          messages: [],
+        },
+        {
+          id: '3',
+          title: 'Last Week Session',
+          date: lastWeek.toISOString(),
+          messages: [],
+        },
+      ];
+
+      const grouped = chatSessionStore.groupedSessions;
+      expect(grouped.Today).toBeDefined();
+      expect(grouped.Yesterday).toBeDefined();
+      expect(grouped['Last week']).toBeDefined();
     });
   });
 });

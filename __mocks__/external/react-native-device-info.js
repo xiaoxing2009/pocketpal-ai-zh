@@ -8,5 +8,7 @@ export default {
   getFreeDiskStorage: jest.fn(() => deviceInfo.freeDiskStorage),
   getTotalMemory: jest.fn(() => deviceInfo.totalMemory),
   getUsedMemory: jest.fn(() => deviceInfo.usedMemory),
-  // Add any other methods from react-native-device-info that you use in your code
+  getVersion: jest.fn(() => deviceInfo.version),
+  getBuildNumber: jest.fn(() => deviceInfo.buildNumber),
+  // Not all methods are mocked, add any other methods from react-native-device-info that you use in your code
 };

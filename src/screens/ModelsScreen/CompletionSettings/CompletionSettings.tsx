@@ -135,7 +135,10 @@ export const CompletionSettings: React.FC<Props> = ({settings, onChange}) => {
               onChangeText={value =>
                 onChange(
                   'stop',
-                  value.split(',').map(s => s.trim()),
+                  value
+                    .split(',')
+                    .map(s => s.trim())
+                    .filter(s => s.length > 0),
                 )
               }
               style={styles.textInput}

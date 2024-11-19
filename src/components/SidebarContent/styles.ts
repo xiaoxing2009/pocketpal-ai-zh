@@ -8,6 +8,47 @@ export const createStyles = (theme: MD3Theme) =>
       flex: 1,
       backgroundColor: theme.colors.surface,
     },
+    contentWrapper: {
+      flex: 1,
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    versionContainer: {
+      paddingTop: 12,
+      paddingBottom: 0,
+      paddingHorizontal: 26,
+      width: '100%',
+      alignItems: 'center',
+    },
+    versionRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+      justifyContent: 'center',
+    },
+    versionLabel: {
+      color: theme.colors.onSurfaceVariant,
+      opacity: 0.4,
+      fontSize: 12,
+    },
+    versionText: {
+      color: theme.colors.onSurfaceVariant,
+      opacity: 0.7,
+      fontSize: 12,
+      fontWeight: '500',
+    },
+    buildText: {
+      color: theme.colors.onSurfaceVariant,
+      opacity: 0.5,
+      fontSize: 12,
+    },
+    copyHint: {
+      fontSize: 10,
+      color: theme.colors.onSurfaceVariant,
+      opacity: 0.4,
+      marginTop: 2,
+      textAlign: 'center',
+    },
     drawerSection: {
       marginVertical: 10,
     },
@@ -17,4 +58,14 @@ export const createStyles = (theme: MD3Theme) =>
       paddingBottom: 15,
     },
     drawerItem: {},
+    scrollViewContent: {
+      flexGrow: 1,
+      minHeight: '100%',
+    },
+    mainContent: {
+      flex: 1,
+    },
+    versionSafeArea: {
+      backgroundColor: theme.colors.surface,
+    },
   });

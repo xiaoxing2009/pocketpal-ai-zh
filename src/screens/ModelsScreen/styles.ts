@@ -12,24 +12,13 @@ export const styles = StyleSheet.create({
     paddingBottom: 150,
   },
   filterContainer: {
-    marginVertical: 15,
-    marginHorizontal: 15,
+    flexDirection: 'row',
+    padding: 4,
+    gap: 1,
+    justifyContent: 'flex-end',
   },
-  fab: {
-    position: 'absolute',
-    margin: 16,
-    right: 0,
-  },
-  fabTop: {
-    bottom: 90, // Ensure the top FAB is positioned slightly higher
-  },
-  fabBottom: {
-    bottom: 25, // Keep the bottom FAB at the lowest position
-  },
-  paragraph: {
-    marginBottom: 8,
-  },
-  bold: {
-    fontWeight: 'bold',
+  filterIcon: {
+    borderRadius: 8,
+    marginHorizontal: 2,
   },
 });

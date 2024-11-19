@@ -2,46 +2,33 @@ import React, {useState, useMemo, useContext} from 'react';
 import {View, FlatList, RefreshControl, Platform, Alert} from 'react-native';
 
 import {toJS} from 'mobx';
-import 'react-native-get-random-values'; // Polyfill for uuid
 import {v4 as uuidv4} from 'uuid';
 import RNFS from 'react-native-fs';
+import 'react-native-get-random-values';
 import {observer} from 'mobx-react-lite';
 import DocumentPicker from 'react-native-document-picker';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {
-  AnimatedFAB,
-  Button,
-  Dialog,
-  Paragraph,
-  Portal,
-  SegmentedButtons,
-  Text,
-} from 'react-native-paper';
 
 import {useTheme} from '../../hooks';
 
 import {styles} from './styles';
+import {FABGroup} from './FABGroup';
 import {ModelCard} from './ModelCard';
+import {HFModelSearch} from './HFModelSearch';
 import {ModelAccordion} from './ModelAccordion';
 
 import {uiStore, modelStore} from '../../store';
 
-import {Model} from '../../utils/types';
 import {L10nContext} from '../../utils';
+import {Model, ModelOrigin} from '../../utils/types';
 
 export const ModelsScreen: React.FC = observer(() => {
   const l10n = useContext(L10nContext);
-  const [isExtended, setIsExtended] = React.useState(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
-  const [resetDialogVisible, setResetDialogVisible] = useState(false);
+  const [hfSearchVisible, setHFSearchVisible] = useState(false);
   const [_, setTrigger] = useState<boolean>(false);
   const {colors} = useTheme();
 
   const filters = uiStore.pageStates.modelsScreen.filters;
-  const setFilters = (value: string[]) => {
-    uiStore.setValue('modelsScreen', 'filters', value);
-  };
-
   const expandedGroups = uiStore.pageStates.modelsScreen.expandedGroups;
 
   const onRefresh = async () => {
@@ -64,7 +51,7 @@ export const ModelsScreen: React.FC = observer(() => {
           let fileName =
             file.name || file.uri.split('/').pop() || `file_${uuidv4()}`;
 
-          const permanentDir = `${RNFS.DocumentDirectoryPath}/models`;
+          const permanentDir = `${RNFS.DocumentDirectoryPath}/models/local`;
           let permanentPath = `${permanentDir}/${fileName}`;
           if (!(await RNFS.exists(permanentDir))) {
             await RNFS.mkdir(permanentDir);
@@ -142,6 +129,9 @@ export const ModelsScreen: React.FC = observer(() => {
         return 0;
       });
     }
+    if (filters.includes('hf')) {
+      result = result.filter(model => model.origin === ModelOrigin.HF);
+    }
     return result;
   }, [models, filters]);
 
@@ -151,14 +141,18 @@ export const ModelsScreen: React.FC = observer(() => {
     }
 
     return filteredAndSortedModels.reduce((acc, item) => {
-      const type = item.type || l10n.localModel;
-      if (!acc[type]) {
-        acc[type] = [];
+      const groupKey =
+        item.origin === ModelOrigin.LOCAL || item.isLocal
+          ? l10n.localModel
+          : item.type || l10n.unknownGroup;
+
+      if (!acc[groupKey]) {
+        acc[groupKey] = [];
       }
-      acc[type].push(item);
+      acc[groupKey].push(item);
       return acc;
     }, {} as Record<string, Model[]>);
-  }, [filteredAndSortedModels, filters, l10n.localModel]);
+  }, [filteredAndSortedModels, filters, l10n.localModel, l10n.unknownGroup]);
 
   const toggleGroup = (type: string) => {
     const currentExpandedGroups =
@@ -199,96 +193,8 @@ export const ModelsScreen: React.FC = observer(() => {
     }))
     .filter(group => group.items.length > 0);
 
-  const onScroll = ({nativeEvent}) => {
-    const currentScrollPosition =
-      Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
-    const maxScrollPosition =
-      nativeEvent.contentSize.height - nativeEvent.layoutMeasurement.height;
-
-    // Hide FABs if the user scrolls near the bottom (last card area)
-    setIsExtended(currentScrollPosition <= 0);
-
-    if (currentScrollPosition >= maxScrollPosition - 50) {
-      // User is at the bottom of the list, hide or move FABs
-      setIsExtended(false); // Optionally hide the FAB when near the bottom
-    }
-  };
-
-  const showResetDialog = () => setResetDialogVisible(true);
-  const hideResetDialog = () => setResetDialogVisible(false);
-
-  const handleReset = async () => {
-    try {
-      modelStore.resetModels();
-      setTrigger(prev => !prev); // Trigger UI refresh
-    } catch (error) {
-      console.error('Error resetting models:', error);
-    } finally {
-      hideResetDialog();
-    }
-  };
-
   return (
     <View style={[styles.container, {backgroundColor: colors.surface}]}>
-      <Portal>
-        <Dialog
-          testID="reset-dialog"
-          visible={resetDialogVisible}
-          onDismiss={hideResetDialog}>
-          <Dialog.Title>{l10n.confirmReset}</Dialog.Title>
-          <Dialog.Content>
-            <Paragraph style={styles.paragraph}>
-              This will reset model settings (
-              <Text variant="labelMedium">
-                'system prompt', 'chat template', 'temperature',
-              </Text>
-              etc.) to their default configuration.
-            </Paragraph>
-
-            <Paragraph style={styles.paragraph}>
-              - Your downloaded models will <Text style={styles.bold}>not</Text>{' '}
-              be removed.
-            </Paragraph>
-
-            <Paragraph style={styles.paragraph}>
-              - Your 'Local Models' will remain intact.
-            </Paragraph>
-
-            {/*<Paragraph style={styles.paragraph}>
-              - This action is <Text style={styles.bold}>irreversible.</Text>
-            </Paragraph>*/}
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button testID="cancel-reset-button" onPress={hideResetDialog}>
-              {l10n.cancel}
-            </Button>
-            <Button testID="proceed-reset-button" onPress={handleReset}>
-              {l10n.proceedWithReset}
-            </Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
-
-      <SegmentedButtons
-        value={filters}
-        onValueChange={setFilters}
-        multiSelect
-        density="small"
-        style={styles.filterContainer}
-        buttons={[
-          {
-            value: 'downloaded',
-            label: l10n.downloaded,
-            icon: filters.includes('downloaded') ? 'check' : undefined,
-          },
-          {
-            value: 'grouped',
-            label: l10n.grouped,
-            icon: filters.includes('grouped') ? 'check' : undefined,
-          },
-        ]}
-      />
-
       <FlatList
         testID="flat-list"
         contentContainerStyle={styles.listContainer} // Ensure padding for last card
@@ -302,7 +208,6 @@ export const ModelsScreen: React.FC = observer(() => {
         renderItem={
           filters.includes('grouped') ? renderGroupHeader : renderItem
         }
-        onScroll={onScroll}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -312,27 +217,14 @@ export const ModelsScreen: React.FC = observer(() => {
         }
       />
 
-      <SafeAreaView style={styles.safeArea} edges={['bottom']}>
-        <AnimatedFAB
-          testID="add-local-model-fab"
-          icon={'plus'}
-          label={l10n.localModel}
-          extended={isExtended}
-          onPress={handleAddLocalModel}
-          animateFrom={'right'}
-          style={[styles.fab, styles.fabTop]} // Updated to add styles for spacing
-        />
-
-        <AnimatedFAB
-          testID="reset-models-fab"
-          icon={'restart'}
-          label={l10n.resetModels}
-          extended={isExtended}
-          onPress={showResetDialog}
-          animateFrom={'right'}
-          style={[styles.fab, styles.fabBottom]} // Updated to ensure this is below the first one
-        />
-      </SafeAreaView>
+      <HFModelSearch
+        visible={hfSearchVisible}
+        onDismiss={() => setHFSearchVisible(false)}
+      />
+      <FABGroup
+        onAddHFModel={() => setHFSearchVisible(true)}
+        onAddLocalModel={handleAddLocalModel}
+      />
     </View>
   );
 });

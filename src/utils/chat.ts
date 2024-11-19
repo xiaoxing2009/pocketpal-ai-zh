@@ -1,6 +1,13 @@
 import {applyTemplate, Templates} from 'chat-formatter';
-import {ChatMessage, ChatTemplateConfig, MessageType, Model} from './types';
 import {CompletionParams, LlamaContext} from '@pocketpalai/llama.rn';
+
+import {
+  ChatMessage,
+  ChatTemplateConfig,
+  HuggingFaceModel,
+  MessageType,
+  Model,
+} from './types';
 
 export const userId = 'y9d7f8pgn';
 export const assistantId = 'h3o3lc5xj';
@@ -21,6 +28,19 @@ export function convertToChatMessages(
     .reverse();
 }
 
+/**
+ * Formats chat messages using the appropriate template based on the model or context.
+ *
+ * @param messages - Array of OAI compatible chat messages
+ * @param model - The model configuration, which may contain a custom chat template
+ * @param context - The LlamaContext instance, which may contain a chat template
+ * @returns A formatted prompt
+ *
+ * Priority of template selection:
+ * 1. Model's custom chat template (if available)
+ * 2. Context's model-specific template (if available)
+ * 3. Default chat template as fallback
+ */
 export async function applyChatTemplate(
   messages: ChatMessage[],
   model: Model | null,
@@ -34,16 +54,19 @@ export async function applyChatTemplate(
   let formattedChat: string | undefined;
 
   try {
+    // Model's custom chat template. This uses chat-formatter, which is based on Nunjucks (as opposed to Jinja2).
     if (modelChatTemplate?.chatTemplate) {
       formattedChat = applyTemplate(messages, {
         customTemplate: modelChatTemplate,
         addGenerationPrompt: modelChatTemplate.addGenerationPrompt,
       }) as string;
     } else if (contextChatTemplate) {
+      // Context's model-specific chat template. This uses llama.cpp's getFormattedChat.
       formattedChat = await context?.getFormattedChat(messages);
     }
 
     if (!formattedChat) {
+      // Default chat template
       formattedChat = applyTemplate(messages, {
         customTemplate: chatTemplates.default,
         addGenerationPrompt: chatTemplates.default.addGenerationPrompt,
@@ -57,6 +80,13 @@ export async function applyChatTemplate(
 }
 
 export const chatTemplates: Record<string, ChatTemplateConfig> = {
+  custom: {
+    name: 'custom',
+    addGenerationPrompt: true,
+    bosToken: '',
+    eosToken: '',
+    chatTemplate: '',
+  },
   danube3: {
     ...Templates.templates.danube2,
     name: 'danube3',
@@ -143,6 +173,42 @@ export const chatTemplates: Record<string, ChatTemplateConfig> = {
     chatTemplate: '',
   },
 };
+
+export function getLocalModelDefaultSettings(): {
+  chatTemplate: ChatTemplateConfig;
+  completionParams: CompletionParams;
+} {
+  return {
+    chatTemplate: chatTemplates.custom,
+    completionParams: defaultCompletionParams,
+  };
+}
+
+export function getHFDefaultSettings(hfModel: HuggingFaceModel): {
+  chatTemplate: ChatTemplateConfig;
+  completionParams: CompletionParams;
+} {
+  const _defaultChatTemplate = {
+    addBosToken: false, // It is expected that chat templates will take care of this
+    addEosToken: false, // It is expected that chat templates will take care of this
+    bosToken: hfModel.specs?.gguf?.bos_token ?? '',
+    eosToken: hfModel.specs?.gguf?.eos_token ?? '',
+    //chatTemplate: hfModel.specs?.gguf?.chat_template ?? '',
+    chatTemplate: '', // At the moment chatTemplate needs to be nunjucks, not jinja2. So by using empty string we force the use of gguf's chat template.
+    addGenerationPrompt: true,
+    name: 'custom',
+  };
+
+  const _defaultCompletionParams = {
+    ...defaultCompletionParams,
+    stop: _defaultChatTemplate.eosToken ? [_defaultChatTemplate.eosToken] : [],
+  };
+
+  return {
+    chatTemplate: _defaultChatTemplate,
+    completionParams: _defaultCompletionParams,
+  };
+}
 
 export const defaultCompletionParams: CompletionParams = {
   prompt: '',
