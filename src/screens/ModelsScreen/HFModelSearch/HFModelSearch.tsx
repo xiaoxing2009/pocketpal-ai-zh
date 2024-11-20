@@ -2,13 +2,16 @@ import React, {useState, useCallback, useMemo, useRef, useEffect} from 'react';
 
 import {observer} from 'mobx-react';
 import debounce from 'lodash/debounce';
-import {Portal} from 'react-native-paper';
+import {Portal, PaperProvider} from 'react-native-paper';
 import {
   BottomSheetModal,
   BottomSheetBackdrop,
   BottomSheetScrollView,
 } from '@gorhom/bottom-sheet';
 
+import {useTheme} from '../../../hooks';
+
+import {createStyles} from './styles';
 import {SearchView} from './SearchView';
 import {DetailsView} from './DetailsView';
 
@@ -96,6 +99,9 @@ export const HFModelSearch: React.FC<HFModelSearchProps> = observer(
       [],
     );
 
+    const theme = useTheme();
+    const styles = createStyles(theme);
+
     return (
       <Portal>
         <BottomSheetModal
@@ -105,15 +111,28 @@ export const HFModelSearch: React.FC<HFModelSearchProps> = observer(
           enableDynamicSizing={false}
           onDismiss={onDismiss}
           enablePanDownToClose
+          handleIndicatorStyle={styles.bottomSheetHandle}
+          backgroundStyle={styles.bottomSheetBackground}
           keyboardBehavior="extend"
           keyboardBlurBehavior="restore"
           android_keyboardInputMode="adjustResize"
           backdropComponent={renderBackdrop}>
-          <SearchView
-            testID="hf-model-search-view"
-            onModelSelect={handleModelSelect}
-            onChangeSearchQuery={handleSearchChange}
-          />
+          {/*
+            We need PaperProvider here because:
+            1. BottomSheetModal creates a new React portal/root that's outside
+               the main component tree
+            2. When content is portaled, it loses access to the context (including theme)
+               from the original component tree
+            3. By wrapping the bottom sheet content with PaperProvider, we restore
+               the theme context for all Paper components inside
+          */}
+          <PaperProvider theme={theme}>
+            <SearchView
+              testID="hf-model-search-view"
+              onModelSelect={handleModelSelect}
+              onChangeSearchQuery={handleSearchChange}
+            />
+          </PaperProvider>
         </BottomSheetModal>
 
         <BottomSheetModal
@@ -124,10 +143,15 @@ export const HFModelSearch: React.FC<HFModelSearchProps> = observer(
           onDismiss={() => setDetailsVisible(false)}
           enablePanDownToClose
           stackBehavior="push"
+          handleIndicatorStyle={styles.bottomSheetHandle}
+          backgroundStyle={styles.bottomSheetBackground}
           backdropComponent={renderBackdrop}>
-          <BottomSheetScrollView>
-            {selectedModel && <DetailsView hfModel={selectedModel} />}
-          </BottomSheetScrollView>
+          {/* PaperProvider is needed here to restore theme context. see the comment above. */}
+          <PaperProvider theme={theme}>
+            <BottomSheetScrollView>
+              {selectedModel && <DetailsView hfModel={selectedModel} />}
+            </BottomSheetScrollView>
+          </PaperProvider>
         </BottomSheetModal>
       </Portal>
     );
