@@ -560,11 +560,11 @@ class ModelStore {
       });
 
       // Get stop token from the model and add to the list of stop tokens.
-      const eos_token_id = (ctx.model as any)?.metadata?.[
-        'tokenizer.ggml.eos_token_id'
-      ];
+      const eos_token_id = Number(
+        (ctx.model as any)?.metadata?.['tokenizer.ggml.eos_token_id'],
+      );
 
-      if (eos_token_id) {
+      if (!isNaN(eos_token_id)) {
         const detokenized = await ctx.detokenize([eos_token_id]);
         const storeModel = this.models.find(m => m.id === model.id);
         if (detokenized && storeModel) {
