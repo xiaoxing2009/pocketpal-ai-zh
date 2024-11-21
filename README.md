@@ -26,6 +26,10 @@ PocketPal AI is a pocket-sized AI assistant powered by small language models (SL
   - [License](#license)
   - [Contact](#contact)
 
+## 📰 News & Announcements
+- **🎨 New Icon Alert (Nov 2024)**: PocketPal AI has a fresh new look! Huge thanks to **[Chun Te Lee](https://github.com/Reeray)** for the design! [Read more](https://github.com/a-ghorbani/pocketpal-ai/discussions/102).
+- **🚀 Hugging Face Public Hub Integration (v1.5, Nov 2024)**: PocketPal AI now integrates with the Hugging Face model Hub! Browse, download, and run models directly from the Hugging Face Hub within the app. [Read more](https://github.com/a-ghorbani/pocketpal-ai/discussions/104)
+
 ## Features
 
 - **Offline AI Assistance**: Run language models directly on your device without internet connectivity.
