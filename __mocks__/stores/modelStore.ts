@@ -7,7 +7,7 @@ export const mockModelStore = {
   useAutoRelease: true,
   useMetal: false,
   n_gpu_layers: 50,
-  activeModel: null,
+  activeModelId: undefined as string | undefined,
   setNContext: jest.fn(),
   updateUseAutoRelease: jest.fn(),
   updateUseMetal: jest.fn(),
@@ -15,11 +15,13 @@ export const mockModelStore = {
   refreshDownloadStatuses: jest.fn(),
   addLocalModel: jest.fn(),
   resetModels: jest.fn(),
-  //initContext: jest.fn().mockResolvedValue(undefined),
   initContext: jest.fn().mockResolvedValue(Promise.resolve()),
   checkSpaceAndDownload: jest.fn(),
   getDownloadProgress: jest.fn(),
   manualReleaseContext: jest.fn(),
+  setActiveModel(modelId: string) {
+    this.activeModelId = modelId;
+  },
 };
 Object.defineProperty(mockModelStore, 'lastUsedModel', {
   get: jest.fn(() => undefined),
@@ -27,5 +29,13 @@ Object.defineProperty(mockModelStore, 'lastUsedModel', {
 });
 Object.defineProperty(mockModelStore, 'isDownloading', {
   get: jest.fn(() => () => false),
+  configurable: true,
+});
+Object.defineProperty(mockModelStore, 'activeModel', {
+  get: jest.fn(() =>
+    mockModelStore.models.find(
+      model => model.id === mockModelStore.activeModelId,
+    ),
+  ),
   configurable: true,
 });

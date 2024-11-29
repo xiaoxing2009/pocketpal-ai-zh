@@ -97,7 +97,7 @@ export const useChatSession = (
     currentMessageInfo.current = {createdAt, id};
 
     const chatMessages = [
-      ...(modelStore.activeModel?.chatTemplate?.systemPrompt
+      ...(modelStore.activeModel?.chatTemplate?.systemPrompt?.trim()
         ? [
             {
               role: 'system' as 'system',

@@ -2,6 +2,7 @@ import {LlamaContext} from '@pocketpalai/llama.rn';
 import {renderHook, act} from '@testing-library/react-native';
 
 import {textMessage} from '../../../jest/fixtures';
+import {mockBasicModel, modelsList} from '../../../jest/fixtures/models';
 
 import {useChatSession} from '../useChatSession';
 
@@ -9,6 +10,7 @@ import {chatSessionStore, modelStore} from '../../store';
 
 import {l10n} from '../../utils/l10n';
 import {assistant} from '../../utils/chat';
+import {ChatMessage} from '../../utils/types';
 
 const mockL10n = l10n.en;
 
@@ -25,8 +27,17 @@ beforeEach(() => {
     model: {},
   });
 });
+modelStore.models = modelsList;
+
+const applyChatTemplateSpy = jest
+  .spyOn(require('../../utils/chat'), 'applyChatTemplate')
+  .mockImplementation(async () => 'mocked prompt');
 
 describe('useChatSession', () => {
+  beforeEach(() => {
+    applyChatTemplateSpy.mockClear();
+  });
+
   it('should send a message and update the chat session', async () => {
     const {result} = renderHook(() =>
       useChatSession(
@@ -234,4 +245,63 @@ describe('useChatSession', () => {
     });
     expect(result.current.inferencing).toBe(false);
   });
+
+  test.each([
+    {systemPrompt: undefined, shouldInclude: false, description: 'undefined'},
+    {systemPrompt: '', shouldInclude: false, description: 'empty string'},
+    {systemPrompt: '   ', shouldInclude: false, description: 'whitespace-only'},
+    {
+      systemPrompt: 'You are a helpful assistant',
+      shouldInclude: true,
+      description: 'valid prompt',
+    },
+    {
+      systemPrompt: '  Trimmed prompt  ',
+      shouldInclude: true,
+      description: 'prompt with whitespace',
+    },
+  ])(
+    'should handle system prompt for $description',
+    async ({systemPrompt, shouldInclude}) => {
+      const testModel = {
+        ...mockBasicModel,
+        id: 'test-model',
+        chatTemplate: {...mockBasicModel.chatTemplate, systemPrompt},
+      };
+
+      modelStore.models = [testModel];
+      modelStore.setActiveModel(testModel.id);
+
+      const {result} = renderHook(() =>
+        useChatSession(
+          modelStore.context,
+          {current: null},
+          [],
+          textMessage.author,
+          mockAssistant,
+        ),
+      );
+
+      await act(async () => {
+        await result.current.handleSendPress(textMessage);
+      });
+
+      if (shouldInclude && systemPrompt) {
+        expect(applyChatTemplateSpy).toHaveBeenCalledWith(
+          expect.arrayContaining([
+            expect.objectContaining({
+              role: 'system',
+              content: systemPrompt,
+            }),
+          ]),
+          expect.any(Object),
+          expect.any(Object),
+        );
+      } else {
+        const call = applyChatTemplateSpy.mock.calls[0];
+        const messages = call[0] as ChatMessage[];
+        expect(messages.some(msg => msg.role === 'system')).toBe(false);
+      }
+    },
+  );
 });

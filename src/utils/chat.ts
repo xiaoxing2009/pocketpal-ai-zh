@@ -86,6 +86,7 @@ export const chatTemplates: Record<string, ChatTemplateConfig> = {
     bosToken: '',
     eosToken: '',
     chatTemplate: '',
+    systemPrompt: '',
   },
   danube3: {
     ...Templates.templates.danube2,
@@ -196,6 +197,7 @@ export function getHFDefaultSettings(hfModel: HuggingFaceModel): {
     //chatTemplate: hfModel.specs?.gguf?.chat_template ?? '',
     chatTemplate: '', // At the moment chatTemplate needs to be nunjucks, not jinja2. So by using empty string we force the use of gguf's chat template.
     addGenerationPrompt: true,
+    systemPrompt: '',
     name: 'custom',
   };
 
