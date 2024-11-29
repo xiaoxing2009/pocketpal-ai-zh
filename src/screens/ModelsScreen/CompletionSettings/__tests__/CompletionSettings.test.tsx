@@ -29,10 +29,6 @@ describe('CompletionSettings', () => {
     const topPSlider = getByTestId('top_p-slider');
     expect(topPSlider.props.value).toBe(0.95);
 
-    expect(getByTestId('tfs_z-slider')).toBeTruthy();
-    const tfsZSlider = getByTestId('tfs_z-slider');
-    expect(tfsZSlider.props.value).toBe(1);
-
     expect(getByTestId('min_p-slider')).toBeTruthy();
     const minPSlider = getByTestId('min_p-slider');
     expect(minPSlider.props.value).toBe(0.05);

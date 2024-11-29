@@ -96,7 +96,6 @@ export const CompletionSettings: React.FC<Props> = ({settings, onChange}) => {
           {renderSlider('temperature', 0, 1)}
           {renderSlider('top_k', 1, 128, 1)}
           {renderSlider('top_p', 0, 1)}
-          {renderSlider('tfs_z', 0, 2)}
           {renderSlider('min_p', 0, 1)}
           {renderSlider('xtc_threshold', 0, 1)}
           {renderSlider('xtc_probability', 0, 1)}

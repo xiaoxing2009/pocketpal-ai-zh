@@ -15,6 +15,7 @@ import {deepMerge, formatBytes, hasEnoughSpace, hfAsModel} from '../utils';
 import {
   getHFDefaultSettings,
   getLocalModelDefaultSettings,
+  stops,
 } from '../utils/chat';
 import {
   ChatTemplateConfig,
@@ -565,37 +566,7 @@ class ModelStore {
         },
       );
 
-      // Get stop token from the model and add to the list of stop tokens.
-      const eos_token_id = Number(
-        (ctx.model as any)?.metadata?.['tokenizer.ggml.eos_token_id'],
-      );
-
-      if (!isNaN(eos_token_id)) {
-        const detokenized = await ctx.detokenize([eos_token_id]);
-        const storeModel = this.models.find(m => m.id === model.id);
-        if (detokenized && storeModel) {
-          runInAction(() => {
-            // Helper function to check and update stop tokens
-            const updateStopTokens = (settings: CompletionParams) => {
-              if (!settings.stop) {
-                settings.stop = [detokenized];
-              } else if (!settings.stop.includes(detokenized)) {
-                settings.stop = [...settings.stop, detokenized];
-              }
-              // Create new object reference to ensure MobX picks up the change
-              return {...settings};
-            };
-
-            // Update both default and current completion settings
-            storeModel.defaultCompletionSettings = updateStopTokens(
-              storeModel.defaultCompletionSettings,
-            );
-            storeModel.completionSettings = updateStopTokens(
-              storeModel.completionSettings,
-            );
-          });
-        }
-      }
+      await this.updateModelStopTokens(ctx, model);
 
       runInAction(() => {
         this.context = ctx;
@@ -807,6 +778,78 @@ class ModelStore {
     return (
       (this.context?.model as any)?.metadata?.['general.name'] ?? 'Chat Page'
     );
+  }
+
+  /**
+   * Updates stop tokens for a model based on its context and chat template
+   * @param ctx - The LlamaContext instance
+   * @param model - App model to update stop tokens for
+   */
+  private async updateModelStopTokens(ctx: LlamaContext, model: Model) {
+    const storeModel = this.models.find(m => m.id === model.id);
+    if (!storeModel) {
+      return;
+    }
+
+    const stopTokens: string[] = [];
+
+    try {
+      // Get EOS token from model metadata
+      const eos_token_id = Number(
+        (ctx.model as any)?.metadata?.['tokenizer.ggml.eos_token_id'],
+      );
+
+      if (!isNaN(eos_token_id)) {
+        const detokenized = await ctx.detokenize([eos_token_id]);
+        if (detokenized) {
+          stopTokens.push(detokenized);
+        }
+      }
+
+      // Add relevant stop tokens from chat templates
+      // First check model's custom chat template.
+      const template = storeModel.chatTemplate?.chatTemplate;
+      console.log('template: ', template);
+      if (template) {
+        const templateStops = stops.filter(stop => template.includes(stop));
+        stopTokens.push(...templateStops);
+      }
+
+      // Then check context's chat template
+      const ctxtTemplate = (ctx.model as any)?.metadata?.[
+        'tokenizer.chat_template'
+      ];
+      console.log('ctxtTemplate: ', ctxtTemplate);
+      if (ctxtTemplate) {
+        const contextStops = stops.filter(stop => ctxtTemplate.includes(stop));
+        stopTokens.push(...contextStops);
+      }
+
+      console.log('stopTokens: ', stopTokens);
+      // Only update if we found stop tokens
+      if (stopTokens.length > 0) {
+        runInAction(() => {
+          // Helper function to check and update stop tokens
+          const updateStopTokens = (settings: CompletionParams) => {
+            const uniqueStops = Array.from(
+              new Set([...(settings.stop || []), ...stopTokens]),
+            ).filter(Boolean); // Remove any null/undefined/empty values
+            return {...settings, stop: uniqueStops};
+          };
+
+          // Update both default and current completion settings
+          storeModel.defaultCompletionSettings = updateStopTokens(
+            storeModel.defaultCompletionSettings,
+          );
+          storeModel.completionSettings = updateStopTokens(
+            storeModel.completionSettings,
+          );
+        });
+      }
+    } catch (error) {
+      console.error('Error updating model stop tokens:', error);
+      // Continue execution - stop token update is not critical
+    }
   }
 }
 

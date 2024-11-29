@@ -218,7 +218,6 @@ export const defaultCompletionParams: CompletionParams = {
   temperature: 0.7, // The randomness of the generated text.
   top_k: 40, // Limit the next token selection to the K most probable tokens.
   top_p: 0.95, // Limit the next token selection to a subset of tokens with a cumulative probability above a threshold P.
-  tfs_z: 1.0, //Enable tail free sampling with parameter z. Default: `1.0`, which is disabled.
   min_p: 0.05, //The minimum probability for a token to be considered, relative to the probability of the most likely token.
   xtc_threshold: 0.1, // Sets a minimum probability threshold for tokens to be removed.
   xtc_probability: 0.0, // Sets the chance for token removal (checked once on sampler start)
@@ -236,3 +235,15 @@ export const defaultCompletionParams: CompletionParams = {
   stop: ['</s>'],
   // emit_partial_completion: true, // This is not used in the current version of llama.rn
 };
+
+export const stops = [
+  '</s>',
+  '<|end|>',
+  '<|eot_id|>',
+  '<|end_of_text|>',
+  '<|im_end|>',
+  '<|EOT|>',
+  '<|END_OF_TURN_TOKEN|>',
+  '<|end_of_turn|>',
+  '<|endoftext|>',
+];
