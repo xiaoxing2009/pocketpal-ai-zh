@@ -7,3 +7,8 @@ ruby "3.2.3"
 # bound in the template on Cocoapods with next React Native release.
 gem 'cocoapods', '>= 1.13', '< 1.15'
 gem 'activesupport', '>= 6.1.7.5', '< 7.1.0'
+
+# Fastlane
+gem "fastlane"
+gem "fastlane-plugin-versioning"
+gem 'fastlane-plugin-versioning_android'
