@@ -552,12 +552,18 @@ class ModelStore {
       this.loadingModel = model;
     });
     try {
-      const ctx = await initLlama({
-        model: filePath,
-        use_mlock: true,
-        n_ctx: this.n_context,
-        n_gpu_layers: this.useMetal ? this.n_gpu_layers : 0, // Set as needed, 0 for no GPU // TODO ggml-metal.metal
-      });
+      const ctx = await initLlama(
+        {
+          model: filePath,
+          use_mlock: true,
+          n_ctx: this.n_context,
+          n_gpu_layers: this.useMetal ? this.n_gpu_layers : 0, // Set as needed, 0 for no GPU // TODO ggml-metal.metal
+          use_progress_callback: true,
+        },
+        (_progress: number) => {
+          //console.log('progress: ', _progress);
+        },
+      );
 
       // Get stop token from the model and add to the list of stop tokens.
       const eos_token_id = Number(

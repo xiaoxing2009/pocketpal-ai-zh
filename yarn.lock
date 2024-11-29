@@ -1738,10 +1738,10 @@
   resolved "https://registry.yarnpkg.com/@pkgjs/parseargs/-/parseargs-0.11.0.tgz#a77ea742fab25775145434eb1d2328cf5013ac33"
   integrity sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==
 
-"@pocketpalai/llama.rn@^0.3.12":
-  version "0.3.12"
-  resolved "https://registry.yarnpkg.com/@pocketpalai/llama.rn/-/llama.rn-0.3.12.tgz#378bdff95b87a49eccaac2bef368c5ed4c1511e8"
-  integrity sha512-1nEwiiXlfA5M1JOeokhtXe1jC2mxyNKD5l973Q8cnT67BwDJjsAPQtozqXC17CaxjLiuSfD42ypf1qYf4KMyCg==
+"@pocketpalai/llama.rn@0.4.3-1":
+  version "0.4.3-1"
+  resolved "https://registry.yarnpkg.com/@pocketpalai/llama.rn/-/llama.rn-0.4.3-1.tgz#e8e965b55effd9071f900b7dac25396fff9b34b9"
+  integrity sha512-7L7gou7m91s3fAP9jlKf17De86XRyLUSEw1RTopmSQKuengZHxWcgMESCLIT5y6/u69IzlM6DVjrQUsBb0Om9A==
 
 "@react-native-async-storage/async-storage@^1.23.1":
   version "1.24.0"
