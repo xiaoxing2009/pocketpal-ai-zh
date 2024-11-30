@@ -1,10 +1,6 @@
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  card: {},
   row: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -51,5 +47,15 @@ export const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     marginRight: 8,
+  },
+  stopWordsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 8,
+  },
+  stopChip: {
+    marginRight: 4,
+    marginBottom: 4,
   },
 });

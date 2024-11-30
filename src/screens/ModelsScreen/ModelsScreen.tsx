@@ -1,5 +1,11 @@
 import React, {useState, useMemo, useContext} from 'react';
-import {View, FlatList, RefreshControl, Platform, Alert} from 'react-native';
+import {
+  FlatList,
+  RefreshControl,
+  Platform,
+  Alert,
+  KeyboardAvoidingView,
+} from 'react-native';
 
 import {toJS} from 'mobx';
 import {v4 as uuidv4} from 'uuid';
@@ -8,7 +14,7 @@ import 'react-native-get-random-values';
 import {observer} from 'mobx-react-lite';
 import DocumentPicker from 'react-native-document-picker';
 
-import {useTheme} from '../../hooks';
+import {useTheme, useMoveScroll} from '../../hooks';
 
 import {styles} from './styles';
 import {FABGroup} from './FABGroup';
@@ -164,6 +170,8 @@ export const ModelsScreen: React.FC = observer(() => {
     uiStore.setValue('modelsScreen', 'expandedGroups', updatedExpandedGroups);
   };
 
+  const {scrollRef, moveScrollToDown} = useMoveScroll();
+
   const renderGroupHeader = ({item: group}) => {
     const isExpanded = expandedGroups[group.type];
     return (
@@ -175,7 +183,16 @@ export const ModelsScreen: React.FC = observer(() => {
           data={group.items}
           keyExtractor={subItem => subItem.id}
           renderItem={({item: subItem}) => (
-            <ModelCard model={subItem} activeModelId={activeModelId} />
+            <ModelCard
+              model={subItem}
+              activeModelId={activeModelId}
+              onFocus={() => {
+                if (Platform.OS === 'ios') {
+                  // Workaround for multiline input text not avoiding the keyboard.
+                  moveScrollToDown();
+                }
+              }}
+            />
           )}
         />
       </ModelAccordion>
@@ -183,7 +200,16 @@ export const ModelsScreen: React.FC = observer(() => {
   };
 
   const renderItem = ({item}) => (
-    <ModelCard model={item} activeModelId={activeModelId} />
+    <ModelCard
+      model={item}
+      activeModelId={activeModelId}
+      onFocus={() => {
+        if (Platform.OS === 'ios') {
+          // Workaround for multiline input text not avoiding the keyboard.
+          moveScrollToDown();
+        }
+      }}
+    />
   );
 
   const flatListModels = Object.keys(groupedModels)
@@ -194,10 +220,16 @@ export const ModelsScreen: React.FC = observer(() => {
     .filter(group => group.items.length > 0);
 
   return (
-    <View style={[styles.container, {backgroundColor: colors.surface}]}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 80}
+      style={[styles.container, {backgroundColor: colors.surface}]}>
       <FlatList
+        ref={scrollRef}
         testID="flat-list"
-        contentContainerStyle={styles.listContainer} // Ensure padding for last card
+        keyboardDismissMode="on-drag"
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={styles.listContainer}
         data={
           filters.includes('grouped') ? flatListModels : filteredAndSortedModels
         }
@@ -225,6 +257,6 @@ export const ModelsScreen: React.FC = observer(() => {
         onAddHFModel={() => setHFSearchVisible(true)}
         onAddLocalModel={handleAddLocalModel}
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 });

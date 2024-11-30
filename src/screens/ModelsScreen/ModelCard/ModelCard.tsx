@@ -33,10 +33,11 @@ type ChatScreenNavigationProp = DrawerNavigationProp<RootDrawerParamList>;
 interface ModelCardProps {
   model: Model;
   activeModelId?: string;
+  onFocus?: () => void;
 }
 
 export const ModelCard: React.FC<ModelCardProps> = observer(
-  ({model, activeModelId}) => {
+  ({model, activeModelId, onFocus}) => {
     const l10n = React.useContext(L10nContext);
     const {colors} = useTheme();
     const navigation = useNavigation<ChatScreenNavigationProp>();
@@ -315,6 +316,9 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
                   isActive={isActiveModel}
                   onChange={handleSettingsUpdate}
                   onCompletionSettingsChange={handleCompletionSettingsUpdate}
+                  onFocus={() => {
+                    onFocus && onFocus();
+                  }}
                 />
               )}
             </View>

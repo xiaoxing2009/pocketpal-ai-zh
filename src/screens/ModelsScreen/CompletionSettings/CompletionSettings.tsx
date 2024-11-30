@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {ScrollView, View} from 'react-native';
+import {View} from 'react-native';
 
 import {CompletionParams} from '@pocketpalai/llama.rn';
 import Slider from '@react-native-community/slider';
@@ -16,6 +16,7 @@ interface Props {
 
 export const CompletionSettings: React.FC<Props> = ({settings, onChange}) => {
   const [localSliderValues, setLocalSliderValues] = useState({});
+  const [newStopWord, setNewStopWord] = useState('');
   const {colors} = useTheme();
 
   const handleOnChange = (name, value) => {
@@ -88,64 +89,83 @@ export const CompletionSettings: React.FC<Props> = ({settings, onChange}) => {
     </View>
   );
 
-  return (
-    <ScrollView style={styles.container}>
-      <View style={styles.card}>
-        <Card.Content>
-          {renderIntegerInput('n_predict', 0, 2048)}
-          {renderSlider('temperature', 0, 1)}
-          {renderSlider('top_k', 1, 128, 1)}
-          {renderSlider('top_p', 0, 1)}
-          {renderSlider('min_p', 0, 1)}
-          {renderSlider('xtc_threshold', 0, 1)}
-          {renderSlider('xtc_probability', 0, 1)}
-          {renderSlider('typical_p', 0, 2)}
-          {renderSlider('penalty_last_n', 0, 256, 1)}
-          {renderSlider('penalty_repeat', 0, 2)}
-          {renderSlider('penalty_freq', 0, 2)}
-          {renderSlider('penalty_present', 0, 2)}
-          <Divider style={styles.divider} />
-          <View style={styles.settingItem}>
-            <Text style={styles.settingLabel}>mirostat</Text>
-            <View style={styles.chipContainer}>
-              {[0, 1, 2].map(value => (
-                <Chip
-                  key={value}
-                  selected={settings.mirostat === value}
-                  onPress={() => onChange('mirostat', value)}
-                  style={styles.chip}>
-                  {value.toString()}
-                </Chip>
-              ))}
-            </View>
-          </View>
-          {renderSlider('mirostat_tau', 0, 10, 1)}
-          {renderSlider('mirostat_eta', 0, 1)}
-          {renderSwitch('penalize_nl')}
-          {renderIntegerInput('seed', 0, Number.MAX_SAFE_INTEGER)}
-          {renderIntegerInput('n_probs', 0, 100)}
-          <View style={styles.settingItem}>
-            <View style={styles.stopLabel}>
-              <Text style={styles.settingLabel}>stop</Text>
-              <Text>(comma separated)</Text>
-            </View>
-            <TextInput
-              value={settings.stop?.join(', ')}
-              onChangeText={value =>
-                onChange(
-                  'stop',
-                  value
-                    .split(',')
-                    .map(s => s.trim())
-                    .filter(s => s.length > 0),
-                )
-              }
-              style={styles.textInput}
-              testID="stop-input"
-            />
-          </View>
-        </Card.Content>
+  const renderStopWords = () => (
+    <View style={styles.settingItem}>
+      <View style={styles.stopLabel}>
+        <Text style={styles.settingLabel}>stop</Text>
       </View>
-    </ScrollView>
+
+      {/* Display existing stop words as chips */}
+      <View style={styles.stopWordsContainer}>
+        {(settings.stop ?? []).map((word, index) => (
+          <Chip
+            key={index}
+            onClose={() => {
+              const newStops = (settings.stop ?? []).filter(
+                (_, i) => i !== index,
+              );
+              onChange('stop', newStops);
+            }}
+            style={styles.stopChip}>
+            {word}
+          </Chip>
+        ))}
+      </View>
+
+      {/* Input for new stop words */}
+      <TextInput
+        value={newStopWord}
+        placeholder="Add new stop word"
+        onChangeText={setNewStopWord}
+        onSubmitEditing={() => {
+          if (newStopWord.trim()) {
+            onChange('stop', [...(settings.stop ?? []), newStopWord.trim()]);
+            setNewStopWord('');
+          }
+        }}
+        style={styles.textInput}
+        testID="stop-input"
+      />
+    </View>
+  );
+
+  return (
+    <View>
+      <Card.Content>
+        {renderIntegerInput('n_predict', 0, 2048)}
+        {renderSlider('temperature', 0, 1)}
+        {renderSlider('top_k', 1, 128, 1)}
+        {renderSlider('top_p', 0, 1)}
+        {renderSlider('min_p', 0, 1)}
+        {renderSlider('xtc_threshold', 0, 1)}
+        {renderSlider('xtc_probability', 0, 1)}
+        {renderSlider('typical_p', 0, 2)}
+        {renderSlider('penalty_last_n', 0, 256, 1)}
+        {renderSlider('penalty_repeat', 0, 2)}
+        {renderSlider('penalty_freq', 0, 2)}
+        {renderSlider('penalty_present', 0, 2)}
+        <Divider style={styles.divider} />
+        <View style={styles.settingItem}>
+          <Text style={styles.settingLabel}>mirostat</Text>
+          <View style={styles.chipContainer}>
+            {[0, 1, 2].map(value => (
+              <Chip
+                key={value}
+                selected={settings.mirostat === value}
+                onPress={() => onChange('mirostat', value)}
+                style={styles.chip}>
+                {value.toString()}
+              </Chip>
+            ))}
+          </View>
+        </View>
+        {renderSlider('mirostat_tau', 0, 10, 1)}
+        {renderSlider('mirostat_eta', 0, 1)}
+        {renderSwitch('penalize_nl')}
+        {renderIntegerInput('seed', 0, Number.MAX_SAFE_INTEGER)}
+        {renderIntegerInput('n_probs', 0, 100)}
+        {renderStopWords()}
+      </Card.Content>
+    </View>
   );
 };
