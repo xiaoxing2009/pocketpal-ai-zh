@@ -88,7 +88,30 @@ jobs:
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
           create_credentials_file: true
 
-      # Step 10: Build and upload Android app to Alpha track
+      # Step 10: Build Release APK
+      - name: Build Release APK
+        working-directory: android
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          ./gradlew assembleRelease
+
+      # Step 11: Create GitHub Release with APK
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: android/app/build/outputs/apk/release/app-release.apk
+          tag_name: "v$(cat .version)"
+          name: "Release v$(cat .version)"
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Step 12: Build and upload Android app to Alpha track
       - name: Build and upload Android app
         working-directory: android
         env:
