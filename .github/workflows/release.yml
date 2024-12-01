@@ -66,13 +66,14 @@ jobs:
       # Step 7: Commit and push version changes
       - name: Commit and push version changes
         run: |
+          echo "VERSION=$(cat .version)" >> $GITHUB_ENV
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           git add .version package.json android/app/build.gradle ios/PocketPal.xcodeproj/project.pbxproj
-          git commit -m "chore(release): bump version to $(cat .version)"
+          git commit -m "chore(release): bump version to ${{ env.VERSION }}"
           git push
-          git tag "v$(cat .version)"
-          git push origin "v$(cat .version)"
+          git tag "v${{ env.VERSION }}"
+          git push origin "v${{ env.VERSION }}"
 
       # Step 8: Set up Android Keystore
       - name: Set up Android Keystore
@@ -108,8 +109,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: android/app/build/outputs/apk/release/app-release.apk
-          tag_name: "v$(cat .version)"
-          name: "Release v$(cat .version)"
+          tag_name: "v${{ env.VERSION }}"
+          name: "Release v${{ env.VERSION }}"
           draft: false
           prerelease: false
           generate_release_notes: true
