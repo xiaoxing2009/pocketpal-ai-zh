@@ -7,7 +7,7 @@ platform :android do
     
     # Build APK for GitHub Release
     gradle(
-      task: "assembleRelease",
+      task: "assemble",
       build_type: "Release",
       properties: {
         "android.injected.signing.store.file" => File.join(android_dir, "app/pocketpal-release-key.keystore"),
@@ -19,7 +19,7 @@ platform :android do
     
     # Build Bundle for Play Store
     gradle(
-      task: "bundleRelease",
+      task: "bundle",
       build_type: "Release",
       properties: {
         "android.injected.signing.store.file" => File.join(android_dir, "app/pocketpal-release-key.keystore"),
