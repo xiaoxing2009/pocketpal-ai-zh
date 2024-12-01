@@ -78,7 +78,7 @@ jobs:
       - name: Set up Android Keystore
         working-directory: android
         run: |
-          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > keystore.jks
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > app/pocketpal-release-key.keystore
 
       # Step 9: Authenticate to Google Cloud
       - name: Authenticate to Google Cloud
