@@ -8,6 +8,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   # Job for linting, type checking, unit testing
   build-and-test:
