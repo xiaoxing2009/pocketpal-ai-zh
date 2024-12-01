@@ -89,14 +89,19 @@ jobs:
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
           create_credentials_file: true
 
-      # Step 10: Build Release APK
-      - name: Build Release APK
+      # Step 10: Build and upload Android app to Alpha track (includes building APK and Bundle)
+      - name: Build and upload Android app
         working-directory: android
         env:
-          APP_RELEASE_STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          APP_RELEASE_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          GRADLE_USER_HOME: ${{ runner.temp }}/.gradle
+          #  GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }} # This is not supported by fastlane, we need to replace it with PLAY_STORE_JSON_KEY in the future.
+          PLAY_STORE_JSON_KEY: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
         run: |
-          ./gradlew assembleRelease
+          echo "$PLAY_STORE_JSON_KEY" > play-store-key.json
+          bundle exec fastlane release_android_alpha
 
       # Step 11: Create GitHub Release with APK
       - name: Create GitHub Release
@@ -110,20 +115,6 @@ jobs:
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # Step 12: Build and upload Android app to Alpha track
-      - name: Build and upload Android app
-        working-directory: android
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-          GRADLE_USER_HOME: ${{ runner.temp }}/.gradle
-          #  GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }} # This is not supported by fastlane, we need to replace it with PLAY_STORE_JSON_KEY in the future.
-          PLAY_STORE_JSON_KEY: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
-        run: |
-          echo "$PLAY_STORE_JSON_KEY" > play-store-key.json
-          bundle exec fastlane release_android_alpha
 
   # Job 2: iOS Build and Upload (runs on macOS)
   build_ios:
