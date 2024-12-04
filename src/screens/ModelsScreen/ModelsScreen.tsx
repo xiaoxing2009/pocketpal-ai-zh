@@ -9,7 +9,7 @@ import {
 
 import {toJS} from 'mobx';
 import {v4 as uuidv4} from 'uuid';
-import RNFS from 'react-native-fs';
+import * as RNFS from '@dr.pogodin/react-native-fs';
 import 'react-native-get-random-values';
 import {observer} from 'mobx-react-lite';
 import DocumentPicker from 'react-native-document-picker';

@@ -5,6 +5,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   TextInput,
+  ScrollView,
 } from 'react-native';
 
 import {debounce} from 'lodash';
@@ -70,11 +71,11 @@ export const SettingsScreen: React.FC = observer(() => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={handleOutsidePress}>
-      <SafeAreaView
-        style={[styles.safeArea, {backgroundColor: colors.surface}]}
-        edges={['bottom']}>
-        <View style={styles.container}>
+    <SafeAreaView
+      style={[styles.safeArea, {backgroundColor: colors.surface}]}
+      edges={['bottom']}>
+      <TouchableWithoutFeedback onPress={handleOutsidePress}>
+        <ScrollView contentContainerStyle={styles.container}>
           {/* Model Settings Section */}
           <Card style={styles.card}>
             <Card.Title title={l10n.modelSettingsTitle} />
@@ -201,6 +202,34 @@ export const SettingsScreen: React.FC = observer(() => {
                   color={colors.primary}
                 />
               </View>
+
+              {Platform.OS === 'ios' && (
+                <View style={styles.settingItemContainer}>
+                  <View style={styles.switchContainer}>
+                    <View style={styles.textContainer}>
+                      <Text variant="titleMedium" style={styles.textLabel}>
+                        {l10n.iOSBackgroundDownload}
+                      </Text>
+                      <Text
+                        variant="labelSmall"
+                        style={[
+                          styles.textDescription,
+                          {color: colors.outline},
+                        ]}>
+                        {l10n.iOSBackgroundDownloadDescription}
+                      </Text>
+                    </View>
+                    <Switch
+                      testID="ios-background-download-switch"
+                      value={uiStore.iOSBackgroundDownloading}
+                      onValueChange={value =>
+                        uiStore.setiOSBackgroundDownloading(value)
+                      }
+                      color={colors.primary}
+                    />
+                  </View>
+                </View>
+              )}
             </Card.Content>
           </Card>
 
@@ -256,8 +285,8 @@ export const SettingsScreen: React.FC = observer(() => {
               </View>
             </Card.Content>
           </Card>
-        </View>
-      </SafeAreaView>
-    </TouchableWithoutFeedback>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </SafeAreaView>
   );
 });

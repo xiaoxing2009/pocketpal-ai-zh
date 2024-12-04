@@ -1,5 +1,5 @@
 import {makeAutoObservable, runInAction} from 'mobx';
-import RNFS from 'react-native-fs';
+import * as RNFS from '@dr.pogodin/react-native-fs';
 import {format, isToday, isYesterday} from 'date-fns';
 import {MessageType} from '../utils/types';
 import {LlamaContext} from '@pocketpalai/llama.rn';

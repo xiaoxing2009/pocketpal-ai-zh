@@ -37,6 +37,7 @@ module.exports = {
       '<rootDir>/__mocks__/external/react-native-device-info.js',
     'react-native-document-picker':
       '<rootDir>/__mocks__/external/react-native-document-picker.js',
-    'react-native-fs': '<rootDir>/__mocks__/external/react-native-fs.js',
+    '@dr.pogodin/react-native-fs':
+      '<rootDir>/__mocks__/external/@dr.pogodin/react-native-fs.js',
   },
 };

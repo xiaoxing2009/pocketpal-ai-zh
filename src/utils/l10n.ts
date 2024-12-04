@@ -65,6 +65,9 @@ export const l10n = {
     menuTitleDownloaded: 'Downloaded Models',
     menuTitleGrouped: 'Group Models',
     menuTitleReset: 'Reset Models List',
+    iOSBackgroundDownload: 'Background Download',
+    iOSBackgroundDownloadDescription:
+      'Allow downloads to continue in the background (it will be slower).',
   },
   es: {
     attachmentButtonAccessibilityLabel: 'Enviar multimedia',
@@ -136,6 +139,9 @@ export const l10n = {
     menuTitleDownloaded: 'Modelos Descargados',
     menuTitleGrouped: 'Modelos Agrupados',
     menuTitleReset: 'Reiniciar Lista de Modelos',
+    iOSBackgroundDownload: 'Descarga en segundo plano',
+    iOSBackgroundDownloadDescription:
+      'Permitir que las descargas continúen en segundo plano (será más lento).',
   },
   ko: {
     attachmentButtonAccessibilityLabel: '미디어 보내기',
@@ -203,6 +209,9 @@ export const l10n = {
     menuTitleDownloaded: '다운로드된 모델',
     menuTitleGrouped: '그룹 모델',
     menuTitleReset: '모델 목록 재설정',
+    iOSBackgroundDownload: '백그라운드 다운로드',
+    iOSBackgroundDownloadDescription:
+      '백그라운드에서 다운로드가 계속되도록 허용합니다 (속도가 느려질 수 있습니다).',
   },
   pl: {
     attachmentButtonAccessibilityLabel: 'Wyślij multimedia',
@@ -270,6 +279,9 @@ export const l10n = {
     menuTitleDownloaded: 'Pobrane Modele',
     menuTitleGrouped: 'Modele Grupowe',
     menuTitleReset: 'Reset Lista Modeli',
+    iOSBackgroundDownload: 'Pobieranie w tle',
+    iOSBackgroundDownloadDescription:
+      'Zezwól na kontynuowanie pobierania w tle (będzie wolniejsze).',
   },
   pt: {
     attachmentButtonAccessibilityLabel: 'Envia mídia',
@@ -312,7 +324,7 @@ export const l10n = {
     confirmReset: 'Confirmar Reiniciar',
     modelSettingsTitle: 'Configuração do Modelo',
     autoOffloadLoad: 'Auto Offload/Load',
-    autoOffloadLoadDescription: 'Odpowiedz modelu, gdy aplikacja jest w tle.',
+    autoOffloadLoadDescription: 'Odpowiedz modelu, gdy aplikacja é w tle.',
     metal: 'Metal',
     metalDescription: 'API sprzętu akcelerowanego przez Apple.',
     layersOnGPU: 'Warstwy w GPU: {{gpuLayers}}',
@@ -337,6 +349,9 @@ export const l10n = {
     menuTitleDownloaded: 'Pobrane Modele',
     menuTitleGrouped: 'Modele Grupowe',
     menuTitleReset: 'Reiniciar Lista de Modelos',
+    iOSBackgroundDownload: 'Download em segundo plano',
+    iOSBackgroundDownloadDescription:
+      'Permitir que os downloads continuem em segundo plano (será mais lento).',
   },
   ru: {
     attachmentButtonAccessibilityLabel: 'Отправить медиа',
@@ -408,6 +423,9 @@ export const l10n = {
     menuTitleDownloaded: 'Загруженные модели',
     menuTitleGrouped: 'Групповые модели',
     menuTitleReset: 'Сбросить список моделей',
+    iOSBackgroundDownload: 'Фоновая загрузка',
+    iOSBackgroundDownloadDescription:
+      'Разрешить загрузки в фоновом режиме (это будет медленнее).',
   },
   tr: {
     attachmentButtonAccessibilityLabel: 'Medya gönder',
@@ -475,6 +493,9 @@ export const l10n = {
     menuTitleDownloaded: 'İndirilen Modeller',
     menuTitleGrouped: 'Gruplandırılmış Modeller',
     menuTitleReset: 'Model Listesini Sıfırla',
+    iOSBackgroundDownload: 'Arka Plan İndirmesi',
+    iOSBackgroundDownloadDescription:
+      'İndirmelerin arka planda devam etmesine izin verin (daha yavaş olacaktır).',
   },
   uk: {
     attachmentButtonAccessibilityLabel: 'Надіслати медіа',
@@ -546,6 +567,9 @@ export const l10n = {
     menuTitleDownloaded: 'Завантажені моделі',
     menuTitleGrouped: 'Групові моделі',
     menuTitleReset: 'Скинути список моделей',
+    iOSBackgroundDownload: 'Фонове завантаження',
+    iOSBackgroundDownloadDescription:
+      'Дозволити завантаження у фоновому режимі (це буде повільніше).',
   },
   ca: {
     attachmentButtonAccessibilityLabel: 'Enviar multimèdia',
@@ -616,5 +640,8 @@ export const l10n = {
     menuTitleDownloaded: 'Models Descarregats',
     menuTitleGrouped: 'Models Agrupats',
     menuTitleReset: 'Reiniciar Llista de Models',
+    iOSBackgroundDownload: 'Descàrrega en segon pla',
+    iOSBackgroundDownloadDescription:
+      'Permet que les descàrregues continuïn en segon pla (serà més lent).',
   },
 };

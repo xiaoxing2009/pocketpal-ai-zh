@@ -1,7 +1,7 @@
 import React from 'react';
 import {Alert} from 'react-native';
 
-import RNFS from 'react-native-fs';
+import * as RNFS from '@dr.pogodin/react-native-fs';
 import DocumentPicker from 'react-native-document-picker';
 import {fireEvent, render, waitFor, act} from '../../../../jest/test-utils';
 

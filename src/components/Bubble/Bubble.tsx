@@ -45,7 +45,7 @@ export const Bubble = ({
     }
   };
 
-  const Container: React.ComponentClass<any> = false //copyable
+  const Container = false //copyable
     ? TouchableOpacity
     : View;
   return (

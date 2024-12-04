@@ -5,8 +5,12 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    flex: 1,
+    //flex: 1,
     padding: 10,
+  },
+  scrollViewContent: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
   },
   card: {
     marginVertical: 10,

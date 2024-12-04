@@ -20,6 +20,8 @@ class UIStore {
 
   displayMemUsage = false;
 
+  iOSBackgroundDownloading = false;
+
   constructor() {
     makeAutoObservable(this);
     makePersistable(this, {
@@ -29,6 +31,7 @@ class UIStore {
         'colorScheme',
         'autoNavigatetoChat',
         'displayMemUsage',
+        'iOSBackgroundDownloading',
       ], // Properties to persist
       storage: AsyncStorage,
     });
@@ -63,6 +66,12 @@ class UIStore {
   setDisplayMemUsage(value: boolean) {
     runInAction(() => {
       this.displayMemUsage = value;
+    });
+  }
+
+  setiOSBackgroundDownloading(value: boolean) {
+    runInAction(() => {
+      this.iOSBackgroundDownloading = value;
     });
   }
 }
