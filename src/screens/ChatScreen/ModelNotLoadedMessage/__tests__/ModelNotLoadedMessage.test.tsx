@@ -8,7 +8,7 @@ import {ModelNotLoadedMessage} from '../ModelNotLoadedMessage';
 import {modelStore} from '../../../../store';
 
 import {l10n} from '../../../../utils/l10n';
-import {basicModel} from '../../../../../jest/fixtures/models';
+import {basicModel, modelsList} from '../../../../../jest/fixtures/models';
 
 const Drawer = createDrawerNavigator();
 const mockNavigate = jest.fn();
@@ -37,13 +37,8 @@ const customRender = (ui, {...renderOptions} = {}) => {
 describe('ModelNotLoadedMessage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-
-    // When use Object.defineProperty, since it doesn't count as a mock function
-    // jest.clearAllMocks() won't affect it, hence the need to explicitly undefine it.
-    Object.defineProperty(modelStore, 'lastUsedModel', {
-      get: jest.fn(() => undefined),
-    });
-
+    modelStore.models = modelsList;
+    modelStore.lastUsedModelId = undefined;
     (modelStore.initContext as jest.Mock).mockReset();
   });
 
@@ -53,10 +48,7 @@ describe('ModelNotLoadedMessage', () => {
   });
 
   it('renders correctly when last used model exists', () => {
-    Object.defineProperty(modelStore, 'lastUsedModel', {
-      get: jest.fn(() => basicModel),
-    });
-
+    modelStore.lastUsedModelId = modelStore.models[0].id;
     const {getByText} = customRender(<ModelNotLoadedMessage />);
 
     expect(getByText(l10n.en.readyToChat)).toBeTruthy();
@@ -72,9 +64,7 @@ describe('ModelNotLoadedMessage', () => {
   });
 
   it('loads last used model when available', async () => {
-    Object.defineProperty(modelStore, 'lastUsedModel', {
-      get: jest.fn(() => basicModel),
-    });
+    modelStore.lastUsedModelId = basicModel.id;
     (modelStore.initContext as jest.Mock).mockResolvedValue(undefined);
 
     const {getByText} = customRender(<ModelNotLoadedMessage />);
@@ -87,9 +77,7 @@ describe('ModelNotLoadedMessage', () => {
   });
 
   it('handles model loading error correctly', async () => {
-    Object.defineProperty(modelStore, 'lastUsedModel', {
-      get: jest.fn(() => basicModel),
-    });
+    modelStore.lastUsedModelId = basicModel.id;
 
     const mockError = new Error('Failed to load model');
     (modelStore.initContext as jest.Mock).mockRejectedValue(mockError);
@@ -110,9 +98,7 @@ describe('ModelNotLoadedMessage', () => {
   });
 
   it('updates last used model state on mount', async () => {
-    Object.defineProperty(modelStore, 'lastUsedModel', {
-      get: jest.fn(() => basicModel),
-    });
+    modelStore.lastUsedModelId = basicModel.id;
 
     const {getByText} = customRender(<ModelNotLoadedMessage />);
 

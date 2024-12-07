@@ -297,7 +297,7 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
                 <ProgressBar
                   testID="download-progress-bar"
                   progress={modelStore.getDownloadProgress(model.id)}
-                  color={colors.accent}
+                  color={colors.tertiary}
                   style={styles.progressBar}
                 />
                 {model.downloadSpeed && (

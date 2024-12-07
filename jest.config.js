@@ -39,5 +39,7 @@ module.exports = {
       '<rootDir>/__mocks__/external/react-native-document-picker.js',
     '@dr.pogodin/react-native-fs':
       '<rootDir>/__mocks__/external/@dr.pogodin/react-native-fs.js',
+    'react-native-haptic-feedback':
+      '<rootDir>/__mocks__/external/react-native-haptic-feedback.js',
   },
 };

@@ -61,7 +61,7 @@ describe('chat', () => {
       },
     ];
     const onSendPress = jest.fn();
-    const {getByLabelText} = render(
+    const {getByLabelText, getByPlaceholderText} = render(
       <ChatView
         messages={messages}
         onSendPress={onSendPress}
@@ -69,6 +69,9 @@ describe('chat', () => {
         user={user}
       />,
     );
+    const textInput = getByPlaceholderText(l10n.en.inputPlaceholder);
+    fireEvent.changeText(textInput, 'text');
+
     const button = getByLabelText(l10n.en.sendButtonAccessibilityLabel);
     fireEvent.press(button);
     expect(onSendPress).toHaveBeenCalledWith({text: 'text', type: 'text'});

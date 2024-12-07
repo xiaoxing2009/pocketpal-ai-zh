@@ -1,7 +1,7 @@
 import {Platform, StyleSheet} from 'react-native';
 import {Theme} from '../../utils/types';
 
-export const styles = ({theme}: {theme: Theme}) =>
+export const createStyles = ({theme}: {theme: Theme}) =>
   StyleSheet.create({
     container: {
       backgroundColor: theme.colors.background,
@@ -39,8 +39,11 @@ export const styles = ({theme}: {theme: Theme}) =>
       height: 4,
     },
     keyboardAccessoryView: {
-      backgroundColor: theme.colors.onBackground,
+      backgroundColor: theme.colors.primary,
       borderTopLeftRadius: theme.borders.inputBorderRadius,
       borderTopRightRadius: theme.borders.inputBorderRadius,
+    },
+    menu: {
+      width: 170,
     },
   });

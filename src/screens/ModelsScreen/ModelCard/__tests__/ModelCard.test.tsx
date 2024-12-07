@@ -136,9 +136,8 @@ describe('ModelCard', () => {
       expect(queryByTestId('download-progress-bar')).toBeNull();
     });
 
-    Object.defineProperty(modelStore, 'isDownloading', {
-      get: jest.fn(() => () => true),
-    });
+    modelStore.downloadJobs.set(downloadingModel.id, true);
+
     rerender(<ModelCard model={downloadingModel} />);
 
     await waitFor(() => {

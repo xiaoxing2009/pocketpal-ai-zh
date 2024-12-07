@@ -11,9 +11,7 @@ import {modelStore} from '../../../../store';
 
 describe('ModelAccordion', () => {
   beforeEach(() => {
-    Object.defineProperty(modelStore, 'activeModel', {
-      get: jest.fn(() => undefined),
-    });
+    modelStore.activeModelId = undefined;
   });
 
   it('renders the accordion with correct title and children', () => {
@@ -79,18 +77,19 @@ describe('ModelAccordion', () => {
   });
 
   it('applies active group styles when activeModel matches group type', () => {
-    const group = {type: 'Model Group1'};
-    Object.defineProperty(modelStore, 'activeModel', {
-      get: jest.fn(() => ({type: 'Model Group1'})),
-    });
+    const activeModel = modelStore.models[0];
+    modelStore.activeModelId = activeModel.id;
 
     const {getByTestId} = render(
-      <ModelAccordion group={group} expanded={false} onPress={jest.fn()}>
+      <ModelAccordion
+        group={{type: activeModel.type}}
+        expanded={false}
+        onPress={jest.fn()}>
         <List.Item title="Child Item" />
       </ModelAccordion>,
     );
 
-    const accordion = getByTestId('model-accordion-Model Group1').parent;
+    const accordion = getByTestId(`model-accordion-${activeModel.type}`).parent;
 
     expect(accordion?.props.style).toEqual(
       // Wow, this is a mess.
@@ -106,17 +105,17 @@ describe('ModelAccordion', () => {
   });
 
   it('applies default theme styles when activeModel does not match group type', () => {
-    const group = {type: 'Model Group'};
-    Object.defineProperty(modelStore, 'activeModel', {
-      get: jest.fn(() => ({type: 'Different Group'})),
-    });
+    const group = {type: 'Model Group blah blah'};
+    modelStore.activeModelId = modelStore.models[0].id;
     const {getByTestId} = render(
       <ModelAccordion group={group} expanded={false} onPress={jest.fn()}>
         <List.Item title="Child Item" />
       </ModelAccordion>,
     );
 
-    const accordion = getByTestId('model-accordion-Model Group').parent;
+    const accordion = getByTestId(
+      'model-accordion-Model Group blah blah',
+    ).parent;
 
     expect(accordion?.props.style).toEqual(
       expect.arrayContaining([

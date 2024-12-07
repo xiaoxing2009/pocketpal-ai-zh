@@ -9,6 +9,7 @@ import {computed, makeAutoObservable, ObservableMap, runInAction} from 'mobx';
 import {CompletionParams, LlamaContext, initLlama} from '@pocketpalai/llama.rn';
 
 import {uiStore} from './UIStore';
+import {chatSessionStore} from './ChatSessionStore';
 import {defaultModels, MODEL_LIST_VERSION} from './defaultModels';
 import {deepMerge, formatBytes, hasEnoughSpace, hfAsModel} from '../utils';
 
@@ -45,6 +46,9 @@ class ModelStore {
   lastUsedModelId: string | undefined = undefined;
 
   MIN_CONTEXT_SIZE = 200;
+
+  inferencing: boolean = false;
+  isStreaming: boolean = false;
 
   constructor() {
     makeAutoObservable(this, {activeModel: computed});
@@ -593,6 +597,7 @@ class ModelStore {
 
   releaseContext = async () => {
     console.log('attempt to release');
+    chatSessionStore.exitEditMode();
     if (!this.context) {
       return Promise.resolve('No context to release');
     }
@@ -828,7 +833,6 @@ class ModelStore {
       const ctxtTemplate = (ctx.model as any)?.metadata?.[
         'tokenizer.chat_template'
       ];
-      console.log('ctxtTemplate: ', ctxtTemplate);
       if (ctxtTemplate) {
         const contextStops = stops.filter(stop => ctxtTemplate.includes(stop));
         stopTokens.push(...contextStops);
@@ -859,6 +863,24 @@ class ModelStore {
       console.error('Error updating model stop tokens:', error);
       // Continue execution - stop token update is not critical
     }
+  }
+
+  get availableModels(): Model[] {
+    return this.models.filter(
+      model =>
+        // Include models that are either local or downloaded
+        model.isLocal ||
+        model.origin === ModelOrigin.LOCAL ||
+        model.isDownloaded,
+    );
+  }
+
+  setInferencing(value: boolean) {
+    this.inferencing = value;
+  }
+
+  setIsStreaming(value: boolean) {
+    this.isStreaming = value;
   }
 }
 

@@ -5,7 +5,7 @@ import {ScrollView} from 'react-native';
 import {user} from '../../../../jest/fixtures';
 import {l10n} from '../../../utils/l10n';
 import {UserContext} from '../../../utils';
-import {Input} from '../Input';
+import {ChatInput} from '../ChatInput';
 
 const renderScrollable = () => <ScrollView />;
 
@@ -15,7 +15,7 @@ describe('input', () => {
     const onSendPress = jest.fn();
     const {getByPlaceholderText, getByLabelText} = render(
       <UserContext.Provider value={user}>
-        <Input
+        <ChatInput
           {...{
             onSendPress,
             sendButtonVisibilityMode: 'editing',
@@ -37,7 +37,7 @@ describe('input', () => {
     const onSendPress = jest.fn();
     const {getByPlaceholderText, getByLabelText} = render(
       <UserContext.Provider value={user}>
-        <Input
+        <ChatInput
           {...{
             onSendPress,
             renderScrollable,
@@ -61,7 +61,7 @@ describe('input', () => {
     const onChangeText = jest.fn(newValue => {
       rerender(
         <UserContext.Provider value={user}>
-          <Input
+          <ChatInput
             {...{
               onSendPress,
               renderScrollable,
@@ -74,7 +74,7 @@ describe('input', () => {
     });
     const {getByPlaceholderText, getByLabelText, rerender} = render(
       <UserContext.Provider value={user}>
-        <Input
+        <ChatInput
           {...{
             onSendPress,
             renderScrollable,
@@ -98,7 +98,7 @@ describe('input', () => {
     const onChangeText = jest.fn();
     const {getByPlaceholderText, getByLabelText} = render(
       <UserContext.Provider value={user}>
-        <Input
+        <ChatInput
           {...{
             onSendPress,
             renderScrollable,
@@ -122,7 +122,7 @@ describe('input', () => {
     const value = 'value';
     const {getByPlaceholderText, getByLabelText} = render(
       <UserContext.Provider value={user}>
-        <Input
+        <ChatInput
           {...{
             onSendPress,
             renderScrollable,
@@ -146,7 +146,7 @@ describe('input', () => {
     const defaultValue = 'defaultValue';
     const {getByPlaceholderText, getByLabelText} = render(
       <UserContext.Provider value={user}>
-        <Input
+        <ChatInput
           {...{
             onSendPress,
             renderScrollable,
@@ -172,7 +172,7 @@ describe('input', () => {
     const onSendPress = jest.fn();
     const {getByLabelText} = render(
       <UserContext.Provider value={user}>
-        <Input
+        <ChatInput
           {...{
             onAttachmentPress,
             onSendPress,
@@ -193,7 +193,7 @@ describe('input', () => {
     const onSendPress = jest.fn();
     const {getByTestId} = render(
       <UserContext.Provider value={user}>
-        <Input
+        <ChatInput
           {...{
             attachmentCircularActivityIndicatorProps: {
               color: 'white',

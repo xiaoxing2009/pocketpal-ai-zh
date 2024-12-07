@@ -175,11 +175,25 @@ describe('ChatScreen', () => {
       fireEvent.changeText(input, 'Hello, AI!');
     });
 
-    const sendButton = getByTestId('send-button');
-    fireEvent.press(sendButton);
+    await act(async () => {
+      const sendButton = getByTestId('send-button');
+      fireEvent.press(sendButton);
+      modelStore.setInferencing(true); // since mock doesn't really set inferencing
+    });
+
+    await waitFor(
+      () => {
+        expect(getByTestId('stop-button')).toBeTruthy();
+      },
+      {
+        timeout: 1000,
+      },
+    );
 
     const stopButton = getByTestId('stop-button');
-    fireEvent.press(stopButton);
+    await act(async () => {
+      fireEvent.press(stopButton);
+    });
 
     expect(modelStore.context?.stopCompletion).toHaveBeenCalled();
   });

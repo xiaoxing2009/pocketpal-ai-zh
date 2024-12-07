@@ -157,6 +157,7 @@ export const TextMessage = ({
       <MarkdownView
         markdownText={message.text.trim()}
         maxMessageWidth={messageWidth}
+        selectable={false}
       />
 
       {/*Platform.OS === 'ios' ? (

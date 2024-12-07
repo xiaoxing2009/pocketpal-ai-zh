@@ -3,6 +3,8 @@ import mockClipboard from '@react-native-clipboard/clipboard/jest/clipboard-mock
 
 import 'react-native-gesture-handler/jestSetup';
 
+jest.mock('react-native-haptic-feedback');
+
 // Mock react-native-reanimated
 //require('react-native-reanimated').setUpTests();
 jest.mock('react-native-reanimated', () => {

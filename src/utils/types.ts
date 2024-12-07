@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {ColorValue, ImageURISource, TextStyle} from 'react-native';
+import {ImageURISource, TextStyle} from 'react-native';
 
 import {MD3Theme} from 'react-native-paper';
 import {TemplateConfig} from 'chat-formatter';
@@ -131,35 +131,39 @@ export interface Size {
   width: number;
 }
 
-export interface Colors extends MD3Colors {
-  accent: string;
+export interface MD3BaseColors extends MD3Colors {
+  primary: string;
+  onPrimary: string;
+  primaryContainer: string;
+  onPrimaryContainer: string;
+  secondary: string;
+  onSecondary: string;
+  secondaryContainer: string;
+  onSecondaryContainer: string;
+  tertiary: string;
+  onTertiary: string;
+  tertiaryContainer: string;
+  onTertiaryContainer: string;
+  error: string;
+  onError: string;
+  errorContainer: string;
+  onErrorContainer: string;
+  background: string;
+  onBackground: string;
+  surface: string;
+  onSurface: string;
+  surfaceVariant: string;
+  onSurfaceVariant: string;
+  outline: string;
   outlineVariant: string;
-  receivedMessageDocumentIcon: string;
-  sentMessageDocumentIcon: string;
-  userAvatarImageBackground: string;
-  userAvatarNameColors: ColorValue[];
-  searchBarBackground: string;
-}
 
-export interface Typescale extends MD3Typescale {
-  dateDividerTextStyle?: TextStyle; // Optional custom styles
-  emptyChatPlaceholderTextStyle?: TextStyle;
-  inputTextStyle?: TextStyle;
-  receivedMessageBodyTextStyle?: TextStyle;
-  receivedMessageCaptionTextStyle?: TextStyle;
-  receivedMessageLinkDescriptionTextStyle?: TextStyle;
-  receivedMessageLinkTitleTextStyle?: TextStyle;
-  sentMessageBodyTextStyle?: TextStyle;
-  sentMessageCaptionTextStyle?: TextStyle;
-  sentMessageLinkDescriptionTextStyle?: TextStyle;
-  sentMessageLinkTitleTextStyle?: TextStyle;
-  userAvatarTextStyle?: TextStyle;
-  userNameTextStyle?: TextStyle;
-}
-
-export interface ThemeBorders {
-  inputBorderRadius: number;
-  messageBorderRadius: number;
+  // Additional MD3 required colors
+  surfaceDisabled: string;
+  onSurfaceDisabled: string;
+  inverseSurface: string;
+  inverseOnSurface: string;
+  inversePrimary: string;
+  scrim: string;
 }
 
 export interface ThemeIcons {
@@ -172,15 +176,71 @@ export interface ThemeIcons {
   sendingIcon?: () => React.ReactNode;
 }
 
+export interface SemanticColors {
+  // Surface variants
+  surfaceContainerHighest: string;
+  surfaceContainerHigh: string;
+  surfaceContainer: string;
+  surfaceContainerLow: string;
+  surfaceContainerLowest: string;
+  surfaceDim: string;
+  surfaceBright: string;
+
+  // Interactive states
+  stateLayerOpacity: number;
+  hoverStateOpacity: number;
+  pressedStateOpacity: number;
+  draggedStateOpacity: number;
+  focusStateOpacity: number;
+
+  // Menu specific
+  menuBackground: string;
+  menuBackgroundDimmed: string;
+  menuBackgroundActive: string;
+  menuSeparator: string;
+  menuGroupSeparator: string;
+  menuText: string;
+  menuDangerText: string;
+
+  // Message specific
+  authorBubbleBackground: string;
+  receivedMessageDocumentIcon: string;
+  sentMessageDocumentIcon: string;
+  userAvatarImageBackground: string;
+  userAvatarNameColors: string[];
+  searchBarBackground: string;
+}
+
+export interface ThemeBorders {
+  inputBorderRadius: number;
+  messageBorderRadius: number;
+}
+
+export interface ThemeFonts extends MD3Typescale {
+  dateDividerTextStyle: TextStyle;
+  emptyChatPlaceholderTextStyle: TextStyle;
+  inputTextStyle: TextStyle;
+  receivedMessageBodyTextStyle: TextStyle;
+  receivedMessageCaptionTextStyle: TextStyle;
+  receivedMessageLinkDescriptionTextStyle: TextStyle;
+  receivedMessageLinkTitleTextStyle: TextStyle;
+  sentMessageBodyTextStyle: TextStyle;
+  sentMessageCaptionTextStyle: TextStyle;
+  sentMessageLinkDescriptionTextStyle: TextStyle;
+  sentMessageLinkTitleTextStyle: TextStyle;
+  userAvatarTextStyle: TextStyle;
+  userNameTextStyle: TextStyle;
+}
+
 export interface ThemeInsets {
   messageInsetsHorizontal: number;
   messageInsetsVertical: number;
 }
 
 export interface Theme extends MD3Theme {
-  colors: Colors;
-  fonts: Typescale;
+  colors: MD3BaseColors & SemanticColors;
   borders: ThemeBorders;
+  fonts: ThemeFonts;
   insets: ThemeInsets;
   icons?: ThemeIcons;
 }

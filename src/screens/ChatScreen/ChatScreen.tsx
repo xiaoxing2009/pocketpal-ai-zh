@@ -19,52 +19,56 @@ const renderBubble = ({
   child,
   message,
   nextMessageInGroup,
+  scale,
 }: {
   child: ReactNode;
   message: MessageType.Any;
   nextMessageInGroup: boolean;
+  scale?: any;
 }) => (
   <Bubble
     child={child}
     message={message}
     nextMessageInGroup={nextMessageInGroup}
+    scale={scale}
   />
 );
 
 export const ChatScreen: React.FC = observer(() => {
-  const context = modelStore.context;
   const currentMessageInfo = useRef<{createdAt: number; id: string} | null>(
     null,
   );
   const l10n = React.useContext(L10nContext);
-  const messages = chatSessionStore.currentSessionMessages;
 
-  const {handleSendPress, handleStopPress, inferencing, isStreaming} =
-    useChatSession(context, currentMessageInfo, messages, user, assistant);
+  const {handleSendPress, handleStopPress} = useChatSession(
+    currentMessageInfo,
+    user,
+    assistant,
+  );
 
   // Show loading bubble only during the thinking phase (inferencing but not streaming)
-  const isThinking = inferencing && !isStreaming;
+  const isThinking = modelStore.inferencing && !modelStore.isStreaming;
 
   return (
     <SafeAreaProvider>
       <ChatView
         customBottomComponent={
-          !context && !modelStore.isContextLoading
+          !modelStore.context && !modelStore.isContextLoading
             ? () => <ModelNotLoadedMessage />
             : undefined
         }
         renderBubble={renderBubble}
-        messages={messages}
+        messages={chatSessionStore.currentSessionMessages}
         onSendPress={handleSendPress}
         onStopPress={handleStopPress}
         user={user}
-        isStopVisible={inferencing}
+        isStopVisible={modelStore.inferencing}
         isThinking={isThinking}
-        isStreaming={isStreaming}
+        isStreaming={modelStore.isStreaming}
         sendButtonVisibilityMode="editing"
         textInputProps={{
-          editable: !!context,
-          placeholder: !context
+          editable: !!modelStore.context,
+          placeholder: !modelStore.context
             ? modelStore.isContextLoading
               ? l10n.loadingModel
               : l10n.modelNotLoaded

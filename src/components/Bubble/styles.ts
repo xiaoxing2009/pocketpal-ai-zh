@@ -18,7 +18,7 @@ export const styles = ({
       backgroundColor:
         !currentUserIsAuthor || message.type === 'image'
           ? 'transparent' //theme.colors.secondary
-          : theme.colors.surfaceVariant,
+          : theme.colors.authorBubbleBackground,
       borderBottomLeftRadius:
         currentUserIsAuthor || roundBorder
           ? theme.borders.messageBorderRadius

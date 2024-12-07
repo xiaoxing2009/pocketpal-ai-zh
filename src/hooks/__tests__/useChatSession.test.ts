@@ -40,13 +40,7 @@ describe('useChatSession', () => {
 
   it('should send a message and update the chat session', async () => {
     const {result} = renderHook(() =>
-      useChatSession(
-        modelStore.context,
-        {current: null},
-        [],
-        textMessage.author,
-        mockAssistant,
-      ),
+      useChatSession({current: null}, textMessage.author, mockAssistant),
     );
 
     await act(async () => {
@@ -58,14 +52,9 @@ describe('useChatSession', () => {
   });
 
   it('should handle model not loaded scenario', async () => {
+    modelStore.context = undefined;
     const {result} = renderHook(() =>
-      useChatSession(
-        undefined,
-        {current: null},
-        [],
-        textMessage.author,
-        assistant,
-      ),
+      useChatSession({current: null}, textMessage.author, assistant),
     );
 
     await act(async () => {
@@ -92,13 +81,7 @@ describe('useChatSession', () => {
     }
 
     const {result} = renderHook(() =>
-      useChatSession(
-        modelStore.context,
-        {current: null},
-        [],
-        textMessage.author,
-        mockAssistant,
-      ),
+      useChatSession({current: null}, textMessage.author, mockAssistant),
     );
 
     await act(async () => {
@@ -127,13 +110,7 @@ describe('useChatSession', () => {
     }
 
     const {result} = renderHook(() =>
-      useChatSession(
-        modelStore.context,
-        {current: null},
-        [],
-        textMessage.author,
-        mockAssistant,
-      ),
+      useChatSession({current: null}, textMessage.author, mockAssistant),
     );
 
     await act(async () => {
@@ -173,13 +150,7 @@ describe('useChatSession', () => {
 
   it('should reset the conversation', () => {
     const {result} = renderHook(() =>
-      useChatSession(
-        modelStore.context,
-        {current: null},
-        [],
-        textMessage.author,
-        mockAssistant,
-      ),
+      useChatSession({current: null}, textMessage.author, mockAssistant),
     );
 
     result.current.handleResetConversation();
@@ -194,13 +165,7 @@ describe('useChatSession', () => {
 
   it('should not stop completion when inferencing is false', () => {
     const {result} = renderHook(() =>
-      useChatSession(
-        modelStore.context,
-        {current: null},
-        [],
-        textMessage.author,
-        mockAssistant,
-      ),
+      useChatSession({current: null}, textMessage.author, mockAssistant),
     );
 
     result.current.handleStopPress();
@@ -221,13 +186,7 @@ describe('useChatSession', () => {
     }
 
     const {result} = renderHook(() =>
-      useChatSession(
-        modelStore.context,
-        {current: null},
-        [],
-        textMessage.author,
-        mockAssistant,
-      ),
+      useChatSession({current: null}, textMessage.author, mockAssistant),
     );
 
     const sendPromise = act(async () => {
@@ -237,13 +196,13 @@ describe('useChatSession', () => {
     await act(async () => {
       await new Promise(resolve => setTimeout(resolve, 0));
     });
-    expect(result.current.inferencing).toBe(true);
+    expect(modelStore.inferencing).toBe(true);
 
     await act(async () => {
       resolveCompletion!({timings: {total: 100}, usage: {}});
       await sendPromise;
     });
-    expect(result.current.inferencing).toBe(false);
+    expect(modelStore.inferencing).toBe(false);
   });
 
   test.each([
@@ -273,13 +232,7 @@ describe('useChatSession', () => {
       modelStore.setActiveModel(testModel.id);
 
       const {result} = renderHook(() =>
-        useChatSession(
-          modelStore.context,
-          {current: null},
-          [],
-          textMessage.author,
-          mockAssistant,
-        ),
+        useChatSession({current: null}, textMessage.author, mockAssistant),
       );
 
       await act(async () => {

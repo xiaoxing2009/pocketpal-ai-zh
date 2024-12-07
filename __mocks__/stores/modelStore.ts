@@ -1,41 +1,91 @@
+import {computed, makeAutoObservable, ObservableMap} from 'mobx';
+
 import {modelsList} from '../../jest/fixtures/models';
 
-export const mockModelStore = {
-  models: modelsList,
-  n_context: 1024,
-  MIN_CONTEXT_SIZE: 200,
-  useAutoRelease: true,
-  useMetal: false,
-  n_gpu_layers: 50,
-  activeModelId: undefined as string | undefined,
-  setNContext: jest.fn(),
-  updateUseAutoRelease: jest.fn(),
-  updateUseMetal: jest.fn(),
-  setNGPULayers: jest.fn(),
-  refreshDownloadStatuses: jest.fn(),
-  addLocalModel: jest.fn(),
-  resetModels: jest.fn(),
-  initContext: jest.fn().mockResolvedValue(Promise.resolve()),
-  checkSpaceAndDownload: jest.fn(),
-  getDownloadProgress: jest.fn(),
-  manualReleaseContext: jest.fn(),
-  setActiveModel(modelId: string) {
+import {Model} from '../../src/utils/types';
+
+class MockModelStore {
+  models = modelsList;
+  n_context = 1024;
+  MIN_CONTEXT_SIZE = 200;
+  useAutoRelease = true;
+  useMetal = false;
+  n_gpu_layers = 50;
+  activeModelId: string | undefined;
+  inferencing = false;
+  isStreaming = false;
+  downloadJobs = new ObservableMap();
+
+  refreshDownloadStatuses: jest.Mock;
+  addLocalModel: jest.Mock;
+  setNContext: jest.Mock;
+  updateUseAutoRelease: jest.Mock;
+  updateUseMetal: jest.Mock;
+  setNGPULayers: jest.Mock;
+  resetModels: jest.Mock;
+  initContext: jest.Mock;
+  lastUsedModelId: any;
+  checkSpaceAndDownload: jest.Mock;
+  getDownloadProgress: jest.Mock;
+  manualReleaseContext: jest.Mock;
+
+  constructor() {
+    makeAutoObservable(this, {
+      refreshDownloadStatuses: false,
+      addLocalModel: false,
+      setNContext: false,
+      updateUseAutoRelease: false,
+      updateUseMetal: false,
+      setNGPULayers: false,
+      resetModels: false,
+      initContext: false,
+      checkSpaceAndDownload: false,
+      getDownloadProgress: false,
+      manualReleaseContext: false,
+      lastUsedModel: computed,
+      activeModel: computed,
+      isDownloading: computed,
+    });
+    this.refreshDownloadStatuses = jest.fn();
+    this.addLocalModel = jest.fn();
+    this.setNContext = jest.fn();
+    this.updateUseAutoRelease = jest.fn();
+    this.updateUseMetal = jest.fn();
+    this.setNGPULayers = jest.fn();
+    this.resetModels = jest.fn();
+    this.initContext = jest.fn().mockResolvedValue(Promise.resolve());
+    this.checkSpaceAndDownload = jest.fn();
+    this.getDownloadProgress = jest.fn();
+    this.manualReleaseContext = jest.fn();
+  }
+
+  setActiveModel = (modelId: string) => {
     this.activeModelId = modelId;
-  },
-};
-Object.defineProperty(mockModelStore, 'lastUsedModel', {
-  get: jest.fn(() => undefined),
-  configurable: true,
-});
-Object.defineProperty(mockModelStore, 'isDownloading', {
-  get: jest.fn(() => () => false),
-  configurable: true,
-});
-Object.defineProperty(mockModelStore, 'activeModel', {
-  get: jest.fn(() =>
-    mockModelStore.models.find(
-      model => model.id === mockModelStore.activeModelId,
-    ),
-  ),
-  configurable: true,
-});
+  };
+
+  setInferencing = (value: boolean) => {
+    this.inferencing = value;
+  };
+
+  setIsStreaming = (value: boolean) => {
+    this.isStreaming = value;
+  };
+
+  get lastUsedModel(): Model | undefined {
+    return this.lastUsedModelId
+      ? this.models.find(m => m.id === this.lastUsedModelId)
+      : undefined;
+  }
+
+  get isDownloading() {
+    return (modelId: string) => {
+      return this.downloadJobs.has(modelId);
+    };
+  }
+
+  get activeModel() {
+    return this.models.find(model => model.id === this.activeModelId);
+  }
+}
+
+export const mockModelStore = new MockModelStore();

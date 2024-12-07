@@ -1,10 +1,11 @@
 import type {ReactNode} from 'react';
 import React, {useContext} from 'react';
-import {View, TouchableOpacity} from 'react-native';
+import {View, TouchableOpacity, Animated} from 'react-native';
 
 import {Text} from 'react-native-paper';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
 import {useTheme} from '../../hooks';
 
@@ -13,15 +14,22 @@ import {styles} from './styles';
 import {UserContext} from '../../utils';
 import {MessageType} from '../../utils/types';
 
+const hapticOptions = {
+  enableVibrateFallback: true,
+  ignoreAndroidSystemSettings: false,
+};
+
 export const Bubble = ({
   child,
   message,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   nextMessageInGroup,
+  scale = new Animated.Value(1),
 }: {
   child: ReactNode;
   message: MessageType.Any;
   nextMessageInGroup: boolean;
+  scale?: Animated.Value;
 }) => {
   const theme = useTheme();
   const user = useContext(UserContext);
@@ -41,15 +49,19 @@ export const Bubble = ({
 
   const copyToClipboard = () => {
     if (message.type === 'text') {
+      ReactNativeHapticFeedback.trigger('impactLight', hapticOptions);
       Clipboard.setString(message.text.trim());
     }
   };
 
-  const Container = false //copyable
-    ? TouchableOpacity
-    : View;
   return (
-    <Container style={contentContainer}>
+    <Animated.View
+      style={[
+        contentContainer,
+        {
+          transform: [{scale}],
+        },
+      ]}>
       {child}
       {timings && (
         <View style={dateHeaderContainer}>
@@ -61,6 +73,6 @@ export const Bubble = ({
           {timings && <Text style={dateHeader}>{timingsString}</Text>}
         </View>
       )}
-    </Container>
+    </Animated.View>
   );
 };

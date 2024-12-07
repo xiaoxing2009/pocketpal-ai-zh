@@ -18,30 +18,26 @@ interface MarkdownViewProps {
   markdownText: string;
   maxMessageWidth: number;
   //isComplete: boolean; // indicating if message is complete
+  selectable?: boolean;
 }
 
 export const MarkdownView: React.FC<MarkdownViewProps> = React.memo(
-  ({markdownText, maxMessageWidth}) => {
+  ({markdownText, maxMessageWidth, selectable = false}) => {
     const _maxWidth = maxMessageWidth;
 
     const theme = useTheme();
     const tagsStyles = useMemo(() => createTagsStyles(theme), [theme]);
 
-    const defaultTextProps = useMemo(() => ({selectable: true}), []);
+    const defaultTextProps = useMemo(
+      () => ({
+        selectable,
+        userSelect: selectable ? 'text' : 'none',
+      }),
+      [selectable],
+    );
     const systemFonts = useMemo(() => defaultSystemFonts, []);
 
     const contentWidth = useMemo(() => _maxWidth, [_maxWidth]);
-
-    //if (!isComplete) {
-    //  // During streaming, use Text component
-    //  return (
-    //    <SafeAreaView style={styles.container}>
-    //      <ScrollView style={{maxWidth: _maxWidth}}>
-    //        <Text style={{color: theme.colors.text}}>{markdownText}</Text>
-    //      </ScrollView>
-    //    </SafeAreaView>
-    //  );
-    //}
 
     const htmlContent = useMemo(() => marked(markdownText), [markdownText]);
     const source = useMemo(() => ({html: htmlContent}), [htmlContent]);
@@ -65,5 +61,6 @@ export const MarkdownView: React.FC<MarkdownViewProps> = React.memo(
   (prevProps, nextProps) =>
     prevProps.markdownText === nextProps.markdownText &&
     //prevProps.isComplete === nextProps.isComplete &&
-    prevProps.maxMessageWidth === nextProps.maxMessageWidth,
+    prevProps.maxMessageWidth === nextProps.maxMessageWidth &&
+    prevProps.selectable === nextProps.selectable,
 );
