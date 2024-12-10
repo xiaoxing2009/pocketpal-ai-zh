@@ -170,7 +170,7 @@ export const ChatInput = observer(
               ref={inputRef}
               multiline
               placeholder={l10n.inputPlaceholder}
-              placeholderTextColor={theme.colors.outline}
+              placeholderTextColor={theme.colors.inverseTextSecondary}
               underlineColorAndroid="transparent"
               {...textInputProps}
               style={[styles.input, textInputProps?.style]}

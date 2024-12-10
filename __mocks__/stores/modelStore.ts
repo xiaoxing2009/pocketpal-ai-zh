@@ -28,6 +28,9 @@ class MockModelStore {
   checkSpaceAndDownload: jest.Mock;
   getDownloadProgress: jest.Mock;
   manualReleaseContext: jest.Mock;
+  addHFModel: jest.Mock;
+  downloadHFModel: jest.Mock;
+  cancelDownload: jest.Mock;
 
   constructor() {
     makeAutoObservable(this, {
@@ -42,6 +45,9 @@ class MockModelStore {
       checkSpaceAndDownload: false,
       getDownloadProgress: false,
       manualReleaseContext: false,
+      addHFModel: false,
+      downloadHFModel: false,
+      cancelDownload: false,
       lastUsedModel: computed,
       activeModel: computed,
       isDownloading: computed,
@@ -57,6 +63,9 @@ class MockModelStore {
     this.checkSpaceAndDownload = jest.fn();
     this.getDownloadProgress = jest.fn();
     this.manualReleaseContext = jest.fn();
+    this.addHFModel = jest.fn();
+    this.downloadHFModel = jest.fn();
+    this.cancelDownload = jest.fn();
   }
 
   setActiveModel = (modelId: string) => {

@@ -15,17 +15,19 @@ jest.mock('../../CompletionSettings', () => {
 });
 
 describe('ModelSettings', () => {
+  const defaultTemplate = {
+    name: 'Default Template',
+    addBosToken: true,
+    addEosToken: true,
+    addGenerationPrompt: true,
+    bosToken: '<|START|>',
+    eosToken: '<|END|>',
+    chatTemplate: 'User: {{prompt}}\nAssistant:',
+    systemPrompt: 'You are a helpful assistant',
+  };
+
   const mockProps = {
-    chatTemplate: {
-      name: 'Default Template',
-      addBosToken: true,
-      addEosToken: true,
-      addGenerationPrompt: true,
-      bosToken: '<|START|>',
-      eosToken: '<|END|>',
-      chatTemplate: 'User: {{prompt}}\nAssistant:',
-      systemPrompt: 'You are a helpful assistant',
-    },
+    chatTemplate: defaultTemplate,
     completionSettings: {},
     isActive: false,
     onChange: jest.fn(),
@@ -33,6 +35,15 @@ describe('ModelSettings', () => {
   };
 
   beforeEach(() => {
+    // Reset all properties to initial values
+    mockProps.chatTemplate = {...defaultTemplate};
+    mockProps.completionSettings = {};
+    mockProps.isActive = false;
+
+    // Create fresh mocks for all function props
+    mockProps.onChange = jest.fn();
+    mockProps.onCompletionSettingsChange = jest.fn();
+
     jest.clearAllMocks();
     jest.spyOn(Keyboard, 'dismiss');
   });
@@ -42,8 +53,8 @@ describe('ModelSettings', () => {
       <ModelSettings {...mockProps} />,
     );
 
-    expect(getByText('Use BOS')).toBeTruthy();
-    expect(getByText('Use EOS')).toBeTruthy();
+    expect(getByText('BOS')).toBeTruthy();
+    expect(getByText('EOS')).toBeTruthy();
     expect(getByText('Add Generation Prompt')).toBeTruthy();
     expect(getByPlaceholderText('BOS Token')).toBeTruthy();
     expect(getByPlaceholderText('EOS Token')).toBeTruthy();
@@ -74,12 +85,13 @@ describe('ModelSettings', () => {
     expect(mockProps.onChange).toHaveBeenCalledWith('eosToken', '<|NEW_END|>');
   });
 
-  it('toggles chips correctly', async () => {
-    const {getByText} = render(<ModelSettings {...mockProps} />);
+  it('toggles BOS switch correctly', async () => {
+    const {getByTestId} = render(<ModelSettings {...mockProps} />);
 
-    const bosChip = getByText('Use BOS');
+    const bosSwitch = getByTestId('BOS-switch');
+
     await act(async () => {
-      fireEvent.press(bosChip);
+      fireEvent(bosSwitch, 'valueChange', false);
     });
 
     expect(mockProps.onChange).toHaveBeenCalledWith('addBosToken', false);
@@ -90,32 +102,25 @@ describe('ModelSettings', () => {
     const {getByText, queryByText} = render(<ModelSettings {...mockProps} />);
 
     // Open dialog
-    const editButton = getByText('Edit');
     await act(() => {
-      fireEvent.press(editButton);
+      fireEvent.press(getByText('Edit'));
     });
 
     // Wait for dialog to be visible
     await waitFor(() => {
-      expect(getByText('Save')).toBeTruthy();
-      expect(getByText('Cancel')).toBeTruthy();
+      expect(getByText('Close')).toBeTruthy();
     });
 
-    const cancelButton = getByText('Cancel');
+    // Press Close button
     await act(() => {
-      fireEvent.press(cancelButton);
+      fireEvent.press(getByText('Close'));
     });
 
     // Wait for dialog to be hidden
-    await waitFor(
-      () => {
-        expect(queryByText('Save')).toBeNull();
-      },
-      {
-        timeout: 10000,
-      },
-    );
-  }, 15000);
+    await waitFor(() => {
+      expect(queryByText('Close')).toBeNull();
+    });
+  });
 
   it('saves template changes', async () => {
     const {getByText, getByPlaceholderText} = render(
@@ -136,7 +141,7 @@ describe('ModelSettings', () => {
     });
 
     await act(async () => {
-      fireEvent.press(getByText('Save'));
+      fireEvent.press(getByText('Close'));
     });
 
     expect(mockProps.onChange).toHaveBeenCalledWith(
@@ -168,18 +173,5 @@ describe('ModelSettings', () => {
     });
 
     expect(Keyboard.dismiss).toHaveBeenCalled();
-  });
-
-  it('toggles advanced settings accordion', async () => {
-    const {getByText} = render(<ModelSettings {...mockProps} />);
-
-    const accordion = getByText('Advanced Settings');
-    await act(async () => {
-      fireEvent.press(accordion);
-    });
-
-    await waitFor(() => {
-      expect(getByText('CompletionSettings')).toBeTruthy();
-    });
   });
 });

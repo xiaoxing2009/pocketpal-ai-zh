@@ -186,12 +186,18 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
           </View>
           <View style={styles.fileActions}>
             <IconButton
+              testID="bookmark-button"
               icon={isBookmarked ? 'bookmark' : 'bookmark-outline'}
               onPress={toggleBookmark}
               size={20}
             />
             {isDownloading ? (
-              <IconButton icon="close" onPress={handleCancel} size={20} />
+              <IconButton
+                testID="cancel-button"
+                icon="close"
+                onPress={handleCancel}
+                size={20}
+              />
             ) : (
               <Tooltip
                 title={
@@ -201,6 +207,7 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
                 }>
                 <View>
                   <IconButton
+                    testID="download-button"
                     icon={downloadIcon}
                     onPress={
                       isDownloaded

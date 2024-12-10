@@ -217,7 +217,7 @@ export const mockHFModel2: HuggingFaceModel = {
 };
 
 export const hfModel1 = createModel({
-  id: 'hf-model-1',
+  id: mockHFModel1.id + '/' + mockHFModel1.siblings[0].rfilename,
   name: 'hf-model-name-1',
   author: 'owner',
   type: 'GGUF',
@@ -228,7 +228,7 @@ export const hfModel1 = createModel({
 });
 
 export const hfModel2 = createModel({
-  id: 'hf-model-2',
+  id: mockHFModel2.id + '/' + mockHFModel2.siblings[0].rfilename,
   name: 'hf-model-name-2',
   author: 'owner',
   type: 'GGUF',

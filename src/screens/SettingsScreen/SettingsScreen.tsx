@@ -4,37 +4,34 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
-  TextInput,
   ScrollView,
+  TextInput as RNTextInput,
 } from 'react-native';
 
 import {debounce} from 'lodash';
 import {observer} from 'mobx-react-lite';
 import Slider from '@react-native-community/slider';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {
-  Divider,
-  Switch,
-  Text,
-  TextInput as RNPTextInput,
-  Card,
-} from 'react-native-paper';
+import {Divider, Switch, Text, Card} from 'react-native-paper';
+
+import {TextInput} from '../../components';
 
 import {useTheme} from '../../hooks';
 
-import {styles} from './styles';
+import {createStyles} from './styles';
 
 import {modelStore, uiStore} from '../../store';
-import {L10nContext} from '../../utils';
 
+import {L10nContext} from '../../utils';
 export const SettingsScreen: React.FC = observer(() => {
   const l10n = useContext(L10nContext);
-  const {colors} = useTheme();
+  const theme = useTheme();
+  const styles = createStyles(theme);
   const [contextSize, setContextSize] = useState(
     modelStore.n_context.toString(),
   );
   const [isValidInput, setIsValidInput] = useState(true);
-  const inputRef = useRef<TextInput>(null);
+  const inputRef = useRef<RNTextInput>(null);
 
   const debouncedUpdateStore = useRef(
     debounce((value: number) => {
@@ -71,13 +68,11 @@ export const SettingsScreen: React.FC = observer(() => {
   };
 
   return (
-    <SafeAreaView
-      style={[styles.safeArea, {backgroundColor: colors.surface}]}
-      edges={['bottom']}>
+    <SafeAreaView style={styles.safeArea} edges={['bottom']}>
       <TouchableWithoutFeedback onPress={handleOutsidePress}>
         <ScrollView contentContainerStyle={styles.container}>
           {/* Model Settings Section */}
-          <Card style={styles.card}>
+          <Card elevation={0} style={styles.card}>
             <Card.Title title={l10n.modelSettingsTitle} />
             <Card.Content>
               <View style={styles.settingItemContainer}>
@@ -86,9 +81,7 @@ export const SettingsScreen: React.FC = observer(() => {
                     <Text variant="titleMedium" style={styles.textLabel}>
                       {l10n.autoOffloadLoad}
                     </Text>
-                    <Text
-                      variant="labelSmall"
-                      style={[styles.textDescription, {color: colors.outline}]}>
+                    <Text variant="labelSmall" style={styles.textDescription}>
                       {l10n.autoOffloadLoadDescription}
                     </Text>
                   </View>
@@ -98,7 +91,6 @@ export const SettingsScreen: React.FC = observer(() => {
                     onValueChange={value =>
                       modelStore.updateUseAutoRelease(value)
                     }
-                    color={colors.primary}
                   />
                 </View>
               </View>
@@ -110,12 +102,7 @@ export const SettingsScreen: React.FC = observer(() => {
                       <Text variant="titleMedium" style={styles.textLabel}>
                         {l10n.metal}
                       </Text>
-                      <Text
-                        variant="labelSmall"
-                        style={[
-                          styles.textDescription,
-                          {color: colors.outline},
-                        ]}>
+                      <Text variant="labelSmall" style={styles.textDescription}>
                         {l10n.metalDescription}
                       </Text>
                     </View>
@@ -123,7 +110,6 @@ export const SettingsScreen: React.FC = observer(() => {
                       testID="metal-switch"
                       value={modelStore.useMetal}
                       onValueChange={value => modelStore.updateUseMetal(value)}
-                      color={colors.primary}
                     />
                   </View>
                   <Slider
@@ -137,12 +123,12 @@ export const SettingsScreen: React.FC = observer(() => {
                     maximumValue={100}
                     step={1}
                     style={styles.nGPUSlider}
-                    thumbTintColor={colors.primary}
-                    minimumTrackTintColor={colors.primary}
+                    thumbTintColor={theme.colors.primary}
+                    minimumTrackTintColor={theme.colors.primary}
                   />
                   <Text
                     variant="labelSmall"
-                    style={[styles.textDescription, {color: colors.outline}]}>
+                    style={[styles.textDescription, {}]}>
                     {l10n.layersOnGPU.replace(
                       '{{gpuLayers}}',
                       modelStore.n_gpu_layers.toString(),
@@ -155,7 +141,7 @@ export const SettingsScreen: React.FC = observer(() => {
                 <Text variant="titleMedium" style={styles.textLabel}>
                   {l10n.contextSize}
                 </Text>
-                <RNPTextInput
+                <TextInput
                   ref={inputRef}
                   style={[
                     styles.textInput,
@@ -177,9 +163,7 @@ export const SettingsScreen: React.FC = observer(() => {
                     )}
                   </Text>
                 )}
-                <Text
-                  variant="labelSmall"
-                  style={[styles.textDescription, {color: colors.outline}]}>
+                <Text variant="labelSmall" style={styles.textDescription}>
                   {l10n.modelReloadNotice}
                 </Text>
               </View>
@@ -189,9 +173,7 @@ export const SettingsScreen: React.FC = observer(() => {
                   <Text variant="titleMedium" style={styles.textLabel}>
                     {l10n.autoNavigateToChat}
                   </Text>
-                  <Text
-                    variant="labelSmall"
-                    style={[styles.textDescription, {color: colors.outline}]}>
+                  <Text variant="labelSmall" style={styles.textDescription}>
                     {l10n.autoNavigateToChatDescription}
                   </Text>
                 </View>
@@ -199,7 +181,6 @@ export const SettingsScreen: React.FC = observer(() => {
                   testID="auto-navigate-to-chat-switch"
                   value={uiStore.autoNavigatetoChat}
                   onValueChange={value => uiStore.setAutoNavigateToChat(value)}
-                  color={colors.primary}
                 />
               </View>
 
@@ -210,12 +191,7 @@ export const SettingsScreen: React.FC = observer(() => {
                       <Text variant="titleMedium" style={styles.textLabel}>
                         {l10n.iOSBackgroundDownload}
                       </Text>
-                      <Text
-                        variant="labelSmall"
-                        style={[
-                          styles.textDescription,
-                          {color: colors.outline},
-                        ]}>
+                      <Text variant="labelSmall" style={styles.textDescription}>
                         {l10n.iOSBackgroundDownloadDescription}
                       </Text>
                     </View>
@@ -225,7 +201,6 @@ export const SettingsScreen: React.FC = observer(() => {
                       onValueChange={value =>
                         uiStore.setiOSBackgroundDownloading(value)
                       }
-                      color={colors.primary}
                     />
                   </View>
                 </View>
@@ -234,7 +209,7 @@ export const SettingsScreen: React.FC = observer(() => {
           </Card>
 
           {/* UI Settings Section */}
-          <Card style={styles.card}>
+          <Card elevation={0} style={styles.card}>
             <Card.Title title={l10n.uiSettingsTitle} />
             <Card.Content>
               <View style={styles.settingItemContainer}>
@@ -243,9 +218,7 @@ export const SettingsScreen: React.FC = observer(() => {
                     <Text variant="titleMedium" style={styles.textLabel}>
                       Dark Mode
                     </Text>
-                    <Text
-                      variant="labelSmall"
-                      style={[styles.textDescription, {color: colors.outline}]}>
+                    <Text variant="labelSmall" style={styles.textDescription}>
                       Toggle dark mode on or off.
                     </Text>
                   </View>
@@ -255,7 +228,6 @@ export const SettingsScreen: React.FC = observer(() => {
                     onValueChange={value =>
                       uiStore.setColorScheme(value ? 'dark' : 'light')
                     }
-                    color={colors.primary}
                   />
                 </View>
 
@@ -265,12 +237,7 @@ export const SettingsScreen: React.FC = observer(() => {
                       <Text variant="titleMedium" style={styles.textLabel}>
                         {l10n.displayMemoryUsage}
                       </Text>
-                      <Text
-                        variant="labelSmall"
-                        style={[
-                          styles.textDescription,
-                          {color: colors.outline},
-                        ]}>
+                      <Text variant="labelSmall" style={styles.textDescription}>
                         {l10n.displayMemoryUsageDescription}
                       </Text>
                     </View>
@@ -278,7 +245,6 @@ export const SettingsScreen: React.FC = observer(() => {
                       testID="display-memory-usage-switch"
                       value={uiStore.displayMemUsage}
                       onValueChange={value => uiStore.setDisplayMemUsage(value)}
-                      color={colors.primary}
                     />
                   </View>
                 )}

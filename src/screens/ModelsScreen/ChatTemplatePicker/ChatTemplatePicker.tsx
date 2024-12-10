@@ -11,6 +11,8 @@ import {styles} from './styles';
 
 import {chatTemplates} from '../../../utils/chat';
 
+const pickerHeight = 30;
+
 interface TemplatePickerProps {
   selectedTemplateName: string | null;
   handleChatTemplateNameChange: (value: string) => void;
@@ -42,15 +44,16 @@ export const ChatTemplatePicker: React.FC<TemplatePickerProps> = ({
     () =>
       StyleSheet.create({
         inputIOS: {
-          paddingVertical: 10,
+          height: pickerHeight,
+          paddingVertical: 0,
           paddingHorizontal: 10,
           paddingRight: 30,
           color: theme.colors.onSurface,
         },
         inputAndroid: {
-          height: 40,
+          height: pickerHeight,
+          paddingVertical: 0,
           paddingHorizontal: 10,
-          paddingVertical: 8,
           paddingRight: 30,
           color: theme.colors.onSurface,
         },
@@ -58,8 +61,9 @@ export const ChatTemplatePicker: React.FC<TemplatePickerProps> = ({
           color: theme.colors.secondary,
         },
         iconContainer: {
-          top: 6, // Adjusted to align the icon properly
-          right: 10,
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: pickerHeight,
         },
       }),
     [theme.colors.onSurface, theme.colors.secondary],
