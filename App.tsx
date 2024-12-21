@@ -15,9 +15,13 @@ import {
 
 import {useTheme} from './src/hooks';
 import {modelStore} from './src/store';
-import {HeaderRight, SidebarContent} from './src/components';
-import {ChatScreen, ModelsScreen, SettingsScreen} from './src/screens';
-import {ModelsHeaderRight} from './src/components';
+import {HeaderRight, SidebarContent, ModelsHeaderRight} from './src/components';
+import {
+  ChatScreen,
+  ModelsScreen,
+  SettingsScreen,
+  BenchmarkScreen,
+} from './src/screens';
 
 const Drawer = createDrawerNavigator();
 
@@ -73,6 +77,10 @@ const App = observer(() => {
                 <Drawer.Screen
                   name="Settings"
                   component={gestureHandlerRootHOC(SettingsScreen)}
+                />
+                <Drawer.Screen
+                  name="Benchmark"
+                  component={gestureHandlerRootHOC(BenchmarkScreen)}
                 />
               </Drawer.Navigator>
             </NavigationContainer>

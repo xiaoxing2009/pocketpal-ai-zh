@@ -90,6 +90,11 @@ jobs:
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
           create_credentials_file: true
 
+      # Add this step before the Android build
+      - name: Create .env file
+        run: |
+          echo "FIREBASE_FUNCTIONS_URL=${{ vars.FIREBASE_FUNCTIONS_URL }}" > .env
+
       # Step 10: Build and upload Android app to Alpha track (includes building APK and Bundle)
       - name: Build and upload Android app
         working-directory: android
@@ -100,6 +105,7 @@ jobs:
           GRADLE_USER_HOME: ${{ runner.temp }}/.gradle
           #  GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }} # This is not supported by fastlane, we need to replace it with PLAY_STORE_JSON_KEY in the future.
           PLAY_STORE_JSON_KEY: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
         run: |
           echo "$PLAY_STORE_JSON_KEY" > play-store-key.json
           bundle exec fastlane release_android_alpha
@@ -151,6 +157,11 @@ jobs:
         working-directory: ios
         run: pod install
 
+      # Add this step before the iOS build
+      - name: Create .env file
+        run: |
+          echo "FIREBASE_FUNCTIONS_URL=${{ vars.FIREBASE_FUNCTIONS_URL }}" > .env
+
       # Step 6: Build and upload iOS app to TestFlight
       - name: Build and upload iOS app
         working-directory: ios
@@ -162,4 +173,5 @@ jobs:
           APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
           APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
           APP_STORE_CONNECT_USER_ID: ${{ secrets.APP_STORE_CONNECT_USER_ID }}
-        run: bundle exec fastlane release_ios
+          GOOGLE_SERVICES_PLIST: ${{ secrets.GOOGLE_SERVICES_PLIST }}
+        run: bundle exec fastlane release_ios_testflight

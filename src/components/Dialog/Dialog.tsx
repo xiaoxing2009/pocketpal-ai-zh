@@ -20,9 +20,13 @@ export interface DialogAction {
   label: string;
   onPress: () => void;
   mode?: 'text' | 'contained' | 'outlined';
+  loading?: boolean;
+  disabled?: boolean;
+  testID?: string;
 }
 
 interface CustomDialogProps {
+  testID?: string;
   visible: boolean;
   onDismiss: () => void;
   title: string;
@@ -32,12 +36,14 @@ interface CustomDialogProps {
   contentStyle?: ViewStyle;
   scrollAreaStyle?: ViewStyle;
   scrollable?: boolean;
+  scrollableBorderShown?: boolean;
   dismissableBackButton?: boolean;
   dismissable?: boolean;
   avoidKeyboard?: boolean;
 }
 
 export const Dialog: React.FC<CustomDialogProps> = ({
+  testID,
   visible,
   onDismiss,
   title,
@@ -47,12 +53,13 @@ export const Dialog: React.FC<CustomDialogProps> = ({
   contentStyle,
   scrollAreaStyle,
   scrollable = false,
+  scrollableBorderShown = false,
   dismissableBackButton = true,
   dismissable = true,
   avoidKeyboard = false,
 }) => {
   const theme = useTheme();
-  const styles = createStyles(theme);
+  const styles = createStyles(theme, scrollableBorderShown);
   const [bottom, setBottom] = React.useState(0);
 
   React.useEffect(() => {
@@ -144,6 +151,7 @@ export const Dialog: React.FC<CustomDialogProps> = ({
   return (
     <Portal>
       <PaperDialog
+        testID={testID}
         dismissableBackButton={dismissableBackButton}
         dismissable={dismissable}
         visible={visible}
@@ -159,8 +167,11 @@ export const Dialog: React.FC<CustomDialogProps> = ({
               {actions.map(action => (
                 <Button
                   key={action.label}
+                  testID={action.testID}
                   mode={action.mode || 'text'}
                   onPress={action.onPress}
+                  loading={action.loading}
+                  disabled={action.disabled}
                   style={styles.dialogActionButton}>
                   {action.label}
                 </Button>

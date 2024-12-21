@@ -2,6 +2,11 @@ apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 
+// Add the Google Services plugin dependency
+// This is used exclusively for sending benchmarks (with user consent) to Hugging Face Spaces via Firebase.
+// Firebase is used for App Check functionality, allowing unauthenticated users to submit their benchmark data securely.
+apply plugin: "com.google.gms.google-services"
+
 apply from: "../../node_modules/react-native-config/android/dotenv.gradle"
 
 /**
@@ -128,6 +133,10 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    implementation platform('com.google.firebase:firebase-bom:32.7.0')
+    implementation 'com.google.firebase:firebase-appcheck-playintegrity'
+    implementation 'com.google.firebase:firebase-appcheck-debug'
 }
 
 // apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)

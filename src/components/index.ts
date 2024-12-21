@@ -5,6 +5,7 @@ export * from './BottomSheetSearchbar';
 export * from './Bubble';
 export * from './ChatInput';
 export * from './ChatView';
+export * from './Checkbox';
 export * from './CircularActivityIndicator';
 export * from './Dialog';
 export * from './Divider';

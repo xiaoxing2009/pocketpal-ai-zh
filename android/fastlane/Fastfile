@@ -5,6 +5,12 @@ platform :android do
   lane :release_android_alpha do
     android_dir = File.expand_path('..', Dir.pwd)
     
+    # Create google-services.json from GitHub secret
+    File.write(
+      File.join(android_dir, "app/google-services.json"),
+      ENV["GOOGLE_SERVICES_JSON"]
+    )
+    
     # Build APK for GitHub Release
     gradle(
       task: "assemble",

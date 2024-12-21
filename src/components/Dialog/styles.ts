@@ -4,7 +4,7 @@ import {Theme} from '../../utils/types';
 
 const dialogHeight = Dimensions.get('window').height * 0.65;
 
-export const createStyles = (theme: Theme) =>
+export const createStyles = (theme: Theme, scrollableBorderShown?: boolean) =>
   StyleSheet.create({
     dialog: {
       //maxHeight: '90%',
@@ -20,6 +20,8 @@ export const createStyles = (theme: Theme) =>
     dialogContent: {
       maxHeight: dialogHeight,
       paddingHorizontal: 16,
+      borderTopWidth: scrollableBorderShown ? 1 : 0,
+      borderBottomWidth: scrollableBorderShown ? 1 : 0,
       backgroundColor: theme.colors.surface,
     },
     dialogScrollArea: {},
@@ -30,6 +32,6 @@ export const createStyles = (theme: Theme) =>
       flexDirection: 'row',
       justifyContent: 'space-around',
       paddingHorizontal: 16,
-      paddingBottom: 8,
+      paddingBottom: 16,
     },
   });

@@ -8,6 +8,9 @@ export class UIStore {
 export const mockUiStore = {
   colorScheme: 'light',
   autoNavigatetoChat: false,
+  benchmarkShareDialog: {
+    shouldShow: true,
+  },
   pageStates: {
     modelsScreen: {
       filters: [],
@@ -21,4 +24,5 @@ export const mockUiStore = {
   setAutoNavigateToChat: jest.fn(),
   setColorScheme: jest.fn(),
   setDisplayMemUsage: jest.fn(),
+  setBenchmarkShareDialogPreference: jest.fn(),
 };

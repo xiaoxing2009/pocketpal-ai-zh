@@ -29,6 +29,10 @@ export class UIStore {
 
   iOSBackgroundDownloading = false;
 
+  benchmarkShareDialog = {
+    shouldShow: true,
+  };
+
   constructor() {
     makeAutoObservable(this);
     makePersistable(this, {
@@ -39,7 +43,8 @@ export class UIStore {
         'autoNavigatetoChat',
         'displayMemUsage',
         'iOSBackgroundDownloading',
-      ], // Properties to persist
+        'benchmarkShareDialog',
+      ],
       storage: AsyncStorage,
     });
   }
@@ -79,6 +84,12 @@ export class UIStore {
   setiOSBackgroundDownloading(value: boolean) {
     runInAction(() => {
       this.iOSBackgroundDownloading = value;
+    });
+  }
+
+  setBenchmarkShareDialogPreference(shouldShow: boolean) {
+    runInAction(() => {
+      this.benchmarkShareDialog.shouldShow = shouldShow;
     });
   }
 }

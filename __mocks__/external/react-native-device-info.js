@@ -10,5 +10,11 @@ export default {
   getUsedMemory: jest.fn(() => deviceInfo.usedMemory),
   getVersion: jest.fn(() => deviceInfo.version),
   getBuildNumber: jest.fn(() => deviceInfo.buildNumber),
+  isEmulator: jest.fn(() => false),
+  getBrand: jest.fn(() => 'Apple'),
+  getDevice: jest.fn(() => 'iPhone 12'),
+  getDeviceId: jest.fn(() => 'test-device-id'),
+  supportedAbis: jest.fn(() => ['arm64', 'arm64-v8a']),
+
   // Not all methods are mocked, add any other methods from react-native-device-info that you use in your code
 };

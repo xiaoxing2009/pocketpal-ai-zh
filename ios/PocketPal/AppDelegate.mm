@@ -1,5 +1,10 @@
 #import "AppDelegate.h"
 
+// App Check
+#import "RNFBAppCheckModule.h" 
+#import <Firebase.h>
+
+
 #import <React/RCTBundleURLProvider.h>
 #import <RNFSBackgroundDownloads.h>
 
@@ -7,6 +12,12 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  // Initialize Firebase
+  // This is used exclusively for sending model benchmarks (with user consent) to Firebase.
+  // Firebase is used for App Check functionality, allowing unauthenticated users to submit their benchmark data securely.
+  [RNFBAppCheckModule sharedInstance];
+  [FIRApp configure]; 
+
   self.moduleName = @"PocketPal";
   // You can add your custom initial props in the dictionary below.
   // They will be passed down to the ViewController used by React Native.
