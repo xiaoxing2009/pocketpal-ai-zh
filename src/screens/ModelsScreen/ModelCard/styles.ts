@@ -83,8 +83,25 @@ export const createStyles = (theme: Theme) =>
     },
     modelDescription: {
       fontSize: 12,
-      marginTop: 2,
+      marginVertical: 4,
       color: theme.colors.onSurfaceVariant,
+    },
+    skillsLabel: {
+      fontSize: 12,
+      fontWeight: 'bold',
+      color: theme.colors.primary,
+      marginRight: 4,
+    },
+    skillsText: {
+      fontSize: 12,
+      color: theme.colors.onSurfaceVariant,
+      flexShrink: 1,
+    },
+    descriptionContainer: {
+      marginTop: 4,
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      alignItems: 'flex-start',
     },
     hfButton: {
       margin: 0,
@@ -125,6 +142,7 @@ export const createStyles = (theme: Theme) =>
     },
     storageErrorText: {
       fontWeight: 'bold',
+      marginHorizontal: 8,
     },
     loadingContainer: {
       flexDirection: 'row',

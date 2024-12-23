@@ -287,6 +287,7 @@ export interface Model {
   author: string;
   name: string;
   type?: string;
+  description: string;
   size: number; // Size in bytes
   params: number;
   isDownloaded: boolean;

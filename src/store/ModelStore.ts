@@ -85,7 +85,10 @@ class ModelStore {
   };
 
   mergeModelLists = () => {
-    const mergedModels = [...this.models]; // Start with persisted models
+    // Start with persisted models, but filter out non-downloaded preset models
+    const mergedModels = [...this.models].filter(
+      model => model.origin !== ModelOrigin.PRESET || model.isDownloaded,
+    );
 
     // Handle PRESET models using defaultModels as reference
     defaultModels.forEach(defaultModel => {
@@ -674,6 +677,7 @@ class ModelStore {
       author: '',
       name: filename,
       size: 0, // Placeholder for UI to ignore
+      description: '',
       params: 0, // Placeholder for UI to ignore
       isDownloaded: true,
       downloadUrl: '',

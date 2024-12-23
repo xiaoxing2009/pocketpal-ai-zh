@@ -63,6 +63,7 @@ describe('ModelStore', () => {
           ...completionSettingsWithoutTemperature, // Use the completionSettings without temperature - simulates new parameters
           n_predict: 101010,
         },
+        isDownloaded: true, // if not downloaded, it will be removed
       };
 
       modelStore.models[0] = existingModel;

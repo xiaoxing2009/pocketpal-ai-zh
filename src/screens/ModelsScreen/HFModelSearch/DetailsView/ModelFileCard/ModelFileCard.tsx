@@ -44,7 +44,7 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
     const isBookmarked = computed(() =>
       modelStore.models.some(
         model =>
-          model.origin === ModelOrigin.HF &&
+          //model.origin === ModelOrigin.HF &&
           model.hfModelFile?.oid === modelFile.oid,
       ),
     ).get();
@@ -52,9 +52,8 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
     const isDownloaded = computed(() =>
       modelStore.models.some(
         model =>
-          model.origin === ModelOrigin.HF &&
-          model.hfModelFile?.oid === modelFile.oid &&
-          model.isDownloaded,
+          //model.origin === ModelOrigin.HF &&
+          model.hfModelFile?.oid === modelFile.oid && model.isDownloaded,
       ),
     ).get();
 
@@ -69,7 +68,9 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
         const model = modelStore.models.find(
           (m: Model) => m.hfModelFile?.oid === modelFile.oid,
         );
-        if (model && model.isDownloaded) {
+        if (model && model.origin === ModelOrigin.PRESET) {
+          Alert.alert('Cannot Remove', 'The model is preset.');
+        } else if (model && model.isDownloaded) {
           Alert.alert(
             'Cannot Remove',
             'The model is downloaded. Please delete the file first.',

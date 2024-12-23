@@ -471,6 +471,7 @@ export function hfAsModel(
     type: extractHFModelType(hfModel.id),
     author: hfModel.author,
     name: extractHFModelTitle(modelFile.rfilename),
+    description: '',
     size: modelFile.size ?? 0,
     params: hfModel.specs?.gguf?.total ?? 0,
     isDownloaded: false,

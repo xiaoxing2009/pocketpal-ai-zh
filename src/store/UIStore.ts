@@ -27,7 +27,7 @@ export class UIStore {
 
   displayMemUsage = false;
 
-  iOSBackgroundDownloading = false;
+  iOSBackgroundDownloading = true;
 
   benchmarkShareDialog = {
     shouldShow: true,

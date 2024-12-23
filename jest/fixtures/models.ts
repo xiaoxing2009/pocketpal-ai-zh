@@ -62,6 +62,7 @@ export const mockBasicModel: Model = {
   name: 'Test Model 1',
   author: 'test-author',
   type: 'Test Model Type',
+  description: 'Test model description',
   size: 2 * 10 ** 9,
   params: 2 * 10 ** 9,
   isDownloaded: false,
