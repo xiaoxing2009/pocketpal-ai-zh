@@ -79,12 +79,42 @@ export const BenchResultCard = ({result, onDelete, onShare}: Props) => {
           </Button>
         </View>
 
-        <View style={styles.configBar}>
-          <Text variant="labelSmall">Config</Text>
-          <Text style={styles.configText}>
-            PP: {result.config.pp} • TG: {result.config.tg} • PL:{' '}
-            {result.config.pl} • Rep: {result.config.nr}
-          </Text>
+        <View style={styles.configContainer}>
+          <View style={styles.configBar}>
+            <Text variant="labelSmall">Benchmark Config</Text>
+            <Text style={styles.configText}>
+              PP: {result.config.pp} • TG: {result.config.tg} • PL:{' '}
+              {result.config.pl} • Rep: {result.config.nr}
+            </Text>
+          </View>
+
+          {result.initSettings && (
+            <View style={styles.configBar}>
+              <Text variant="labelSmall">Model Settings</Text>
+              <View style={styles.configTextContainer}>
+                <Text style={styles.configText}>
+                  Context: {result.initSettings.n_context} • Batch:{' '}
+                  {result.initSettings.n_batch} • UBatch:{' '}
+                  {result.initSettings.n_ubatch}
+                </Text>
+                <Text style={styles.configText}>
+                  CPU Threads: {result.initSettings.n_threads} • GPU Layers:{' '}
+                  {result.initSettings.n_gpu_layers}
+                </Text>
+                {result.initSettings.flash_attn ? (
+                  <Text style={styles.configText}>
+                    Flash Attention Enabled • Cache Types:{' '}
+                    {result.initSettings.cache_type_k}/
+                    {result.initSettings.cache_type_v}
+                  </Text>
+                ) : (
+                  <Text style={styles.configText}>
+                    Flash Attention Disabled
+                  </Text>
+                )}
+              </View>
+            </View>
+          )}
         </View>
 
         <View style={styles.resultsContainer}>

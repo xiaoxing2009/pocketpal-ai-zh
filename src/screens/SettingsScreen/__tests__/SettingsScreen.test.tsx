@@ -7,8 +7,6 @@ import {SettingsScreen} from '../SettingsScreen';
 
 import {modelStore, uiStore} from '../../../store';
 
-import {l10n} from '../../../utils/l10n';
-
 jest.useFakeTimers();
 
 describe('SettingsScreen', () => {
@@ -22,8 +20,9 @@ describe('SettingsScreen', () => {
       withSafeArea: true,
     });
 
-    expect(getByText(l10n.en.modelSettingsTitle)).toBeTruthy();
-    expect(getByText(l10n.en.autoOffloadLoad)).toBeTruthy();
+    expect(getByText('Model Initialization Settings')).toBeTruthy();
+    expect(getByText('Model Loading Settings')).toBeTruthy();
+    expect(getByText('App Settings')).toBeTruthy();
     expect(getByDisplayValue('1024')).toBeTruthy(); // Context size
   });
 
@@ -69,7 +68,7 @@ describe('SettingsScreen', () => {
     const contextSizeInput = getByDisplayValue('1024');
 
     fireEvent.changeText(contextSizeInput, '512');
-    fireEvent.press(getByText(l10n.en.modelSettingsTitle));
+    fireEvent.press(getByText('Model Initialization Settings'));
 
     await waitFor(() => {
       expect(Keyboard.dismiss).toHaveBeenCalled();

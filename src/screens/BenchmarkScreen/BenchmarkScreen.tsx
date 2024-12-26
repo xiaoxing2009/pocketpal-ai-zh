@@ -30,11 +30,11 @@ const DEFAULT_CONFIGS: BenchmarkConfig[] = [
 
 const BENCHMARK_PARAMS_METADATA = {
   pp: {
-    validation: {min: 64, max: 512},
+    validation: {min: 64, max: 2048},
     descriptionKey: 'Number of prompt processing tokens',
   },
   tg: {
-    validation: {min: 32, max: 512},
+    validation: {min: 32, max: 2048},
     descriptionKey: 'Number of text generation tokens',
   },
   pl: {
@@ -176,6 +176,7 @@ export const BenchmarkScreen: React.FC = observer(() => {
         peakMemoryUsage: peakMemoryUsage || undefined,
         wallTimeMs,
         uuid: uuidv4(),
+        initSettings: modelStore.activeContextSettings,
       };
 
       benchmarkStore.addResult(result);

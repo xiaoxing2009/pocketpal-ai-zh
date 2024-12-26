@@ -388,7 +388,7 @@ export type BenchmarkConfig = {
   label: string;
 };
 
-export type BenchmarkResult = {
+export interface BenchmarkResult {
   config: BenchmarkConfig;
   modelDesc: string;
   modelSize: number;
@@ -402,7 +402,7 @@ export type BenchmarkResult = {
   modelName: string;
   oid?: string;
   rfilename?: string;
-  filename: string;
+  filename?: string;
   peakMemoryUsage?: {
     total: number;
     used: number;
@@ -411,7 +411,17 @@ export type BenchmarkResult = {
   wallTimeMs?: number;
   uuid: string;
   submitted?: boolean;
-};
+  initSettings?: {
+    n_context: number;
+    n_batch: number;
+    n_ubatch: number;
+    n_threads: number;
+    flash_attn: boolean;
+    cache_type_k: CacheType;
+    cache_type_v: CacheType;
+    n_gpu_layers: number;
+  };
+}
 
 export type DeviceInfo = {
   model: string;
@@ -443,3 +453,14 @@ export type DeviceInfo = {
     hasI8mm: boolean;
   };
 };
+
+export enum CacheType {
+  F16 = 'f16',
+  F32 = 'f32',
+  Q8_0 = 'q8_0',
+  Q4_0 = 'q4_0',
+  Q4_1 = 'q4_1',
+  IQ4_NL = 'iq4_nl',
+  Q5_0 = 'q5_0',
+  Q5_1 = 'q5_1',
+}

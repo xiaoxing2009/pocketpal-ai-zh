@@ -1,4 +1,4 @@
-import {AppState, AppStateStatus, Platform} from 'react-native';
+import {AppState, AppStateStatus, Platform, NativeModules} from 'react-native';
 
 import {v4 as uuidv4} from 'uuid';
 import 'react-native-get-random-values';
@@ -19,6 +19,7 @@ import {
   stops,
 } from '../utils/chat';
 import {
+  CacheType,
   ChatTemplateConfig,
   HuggingFaceModel,
   Model,
@@ -36,8 +37,29 @@ class ModelStore {
   loadingModel: Model | undefined = undefined;
   n_context: number = 1024;
   n_gpu_layers: number = 50;
+  n_threads: number = 4;
+  max_threads: number = 4; // Will be set in constructor
+  flash_attn: boolean = false;
+  cache_type_k: CacheType = CacheType.F16;
+  cache_type_v: CacheType = CacheType.F16;
+  n_batch: number = 512;
+  n_ubatch: number = 512;
 
   activeModelId: string | undefined = undefined;
+
+  // Track initialization settings for the active context
+  activeContextSettings:
+    | {
+        n_context: number;
+        n_batch: number;
+        n_ubatch: number;
+        n_threads: number;
+        flash_attn: boolean;
+        cache_type_k: CacheType;
+        cache_type_v: CacheType;
+        n_gpu_layers: number;
+      }
+    | undefined = undefined;
 
   context: LlamaContext | undefined = undefined;
   downloadJobs = new ObservableMap(); //new Map();
@@ -52,6 +74,7 @@ class ModelStore {
 
   constructor() {
     makeAutoObservable(this, {activeModel: computed});
+    this.initializeThreadCount();
     makePersistable(this, {
       name: 'ModelStore',
       properties: [
@@ -61,6 +84,12 @@ class ModelStore {
         'n_gpu_layers',
         'useMetal',
         'n_context',
+        'n_threads',
+        'flash_attn',
+        'cache_type_k',
+        'cache_type_v',
+        'n_batch',
+        'n_ubatch',
       ],
       storage: AsyncStorage,
     }).then(() => {
@@ -69,6 +98,99 @@ class ModelStore {
 
     this.setupAppStateListener();
   }
+
+  private async initializeThreadCount() {
+    try {
+      const {DeviceInfoModule} = NativeModules;
+      const info = await DeviceInfoModule.getCPUInfo();
+      const cores = info.cores;
+      this.max_threads = cores;
+
+      // Set n_threads to 80% of cores or number of cores if 4 or less
+      if (cores <= 4) {
+        runInAction(() => {
+          this.n_threads = cores;
+        });
+      } else {
+        runInAction(() => {
+          this.n_threads = Math.floor(cores * 0.8);
+        });
+      }
+    } catch (error) {
+      console.error('Failed to get CPU info:', error);
+      // Fallback to 4 threads if we can't get the CPU info
+      runInAction(() => {
+        this.max_threads = 4;
+        this.n_threads = 4;
+      });
+    }
+  }
+
+  setNThreads = (n_threads: number) => {
+    runInAction(() => {
+      this.n_threads = n_threads;
+    });
+  };
+
+  setFlashAttn = (flash_attn: boolean) => {
+    runInAction(() => {
+      this.flash_attn = flash_attn;
+      // Reset cache types to F16 if flash attention is disabled
+      if (!flash_attn) {
+        this.cache_type_k = CacheType.F16;
+        this.cache_type_v = CacheType.F16;
+      }
+    });
+  };
+
+  setCacheTypeK = (cache_type: CacheType) => {
+    runInAction(() => {
+      // Only allow changing cache type if flash attention is enabled
+      if (this.flash_attn) {
+        this.cache_type_k = cache_type;
+      }
+    });
+  };
+
+  setCacheTypeV = (cache_type: CacheType) => {
+    runInAction(() => {
+      // Only allow changing cache type if flash attention is enabled
+      if (this.flash_attn) {
+        this.cache_type_v = cache_type;
+      }
+    });
+  };
+
+  setNBatch = (n_batch: number) => {
+    runInAction(() => {
+      this.n_batch = n_batch;
+    });
+  };
+
+  setNUBatch = (n_ubatch: number) => {
+    runInAction(() => {
+      this.n_ubatch = n_ubatch;
+    });
+  };
+
+  setNContext = (n_context: number) => {
+    runInAction(() => {
+      this.n_context = n_context;
+    });
+  };
+
+  // Helper method to get effective values respecting constraints
+  getEffectiveValues = () => {
+    const effectiveContext = this.n_context;
+    const effectiveBatch = Math.min(this.n_batch, effectiveContext);
+    const effectiveUBatch = Math.min(this.n_ubatch, effectiveBatch);
+
+    return {
+      n_context: effectiveContext,
+      n_batch: effectiveBatch,
+      n_ubatch: effectiveUBatch,
+    };
+  };
 
   initializeStore = async () => {
     const storedVersion = this.version || 0;
@@ -224,12 +346,6 @@ class ModelStore {
   setNGPULayers = (n_gpu_layers: number) => {
     runInAction(() => {
       this.n_gpu_layers = n_gpu_layers;
-    });
-  };
-
-  setNContext = (n_context: number) => {
-    runInAction(() => {
-      this.n_context = n_context;
     });
   };
 
@@ -569,12 +685,22 @@ class ModelStore {
       this.loadingModel = model;
     });
     try {
+      const effectiveValues = this.getEffectiveValues();
+      const initSettings = {
+        n_context: effectiveValues.n_context,
+        n_batch: effectiveValues.n_batch,
+        n_ubatch: effectiveValues.n_ubatch,
+        n_threads: this.n_threads,
+        flash_attn: this.flash_attn,
+        cache_type_k: this.cache_type_k,
+        cache_type_v: this.cache_type_v,
+        n_gpu_layers: this.useMetal ? this.n_gpu_layers : 0,
+      };
       const ctx = await initLlama(
         {
           model: filePath,
           use_mlock: true,
-          n_ctx: this.n_context,
-          n_gpu_layers: this.useMetal ? this.n_gpu_layers : 0, // Set as needed, 0 for no GPU // TODO ggml-metal.metal
+          ...initSettings,
           use_progress_callback: true,
         },
         (_progress: number) => {
@@ -586,6 +712,7 @@ class ModelStore {
 
       runInAction(() => {
         this.context = ctx;
+        this.activeContextSettings = initSettings;
         this.setActiveModel(model.id);
       });
       return ctx;
@@ -608,6 +735,7 @@ class ModelStore {
     console.log('released');
     runInAction(() => {
       this.context = undefined;
+      this.activeContextSettings = undefined;
       //this.activeModelId = undefined; // activeModelId is set to undefined in manualReleaseContext
     });
     return 'Context released successfully';

@@ -29,20 +29,27 @@ export const createStyles = (theme: Theme) =>
       fontSize: 12,
       color: theme.colors.onSurfaceVariant,
     },
-    configBar: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      paddingVertical: 8,
-      marginBottom: 16,
+    configContainer: {
       borderTopWidth: 1,
       borderBottomWidth: 1,
       borderColor: theme.colors.surfaceVariant,
+      marginVertical: 8,
+      paddingHorizontal: 12,
+    },
+    configBar: {
+      flexDirection: 'column',
+      alignItems: 'flex-start',
+      paddingVertical: 8,
+      gap: 4,
     },
     configText: {
       fontSize: 12,
       color: theme.colors.onSurfaceVariant,
-      textAlign: 'center',
+      flex: 1,
+    },
+    configTextContainer: {
+      gap: 4,
+      width: '100%',
     },
     resultsContainer: {
       marginBottom: 16,
