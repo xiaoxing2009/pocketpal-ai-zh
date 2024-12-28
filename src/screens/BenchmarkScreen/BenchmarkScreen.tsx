@@ -30,8 +30,9 @@ const DEFAULT_CONFIGS: BenchmarkConfig[] = [
 
 const BENCHMARK_PARAMS_METADATA = {
   pp: {
-    validation: {min: 64, max: 2048},
-    descriptionKey: 'Number of prompt processing tokens',
+    validation: {min: 64, max: 4096},
+    descriptionKey:
+      'Number of prompt processing tokens (max: physical batch size)',
   },
   tg: {
     validation: {min: 32, max: 2048},
@@ -267,6 +268,16 @@ export const BenchmarkScreen: React.FC = observer(() => {
     }
   };
 
+  const getMaxPPValue = () => {
+    if (!modelStore.activeContextSettings) {
+      return BENCHMARK_PARAMS_METADATA.pp.validation.max;
+    }
+    return Math.min(
+      modelStore.activeContextSettings.n_ubatch,
+      BENCHMARK_PARAMS_METADATA.pp.validation.max,
+    );
+  };
+
   const renderModelSelector = () => (
     <Menu
       visible={showModelMenu}
@@ -315,7 +326,11 @@ export const BenchmarkScreen: React.FC = observer(() => {
         testID={testId ?? `${name}-slider`}
         style={styles.slider}
         minimumValue={BENCHMARK_PARAMS_METADATA[name].validation.min}
-        maximumValue={BENCHMARK_PARAMS_METADATA[name].validation.max}
+        maximumValue={
+          name === 'pp'
+            ? getMaxPPValue()
+            : BENCHMARK_PARAMS_METADATA[name].validation.max
+        }
         step={step}
         value={localSliderValues[name] ?? selectedConfig[name]}
         onValueChange={value => {
@@ -330,6 +345,11 @@ export const BenchmarkScreen: React.FC = observer(() => {
       <View style={styles.sliderDescriptionContainer}>
         <Text style={styles.description}>
           {BENCHMARK_PARAMS_METADATA[name].descriptionKey}
+          {name === 'pp' && modelStore.activeContextSettings && (
+            <Text style={styles.maxValueHint}>
+              {` (max: ${getMaxPPValue()})`}
+            </Text>
+          )}
         </Text>
         <Text style={styles.settingValue}>
           {Number.isInteger(step)

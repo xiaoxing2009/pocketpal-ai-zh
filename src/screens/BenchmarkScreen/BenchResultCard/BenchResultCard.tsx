@@ -185,15 +185,6 @@ export const BenchResultCard = ({result, onDelete, onShare}: Props) => {
                 <Text style={styles.infoIcon}>ⓘ</Text>
               </View>
             </Tooltip>
-          ) : result.config.label === 'Custom' ? (
-            <Tooltip title="Custom benchmark results cannot be shared">
-              <View style={styles.tooltipContainer}>
-                <Text variant="bodySmall" style={styles.disabledText}>
-                  Cannot share
-                </Text>
-                <Text style={styles.infoIcon}>ⓘ</Text>
-              </View>
-            </Tooltip>
           ) : (
             <View style={styles.actionContainer}>
               <Button

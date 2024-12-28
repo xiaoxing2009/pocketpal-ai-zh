@@ -251,7 +251,7 @@ export const DeviceInfoCard = ({onDeviceInfo, testId}: Props) => {
             {Platform.OS === 'android' && (
               <View style={styles.deviceInfoRow}>
                 <Text variant="labelSmall" style={styles.deviceInfoLabel}>
-                  ML Instructions
+                  Instructions
                 </Text>
                 <Text variant="bodySmall" style={styles.deviceInfoValue}>
                   FP16: {deviceInfo.cpuDetails.hasFp16 ? '✓' : '✗'}, DotProd:{' '}

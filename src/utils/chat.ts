@@ -229,7 +229,6 @@ export const defaultCompletionParams: CompletionParams = {
   mirostat: 0, //Enable Mirostat sampling, controlling perplexity during text generation. Default: `0`, where `0` is disabled, `1` is Mirostat, and `2` is Mirostat 2.0.
   mirostat_tau: 5, // Set the Mirostat target entropy, parameter tau. Default: `5.0`
   mirostat_eta: 0.1, // Set the Mirostat learning rate, parameter eta.  Default: `0.1`
-  penalize_nl: false, //Penalize newline tokens when applying the repeat penalty.
   seed: 0,
   n_probs: 0, // If greater than 0, the response also contains the probabilities of top N tokens for each generated token given the sampling settings.
   stop: ['</s>'],

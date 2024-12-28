@@ -27,7 +27,6 @@ export const mockDefaultCompletionParams: CompletionParams = {
   mirostat: 0,
   mirostat_tau: 5,
   mirostat_eta: 0.1,
-  penalize_nl: false,
   seed: 0,
   n_probs: 0,
   stop: ['</s>'],

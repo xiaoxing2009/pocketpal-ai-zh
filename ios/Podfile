@@ -12,11 +12,6 @@ linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
   Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
   use_frameworks! :linkage => linkage.to_sym
-else
-  # Configure CocoaPods to use static frameworks required for Firebase. 
-  # Firebase is used exclusively for sending benchmarks (with user consent) to Hugging Face Spaces.
-  # Firebase enables App Check functionality, ensuring unauthenticated users can securely submit their benchmark data.
-  use_frameworks! :linkage => :static
 end
 
 # Enable Firebase as a static framework
@@ -38,6 +33,13 @@ target 'PocketPal' do
     # Pods for testing
   end
 
+  # Firebase (App Check)
+  pod 'Firebase', :modular_headers => true
+  pod 'FirebaseCore', :modular_headers => true
+  pod 'FirebaseAppCheck', :modular_headers => true
+  pod 'GoogleUtilities', :modular_headers => true
+
+
   post_install do |installer|
     # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
     react_native_post_install(
@@ -48,8 +50,5 @@ target 'PocketPal' do
     )
   end
 
-  # Firebase (App Check)
-  pod 'Firebase', :modular_headers => true
-  pod 'FirebaseCore', :modular_headers => true
-  pod 'FirebaseAppCheck', :modular_headers => true
+
 end

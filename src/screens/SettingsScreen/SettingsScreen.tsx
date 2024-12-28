@@ -169,9 +169,9 @@ export const SettingsScreen: React.FC = observer(() => {
                       )}
                     </Text>
                   </View>
+                  <Divider />
                 </>
               )}
-              <Divider />
 
               {/* Context Size */}
               <View style={styles.settingItemContainer}>
@@ -335,10 +335,9 @@ export const SettingsScreen: React.FC = observer(() => {
                             : 'Enable Flash Attention to change cache type'}
                         </Text>
                       </View>
-                      <View
-                        style={styles.menuContainer}
-                        ref={keyCacheButtonRef}>
+                      <View style={styles.menuContainer}>
                         <Button
+                          ref={keyCacheButtonRef}
                           mode="outlined"
                           onPress={handleKeyCachePress}
                           style={styles.menuButton}
@@ -393,10 +392,9 @@ export const SettingsScreen: React.FC = observer(() => {
                             : 'Enable Flash Attention to change cache type'}
                         </Text>
                       </View>
-                      <View
-                        style={styles.menuContainer}
-                        ref={valueCacheButtonRef}>
+                      <View style={styles.menuContainer}>
                         <Button
+                          ref={valueCacheButtonRef}
                           mode="outlined"
                           onPress={handleValueCachePress}
                           style={styles.menuButton}
@@ -509,47 +507,57 @@ export const SettingsScreen: React.FC = observer(() => {
                     }
                   />
                 </View>
-                <Divider />
 
                 {/* iOS Background Download */}
                 {Platform.OS === 'ios' && (
-                  <View style={styles.switchContainer}>
-                    <View style={styles.textContainer}>
-                      <Text variant="titleMedium" style={styles.textLabel}>
-                        {l10n.iOSBackgroundDownload}
-                      </Text>
-                      <Text variant="labelSmall" style={styles.textDescription}>
-                        {l10n.iOSBackgroundDownloadDescription}
-                      </Text>
+                  <>
+                    <Divider />
+                    <View style={styles.switchContainer}>
+                      <View style={styles.textContainer}>
+                        <Text variant="titleMedium" style={styles.textLabel}>
+                          {l10n.iOSBackgroundDownload}
+                        </Text>
+                        <Text
+                          variant="labelSmall"
+                          style={styles.textDescription}>
+                          {l10n.iOSBackgroundDownloadDescription}
+                        </Text>
+                      </View>
+                      <Switch
+                        testID="ios-background-download-switch"
+                        value={uiStore.iOSBackgroundDownloading}
+                        onValueChange={value =>
+                          uiStore.setiOSBackgroundDownloading(value)
+                        }
+                      />
                     </View>
-                    <Switch
-                      testID="ios-background-download-switch"
-                      value={uiStore.iOSBackgroundDownloading}
-                      onValueChange={value =>
-                        uiStore.setiOSBackgroundDownloading(value)
-                      }
-                    />
-                  </View>
+                  </>
                 )}
-                <Divider />
 
                 {/* Display Memory Usage (iOS only) */}
                 {Platform.OS === 'ios' && (
-                  <View style={styles.switchContainer}>
-                    <View style={styles.textContainer}>
-                      <Text variant="titleMedium" style={styles.textLabel}>
-                        {l10n.displayMemoryUsage}
-                      </Text>
-                      <Text variant="labelSmall" style={styles.textDescription}>
-                        {l10n.displayMemoryUsageDescription}
-                      </Text>
+                  <>
+                    <Divider />
+                    <View style={styles.switchContainer}>
+                      <View style={styles.textContainer}>
+                        <Text variant="titleMedium" style={styles.textLabel}>
+                          {l10n.displayMemoryUsage}
+                        </Text>
+                        <Text
+                          variant="labelSmall"
+                          style={styles.textDescription}>
+                          {l10n.displayMemoryUsageDescription}
+                        </Text>
+                      </View>
+                      <Switch
+                        testID="display-memory-usage-switch"
+                        value={uiStore.displayMemUsage}
+                        onValueChange={value =>
+                          uiStore.setDisplayMemUsage(value)
+                        }
+                      />
                     </View>
-                    <Switch
-                      testID="display-memory-usage-switch"
-                      value={uiStore.displayMemUsage}
-                      onValueChange={value => uiStore.setDisplayMemUsage(value)}
-                    />
-                  </View>
+                  </>
                 )}
               </View>
             </Card.Content>

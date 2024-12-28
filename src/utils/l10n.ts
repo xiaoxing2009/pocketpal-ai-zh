@@ -95,7 +95,6 @@ export const l10n = {
       'Penalize overused words. Higher values encourage using a broader vocabulary',
     'modelSettings.penalty_present':
       'Reduce repetition of themes and ideas. Higher values encourage more diverse content',
-    'modelSettings.penalize_nl': 'Penalize newline tokens.',
     'modelSettings.mirostat':
       'Enable advanced control over response creativity. Set to 1 or 2 (smoother) for smart, real-time adjustments to randomness and coherence.',
     'modelSettings.mirostat_tau':
@@ -227,8 +226,6 @@ export const l10n = {
       'Controlar la repetición de secuencias de tokens',
     'modelSettings.penalty_freq': 'Penalización de frecuencia alfa repetida',
     'modelSettings.penalty_present': 'Penalización de presencia alfa repetida',
-    'modelSettings.penalize_nl':
-      'Aplicar penalización por repetición a tokens de nueva línea',
     'modelSettings.mirostat':
       'Habilitar muestreo Mirostat para control de perplejidad',
     'modelSettings.mirostat_tau': 'Entropía objetivo de Mirostat (tau)',
@@ -336,7 +333,6 @@ export const l10n = {
     'modelSettings.penalty_repeat': '토큰 시퀀스의 반복 제어',
     'modelSettings.penalty_freq': '반복 알파 빈도 페널티',
     'modelSettings.penalty_present': '반복 알파 존재 페널티',
-    'modelSettings.penalize_nl': '바꿈 토큰에 반복 페널티 적용',
     'modelSettings.mirostat': '혼란도 제어를 위한 Mirostat 샘플링 활성화',
     'modelSettings.mirostat_tau': 'Mirostat 목표 엔트로피 (tau)',
     'modelSettings.mirostat_eta': 'Mirostat 학습률 (eta)',
@@ -446,8 +442,6 @@ export const l10n = {
     'modelSettings.penalty_repeat': 'Kontroluj powtarzanie sekwencji tokenów',
     'modelSettings.penalty_freq': 'Penalidade de frequência alfa repetida',
     'modelSettings.penalty_present': 'Penalidade de presença alfa repetida',
-    'modelSettings.penalize_nl':
-      'Aplicar penalidade de repetição a tokens de nova linha',
     'modelSettings.mirostat':
       'Habilitar amostragem Mirostat para controle de perplexidade',
     'modelSettings.mirostat_tau': 'Entropia alvo do Mirostat (tau)',
@@ -564,8 +558,6 @@ export const l10n = {
       'Controlar repetição de sequências de tokens',
     'modelSettings.penalty_freq': 'Penalidade de frequência alfa repetida',
     'modelSettings.penalty_present': 'Penalidade de presença alfa repetida',
-    'modelSettings.penalize_nl':
-      'Aplicar penalidade de repetição a tokens de nova linha',
     'modelSettings.mirostat':
       'Habilitar amostragem Mirostat para controle de perplexidade',
     'modelSettings.mirostat_tau': 'Entropia alvo do Mirostat (tau)',
@@ -685,8 +677,6 @@ export const l10n = {
       'Контролювати повторення послідовностей токенів',
     'modelSettings.penalty_freq': 'Штраф за частоту повторення альфа',
     'modelSettings.penalty_present': 'Штраф за присутність повторення альфа',
-    'modelSettings.penalize_nl':
-      'Застосувати штраф за повторення до токенів нового рядка',
     'modelSettings.mirostat':
       'Увімкнути вибірку Mirostat для контролю перплексії',
     'modelSettings.mirostat_tau': 'Цільова ентропія Mirostat (tau)',
@@ -799,7 +789,6 @@ export const l10n = {
     'modelSettings.penalty_repeat': 'Token dizilerinin tekrarını kontrol et',
     'modelSettings.penalty_freq': 'Tekrar alfa frekans cezası',
     'modelSettings.penalty_present': 'Tekrar alfa varlık cezası',
-    'modelSettings.penalize_nl': 'Yeni satır tokenlerine tekrar cezası uygula',
     'modelSettings.mirostat':
       'Perpleksite kontrolü için Mirostat örneklemeyi etkinleştir',
     'modelSettings.mirostat_tau': 'Mirostat hedef entropi (tau)',
@@ -916,8 +905,6 @@ export const l10n = {
       'Контролювати повторення послідовностей токенів',
     'modelSettings.penalty_freq': 'Штраф за частоту повторення альфа',
     'modelSettings.penalty_present': 'Штраф за присутність повторення альфа',
-    'modelSettings.penalize_nl':
-      'Застосувати штраф за повторення до токенів нового рядка',
     'modelSettings.mirostat':
       'Увімкнути вибірку Mirostat для контролю перплексії',
     'modelSettings.mirostat_tau': 'Цільова ентропія Mirostat (tau)',
@@ -1036,8 +1023,6 @@ export const l10n = {
       'Controlar la repetición de secuencias de tokens',
     'modelSettings.penalty_freq': 'Penalización de frecuencia alfa repetida',
     'modelSettings.penalty_present': 'Penalización de presencia alfa repetida',
-    'modelSettings.penalize_nl':
-      'Aplicar penalización por repetición a tokens de nueva línea',
     'modelSettings.mirostat':
       'Habilitar muestreo Mirostat para control de perplejidad',
     'modelSettings.mirostat_tau': 'Entropía objetivo de Mirostat (tau)',

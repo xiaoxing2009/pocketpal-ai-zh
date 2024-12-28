@@ -98,6 +98,7 @@ export const CompletionSettings: React.FC<Props> = ({settings, onChange}) => {
     );
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const renderSwitch = (name: string) => (
     <View style={[styles.settingItem, styles.row]}>
       <View>
@@ -212,7 +213,6 @@ export const CompletionSettings: React.FC<Props> = ({settings, onChange}) => {
           {renderSlider({name: 'mirostat_eta'})}
         </>
       )}
-      {renderSwitch('penalize_nl')}
       {renderIntegerInput({name: 'seed'})}
       {renderStopWords()}
     </View>

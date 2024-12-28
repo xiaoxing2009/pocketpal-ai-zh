@@ -159,4 +159,8 @@ export const createStyles = (theme: Theme) =>
       marginLeft: 12,
       flex: 1,
     },
+    maxValueHint: {
+      color: theme.colors.onSurfaceVariant,
+      fontStyle: 'italic',
+    },
   });

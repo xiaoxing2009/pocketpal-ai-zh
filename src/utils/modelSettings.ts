@@ -96,11 +96,6 @@ export const COMPLETION_PARAMS_METADATA: Partial<
     defaultValue: defaultCompletionParams.mirostat_eta,
     descriptionKey: 'modelSettings.mirostat_eta',
   },
-  penalize_nl: {
-    validation: {type: 'boolean', required: true},
-    defaultValue: defaultCompletionParams.penalize_nl,
-    descriptionKey: 'modelSettings.penalize_nl',
-  },
   seed: {
     validation: {
       type: 'numeric',

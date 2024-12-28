@@ -69,10 +69,6 @@ describe('CompletionSettings', () => {
     const mirostatEtaSlider = getByTestId('mirostat_eta-slider');
     expect(mirostatEtaSlider.props.value).toBe(0.1);
 
-    expect(getByTestId('penalize_nl-switch')).toBeTruthy();
-    const penalizeNlSwitch = getByTestId('penalize_nl-switch');
-    expect(penalizeNlSwitch.props.value).toBe(false);
-
     expect(getByTestId('seed-input')).toBeTruthy();
     const seedInput = getByTestId('seed-input');
     expect(seedInput.props.value).toBe('0');
@@ -111,20 +107,6 @@ describe('CompletionSettings', () => {
     const nPredictInput = getByTestId('n_predict-input');
     fireEvent.changeText(nPredictInput, '1024');
     expect(mockOnChange).toHaveBeenCalledWith('n_predict', '1024');
-  });
-
-  it('handles switch toggle', () => {
-    const mockOnChange = jest.fn();
-    const {getByTestId} = render(
-      <CompletionSettings
-        settings={mockCompletionParams}
-        onChange={mockOnChange}
-      />,
-    );
-
-    const penalizeNlSwitch = getByTestId('penalize_nl-switch');
-    fireEvent(penalizeNlSwitch, 'valueChange', false);
-    expect(mockOnChange).toHaveBeenCalledWith('penalize_nl', false);
   });
 
   it('handles chip selection', () => {
