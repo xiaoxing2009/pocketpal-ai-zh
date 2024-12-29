@@ -71,7 +71,8 @@ export const ModelsHeaderRight = observer(() => {
             onPress={() => setMenuVisible(true)}
             testID="models-menu-button"
           />
-        }>
+        }
+        anchorPosition="bottom">
         {/* Filter section */}
         <Menu.Item label="Filters" isGroupLabel style={styles.menuItem} />
         <Menu.Item

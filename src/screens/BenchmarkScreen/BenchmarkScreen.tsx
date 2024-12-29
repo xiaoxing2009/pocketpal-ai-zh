@@ -28,23 +28,37 @@ const DEFAULT_CONFIGS: BenchmarkConfig[] = [
   {pp: 128, tg: 32, pl: 1, nr: 3, label: 'Fast'},
 ];
 
+const getBinarySteps = (min: number, max: number): number[] => {
+  const steps: number[] = [];
+  let current = min;
+  while (current <= max) {
+    steps.push(current);
+    current *= 2;
+  }
+  return steps;
+};
+
 const BENCHMARK_PARAMS_METADATA = {
   pp: {
     validation: {min: 64, max: 4096},
     descriptionKey:
       'Number of prompt processing tokens (max: physical batch size)',
+    steps: getBinarySteps(64, 4096),
   },
   tg: {
     validation: {min: 32, max: 2048},
     descriptionKey: 'Number of text generation tokens',
+    steps: getBinarySteps(32, 2048),
   },
   pl: {
     validation: {min: 1, max: 4},
     descriptionKey: 'Pipeline parallel size',
+    steps: [1, 2, 3, 4],
   },
   nr: {
     validation: {min: 1, max: 10},
     descriptionKey: 'Number of repetitions',
+    steps: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
   },
 };
 
@@ -55,9 +69,6 @@ export const BenchmarkScreen: React.FC = observer(() => {
   );
   const [showModelMenu, setShowModelMenu] = useState(false);
   const [selectedModel, setSelectedModel] = useState<Model | null>(null);
-  const [localSliderValues, setLocalSliderValues] = useState<{
-    [key: string]: number;
-  }>({});
   const [showAdvancedDialog, setShowAdvancedDialog] = useState(false);
   const [deleteConfirmVisible, setDeleteConfirmVisible] = useState(false);
   const [pendingDeleteTimestamp, setPendingDeleteTimestamp] = useState<
@@ -76,6 +87,14 @@ export const BenchmarkScreen: React.FC = observer(() => {
   const theme = useTheme();
   const styles = createStyles(theme);
 
+  const handleSliderChange = (name: string, value: number) => {
+    setSelectedConfig(prev => ({
+      ...prev,
+      [name]: value,
+      label: 'Custom',
+    }));
+  };
+
   const handleModelSelect = async (model: Model) => {
     setShowModelMenu(false);
     if (model.id !== modelStore.activeModelId) {
@@ -90,14 +109,6 @@ export const BenchmarkScreen: React.FC = observer(() => {
     } else {
       setSelectedModel(model);
     }
-  };
-
-  const handleSliderChange = (name: string, value: number) => {
-    setSelectedConfig(prev => ({
-      ...prev,
-      [name]: value,
-      label: 'Custom',
-    }));
   };
 
   const trackPeakMemoryUsage = async () => {
@@ -193,7 +204,6 @@ export const BenchmarkScreen: React.FC = observer(() => {
 
   const handlePresetSelect = (config: BenchmarkConfig) => {
     setSelectedConfig(config);
-    setLocalSliderValues({});
   };
 
   const handleDeleteResult = (timestamp: string) => {
@@ -311,56 +321,54 @@ export const BenchmarkScreen: React.FC = observer(() => {
 
   const renderSlider = ({
     name,
-    step = 1,
     testId,
   }: {
     name: keyof typeof BENCHMARK_PARAMS_METADATA;
-    step?: number;
     testId?: string;
-  }) => (
-    <View style={styles.settingItem}>
-      <Text variant="labelSmall" style={styles.settingLabel}>
-        {name.toUpperCase()}
-      </Text>
-      <Slider
-        testID={testId ?? `${name}-slider`}
-        style={styles.slider}
-        minimumValue={BENCHMARK_PARAMS_METADATA[name].validation.min}
-        maximumValue={
-          name === 'pp'
-            ? getMaxPPValue()
-            : BENCHMARK_PARAMS_METADATA[name].validation.max
-        }
-        step={step}
-        value={localSliderValues[name] ?? selectedConfig[name]}
-        onValueChange={value => {
-          setLocalSliderValues(prev => ({...prev, [name]: value}));
-        }}
-        onSlidingComplete={value => {
-          handleSliderChange(name, value);
-        }}
-        thumbTintColor={theme.colors.primary}
-        minimumTrackTintColor={theme.colors.primary}
-      />
-      <View style={styles.sliderDescriptionContainer}>
-        <Text style={styles.description}>
-          {BENCHMARK_PARAMS_METADATA[name].descriptionKey}
-          {name === 'pp' && modelStore.activeContextSettings && (
-            <Text style={styles.maxValueHint}>
-              {` (max: ${getMaxPPValue()})`}
-            </Text>
-          )}
+  }) => {
+    const metadata = BENCHMARK_PARAMS_METADATA[name];
+    let steps = metadata.steps;
+
+    if (name === 'pp') {
+      const maxValue = getMaxPPValue();
+      steps = steps.filter(step => step <= maxValue);
+    }
+
+    const stepIndex = steps.indexOf(selectedConfig[name]);
+
+    return (
+      <View style={styles.settingItem}>
+        <Text variant="labelSmall" style={styles.settingLabel}>
+          {name.toUpperCase()}
         </Text>
-        <Text style={styles.settingValue}>
-          {Number.isInteger(step)
-            ? Math.round(
-                localSliderValues[name] ?? selectedConfig[name],
-              ).toString()
-            : (localSliderValues[name] ?? selectedConfig[name]).toFixed(2)}
-        </Text>
+        <Slider
+          testID={testId ?? `${name}-slider`}
+          style={styles.slider}
+          minimumValue={0}
+          maximumValue={steps.length - 1}
+          step={1}
+          value={stepIndex}
+          onValueChange={index => {
+            const value = steps[Math.round(index)];
+            handleSliderChange(name, value);
+          }}
+          thumbTintColor={theme.colors.primary}
+          minimumTrackTintColor={theme.colors.primary}
+        />
+        <View style={styles.sliderDescriptionContainer}>
+          <Text style={styles.description}>
+            {metadata.descriptionKey}
+            {name === 'pp' && modelStore.activeContextSettings && (
+              <Text style={styles.maxValueHint}>
+                {` (max: ${getMaxPPValue()})`}
+              </Text>
+            )}
+          </Text>
+          <Text style={styles.settingValue}>{selectedConfig[name]}</Text>
+        </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   const renderAdvancedSettings = () => (
     <Dialog
@@ -368,6 +376,7 @@ export const BenchmarkScreen: React.FC = observer(() => {
       visible={showAdvancedDialog}
       onDismiss={() => setShowAdvancedDialog(false)}
       title="Advanced Settings"
+      scrollable
       actions={[
         {
           label: 'Done',

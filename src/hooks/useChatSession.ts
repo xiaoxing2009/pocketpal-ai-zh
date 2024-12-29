@@ -84,6 +84,7 @@ export const useChatSession = (
     addMessage(textMessage);
     modelStore.setInferencing(true);
     modelStore.setIsStreaming(false);
+    chatSessionStore.setIsGenerating(true);
 
     const id = randId();
     const createdAt = Date.now();
@@ -147,9 +148,11 @@ export const useChatSession = (
       });
       modelStore.setInferencing(false);
       modelStore.setIsStreaming(false);
+      chatSessionStore.setIsGenerating(false);
     } catch (error) {
       modelStore.setInferencing(false);
       modelStore.setIsStreaming(false);
+      chatSessionStore.setIsGenerating(false);
       const errorMessage = (error as Error).message;
       if (errorMessage.includes('network')) {
         // TODO: This can be removed. We don't use network for chat.

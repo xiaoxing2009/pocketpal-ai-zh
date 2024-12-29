@@ -28,8 +28,6 @@ export const createStyles = (theme: Theme) =>
       justifyContent: 'space-between',
       alignItems: 'center',
       padding: 16,
-      borderBottomWidth: 1,
-      borderBottomColor: theme.colors.outline,
     },
     headerContent: {
       flex: 1,

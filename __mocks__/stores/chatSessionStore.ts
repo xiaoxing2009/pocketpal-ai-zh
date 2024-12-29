@@ -21,6 +21,7 @@ export const mockChatSessionStore = {
   exitEditMode: jest.fn(),
   enterEditMode: jest.fn(),
   removeMessagesFromId: jest.fn(),
+  setIsGenerating: jest.fn(),
 };
 
 Object.defineProperty(mockChatSessionStore, 'currentSessionMessages', {

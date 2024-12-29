@@ -72,7 +72,6 @@ export const createStyles = (theme: Theme) =>
       marginTop: 8,
     },
     advancedAccordion: {
-      borderRadius: 8,
       height: 55,
       backgroundColor: theme.colors.surface,
     },

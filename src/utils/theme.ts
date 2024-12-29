@@ -36,13 +36,13 @@ const createBaseColors = (isDark: boolean): MD3BaseColors => {
       onError: '#4C100D',
       errorContainer: '#661511',
       onErrorContainer: '#E6ACA9',
-      background: '#121212',
-      onBackground: '#e5e5e6',
+      background: '#000000',
+      onBackground: '#ffffff',
       surface: '#1E1E1E',
       onSurface: '#e5e5e6',
       surfaceVariant: '#646466',
       onSurfaceVariant: '#e3e4e6',
-      outline: '#b0b1b3',
+      outline: '#444444',
       outlineVariant: '#a1a1a1',
       // Additional required MD3 colors
       surfaceDisabled: withOpacity('#333333', 0.12),
@@ -53,6 +53,7 @@ const createBaseColors = (isDark: boolean): MD3BaseColors => {
       inverseSecondary: md3BaseColors.secondary!,
       shadow: '#ffffff',
       scrim: 'rgba(0, 0, 0, 0.25)',
+      backdrop: 'rgba(255, 255, 255, 0.2)',
     };
   }
 
@@ -74,9 +75,9 @@ const createBaseColors = (isDark: boolean): MD3BaseColors => {
     onError: '#FFFFFF',
     errorContainer: '#E6ACA9',
     onErrorContainer: '#330B09',
-    background: '#F5F5F5',
-    onBackground: '#333333',
-    surface: '#ffffff',
+    background: '#ffffff',
+    onBackground: '#111111',
+    surface: '#f1f3f5',
     onSurface: '#333333',
     surfaceVariant: '#e4e4e6',
     onSurfaceVariant: '#646466',
@@ -91,6 +92,7 @@ const createBaseColors = (isDark: boolean): MD3BaseColors => {
     inverseSecondary: '#95ABE6',
     shadow: '#000000',
     scrim: 'rgba(0, 0, 0, 0.25)',
+    backdrop: 'rgba(0, 0, 0, 0.5)',
   };
 };
 
@@ -123,6 +125,7 @@ const createSemanticColors = (
 
   border: withOpacity(baseColors.onSurface, 0.05),
   placeholder: withOpacity(baseColors.onSurface, 0.3),
+  text: baseColors.onBackground,
   textSecondary: withOpacity(baseColors.onSurface, 0.5),
   inverseText: baseColors.inverseOnSurface,
   inverseTextSecondary: withOpacity(baseColors.inverseOnSurface, 0.5),
@@ -135,7 +138,7 @@ const createSemanticColors = (
   focusStateOpacity: stateLayerOpacity.focus,
 
   // Menu specific
-  menuBackground: baseColors.surface,
+  menuBackground: isDark ? '#2a2a2a' : baseColors.surface,
   menuBackgroundDimmed: withOpacity(baseColors.surface, 0.9),
   menuBackgroundActive: withOpacity(baseColors.primary, 0.08),
   menuSeparator: withOpacity(baseColors.primary, 0.5),
@@ -146,9 +149,7 @@ const createSemanticColors = (
   menuDangerText: baseColors.error,
 
   // Message specific
-  authorBubbleBackground: isDark
-    ? 'rgba(255, 255, 255, 0.03)'
-    : 'rgba(0, 0, 0, 0.04)',
+  authorBubbleBackground: isDark ? '#212121' : '#f2f2f2',
   receivedMessageDocumentIcon: baseColors.primary,
   sentMessageDocumentIcon: baseColors.onSurface,
   userAvatarImageBackground: 'transparent',

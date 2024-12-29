@@ -4,7 +4,7 @@ import {Theme} from '../../utils/types';
 
 export const createTagsStyles = (theme: Theme) => ({
   body: {
-    color: theme.colors.onSurface,
+    color: theme.colors.text,
     fontSize: 16,
     fontFamily:
       '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',

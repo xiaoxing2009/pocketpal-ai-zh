@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 
 import {Theme} from '../../../utils/types';
 
@@ -24,8 +24,12 @@ export const createStyles = (theme: Theme) =>
       textAlign: 'right',
     },
     slider: {
-      width: '100%',
-      height: 40,
+      ...Platform.select({
+        android: {
+          marginLeft: -12,
+          marginRight: -10,
+        },
+      }),
     },
     divider: {
       marginVertical: 16,

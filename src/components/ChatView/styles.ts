@@ -34,4 +34,23 @@ export const createStyles = ({theme}: {theme: Theme}) =>
     menu: {
       width: 170,
     },
+    scrollToBottomButton: {
+      position: 'absolute',
+      right: 16,
+      bottom: 40, // Above the input area
+      backgroundColor: theme.colors.primary,
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      justifyContent: 'center',
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+    },
   });

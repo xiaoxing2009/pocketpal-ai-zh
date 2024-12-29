@@ -25,10 +25,22 @@ class ChatSessionStore {
   activeSessionId: string | null = null;
   isEditMode: boolean = false;
   editingMessageId: string | null = null;
+  isGenerating: boolean = false;
 
   constructor() {
     makeAutoObservable(this);
     this.loadSessionList();
+  }
+
+  get shouldShowHeaderDivider(): boolean {
+    return (
+      !this.activeSessionId ||
+      (this.currentSessionMessages.length === 0 && !this.isGenerating)
+    );
+  }
+
+  setIsGenerating(value: boolean) {
+    this.isGenerating = value;
   }
 
   async loadSessionList(): Promise<void> {

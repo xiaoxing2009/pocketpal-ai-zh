@@ -8,10 +8,12 @@ export const createStyles = (theme: Theme, scrollableBorderShown?: boolean) =>
   StyleSheet.create({
     dialog: {
       //maxHeight: '90%',
-      backgroundColor: theme.colors.surface,
+      backgroundColor: theme.colors.background,
       borderRadius: 15,
       margin: 0,
       padding: 0,
+      width: '92%',
+      alignSelf: 'center',
     },
     dialogTitle: {
       fontSize: 16,
@@ -19,10 +21,10 @@ export const createStyles = (theme: Theme, scrollableBorderShown?: boolean) =>
     },
     dialogContent: {
       maxHeight: dialogHeight,
-      paddingHorizontal: 16,
+      paddingHorizontal: 24,
       borderTopWidth: scrollableBorderShown ? 1 : 0,
       borderBottomWidth: scrollableBorderShown ? 1 : 0,
-      backgroundColor: theme.colors.surface,
+      backgroundColor: theme.colors.background,
     },
     dialogScrollArea: {},
     dialogActionButton: {

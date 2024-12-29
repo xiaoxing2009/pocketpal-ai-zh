@@ -5,7 +5,7 @@ export const createStyles = (theme: Theme) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: theme.colors.surface,
+      backgroundColor: theme.colors.background,
     },
     scrollView: {
       flex: 1,
@@ -13,11 +13,12 @@ export const createStyles = (theme: Theme) =>
     },
     card: {
       marginBottom: 16,
-      backgroundColor: theme.colors.surface,
     },
     description: {
-      marginBottom: 16,
+      flex: 1,
       color: theme.colors.onSurfaceVariant,
+      paddingRight: 8,
+      fontSize: 12,
     },
     warning: {
       color: theme.colors.error,
@@ -71,9 +72,17 @@ export const createStyles = (theme: Theme) =>
       textAlign: 'right',
       color: theme.colors.onSurface,
       marginTop: 0,
+      minWidth: 40,
+      marginLeft: 8,
     },
     slider: {
-      height: 40,
+      //height: 40,
+      ...Platform.select({
+        android: {
+          marginLeft: -12,
+          marginRight: -10,
+        },
+      }),
     },
     sectionTitle: {
       color: theme.colors.primary,
@@ -110,7 +119,6 @@ export const createStyles = (theme: Theme) =>
     resultsCard: {
       marginTop: 16,
       padding: 0,
-      backgroundColor: theme.colors.surface,
     },
     resultItem: {
       marginBottom: 16,

@@ -6,6 +6,6 @@ export const createStyles = (theme: Theme) =>
   StyleSheet.create({
     separator: {
       height: 1,
-      backgroundColor: theme.colors.background,
+      backgroundColor: theme.colors.outline,
     },
   });

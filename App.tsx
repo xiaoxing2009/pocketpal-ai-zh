@@ -14,7 +14,8 @@ import {
 } from 'react-native-gesture-handler';
 
 import {useTheme} from './src/hooks';
-import {modelStore} from './src/store';
+import {Theme} from './src/utils/types';
+import {modelStore, chatSessionStore} from './src/store';
 import {HeaderRight, SidebarContent, ModelsHeaderRight} from './src/components';
 import {
   ChatScreen,
@@ -40,6 +41,7 @@ const App = observer(() => {
   }, []);
 
   const theme = useTheme();
+  const styles = createStyles(theme);
 
   return (
     <GestureHandlerRootView style={styles.root}>
@@ -65,22 +67,32 @@ const App = observer(() => {
                   options={{
                     title: chatTitle,
                     headerRight: () => <HeaderRight />,
+                    headerStyle: chatSessionStore.shouldShowHeaderDivider
+                      ? styles.headerWithDivider
+                      : styles.headerWithoutDivider,
                   }}
                 />
                 <Drawer.Screen
                   name="Models"
                   component={gestureHandlerRootHOC(ModelsScreen)}
-                  options={({}) => ({
+                  options={{
                     headerRight: () => <ModelsHeaderRight />,
-                  })}
+                    headerStyle: styles.headerWithoutDivider,
+                  }}
                 />
                 <Drawer.Screen
                   name="Settings"
                   component={gestureHandlerRootHOC(SettingsScreen)}
+                  options={{
+                    headerStyle: styles.headerWithoutDivider,
+                  }}
                 />
                 <Drawer.Screen
                   name="Benchmark"
                   component={gestureHandlerRootHOC(BenchmarkScreen)}
+                  options={{
+                    headerStyle: styles.headerWithoutDivider,
+                  }}
                 />
               </Drawer.Navigator>
             </NavigationContainer>
@@ -91,10 +103,20 @@ const App = observer(() => {
   );
 });
 
-const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-  },
-});
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    root: {
+      flex: 1,
+    },
+    headerWithoutDivider: {
+      elevation: 0,
+      shadowOpacity: 0,
+      borderBottomWidth: 0,
+      backgroundColor: theme.colors.background,
+    },
+    headerWithDivider: {
+      backgroundColor: theme.colors.background,
+    },
+  });
 
 export default App;

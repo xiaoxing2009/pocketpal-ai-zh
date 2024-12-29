@@ -8,12 +8,14 @@ import {
   StatusBar,
   StatusBarProps,
   View,
+  TouchableOpacity,
 } from 'react-native';
 
 import dayjs from 'dayjs';
 import {observer} from 'mobx-react';
 import calendar from 'dayjs/plugin/calendar';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {useComponentSize} from '../KeyboardAccessoryView/hooks';
 
@@ -167,7 +169,39 @@ export const ChatView = observer(
     user,
   }: ChatProps) => {
     const theme = useTheme();
+    const styles = createStyles({theme});
+
     const [inputText, setInputText] = React.useState('');
+
+    const {onLayout, size} = useComponentSize();
+    const animationRef = React.useRef(false);
+    const list = React.useRef<FlatList<MessageType.DerivedAny>>(null);
+    const insets = useSafeAreaInsets();
+    const [isImageViewVisible, setIsImageViewVisible] = React.useState(false);
+    const [isNextPageLoading, setNextPageLoading] = React.useState(false);
+    const [imageViewIndex, setImageViewIndex] = React.useState(0);
+    const [stackEntry, setStackEntry] = React.useState<StatusBarProps>({});
+
+    const [showScrollButton, setShowScrollButton] = React.useState(false);
+    const [isUserScrolling, setIsUserScrolling] = React.useState(false);
+
+    const handleScroll = React.useCallback(event => {
+      const {contentOffset} = event.nativeEvent;
+      const isAtTop = contentOffset.y <= 0;
+      setShowScrollButton(!isAtTop);
+    }, []);
+
+    const scrollToBottom = React.useCallback(() => {
+      list.current?.scrollToOffset({
+        animated: true,
+        offset: 0,
+      });
+      setIsUserScrolling(false);
+    }, []);
+
+    const handleScrollBeginDrag = React.useCallback(() => {
+      setIsUserScrolling(true);
+    }, []);
 
     const wrappedOnSendPress = React.useCallback(
       async (message: MessageType.PartialText) => {
@@ -176,6 +210,7 @@ export const ChatView = observer(
         }
         onSendPress(message);
         setInputText('');
+        setIsUserScrolling(false);
       },
       [onSendPress],
     );
@@ -192,17 +227,6 @@ export const ChatView = observer(
         handleSendPress: wrappedOnSendPress,
         setInputText,
       });
-
-    const styles = createStyles({theme});
-
-    const {onLayout, size} = useComponentSize();
-    const animationRef = React.useRef(false);
-    const list = React.useRef<FlatList<MessageType.DerivedAny>>(null);
-    const insets = useSafeAreaInsets();
-    const [isImageViewVisible, setIsImageViewVisible] = React.useState(false);
-    const [isNextPageLoading, setNextPageLoading] = React.useState(false);
-    const [imageViewIndex, setImageViewIndex] = React.useState(0);
-    const [stackEntry, setStackEntry] = React.useState<StatusBarProps>({});
 
     const l10nValue = React.useMemo(
       () => ({...l10n[locale], ...unwrap(l10nOverride)}),
@@ -464,7 +488,7 @@ export const ChatView = observer(
         const messageWidth =
           showUserAvatars &&
           message.type !== 'dateHeader' &&
-          message.author.id !== user.id
+          message.author?.id !== user.id
             ? Math.floor(Math.min(size.width * 0.9, 440))
             : Math.floor(Math.min(size.width * 0.92, 440));
 
@@ -476,27 +500,29 @@ export const ChatView = observer(
         const showStatus = message.type !== 'dateHeader' && message.showStatus;
 
         return (
-          <Message
-            {...{
-              enableAnimation,
-              message,
-              messageWidth,
-              onMessageLongPress: handleMessageLongPress,
-              onMessagePress: handleMessagePress,
-              onPreviewDataFetched,
-              renderBubble,
-              renderCustomMessage,
-              renderFileMessage,
-              renderImageMessage,
-              renderTextMessage,
-              roundBorder,
-              showAvatar,
-              showName,
-              showStatus,
-              showUserAvatars,
-              usePreviewData,
-            }}
-          />
+          <View>
+            <Message
+              {...{
+                enableAnimation,
+                message,
+                messageWidth,
+                onMessageLongPress: handleMessageLongPress,
+                onMessagePress: handleMessagePress,
+                onPreviewDataFetched,
+                renderBubble,
+                renderCustomMessage,
+                renderFileMessage,
+                renderImageMessage,
+                renderTextMessage,
+                roundBorder,
+                showAvatar,
+                showName,
+                showStatus,
+                showUserAvatars,
+                usePreviewData,
+              }}
+            />
+          </View>
         );
       },
       [
@@ -547,47 +573,78 @@ export const ChatView = observer(
 
     const renderScrollable = React.useCallback(
       (panHandlers: GestureResponderHandlers) => (
-        <FlatList
-          automaticallyAdjustContentInsets={false}
-          contentContainerStyle={[
-            styles.flatListContentContainer,
-            // eslint-disable-next-line react-native/no-inline-styles
-            {
-              justifyContent: chatMessages.length !== 0 ? undefined : 'center',
-              paddingTop: insets.bottom,
-            },
-          ]}
-          initialNumToRender={10}
-          ListEmptyComponent={renderListEmptyComponent}
-          ListFooterComponent={renderListFooterComponent}
-          ListHeaderComponent={renderListHeaderComponent}
-          maxToRenderPerBatch={6}
-          onEndReachedThreshold={0.75}
-          style={styles.flatList}
-          showsVerticalScrollIndicator={false}
-          {...unwrap(flatListProps)}
-          data={chatMessages}
-          inverted
-          keyboardDismissMode="interactive"
-          keyExtractor={keyExtractor}
-          onEndReached={handleEndReached}
-          ref={list}
-          renderItem={renderMessage}
-          {...panHandlers}
-        />
+        <View style={styles.container}>
+          <FlatList
+            automaticallyAdjustContentInsets={false}
+            contentContainerStyle={[
+              styles.flatListContentContainer,
+              // eslint-disable-next-line react-native/no-inline-styles
+              {
+                justifyContent:
+                  chatMessages.length !== 0 ? undefined : 'center',
+                paddingTop: insets.bottom,
+              },
+            ]}
+            initialNumToRender={10}
+            ListEmptyComponent={renderListEmptyComponent}
+            ListFooterComponent={renderListFooterComponent}
+            ListHeaderComponent={renderListHeaderComponent}
+            maxToRenderPerBatch={6}
+            onEndReachedThreshold={0.75}
+            style={styles.flatList}
+            showsVerticalScrollIndicator={false}
+            onScroll={handleScroll}
+            {...unwrap(flatListProps)}
+            data={chatMessages}
+            inverted
+            keyboardDismissMode="interactive"
+            keyExtractor={keyExtractor}
+            onEndReached={handleEndReached}
+            ref={list}
+            renderItem={renderMessage}
+            onScrollBeginDrag={handleScrollBeginDrag}
+            maintainVisibleContentPosition={
+              !isUserScrolling
+                ? undefined
+                : {
+                    minIndexForVisible: 1,
+                  }
+            }
+            {...panHandlers}
+          />
+          {showScrollButton && (
+            <TouchableOpacity
+              style={styles.scrollToBottomButton}
+              onPress={scrollToBottom}>
+              <Icon
+                name="chevron-down"
+                size={24}
+                color={theme.colors.onPrimary}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
       ),
       [
-        chatMessages,
-        styles.flatList,
+        styles.container,
         styles.flatListContentContainer,
-        flatListProps,
-        handleEndReached,
+        styles.flatList,
+        styles.scrollToBottomButton,
+        chatMessages,
         insets.bottom,
-        keyExtractor,
-        renderMessage,
         renderListEmptyComponent,
         renderListFooterComponent,
         renderListHeaderComponent,
+        handleScroll,
+        flatListProps,
+        keyExtractor,
+        handleEndReached,
+        renderMessage,
+        handleScrollBeginDrag,
+        isUserScrolling,
+        showScrollButton,
+        scrollToBottom,
+        theme.colors.onPrimary,
       ],
     );
 
