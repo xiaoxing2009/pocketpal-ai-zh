@@ -152,7 +152,7 @@ describe('HFStore', () => {
     });
   });
 
-  describe('fetchModelFileSizes', () => {
+  describe('fetchModelFileDetails', () => {
     it('should update model siblings with file sizes', async () => {
       hfStore.models = [mockHFModel1];
       const fileDetails = [
@@ -161,7 +161,7 @@ describe('HFStore', () => {
 
       (fetchModelFilesDetails as jest.Mock).mockResolvedValueOnce(fileDetails);
 
-      await hfStore.fetchModelFileSizes(mockHFModel1.id);
+      await hfStore.fetchModelFileDetails(mockHFModel1.id);
 
       expect(hfStore.models[0].siblings[0].size).toBe(1111);
       expect(hfStore.models[0].siblings[0].oid).toBe('abc123');
@@ -171,7 +171,7 @@ describe('HFStore', () => {
       hfStore.models = [];
       (fetchModelFilesDetails as jest.Mock).mockResolvedValueOnce([]);
 
-      await hfStore.fetchModelFileSizes('non-existent-id');
+      await hfStore.fetchModelFileDetails('non-existent-id');
 
       expect(fetchModelFilesDetails).toHaveBeenCalled();
       // Should not throw error

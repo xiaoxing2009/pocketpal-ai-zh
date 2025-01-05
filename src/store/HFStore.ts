@@ -62,6 +62,7 @@ class HFStore {
           ...file,
           size: details.size,
           oid: details.oid,
+          lfs: details.lfs,
         };
 
         return {
@@ -72,10 +73,10 @@ class HFStore {
     );
   }
 
-  // Fetch the sizes of the model files
-  async fetchModelFileSizes(modelId: string) {
+  // Fetch the details (sizes, oid, lfs, ...) of the model files
+  async fetchModelFileDetails(modelId: string) {
     try {
-      console.log('Fetching model file sizes for', modelId);
+      console.log('Fetching model file details for', modelId);
       const fileDetails = await fetchModelFilesDetails(modelId);
       const model = this.models.find(m => m.id === modelId);
 
@@ -103,7 +104,7 @@ class HFStore {
   async fetchModelData(modelId: string) {
     try {
       await this.fetchAndSetGGUFSpecs(modelId);
-      await this.fetchModelFileSizes(modelId);
+      await this.fetchModelFileDetails(modelId);
     } catch (error) {
       console.error('Error fetching model data:', error);
     }

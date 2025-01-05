@@ -8,10 +8,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {computed, makeAutoObservable, ObservableMap, runInAction} from 'mobx';
 import {CompletionParams, LlamaContext, initLlama} from '@pocketpalai/llama.rn';
 
+import {fetchModelFilesDetails} from '../api/hf';
+
 import {uiStore} from './UIStore';
 import {chatSessionStore} from './ChatSessionStore';
 import {defaultModels, MODEL_LIST_VERSION} from './defaultModels';
-import {deepMerge, formatBytes, hasEnoughSpace, hfAsModel} from '../utils';
+import {
+  deepMerge,
+  formatBytes,
+  getSHA256Hash,
+  hasEnoughSpace,
+  hfAsModel,
+} from '../utils';
 
 import {
   getHFDefaultSettings,
@@ -410,7 +418,17 @@ class ModelStore {
   };
 
   async checkFileExists(model: Model) {
-    const exists = await RNFS.exists(await this.getModelFullPath(model));
+    const filePath = await this.getModelFullPath(model);
+    const exists = await RNFS.exists(filePath);
+    if (exists) {
+      // Only calculate hash if it's not already stored
+      if (!model.hash) {
+        const hash = await getSHA256Hash(filePath);
+        runInAction(() => {
+          model.hash = hash;
+        });
+      }
+    }
     runInAction(() => {
       model.isDownloaded = exists;
     });
@@ -536,8 +554,12 @@ class ModelStore {
 
       const result = await ret.promise;
       if (result.statusCode === 200) {
+        // Calculate hash after successful download
+        const hash = await getSHA256Hash(downloadDest);
+
         runInAction(() => {
           model.progress = 100; // Ensure progress is set to 100 upon completion
+          model.hash = hash;
           this.refreshDownloadStatuses();
         });
 
@@ -1013,6 +1035,35 @@ class ModelStore {
 
   setIsStreaming(value: boolean) {
     this.isStreaming = value;
+  }
+
+  /**
+   * Fetches and updates model file details from HuggingFace.
+   * This is used when we need to get the lfs.oid for integrity checks.
+   * @param model - The model to update
+   * @returns Promise<void>
+   */
+  async fetchAndUpdateModelFileDetails(model: Model): Promise<void> {
+    if (!model.hfModel?.id) {
+      return;
+    }
+
+    try {
+      const fileDetails = await fetchModelFilesDetails(model.hfModel.id);
+      const matchingFile = fileDetails.find(
+        file => file.path === model.hfModelFile?.rfilename,
+      );
+
+      if (matchingFile && matchingFile.lfs) {
+        runInAction(() => {
+          if (model.hfModelFile) {
+            model.hfModelFile.lfs = matchingFile.lfs;
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Failed to fetch model file details:', error);
+    }
   }
 }
 

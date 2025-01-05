@@ -115,8 +115,10 @@ export const createStyles = (theme: Theme) =>
       flexDirection: 'row',
       alignItems: 'center',
       margin: 0,
+      marginTop: 8,
     },
     warningContent: {
+      flex: 1,
       flexDirection: 'row',
       alignItems: 'center',
     },
@@ -127,6 +129,8 @@ export const createStyles = (theme: Theme) =>
     warningText: {
       color: theme.colors.error,
       fontSize: 12,
+      flex: 1,
+      flexWrap: 'wrap',
     },
     overlayButtons: {
       flex: 1,

@@ -13,7 +13,7 @@ export const mockHFStore = {
   // Methods
   setSearchQuery: jest.fn(),
   fetchAndSetGGUFSpecs: jest.fn().mockResolvedValue(undefined),
-  fetchModelFileSizes: jest.fn().mockResolvedValue(undefined),
+  fetchModelFileDetails: jest.fn().mockResolvedValue(undefined),
   getModelById: jest.fn(id =>
     mockHFStore.models.find(model => model.id === id),
   ),

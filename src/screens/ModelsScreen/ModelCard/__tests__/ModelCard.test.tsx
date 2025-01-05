@@ -148,7 +148,9 @@ describe('ModelCard', () => {
     act(() => {
       fireEvent.press(getByTestId('load-button'));
     });
-    expect(mockNavigate).toHaveBeenCalledWith('Chat');
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith('Chat');
+    });
   });
 
   it('handles model offload', async () => {

@@ -27,12 +27,16 @@ import {ModelSettings} from '../ModelSettings';
 import {uiStore, modelStore} from '../../../store';
 
 import {chatTemplates} from '../../../utils/chat';
-import {getModelDescription, L10nContext} from '../../../utils';
+import {Model, ModelOrigin, RootDrawerParamList} from '../../../utils/types';
+import {
+  getModelDescription,
+  L10nContext,
+  checkModelFileIntegrity,
+} from '../../../utils';
 import {
   COMPLETION_PARAMS_METADATA,
   validateCompletionSettings,
 } from '../../../utils/modelSettings';
-import {Model, ModelOrigin, RootDrawerParamList} from '../../../utils/types';
 
 type ChatScreenNavigationProp = DrawerNavigationProp<RootDrawerParamList>;
 
@@ -52,6 +56,7 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
 
     const [snackbarVisible, setSnackbarVisible] = useState(false); // Snackbar visibility
     const [settingsModalVisible, setSettingsModalVisible] = useState(false);
+    const [integrityError, setIntegrityError] = useState<string | null>(null);
 
     const {memoryWarning, shortMemoryWarning} = useMemoryCheck(model);
     const {isOk: storageOk, message: storageNOkMessage} =
@@ -75,6 +80,17 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
       setTempChatTemplate(model.chatTemplate);
       setTempCompletionSettings(model.completionSettings);
     }, [model]);
+
+    // Check integrity when model is downloaded
+    useEffect(() => {
+      if (isDownloaded) {
+        checkModelFileIntegrity(model, modelStore).then(({errorMessage}) => {
+          setIntegrityError(errorMessage);
+        });
+      } else {
+        setIntegrityError(null);
+      }
+    }, [isDownloaded, model]);
 
     const handleSettingsUpdate = useCallback((name: string, value: any) => {
       setTempChatTemplate(prev => {
@@ -286,20 +302,17 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
         );
       }
 
-      const handlePress = () => {
+      const handlePress = async () => {
         if (isActiveModel) {
           modelStore.manualReleaseContext();
         } else {
-          modelStore
-            .initContext(model)
-            .then(() => {
-              console.log('initialized');
-            })
-            .catch(e => {
-              console.log(`Error: ${e}`);
-            });
-          if (uiStore.autoNavigatetoChat) {
-            navigation.navigate('Chat');
+          try {
+            await modelStore.initContext(model);
+            if (uiStore.autoNavigatetoChat) {
+              navigation.navigate('Chat');
+            }
+          } catch (e) {
+            console.log(`Error: ${e}`);
           }
         }
       };
@@ -310,6 +323,7 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
           icon={isActiveModel ? 'eject' : 'play-circle-outline'}
           mode="text"
           onPress={handlePress}
+          // disabled={!!integrityError} // for now integrity check is experimental. So won't disable the button
           style={styles.actionButton}>
           {isActiveModel ? l10n.offload : l10n.load}
         </Button>
@@ -386,6 +400,24 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
                       style={styles.warningIcon}
                     />
                     <Text style={styles.warningText}>{shortMemoryWarning}</Text>
+                  </View>
+                </TouchableRipple>
+              )}
+
+              {/* Display integrity warning if check fails */}
+              {integrityError && (
+                <TouchableRipple
+                  testID="integrity-warning-button"
+                  //onPress={handleWarningPress}
+                  style={styles.warningContainer}>
+                  <View style={styles.warningContent}>
+                    <IconButton
+                      icon="alert-circle-outline"
+                      iconColor={theme.colors.error}
+                      size={20}
+                      style={styles.warningIcon}
+                    />
+                    <Text style={styles.warningText}>{integrityError}</Text>
                   </View>
                 </TouchableRipple>
               )}

@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import {MD3Theme} from 'react-native-paper';
 import DeviceInfo from 'react-native-device-info';
 import Blob from 'react-native/Libraries/Blob/Blob';
+import * as RNFS from '@dr.pogodin/react-native-fs';
 
 import {l10n} from './l10n';
 import {getHFDefaultSettings} from './chat';
@@ -493,3 +494,71 @@ export function hfAsModel(
   return _model;
 }
 export const randId = () => Math.random().toString(36).substring(2, 11);
+
+export const getSHA256Hash = async (filePath: string): Promise<string> => {
+  try {
+    const hash = await RNFS.hash(filePath, 'sha256');
+    return hash;
+  } catch (error) {
+    console.error('Error generating SHA256 hash:', error);
+    throw error;
+  }
+};
+
+/**
+ * Checks if a model's file integrity is valid by comparing its hash with the expected hash from HuggingFace.
+ * For HF models, it will automatically fetch missing file details if needed.
+ * We assume lfs.oid is the hash of the file.
+ * @param model - The model to check integrity for
+ * @param modelStore - The model store instance for updating model details
+ * @returns An object containing the integrity check result and any error message
+ */
+export const checkModelFileIntegrity = async (
+  model: Model,
+  modelStore: any,
+): Promise<{
+  isValid: boolean;
+  errorMessage: string | null;
+}> => {
+  if (!model.hash) {
+    // Unsure if this is needed. As modelstore will fetch the details if needed.
+    return {
+      isValid: true,
+      errorMessage: null,
+    };
+  }
+
+  // For HF models, if we don't have lfs.oid, fetch it
+  if (model.origin === ModelOrigin.HF && !model.hfModelFile?.lfs?.oid) {
+    await modelStore.fetchAndUpdateModelFileDetails(model);
+  }
+
+  if (model.hash && model.hfModelFile?.lfs?.oid) {
+    if (model.hash !== model.hfModelFile.lfs.oid) {
+      try {
+        const filePath = await modelStore.getModelFullPath(model);
+        const fileStats = await RNFS.stat(filePath);
+        const actualSize = formatBytes(fileStats.size, 2);
+        const expectedSize = formatBytes(model.hfModelFile.lfs.size, 2);
+        return {
+          isValid: false,
+          errorMessage:
+            `Model file corrupted (${actualSize} vs ${expectedSize}). ` +
+            'Please delete and redownload.',
+        };
+      } catch (error) {
+        console.error('Error getting file size:', error);
+        return {
+          isValid: false,
+          errorMessage:
+            'Model file corrupted. Please delete and redownload the model.',
+        };
+      }
+    }
+  }
+
+  return {
+    isValid: true,
+    errorMessage: null,
+  };
+};

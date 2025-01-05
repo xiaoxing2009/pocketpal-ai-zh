@@ -309,6 +309,7 @@ export interface Model {
   completionSettings: CompletionParams;
   hfModelFile?: ModelFile;
   hfModel?: HuggingFaceModel;
+  hash?: string;
 }
 
 export type RootDrawerParamList = {
@@ -327,6 +328,11 @@ export interface ModelFile {
   size?: number;
   url?: string;
   oid?: string;
+  lfs?: {
+    oid: string;
+    size: number;
+    pointerSize: number;
+  };
   canFitInStorage?: boolean;
 }
 
