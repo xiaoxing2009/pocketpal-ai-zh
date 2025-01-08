@@ -420,18 +420,24 @@ class ModelStore {
   async checkFileExists(model: Model) {
     const filePath = await this.getModelFullPath(model);
     const exists = await RNFS.exists(filePath);
-    if (exists) {
-      // Only calculate hash if it's not already stored
+
+    // Don't mark as downloaded if currently downloading
+    if (exists && !this.downloadJobs.has(model.id)) {
+      // Only calculate hash if it's not already stored. Hash calculation is expensive.
       if (!model.hash) {
         const hash = await getSHA256Hash(filePath);
         runInAction(() => {
           model.hash = hash;
         });
       }
+      runInAction(() => {
+        model.isDownloaded = true;
+      });
+    } else {
+      runInAction(() => {
+        model.isDownloaded = false;
+      });
     }
-    runInAction(() => {
-      model.isDownloaded = exists;
-    });
   }
 
   refreshDownloadStatuses = async () => {
@@ -548,7 +554,8 @@ class ModelStore {
     try {
       const ret = RNFS.downloadFile(options);
       runInAction(() => {
-        // This is in runInAction so that mobx can track changes.
+        model.isDownloaded = false;
+        model.hash = undefined;
         this.downloadJobs.set(model.id, ret);
       });
 
@@ -558,9 +565,9 @@ class ModelStore {
         const hash = await getSHA256Hash(downloadDest);
 
         runInAction(() => {
-          model.progress = 100; // Ensure progress is set to 100 upon completion
+          model.progress = 100;
           model.hash = hash;
-          this.refreshDownloadStatuses();
+          model.isDownloaded = true; // Only mark as downloaded here
         });
 
         if (Platform.OS === 'ios') {
@@ -578,6 +585,7 @@ class ModelStore {
     } finally {
       runInAction(() => {
         this.downloadJobs.delete(model.id);
+        this.refreshDownloadStatuses();
       });
     }
   };
