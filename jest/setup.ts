@@ -5,6 +5,11 @@ import 'react-native-gesture-handler/jestSetup';
 
 jest.mock('react-native-haptic-feedback');
 
+jest.mock('react-native-keyboard-controller', () => {
+  const KeyboardControllerMock = require('react-native-keyboard-controller/jest');
+  return KeyboardControllerMock;
+});
+
 // Mock react-native-reanimated
 //require('react-native-reanimated').setUpTests();
 jest.mock('react-native-reanimated', () => {
@@ -27,6 +32,11 @@ jest.mock('react-native-reanimated', () => {
 
   return Reanimated;
 });
+
+jest.mock('@react-navigation/elements', () => ({
+  ...jest.requireActual('@react-navigation/elements'),
+  useHeaderHeight: jest.fn().mockReturnValue(56), // Provide a mock return value
+}));
 
 import {mockUiStore} from '../__mocks__/stores/uiStore';
 import {mockHFStore} from '../__mocks__/stores/hfStore';

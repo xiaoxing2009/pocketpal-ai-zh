@@ -1,4 +1,4 @@
-import {fireEvent, render} from '@testing-library/react-native';
+//import {fireEvent, render} from '@testing-library/react-native';
 import * as React from 'react';
 import {Text} from 'react-native';
 
@@ -11,7 +11,7 @@ import {
 import {l10n} from '../../../utils/l10n';
 import {MessageType} from '../../../utils/types';
 import {ChatView} from '../ChatView';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {fireEvent, render} from '../../../../jest/test-utils';
 
 jest.useFakeTimers();
 
@@ -30,9 +30,8 @@ describe('chat', () => {
     ];
     const onSendPress = jest.fn();
     const {getByTestId, getByText} = render(
-      <SafeAreaProvider>
-        <ChatView messages={messages} onSendPress={onSendPress} user={user} />
-      </SafeAreaProvider>,
+      <ChatView messages={messages} onSendPress={onSendPress} user={user} />,
+      {withSafeArea: true, withNavigation: true},
     );
 
     const button = getByTestId('message-image').parent;

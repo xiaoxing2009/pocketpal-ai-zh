@@ -12,6 +12,7 @@ import {
   gestureHandlerRootHOC,
   GestureHandlerRootView,
 } from 'react-native-gesture-handler';
+import {KeyboardProvider} from 'react-native-keyboard-controller';
 
 import {useTheme} from './src/hooks';
 import {Theme} from './src/utils/types';
@@ -46,58 +47,60 @@ const App = observer(() => {
   return (
     <GestureHandlerRootView style={styles.root}>
       <SafeAreaProvider>
-        <BottomSheetModalProvider>
-          <PaperProvider theme={theme}>
-            <NavigationContainer>
-              <Drawer.Navigator
-                useLegacyImplementation={false}
-                screenOptions={{
-                  drawerStyle: {
-                    width: screenWidth * 0.8,
-                  },
-                  headerStyle: {
-                    backgroundColor: theme.colors.background,
-                  },
-                  headerTintColor: theme.colors.onBackground,
-                }}
-                drawerContent={props => <SidebarContent {...props} />}>
-                <Drawer.Screen
-                  name="Chat"
-                  component={gestureHandlerRootHOC(ChatScreen)}
-                  options={{
-                    title: chatTitle,
-                    headerRight: () => <HeaderRight />,
-                    headerStyle: chatSessionStore.shouldShowHeaderDivider
-                      ? styles.headerWithDivider
-                      : styles.headerWithoutDivider,
+        <KeyboardProvider statusBarTranslucent navigationBarTranslucent>
+          <BottomSheetModalProvider>
+            <PaperProvider theme={theme}>
+              <NavigationContainer>
+                <Drawer.Navigator
+                  useLegacyImplementation={false}
+                  screenOptions={{
+                    drawerStyle: {
+                      width: screenWidth * 0.8,
+                    },
+                    headerStyle: {
+                      backgroundColor: theme.colors.background,
+                    },
+                    headerTintColor: theme.colors.onBackground,
                   }}
-                />
-                <Drawer.Screen
-                  name="Models"
-                  component={gestureHandlerRootHOC(ModelsScreen)}
-                  options={{
-                    headerRight: () => <ModelsHeaderRight />,
-                    headerStyle: styles.headerWithoutDivider,
-                  }}
-                />
-                <Drawer.Screen
-                  name="Settings"
-                  component={gestureHandlerRootHOC(SettingsScreen)}
-                  options={{
-                    headerStyle: styles.headerWithoutDivider,
-                  }}
-                />
-                <Drawer.Screen
-                  name="Benchmark"
-                  component={gestureHandlerRootHOC(BenchmarkScreen)}
-                  options={{
-                    headerStyle: styles.headerWithoutDivider,
-                  }}
-                />
-              </Drawer.Navigator>
-            </NavigationContainer>
-          </PaperProvider>
-        </BottomSheetModalProvider>
+                  drawerContent={props => <SidebarContent {...props} />}>
+                  <Drawer.Screen
+                    name="Chat"
+                    component={gestureHandlerRootHOC(ChatScreen)}
+                    options={{
+                      title: chatTitle,
+                      headerRight: () => <HeaderRight />,
+                      headerStyle: chatSessionStore.shouldShowHeaderDivider
+                        ? styles.headerWithDivider
+                        : styles.headerWithoutDivider,
+                    }}
+                  />
+                  <Drawer.Screen
+                    name="Models"
+                    component={gestureHandlerRootHOC(ModelsScreen)}
+                    options={{
+                      headerRight: () => <ModelsHeaderRight />,
+                      headerStyle: styles.headerWithoutDivider,
+                    }}
+                  />
+                  <Drawer.Screen
+                    name="Settings"
+                    component={gestureHandlerRootHOC(SettingsScreen)}
+                    options={{
+                      headerStyle: styles.headerWithoutDivider,
+                    }}
+                  />
+                  <Drawer.Screen
+                    name="Benchmark"
+                    component={gestureHandlerRootHOC(BenchmarkScreen)}
+                    options={{
+                      headerStyle: styles.headerWithoutDivider,
+                    }}
+                  />
+                </Drawer.Navigator>
+              </NavigationContainer>
+            </PaperProvider>
+          </BottomSheetModalProvider>
+        </KeyboardProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

@@ -22,7 +22,7 @@ module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   setupFiles: ['./jest/setup.ts'],
   transformIgnorePatterns: [
-    'node_modules/(?!(@flyerhq|@react-native|react-native|uuid|react-native-reanimated|react-native-gesture-handler|react-native-vector-icons|react-native-image-viewing|react-native-parsed-text|@react-navigation/.*|@react-native-masked-view/masked-view|react-native-linear-gradient|react-native-picker-select|react-native-paper)/)',
+    'node_modules/(?!(@flyerhq|@react-native|react-native|uuid|react-native-reanimated|react-native-gesture-handler|react-native-vector-icons|react-native-image-viewing|react-native-parsed-text|@react-navigation/.*|@react-native-masked-view/masked-view|react-native-linear-gradient|react-native-picker-select|react-native-paper|react-native-keyboard-controller)/)',
   ],
   testMatch: [
     '**/__tests__/**/*.test.[jt]s?(x)',

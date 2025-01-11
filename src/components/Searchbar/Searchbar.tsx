@@ -1,15 +1,16 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet} from 'react-native';
 
 import {BlurView} from '@react-native-community/blur';
 import LinearGradient from 'react-native-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
+import {Searchbar as PaperSearchbar} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {KeyboardStickyView} from 'react-native-keyboard-controller';
 
 import {useTheme} from '../../hooks';
 
 import {createStyles, iconStyles} from './styles';
-import {BottomSheetSearchbar} from '../BottomSheetSearchbar';
 
 interface SearchbarProps {
   value: string;
@@ -52,7 +53,7 @@ export const Searchbar = ({
   );
 
   return (
-    <View style={[styles.container, containerStyle]}>
+    <KeyboardStickyView style={[styles.container, containerStyle]}>
       {showBlur ? (
         <MaskedView
           style={StyleSheet.absoluteFill}
@@ -74,7 +75,7 @@ export const Searchbar = ({
           />
         </MaskedView>
       ) : null}
-      <BottomSheetSearchbar
+      <PaperSearchbar
         placeholder={placeholder}
         onChangeText={onChangeText}
         value={value}
@@ -83,6 +84,6 @@ export const Searchbar = ({
         icon={searchIconSource}
         clearIcon={value.length > 0 ? clearIconSource : undefined}
       />
-    </View>
+    </KeyboardStickyView>
   );
 };

@@ -1,5 +1,5 @@
 import {LlamaContext} from '@pocketpalai/llama.rn';
-import {renderHook, act} from '@testing-library/react-native';
+import {renderHook, act, waitFor} from '@testing-library/react-native';
 
 import {textMessage} from '../../../jest/fixtures';
 import {mockBasicModel, modelsList} from '../../../jest/fixtures/models';
@@ -122,7 +122,10 @@ describe('useChatSession', () => {
       await new Promise(resolve => setTimeout(resolve, 200));
     });
 
-    expect(chatSessionStore.updateMessageToken).toHaveBeenCalled();
+    await waitFor(() =>
+      expect(chatSessionStore.updateMessageToken).toHaveBeenCalled(),
+    );
+
     expect(
       (chatSessionStore.updateMessageToken as jest.Mock).mock.calls.length,
     ).toBeGreaterThan(0);

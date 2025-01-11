@@ -1,10 +1,13 @@
 import React, {useState, useEffect} from 'react';
+import {View} from 'react-native';
 
 import {Snackbar} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import {DrawerNavigationProp} from '@react-navigation/drawer';
 
 import {useTheme} from '../../../hooks';
+
+import {styles} from './styles';
 
 import {modelStore} from '../../../store';
 
@@ -50,15 +53,17 @@ export const ModelNotLoadedMessage: React.FC = () => {
   };
 
   return (
-    <Snackbar
-      visible={true}
-      onDismiss={onDismiss}
-      action={{
-        label: lastUsedModel ? l10n.load : l10n.goToModels,
-        onPress: lastUsedModel ? loadModelDirectly : navigateToModelsPage,
-        labelStyle: {color: theme.colors.inverseSecondary},
-      }}>
-      {lastUsedModel ? l10n.readyToChat : l10n.pleaseLoadModel}
-    </Snackbar>
+    <View style={styles.container}>
+      <Snackbar
+        visible={true}
+        onDismiss={onDismiss}
+        action={{
+          label: lastUsedModel ? l10n.load : l10n.goToModels,
+          onPress: lastUsedModel ? loadModelDirectly : navigateToModelsPage,
+          labelStyle: {color: theme.colors.inverseSecondary},
+        }}>
+        {lastUsedModel ? l10n.readyToChat : l10n.pleaseLoadModel}
+      </Snackbar>
+    </View>
   );
 };

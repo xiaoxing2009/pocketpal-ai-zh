@@ -145,6 +145,10 @@ class HFStore {
     });
   }
 
+  get hasMoreResults() {
+    return this.nextPageLink !== null;
+  }
+
   // Fetch the models from the Hugging Face API
   async fetchModels() {
     this.isLoading = true;
@@ -180,7 +184,7 @@ class HFStore {
 
   // Fetch the next page of models
   async fetchMoreModels() {
-    if (!this.nextPageLink) {
+    if (!this.nextPageLink || this.isLoading) {
       return;
     }
 
@@ -189,19 +193,13 @@ class HFStore {
 
     try {
       const {models, nextLink} = await fetchModels({
-        search: this.searchQuery,
-        limit: 10,
-        sort: 'downloads',
-        direction: '-1',
-        filter: this.queryFilter,
-        full: this.queryFull,
-        config: this.queryConfig,
+        nextPageUrl: this.nextPageLink,
       });
 
       const modelsWithUrl = this.processSearchResults(models);
 
       runInAction(() => {
-        this.models = [...this.models, ...modelsWithUrl];
+        modelsWithUrl.forEach(model => this.models.push(model));
         this.nextPageLink = nextLink;
       });
     } catch (error) {

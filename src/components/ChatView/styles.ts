@@ -4,7 +4,7 @@ import {Theme} from '../../utils/types';
 export const createStyles = ({theme}: {theme: Theme}) =>
   StyleSheet.create({
     container: {
-      backgroundColor: theme.colors.background,
+      //backgroundColor: theme.colors.primary,
       flex: 1,
     },
     flatList: {
@@ -26,18 +26,12 @@ export const createStyles = ({theme}: {theme: Theme}) =>
     header: {
       height: 4,
     },
-    keyboardAccessoryView: {
-      backgroundColor: theme.colors.primary,
-      borderTopLeftRadius: theme.borders.inputBorderRadius,
-      borderTopRightRadius: theme.borders.inputBorderRadius,
-    },
     menu: {
       width: 170,
     },
     scrollToBottomButton: {
       position: 'absolute',
       right: 16,
-      bottom: 40, // Above the input area
       backgroundColor: theme.colors.primary,
       width: 40,
       height: 40,
@@ -52,5 +46,26 @@ export const createStyles = ({theme}: {theme: Theme}) =>
       shadowOpacity: 0.25,
       shadowRadius: 3.84,
       elevation: 5,
+    },
+    inputContainer: {
+      backgroundColor: theme.colors.primary,
+      borderTopLeftRadius: theme.borders.inputBorderRadius,
+      borderTopRightRadius: theme.borders.inputBorderRadius,
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      bottom: 0,
+      //minHeight: 64,
+    },
+    chatContainer: {
+      flex: 1,
+      position: 'relative',
+      backgroundColor: theme.colors.background,
+    },
+    customBottomComponent: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
     },
   });

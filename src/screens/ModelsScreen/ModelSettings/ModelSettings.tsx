@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {TextInput as RNTextInput, ScrollView} from 'react-native';
+import {TextInput as RNTextInput} from 'react-native';
 import {View, Keyboard, TouchableWithoutFeedback} from 'react-native';
 
 import {CompletionParams} from '@pocketpalai/llama.rn';
@@ -238,19 +238,15 @@ export const ModelSettings: React.FC<ModelSettingsProps> = ({
               Uses Nunjucks. Leave empty to use model's template.
             </Text>
           </View>
-          <ScrollView
-            style={styles.scrollView}
-            keyboardShouldPersistTaps="handled">
-            <TextInput
-              ref={textInputRef}
-              placeholder="Enter your chat template here..."
-              defaultValue={localChatTemplate}
-              onChangeText={text => setLocalChatTemplate(text)}
-              multiline
-              numberOfLines={10}
-              style={styles.textArea}
-            />
-          </ScrollView>
+          <TextInput
+            ref={textInputRef}
+            placeholder="Enter your chat template here..."
+            defaultValue={localChatTemplate}
+            onChangeText={text => setLocalChatTemplate(text)}
+            multiline
+            numberOfLines={10}
+            style={styles.textArea}
+          />
         </Dialog>
       </View>
     </TouchableWithoutFeedback>

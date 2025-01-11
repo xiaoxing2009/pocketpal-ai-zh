@@ -1,4 +1,4 @@
-import {fireEvent, render} from '@testing-library/react-native';
+import {fireEvent, render, waitFor} from '@testing-library/react-native';
 import * as React from 'react';
 import {ScrollView} from 'react-native';
 
@@ -116,7 +116,7 @@ describe('input', () => {
     expect(textInput.props).toHaveProperty('value', '');
   });
 
-  it('sends a text message if value is provided', () => {
+  it('sends a text message if value is provided', async () => {
     expect.assertions(2);
     const onSendPress = jest.fn();
     const value = 'value';
@@ -133,9 +133,11 @@ describe('input', () => {
       </UserContext.Provider>,
     );
     const textInput = getByPlaceholderText(l10n.en.inputPlaceholder);
-    fireEvent.changeText(textInput, 'text');
+    await waitFor(() => fireEvent.changeText(textInput, 'text')); // Wait for the input to update
+
     const button = getByLabelText(l10n.en.sendButtonAccessibilityLabel);
-    fireEvent.press(button);
+    await waitFor(() => fireEvent.press(button)); // Wait for the press event to be processed
+
     expect(onSendPress).toHaveBeenCalledWith({text: value, type: 'text'});
     expect(textInput.props).toHaveProperty('value', value);
   });

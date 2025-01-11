@@ -1,6 +1,18 @@
 import {CompletionParams} from '@pocketpalai/llama.rn';
 import {defaultCompletionParams} from './chat';
 
+export const LEGACY_QUANTIZATION_WARNINGS = [
+  'Q4_0_4_8',
+  'Q4_0_4_4',
+  'Q4_0_8_8',
+];
+
+export const isLegacyQuantization = (filename: string): boolean => {
+  return LEGACY_QUANTIZATION_WARNINGS.some(q =>
+    filename.toLowerCase().includes(q.toLowerCase()),
+  );
+};
+
 export type ValidationRule =
   | {type: 'numeric'; min: number; max: number; required?: boolean}
   | {type: 'array'; required?: boolean}

@@ -2,22 +2,30 @@ import * as React from 'react';
 import {
   FlatList,
   FlatListProps,
-  GestureResponderHandlers,
   InteractionManager,
   LayoutAnimation,
   StatusBar,
   StatusBarProps,
   View,
   TouchableOpacity,
+  Animated,
 } from 'react-native';
 
 import dayjs from 'dayjs';
 import {observer} from 'mobx-react';
 import calendar from 'dayjs/plugin/calendar';
+import {useHeaderHeight} from '@react-navigation/elements';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {
+  KeyboardAvoidingView,
+  useKeyboardAnimation,
+} from 'react-native-keyboard-controller';
 
-import {useComponentSize} from '../KeyboardAccessoryView/hooks';
+import {
+  useComponentSize,
+  useKeyboardDimensions,
+} from '../KeyboardAccessoryView/hooks';
 
 import {usePrevious, useTheme, useMessageActions} from '../../hooks';
 
@@ -39,7 +47,6 @@ import {
 import {
   Message,
   MessageTopLevelProps,
-  KeyboardAccessoryView,
   CircularActivityIndicator,
   ChatInput,
   ChatInputAdditionalProps,
@@ -114,7 +121,6 @@ export interface ChatProps extends ChatTopLevelProps {
   user: User;
 }
 
-// Add these types at the top of the file with other imports
 type MenuItem = {
   label: string;
   onPress?: () => void;
@@ -173,10 +179,48 @@ export const ChatView = observer(
 
     const [inputText, setInputText] = React.useState('');
 
-    const {onLayout, size} = useComponentSize();
     const animationRef = React.useRef(false);
     const list = React.useRef<FlatList<MessageType.DerivedAny>>(null);
     const insets = useSafeAreaInsets();
+    const {progress} = useKeyboardAnimation();
+    const headerHeight = useHeaderHeight();
+
+    const {onLayout, size} = useComponentSize();
+    const {onLayout: onLayoutChatInput, size: chatInputHeight} =
+      useComponentSize();
+    const {
+      onLayout: onLayoutCustomBottomComponent,
+      size: customBottomComponentHeight,
+    } = useComponentSize();
+
+    const bottomComponentHeight = React.useMemo(() => {
+      const height = customBottomComponent
+        ? customBottomComponentHeight.height
+        : chatInputHeight.height;
+      return height;
+    }, [
+      customBottomComponent,
+      customBottomComponentHeight.height,
+      chatInputHeight.height,
+    ]);
+
+    const listPaddingBottom = progress.interpolate({
+      inputRange: [0, 1],
+      outputRange: [
+        bottomComponentHeight,
+        bottomComponentHeight - insets.bottom,
+      ],
+    });
+
+    const {keyboardHeight: keyboardHeight} = useKeyboardDimensions(true);
+    const translateY = progress.interpolate({
+      inputRange: [0, 1],
+      outputRange: [
+        0,
+        Math.max(0, Math.min(insets.bottom, keyboardHeight - insets.bottom)),
+      ],
+    });
+
     const [isImageViewVisible, setIsImageViewVisible] = React.useState(false);
     const [isNextPageLoading, setNextPageLoading] = React.useState(false);
     const [imageViewIndex, setImageViewIndex] = React.useState(0);
@@ -571,10 +615,10 @@ export const ChatView = observer(
       [isThinking],
     );
 
-    const renderScrollable = React.useCallback(
-      (panHandlers: GestureResponderHandlers) => (
-        <View style={styles.container}>
-          <FlatList
+    const renderChatList = React.useCallback(
+      () => (
+        <>
+          <Animated.FlatList
             automaticallyAdjustContentInsets={false}
             contentContainerStyle={[
               styles.flatListContentContainer,
@@ -582,7 +626,7 @@ export const ChatView = observer(
               {
                 justifyContent:
                   chatMessages.length !== 0 ? undefined : 'center',
-                paddingTop: insets.bottom,
+                paddingTop: listPaddingBottom, // Use animated padding
               },
             ]}
             initialNumToRender={10}
@@ -610,28 +654,31 @@ export const ChatView = observer(
                     minIndexForVisible: 1,
                   }
             }
-            {...panHandlers}
           />
           {showScrollButton && (
-            <TouchableOpacity
-              style={styles.scrollToBottomButton}
-              onPress={scrollToBottom}>
-              <Icon
-                name="chevron-down"
-                size={24}
-                color={theme.colors.onPrimary}
-              />
-            </TouchableOpacity>
+            <Animated.View style={{transform: [{translateY}]}}>
+              <TouchableOpacity
+                style={[
+                  styles.scrollToBottomButton,
+                  {bottom: bottomComponentHeight + 20},
+                ]}
+                onPress={scrollToBottom}>
+                <Icon
+                  name="chevron-down"
+                  size={24}
+                  color={theme.colors.onPrimary}
+                />
+              </TouchableOpacity>
+            </Animated.View>
           )}
-        </View>
+        </>
       ),
       [
-        styles.container,
         styles.flatListContentContainer,
         styles.flatList,
         styles.scrollToBottomButton,
         chatMessages,
-        insets.bottom,
+        listPaddingBottom,
         renderListEmptyComponent,
         renderListFooterComponent,
         renderListHeaderComponent,
@@ -643,6 +690,8 @@ export const ChatView = observer(
         handleScrollBeginDrag,
         isUserScrolling,
         showScrollButton,
+        translateY,
+        bottomComponentHeight,
         scrollToBottom,
         theme.colors.onPrimary,
       ],
@@ -654,37 +703,52 @@ export const ChatView = observer(
           <View style={styles.container} onLayout={onLayout}>
             {customBottomComponent ? (
               <>
-                <>{renderScrollable({})}</>
-                <>{customBottomComponent()}</>
+                <View style={styles.container}>{renderChatList()}</View>
+                <View
+                  onLayout={onLayoutCustomBottomComponent}
+                  style={styles.customBottomComponent}>
+                  {customBottomComponent()}
+                </View>
               </>
             ) : (
-              <KeyboardAccessoryView
-                {...{
-                  contentOffsetKeyboardOpened: 0,
-                  contentOffsetKeyboardClosed: 0,
-                  renderScrollable,
-                  style: styles.keyboardAccessoryView,
-                }}>
-                <ChatInput
-                  {...{
-                    ...unwrap(inputProps),
-                    isAttachmentUploading,
-                    isStreaming,
-                    onAttachmentPress,
-                    onSendPress: wrappedOnSendPress,
-                    onStopPress,
-                    onCancelEdit: handleCancelEdit,
-                    isStopVisible,
-                    renderScrollable,
-                    sendButtonVisibilityMode,
-                    textInputProps: {
-                      ...textInputProps,
-                      value: inputText,
-                      onChangeText: setInputText,
-                    },
-                  }}
-                />
-              </KeyboardAccessoryView>
+              <>
+                <KeyboardAvoidingView
+                  behavior="padding"
+                  keyboardVerticalOffset={headerHeight}
+                  style={styles.container}>
+                  <View style={styles.chatContainer}>
+                    {renderChatList()}
+                    <Animated.View
+                      onLayout={onLayoutChatInput}
+                      style={[
+                        styles.inputContainer,
+                        {
+                          paddingBottom: insets.bottom,
+                          transform: [{translateY}],
+                        },
+                      ]}>
+                      <ChatInput
+                        {...{
+                          ...unwrap(inputProps),
+                          isAttachmentUploading,
+                          isStreaming,
+                          onAttachmentPress,
+                          onSendPress: wrappedOnSendPress,
+                          onStopPress,
+                          onCancelEdit: handleCancelEdit,
+                          isStopVisible,
+                          sendButtonVisibilityMode,
+                          textInputProps: {
+                            ...textInputProps,
+                            value: inputText,
+                            onChangeText: setInputText,
+                          },
+                        }}
+                      />
+                    </Animated.View>
+                  </View>
+                </KeyboardAvoidingView>
+              </>
             )}
             <ImageView
               imageIndex={imageViewIndex}

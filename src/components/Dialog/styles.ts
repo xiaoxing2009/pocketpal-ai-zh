@@ -26,7 +26,6 @@ export const createStyles = (theme: Theme, scrollableBorderShown?: boolean) =>
       borderBottomWidth: scrollableBorderShown ? 1 : 0,
       backgroundColor: theme.colors.background,
     },
-    dialogScrollArea: {},
     dialogActionButton: {
       minWidth: 70,
     },

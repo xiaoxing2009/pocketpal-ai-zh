@@ -1,4 +1,4 @@
-import {SafeAreaView, ScrollView} from 'react-native';
+import {View} from 'react-native';
 import React, {useMemo} from 'react';
 
 import {marked} from 'marked';
@@ -6,7 +6,7 @@ import RenderHtml, {defaultSystemFonts} from 'react-native-render-html';
 
 import {useTheme} from '../../hooks';
 
-import {createTagsStyles, styles} from './styles';
+import {createTagsStyles} from './styles';
 
 marked.use({
   langPrefix: 'language-',
@@ -43,19 +43,15 @@ export const MarkdownView: React.FC<MarkdownViewProps> = React.memo(
     const source = useMemo(() => ({html: htmlContent}), [htmlContent]);
 
     return (
-      <SafeAreaView style={styles.container}>
-        <ScrollView
-          testID="chatMarkdownScrollView"
-          style={{maxWidth: _maxWidth}}>
-          <RenderHtml
-            contentWidth={contentWidth}
-            source={source}
-            tagsStyles={tagsStyles}
-            defaultTextProps={defaultTextProps}
-            systemFonts={systemFonts}
-          />
-        </ScrollView>
-      </SafeAreaView>
+      <View testID="chatMarkdownScrollView" style={{maxWidth: _maxWidth}}>
+        <RenderHtml
+          contentWidth={contentWidth}
+          source={source}
+          tagsStyles={tagsStyles}
+          defaultTextProps={defaultTextProps}
+          systemFonts={systemFonts}
+        />
+      </View>
     );
   },
   (prevProps, nextProps) =>

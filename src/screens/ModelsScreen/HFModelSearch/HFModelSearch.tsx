@@ -111,6 +111,7 @@ export const HFModelSearch: React.FC<HFModelSearchProps> = observer(
           enableDynamicSizing={false}
           onDismiss={onDismiss}
           enablePanDownToClose
+          enableContentPanningGesture={false}
           handleIndicatorStyle={styles.bottomSheetHandle}
           backgroundStyle={styles.bottomSheetBackground}
           keyboardBehavior="extend"

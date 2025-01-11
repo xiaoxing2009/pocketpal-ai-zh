@@ -8,7 +8,7 @@ describe('fetchModels', () => {
   it('should fetch models with basic parameters', async () => {
     const mockResponse = {
       data: [{id: 'model1'}],
-      headers: {link: 'next-page-link'},
+      headers: {link: '<next-page-link>'},
     };
     mockedAxios.get.mockResolvedValueOnce(mockResponse);
 

@@ -33,6 +33,7 @@ export async function fetchModels({
   limit,
   full,
   config,
+  nextPageUrl,
 }: {
   search?: string;
   author?: string;
@@ -42,9 +43,10 @@ export async function fetchModels({
   limit?: number;
   full?: boolean;
   config?: boolean;
+  nextPageUrl?: string;
 }): Promise<HuggingFaceModelsResponse> {
   try {
-    const response = await axios.get(urls.modelsList(), {
+    const response = await axios.get(nextPageUrl || urls.modelsList(), {
       params: {
         search,
         author,
@@ -56,10 +58,20 @@ export async function fetchModels({
         config,
       },
     });
-    // console.log('response.data: ', response.data);
+
+    const linkHeader = response.headers.link;
+    let nextLink = null;
+
+    if (linkHeader) {
+      const match = linkHeader.match(/<([^>]*)>/);
+      if (match) {
+        nextLink = match[1];
+      }
+    }
+
     return {
       models: response.data as HuggingFaceModel[],
-      nextLink: response.headers.link || null, // null if no pagination link is provided
+      nextLink,
     };
   } catch (error) {
     console.error('Error fetching models:', error);
