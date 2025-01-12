@@ -35,7 +35,9 @@ class ChatSessionStore {
   get shouldShowHeaderDivider(): boolean {
     return (
       !this.activeSessionId ||
-      (this.currentSessionMessages.length === 0 && !this.isGenerating)
+      (this.currentSessionMessages.length === 0 &&
+        !this.isGenerating &&
+        !this.isEditMode)
     );
   }
 
