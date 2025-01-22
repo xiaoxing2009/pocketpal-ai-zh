@@ -423,16 +423,15 @@ class ModelStore {
 
     // Don't mark as downloaded if currently downloading
     if (exists && !this.downloadJobs.has(model.id)) {
-      // Only calculate hash if it's not already stored. Hash calculation is expensive.
-      if (!model.hash) {
-        const hash = await getSHA256Hash(filePath);
+      if (!model.isDownloaded) {
+        console.log(
+          'checkFileExists: marking as downloaded - this should not happen:',
+          model.id,
+        );
         runInAction(() => {
-          model.hash = hash;
+          model.isDownloaded = true;
         });
       }
-      runInAction(() => {
-        model.isDownloaded = true;
-      });
     } else {
       runInAction(() => {
         model.isDownloaded = false;
@@ -561,12 +560,14 @@ class ModelStore {
 
       const result = await ret.promise;
       if (result.statusCode === 200) {
-        // Calculate hash after successful download
-        const hash = await getSHA256Hash(downloadDest);
+        // We removed hash check for now, as it's not reliable and expensive..
+        // It is done only if file size match fails.
+        // // Calculate hash after successful download
+        // const hash = await getSHA256Hash(downloadDest);
 
         runInAction(() => {
           model.progress = 100;
-          model.hash = hash;
+          //model.hash = hash;
           model.isDownloaded = true; // Only mark as downloaded here
         });
 
@@ -1073,6 +1074,25 @@ class ModelStore {
       console.error('Failed to fetch model file details:', error);
     }
   }
+
+  // Expensive operation.
+  // It will be calculating hash if hash is not set, unless force is true.
+  updateModelHash = async (modelId: string, force: boolean = false) => {
+    const model = this.models.find(m => m.id === modelId);
+
+    // We only update hash if the model is downloaded and not currently being downloaded.
+    if (model?.isDownloaded && !this.downloadJobs.has(modelId)) {
+      // If not forced, we only update hash if it's not already set.
+      if (model.hash && !force) {
+        return;
+      }
+      const filePath = await this.getModelFullPath(model);
+      const hash = await getSHA256Hash(filePath);
+      runInAction(() => {
+        model.hash = hash;
+      });
+    }
+  };
 }
 
 export const modelStore = new ModelStore();

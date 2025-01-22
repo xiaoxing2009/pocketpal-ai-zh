@@ -495,6 +495,7 @@ export function hfAsModel(
 }
 export const randId = () => Math.random().toString(36).substring(2, 11);
 
+// There is a an issue with RNFS.hash: https://github.com/birdofpreyru/react-native-fs/issues/99
 export const getSHA256Hash = async (filePath: string): Promise<string> => {
   try {
     const hash = await RNFS.hash(filePath, 'sha256');
@@ -506,9 +507,8 @@ export const getSHA256Hash = async (filePath: string): Promise<string> => {
 };
 
 /**
- * Checks if a model's file integrity is valid by comparing its hash with the expected hash from HuggingFace.
- * For HF models, it will automatically fetch missing file details if needed.
- * We assume lfs.oid is the hash of the file.
+ * Checks if a model's file integrity is valid by comparing  file size. Hash doesn't seem to be reliable, and expensive.
+ * see: https://github.com/birdofpreyru/react-native-fs/issues/99
  * @param model - The model to check integrity for
  * @param modelStore - The model store instance for updating model details
  * @returns An object containing the integrity check result and any error message
@@ -520,45 +520,66 @@ export const checkModelFileIntegrity = async (
   isValid: boolean;
   errorMessage: string | null;
 }> => {
-  if (!model.hash) {
-    // Unsure if this is needed. As modelstore will fetch the details if needed.
+  try {
+    // For HF models, if we don't have lfs details, fetch them
+    if (model.origin === ModelOrigin.HF && !model.hfModelFile?.lfs?.size) {
+      await modelStore.fetchAndUpdateModelFileDetails(model);
+    }
+
+    const filePath = await modelStore.getModelFullPath(model);
+    const fileStats = await RNFS.stat(filePath);
+
+    // If we have expected file size from HF, compare it
+    if (model.hfModelFile?.lfs?.size) {
+      const expectedSize = model.hfModelFile.lfs.size;
+      const actualSize = fileStats.size;
+
+      // Calculate size difference ratio
+      const sizeDiffPercentage =
+        Math.abs(actualSize - expectedSize) / expectedSize;
+
+      // If size difference is more than 0.1% and hash doesn't match, consider it corrupted
+      if (sizeDiffPercentage > 0.001) {
+        modelStore.updateModelHash(model.id, false);
+
+        // If hash matches, consider it valid
+        if (model.hash && model.hfModelFile?.lfs?.oid) {
+          if (model.hash === model.hfModelFile.lfs.oid) {
+            return {
+              isValid: true,
+              errorMessage: null,
+            };
+          }
+        }
+
+        // If hash doesn't match and file size doesn't match, consider it corrupted
+        return {
+          isValid: false,
+          errorMessage: `Model file size mismatch (${formatBytes(
+            actualSize,
+          )} vs ${formatBytes(expectedSize)}). Please delete and redownload.`,
+        };
+      }
+
+      // File size matches within tolerance, consider it valid
+      return {
+        isValid: true,
+        errorMessage: null,
+      };
+    }
+
+    // If we reach here, either:
+    // 1. We don't have size/hash info to verify against
+    // 2. The file passed all available integrity checks
     return {
       isValid: true,
       errorMessage: null,
     };
+  } catch (error) {
+    console.error('Error checking file integrity:', error);
+    return {
+      isValid: false,
+      errorMessage: 'Error checking file integrity. Please try again.',
+    };
   }
-
-  // For HF models, if we don't have lfs.oid, fetch it
-  if (model.origin === ModelOrigin.HF && !model.hfModelFile?.lfs?.oid) {
-    await modelStore.fetchAndUpdateModelFileDetails(model);
-  }
-
-  if (model.hash && model.hfModelFile?.lfs?.oid) {
-    if (model.hash !== model.hfModelFile.lfs.oid) {
-      try {
-        const filePath = await modelStore.getModelFullPath(model);
-        const fileStats = await RNFS.stat(filePath);
-        const actualSize = formatBytes(fileStats.size, 2);
-        const expectedSize = formatBytes(model.hfModelFile.lfs.size, 2);
-        return {
-          isValid: false,
-          errorMessage:
-            `Model file corrupted (${actualSize} vs ${expectedSize}). ` +
-            'Please delete and redownload.',
-        };
-      } catch (error) {
-        console.error('Error getting file size:', error);
-        return {
-          isValid: false,
-          errorMessage:
-            'Model file corrupted. Please delete and redownload the model.',
-        };
-      }
-    }
-  }
-
-  return {
-    isValid: true,
-    errorMessage: null,
-  };
 };
