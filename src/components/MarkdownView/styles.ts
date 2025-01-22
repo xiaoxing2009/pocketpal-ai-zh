@@ -33,8 +33,28 @@ export const createTagsStyles = (theme: Theme) => ({
   },
 });
 
-export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
+export const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    thinkContainer: {
+      backgroundColor: theme.colors.surface,
+      borderRadius: 8,
+      padding: 12,
+      marginVertical: 8,
+      borderLeftWidth: 4,
+      borderLeftColor: theme.colors.primary,
+      opacity: 0.8,
+    },
+    thinkText: {
+      color: theme.colors.primary,
+      fontWeight: 'bold',
+      marginRight: 8,
+    },
+    thinkTextContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 4,
+    },
+  });
