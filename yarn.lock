@@ -1266,10 +1266,10 @@
     "@types/conventional-commits-parser" "^5.0.0"
     chalk "^5.3.0"
 
-"@dr.pogodin/react-native-fs@^2.30.1":
-  version "2.30.1"
-  resolved "https://registry.yarnpkg.com/@dr.pogodin/react-native-fs/-/react-native-fs-2.30.1.tgz#c7b04d93df3cb286d3f55769d0425eae54a110d5"
-  integrity sha512-GzDRUctuBh8dKP1w+UouOBbH354/N4kErZki9EQaEG86ck+uFBFenZxJsp6Waa20KGFwP5DfMW8Lh11wy+7dfg==
+"@dr.pogodin/react-native-fs@^2.30.3":
+  version "2.30.3"
+  resolved "https://registry.yarnpkg.com/@dr.pogodin/react-native-fs/-/react-native-fs-2.30.3.tgz#9b02f603642159ec50412fc176f6a9dde59ac51d"
+  integrity sha512-EphKBv07CFwyJubP5xLm39TUB2g1BXkyGAf8HtRbXM7WQLKqMsU6CLgQojQJNQPH1cWOnkHYiGnw6flf0PXHWA==
   dependencies:
     buffer "^6.0.3"
     http-status-codes "^2.3.0"
@@ -2099,10 +2099,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@pocketpalai/llama.rn@^0.4.7-3":
-  version "0.4.7-3"
-  resolved "https://registry.yarnpkg.com/@pocketpalai/llama.rn/-/llama.rn-0.4.7-3.tgz#7a237d7b42177dbcef4dd89693cb9a82e721dd53"
-  integrity sha512-Yt451G8JXIhhn2hfQHadUVf4KqvGQVUTU1JZ0XUFw28f0+T1N2ta/MSgoJpY4lXyh2h+0fnSc+DqS+5jgQIYmA==
+"@pocketpalai/llama.rn@^0.4.8-1":
+  version "0.4.8-1"
+  resolved "https://registry.yarnpkg.com/@pocketpalai/llama.rn/-/llama.rn-0.4.8-1.tgz#731e02e3da6c31898cbee7b075e32ee955ec8dee"
+  integrity sha512-oNGQJzH5RDQifMWID6rEW5YEAlJgeuZzYIS0EluQBD903S+ICbqmXPGQk79BAzTsw2W6RAHDPGxDmM4utGNE4Q==
 
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
