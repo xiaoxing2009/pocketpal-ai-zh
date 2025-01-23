@@ -39,7 +39,7 @@ export const createStyles = (theme: Theme) =>
       flex: 1,
     },
     thinkContainer: {
-      backgroundColor: theme.colors.surface,
+      backgroundColor: theme.colors.surfaceContainerHigh,
       borderRadius: 8,
       padding: 12,
       marginVertical: 8,
