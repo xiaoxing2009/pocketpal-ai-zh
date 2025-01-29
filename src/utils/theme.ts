@@ -1,6 +1,7 @@
 import {
   MD3DarkTheme,
   DefaultTheme as PaperLightTheme,
+  configureFonts,
 } from 'react-native-paper';
 
 import {MD3BaseColors, SemanticColors, Theme} from './types';
@@ -8,10 +9,10 @@ import {withOpacity, stateLayerOpacity} from './colorUtils';
 
 // MD3 key colors (seed colors)
 const md3BaseColors: Partial<MD3BaseColors> = {
-  primary: '#111111',
-  secondary: '#3669F5',
-  tertiary: '#018786',
-  error: '#B3261E',
+  primary: '#333333',
+  secondary: '#1E4DF6',
+  tertiary: '#7880FF',
+  error: '#FF653F',
 };
 
 const createBaseColors = (isDark: boolean): MD3BaseColors => {
@@ -69,7 +70,7 @@ const createBaseColors = (isDark: boolean): MD3BaseColors => {
     onSecondaryContainer: '#424242',
     tertiary: md3BaseColors.tertiary!,
     onTertiary: '#FFFFFF',
-    tertiaryContainer: '#9EE6E5',
+    tertiaryContainer: '#F1F3FF',
     onTertiaryContainer: '#013332',
     error: md3BaseColors.error!,
     onError: '#FFFFFF',
@@ -77,7 +78,7 @@ const createBaseColors = (isDark: boolean): MD3BaseColors => {
     onErrorContainer: '#330B09',
     background: '#ffffff',
     onBackground: '#111111',
-    surface: '#f1f3f5',
+    surface: '#FAFAFA',
     onSurface: '#333333',
     surfaceVariant: '#e4e4e6',
     onSurfaceVariant: '#646466',
@@ -164,6 +165,59 @@ const createSemanticColors = (
     : 'rgba(118, 118, 128, 0.12)',
 });
 
+export const fontStyles = {
+  regular: {fontFamily: 'Inter-Regular'},
+  medium: {fontFamily: 'Inter-Medium'},
+  bold: {fontFamily: 'Inter-Bold'},
+  thin: {fontFamily: 'Inter-Thin'},
+  light: {fontFamily: 'Inter-Light'},
+  semibold: {fontFamily: 'Inter-SemiBold'},
+  extraBold: {fontFamily: 'Inter-ExtraBold'},
+};
+
+const baseFontVariants = configureFonts({
+  config: {...fontStyles.regular},
+});
+
+const customVariants = {
+  // Add custom variants:
+  bold: {
+    ...baseFontVariants.bodyMedium,
+    ...fontStyles.bold,
+  },
+  medium: {
+    ...baseFontVariants.bodyMedium,
+    ...fontStyles.medium,
+  },
+  thin: {
+    ...baseFontVariants.bodyMedium,
+    ...fontStyles.thin,
+  },
+  light: {
+    ...baseFontVariants.bodyMedium,
+    ...fontStyles.light,
+  },
+  semibold: {
+    ...baseFontVariants.bodyMedium,
+    ...fontStyles.semibold,
+  },
+} as const;
+
+const configuredFonts = configureFonts({
+  config: {
+    ...baseFontVariants,
+    ...customVariants,
+    displayMedium: {
+      ...baseFontVariants.displayMedium,
+      ...fontStyles.bold,
+    },
+    titleSmall: {
+      ...baseFontVariants.titleSmall,
+      ...fontStyles.medium,
+    },
+  },
+});
+
 const createTheme = (isDark: boolean): Theme => {
   const baseTheme = isDark ? MD3DarkTheme : PaperLightTheme;
   const baseColors = createBaseColors(isDark);
@@ -181,82 +235,83 @@ const createTheme = (isDark: boolean): Theme => {
     },
     fonts: {
       ...baseTheme.fonts,
+      ...configuredFonts,
       dateDividerTextStyle: {
+        ...fontStyles.extraBold,
         color: baseColors.onSurface,
         fontSize: 12,
-        fontWeight: '800',
         lineHeight: 16,
         opacity: 0.4,
       },
       emptyChatPlaceholderTextStyle: {
         color: baseColors.onSurface,
         fontSize: 16,
-        fontWeight: '500',
         lineHeight: 24,
+        ...fontStyles.medium,
       },
       inputTextStyle: {
         fontSize: 16,
-        fontWeight: '500',
         lineHeight: 24,
+        ...fontStyles.medium,
       },
       receivedMessageBodyTextStyle: {
         color: baseColors.onPrimary,
         fontSize: 16,
-        fontWeight: '500',
         lineHeight: 24,
+        ...fontStyles.medium,
       },
       receivedMessageCaptionTextStyle: {
         color: baseColors.onSurfaceVariant,
         fontSize: 12,
-        fontWeight: '500',
         lineHeight: 16,
+        ...fontStyles.medium,
       },
       receivedMessageLinkDescriptionTextStyle: {
         color: baseColors.onPrimary,
         fontSize: 14,
-        fontWeight: '400',
         lineHeight: 20,
+        ...fontStyles.regular,
       },
       receivedMessageLinkTitleTextStyle: {
         color: baseColors.onPrimary,
         fontSize: 16,
-        fontWeight: '800',
         lineHeight: 22,
+        ...fontStyles.extraBold,
       },
       sentMessageBodyTextStyle: {
         color: baseColors.onSurface,
         fontSize: 16,
-        fontWeight: '500',
         lineHeight: 24,
+        ...fontStyles.medium,
       },
       sentMessageCaptionTextStyle: {
         color: baseColors.onSurfaceVariant,
         fontSize: 12,
-        fontWeight: '500',
         lineHeight: 16,
+        ...fontStyles.medium,
       },
       sentMessageLinkDescriptionTextStyle: {
         color: baseColors.onSurface,
         fontSize: 14,
-        fontWeight: '400',
         lineHeight: 20,
+        ...fontStyles.regular,
       },
       sentMessageLinkTitleTextStyle: {
         color: baseColors.onSurface,
         fontSize: 16,
-        fontWeight: '800',
         lineHeight: 22,
+        ...fontStyles.extraBold,
       },
       userAvatarTextStyle: {
         color: baseColors.onSurface,
         fontSize: 12,
-        fontWeight: '800',
         lineHeight: 16,
+        ...fontStyles.extraBold,
       },
       userNameTextStyle: {
         fontSize: 12,
-        fontWeight: '800',
         lineHeight: 16,
+        ...fontStyles.extraBold,
       },
     },
     insets: {

@@ -61,6 +61,7 @@ const App = observer(() => {
                       backgroundColor: theme.colors.background,
                     },
                     headerTintColor: theme.colors.onBackground,
+                    headerTitleStyle: styles.headerTitle,
                   }}
                   drawerContent={props => <SidebarContent {...props} />}>
                   <Drawer.Screen
@@ -119,6 +120,9 @@ const createStyles = (theme: Theme) =>
     },
     headerWithDivider: {
       backgroundColor: theme.colors.background,
+    },
+    headerTitle: {
+      ...theme.fonts.titleSmall,
     },
   });
 
