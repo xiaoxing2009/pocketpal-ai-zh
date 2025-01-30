@@ -96,6 +96,17 @@ class ChatSessionStore {
     });
   }
 
+  // Update session title by session ID
+  updateSessionTitleBySessionId(sessionId: string, newTitle: string): void {
+    const session = this.sessions.find(s => s.id === sessionId);
+    if (session) {
+      runInAction(() => {
+        session.title = newTitle;
+      });
+      this.saveSessionsMetadata();
+    }
+  }
+
   updateSessionTitle(session: SessionMetaData) {
     if (session.messages.length > 0) {
       const message = session.messages[session.messages.length - 1];
