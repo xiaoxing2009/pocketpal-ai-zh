@@ -26,12 +26,15 @@ import {uiStore, modelStore, UIStore} from '../../store';
 
 import {L10nContext} from '../../utils';
 import {Model, ModelOrigin} from '../../utils/types';
+import {ModelSettingsSheet} from '../../components/ModelSettingsSheet';
 
 export const ModelsScreen: React.FC = observer(() => {
   const l10n = useContext(L10nContext);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [hfSearchVisible, setHFSearchVisible] = useState(false);
   const [_, setTrigger] = useState<boolean>(false);
+  const [selectedModel, setSelectedModel] = useState<Model | undefined>();
+  const [settingsVisible, setSettingsVisible] = useState(false);
   const theme = useTheme();
   const styles = createStyles(theme);
 
@@ -43,6 +46,16 @@ export const ModelsScreen: React.FC = observer(() => {
     await modelStore.refreshDownloadStatuses();
     setTrigger(prev => !prev);
     setRefreshing(false);
+  };
+
+  const handleOpenSettings = (model: Model) => {
+    setSelectedModel(model);
+    setSettingsVisible(true);
+  };
+
+  const handleCloseSettings = () => {
+    setSettingsVisible(false);
+    setSelectedModel(undefined);
   };
 
   const handleAddLocalModel = async () => {
@@ -213,11 +226,7 @@ export const ModelsScreen: React.FC = observer(() => {
             <ModelCard
               model={subItem}
               activeModelId={activeModelId}
-              onFocus={() => {
-                if (Platform.OS === 'ios') {
-                  //moveScrollToDown();
-                }
-              }}
+              onOpenSettings={() => handleOpenSettings(subItem)}
             />
           )}
         />
@@ -263,6 +272,11 @@ export const ModelsScreen: React.FC = observer(() => {
       <FABGroup
         onAddHFModel={() => setHFSearchVisible(true)}
         onAddLocalModel={handleAddLocalModel}
+      />
+      <ModelSettingsSheet
+        isVisible={settingsVisible}
+        onClose={handleCloseSettings}
+        model={selectedModel}
       />
     </KeyboardAvoidingView>
   );

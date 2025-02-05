@@ -3,7 +3,10 @@ import React, {useRef, useState, useEffect} from 'react';
 import {StyleProp, TextStyle, ViewStyle} from 'react-native';
 
 import {Menu as PaperMenu, Icon} from 'react-native-paper';
-import {MenuItemProps as PaperMenuItemProps} from 'react-native-paper';
+import {
+  MenuItemProps as PaperMenuItemProps,
+  MenuProps as PaperMenuProps,
+} from 'react-native-paper';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 
 import {SubMenu} from '../SubMenu/SubMenu';
@@ -25,6 +28,7 @@ export interface MenuItemProps
   onSubmenuOpen?: () => void;
   onSubmenuClose?: () => void;
   selectable?: boolean;
+  submenuProps?: Omit<PaperMenuProps, 'theme'>;
 }
 
 export const MenuItem: React.FC<MenuItemProps> = ({
@@ -41,6 +45,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
   onSubmenuOpen,
   onSubmenuClose,
   selectable = false,
+  submenuProps,
   ...menuItemProps
 }) => {
   const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
@@ -105,10 +110,24 @@ export const MenuItem: React.FC<MenuItemProps> = ({
       <Icon
         source={isSubmenuOpen ? 'chevron-down' : 'chevron-right'}
         size={18}
-        color={theme.colors.menuText}
+        color={
+          menuItemProps.disabled
+            ? theme.colors.onSurfaceDisabled
+            : theme.colors.primary
+        }
       />
     </View>
   );
+
+  const getTrailingIcon = () => {
+    if (submenu) {
+      return renderSubmenuIcon;
+    }
+    if (trailingIcon || icon) {
+      return renderTrailingIcon;
+    }
+    return undefined;
+  };
 
   const handlePress = (e: any) => {
     if (submenu) {
@@ -136,7 +155,6 @@ export const MenuItem: React.FC<MenuItemProps> = ({
         title={label}
         style={[
           styles.container,
-          selectable || leadingIcon ? styles.containerWithLeading : null,
           isSubmenuOpen && styles.activeParent,
           isGroupLabel && styles.groupLabel,
           style,
@@ -154,7 +172,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
         {...(!selectable && !leadingIcon
           ? {}
           : {leadingIcon: renderLeadingIcon})}
-        trailingIcon={submenu ? renderSubmenuIcon : renderTrailingIcon}
+        trailingIcon={getTrailingIcon()}
       />
       {submenu && (
         <SubMenu
@@ -163,7 +181,8 @@ export const MenuItem: React.FC<MenuItemProps> = ({
             setIsSubmenuOpen(false);
             onSubmenuClose?.();
           }}
-          anchorPosition={submenuPosition}>
+          anchor={submenuPosition}
+          {...submenuProps}>
           {submenu}
         </SubMenu>
       )}

@@ -45,5 +45,6 @@ module.exports = {
       '<rootDir>/__mocks__/external/@react-native-firebase/app.js',
     '@react-native-firebase/app-check':
       '<rootDir>/__mocks__/external/@react-native-firebase/app-check.js',
+    '\\.svg': '<rootDir>/__mocks__/external/react-native-svg.js',
   },
 };

@@ -9,18 +9,22 @@ export const createStyles = (theme: Theme) =>
       shadowRadius: 70,
       shadowOffset: {width: 0, height: 0},
       elevation: 5,
+      borderRadius: 12,
+      maxWidth: '90%',
     },
     menuWithSubmenu: {
       elevation: 0,
       shadowOpacity: 0,
     },
     content: {
-      paddingVertical: 4,
+      paddingVertical: 0,
       backgroundColor: theme.colors.menuBackground,
-      borderRadius: 15,
+      borderRadius: 12,
+      overflow: 'hidden',
+      marginRight: 10,
     },
     contentWithSubmenu: {
-      backgroundColor: theme.colors.menuBackgroundDimmed,
+      backgroundColor: theme.colors.menuBackground,
     },
     groupSeparator: {
       height: 6,
@@ -28,7 +32,6 @@ export const createStyles = (theme: Theme) =>
       backgroundColor: 'transparent',
     },
     separator: {
-      //height: 1,
       backgroundColor: theme.colors.menuSeparator,
     },
   });

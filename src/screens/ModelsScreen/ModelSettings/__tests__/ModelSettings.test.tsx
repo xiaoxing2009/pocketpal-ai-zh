@@ -1,7 +1,7 @@
 import React from 'react';
 import {Keyboard} from 'react-native';
 
-import {render, fireEvent, waitFor, act} from '../../../../../jest/test-utils';
+import {render, fireEvent, act, waitFor} from '../../../../../jest/test-utils';
 
 import {ModelSettings} from '../ModelSettings';
 
@@ -12,6 +12,27 @@ jest.mock('../../CompletionSettings', () => {
   return {
     CompletionSettings: () => <Text>CompletionSettings</Text>,
   };
+});
+
+// Mock Sheet component
+jest.mock('../../../../components/Sheet', () => {
+  const {View, TextInput, Button} = require('react-native');
+  const MockSheet = ({children, isVisible, onClose}) => {
+    if (!isVisible) {
+      return null;
+    }
+    return (
+      <View testID="sheet">
+        <Button title="Close" onPress={onClose} testID="sheet-close-button" />
+        {children}
+      </View>
+    );
+  };
+  MockSheet.ScrollView = View;
+  MockSheet.View = View;
+  MockSheet.TextInput = TextInput;
+  MockSheet.Actions = View;
+  return {Sheet: MockSheet};
 });
 
 describe('ModelSettings', () => {
@@ -28,21 +49,23 @@ describe('ModelSettings', () => {
 
   const mockProps = {
     chatTemplate: defaultTemplate,
-    completionSettings: {},
-    isActive: false,
+    stopWords: [] as string[],
     onChange: jest.fn(),
+    onStopWordsChange: jest.fn(),
     onCompletionSettingsChange: jest.fn(),
+    isActive: false,
+    onFocus: jest.fn(),
   };
 
   beforeEach(() => {
     // Reset all properties to initial values
     mockProps.chatTemplate = {...defaultTemplate};
-    mockProps.completionSettings = {};
+    mockProps.stopWords = [];
     mockProps.isActive = false;
 
     // Create fresh mocks for all function props
     mockProps.onChange = jest.fn();
-    mockProps.onCompletionSettingsChange = jest.fn();
+    mockProps.onStopWordsChange = jest.fn();
 
     jest.clearAllMocks();
     jest.spyOn(Keyboard, 'dismiss');
@@ -123,7 +146,7 @@ describe('ModelSettings', () => {
   });
 
   it('saves template changes', async () => {
-    const {getByText, getByPlaceholderText} = render(
+    const {getByText, getByPlaceholderText, getByTestId} = render(
       <ModelSettings {...mockProps} />,
     );
 
@@ -141,7 +164,7 @@ describe('ModelSettings', () => {
     });
 
     await act(async () => {
-      fireEvent.press(getByText('Close'));
+      fireEvent.press(getByTestId('template-close-button'));
     });
 
     expect(mockProps.onChange).toHaveBeenCalledWith(
@@ -165,13 +188,46 @@ describe('ModelSettings', () => {
     expect(mockProps.onChange).toHaveBeenCalledWith('systemPrompt', newPrompt);
   });
 
-  it('dismisses keyboard when tapping outside inputs', async () => {
-    const {getByTestId} = render(<ModelSettings {...mockProps} />);
-
+  it('dismisses keyboard when the template sheet is closed', async () => {
+    const {getByTestId, getByText, getByPlaceholderText} = render(
+      <ModelSettings {...mockProps} />,
+    );
+    const editButton = getByText('Edit');
     await act(async () => {
-      fireEvent(getByTestId('settings-container'), 'press');
+      fireEvent.press(editButton);
+    });
+
+    const input = getByPlaceholderText('Enter your chat template here...');
+    await act(async () => {
+      fireEvent.changeText(input, 'New Template Content');
+    });
+
+    const sheetCloseButton = getByTestId('sheet-close-button');
+    await act(async () => {
+      fireEvent.press(sheetCloseButton);
     });
 
     expect(Keyboard.dismiss).toHaveBeenCalled();
+  });
+
+  it('handles stop words additions and removals', () => {
+    const {getByTestId} = render(<ModelSettings {...mockProps} />);
+
+    // Test adding new stop word
+    const stopInput = getByTestId('stop-input');
+    fireEvent.changeText(stopInput, 'newstop');
+    fireEvent(stopInput, 'submitEditing');
+
+    expect(mockProps.onStopWordsChange).toHaveBeenCalledWith(['newstop']);
+
+    // Mock existing stop words
+    mockProps.stopWords = ['<stop1>'];
+    const {getAllByRole} = render(<ModelSettings {...mockProps} />);
+
+    // Test removing stop word using chip close button
+    const closeButtons = getAllByRole('button', {name: /close/i});
+    fireEvent.press(closeButtons[0]);
+
+    expect(mockProps.onStopWordsChange).toHaveBeenCalledWith([]);
   });
 });

@@ -7,7 +7,9 @@ const screenHeight = Dimensions.get('window').height;
 export const createStyles = (theme: Theme) =>
   StyleSheet.create({
     container: {
-      padding: 4,
+      padding: 16,
+      backgroundColor: theme.colors.surface,
+      borderRadius: theme.borders.default,
     },
     chatTemplateRow: {
       flexDirection: 'row',
@@ -54,5 +56,39 @@ export const createStyles = (theme: Theme) =>
     templateNote: {
       color: theme.colors.textSecondary,
       marginVertical: 8,
+    },
+    stopLabel: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    settingItem: {
+      marginBottom: 24,
+      paddingHorizontal: 4,
+    },
+    settingLabel: {
+      marginBottom: 2,
+    },
+    settingValue: {
+      textAlign: 'right',
+    },
+    stopWordsContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 8,
+      marginBottom: 8,
+    },
+    stopChip: {
+      marginRight: 4,
+      marginVertical: 4,
+    },
+    stopChipText: {
+      fontSize: 12,
+    },
+    sheetContainer: {
+      padding: 16,
+    },
+    actionsContainer: {
+      alignItems: 'center',
+      justifyContent: 'center',
     },
   });

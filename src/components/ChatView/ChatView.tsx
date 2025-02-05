@@ -55,6 +55,12 @@ import {
   LoadingBubble,
   PocketPalIconAnimation,
 } from '..';
+import {
+  CopyIcon,
+  GridIcon,
+  PencilLineIcon,
+  RefreshIcon,
+} from '../../assets/icons';
 
 // Untestable
 /* istanbul ignore next */
@@ -124,7 +130,7 @@ export interface ChatProps extends ChatTopLevelProps {
 type MenuItem = {
   label: string;
   onPress?: () => void;
-  icon?: string;
+  icon?: () => React.ReactNode;
   disabled: boolean;
   submenu?: SubMenuItem[];
 };
@@ -426,7 +432,7 @@ export const ChatView = observer(
             handleCopy(selectedMessage);
             handleMenuDismiss();
           },
-          icon: 'content-copy',
+          icon: () => <CopyIcon stroke={theme.colors.primary} />,
           disabled: false,
         },
       ];
@@ -438,13 +444,13 @@ export const ChatView = observer(
             handleTryAgain(selectedMessage);
             handleMenuDismiss();
           },
-          icon: 'refresh',
+          icon: () => <RefreshIcon stroke={theme.colors.primary} />,
           disabled: !hasActiveModel,
         });
 
         baseItems.push({
           label: 'Regenerate with',
-          icon: 'chevron-right',
+          icon: () => <GridIcon stroke={theme.colors.primary} />,
           disabled: false,
           submenu: models.map(model => ({
             label: model.name,
@@ -464,7 +470,7 @@ export const ChatView = observer(
             handleEdit(selectedMessage);
             handleMenuDismiss();
           },
-          icon: 'pencil',
+          icon: () => <PencilLineIcon stroke={theme.colors.primary} />,
           disabled: !hasActiveModel,
         });
       }
@@ -479,6 +485,7 @@ export const ChatView = observer(
       handleEdit,
       handleMenuDismiss,
       size.width,
+      theme.colors.primary,
     ]);
 
     const renderMenuItem = React.useCallback(
@@ -486,19 +493,15 @@ export const ChatView = observer(
         if (item.submenu) {
           return (
             <React.Fragment key={index}>
-              {index > 0 && <Menu.Separator />}
               <Menu.Item
-                style={styles.menu}
                 label={item.label}
-                icon={item.icon}
+                leadingIcon={item.icon}
                 disabled={item.disabled}
                 submenu={item.submenu.map(
                   (subItem: SubMenuItem, subIndex: number) => (
                     <React.Fragment key={subIndex}>
-                      {subIndex > 0 && <Menu.Separator />}
                       <Menu.Item
                         key={subIndex}
-                        style={{...styles.menu, width: subItem.width}}
                         label={subItem.label}
                         onPress={subItem.onPress}
                         disabled={subItem.disabled}
@@ -513,18 +516,16 @@ export const ChatView = observer(
 
         return (
           <React.Fragment key={index}>
-            {index > 0 && <Menu.Separator />}
             <Menu.Item
-              style={styles.menu}
               label={item.label}
               onPress={item.onPress}
-              icon={item.icon}
+              leadingIcon={item.icon}
               disabled={item.disabled}
             />
           </React.Fragment>
         );
       },
-      [styles.menu],
+      [],
     );
 
     const renderMessage = React.useCallback(

@@ -45,24 +45,17 @@ describe('ModelStore', () => {
 
     it('should retain value of existing variables while merging new variables', () => {
       const newDefaultModel = defaultModels[0];
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const {temperature, ...completionSettingsWithoutTemperature} =
-        newDefaultModel.completionSettings; // Exclude temperature
 
       // Apply changes to the existing model:
       //  - chatTemplate.template: existing variable with a value different from the default
-      //  - completionSettings.n_predict: existing variable with a value different from the default
-      //  - temperature: new variable in the default model - not present in the existing model
+      //  - stopWords: existing array with custom values
       const existingModel = {
         ...newDefaultModel,
         chatTemplate: {
           ...newDefaultModel.chatTemplate,
           template: 'existing',
         },
-        completionSettings: {
-          ...completionSettingsWithoutTemperature, // Use the completionSettings without temperature - simulates new parameters
-          n_predict: 101010,
-        },
+        stopWords: ['custom_stop_1', 'custom_stop_2'],
         isDownloaded: true, // if not downloaded, it will be removed
       };
 
@@ -78,12 +71,12 @@ describe('ModelStore', () => {
         }),
       );
 
-      expect(modelStore.models[0].completionSettings).toEqual(
-        expect.objectContaining({
-          n_predict: 101010, // Existing value should remain
-          temperature: newDefaultModel.completionSettings.temperature, // Non-existing value should be merged
-        }),
-      );
+      // Custom stop words should be preserved
+      expect(modelStore.models[0].stopWords).toEqual([
+        'custom_stop_1',
+        'custom_stop_2',
+        ...(newDefaultModel.stopWords || []),
+      ]);
     });
 
     it('should merge value of default to exisiting for top level variables', () => {
@@ -203,34 +196,26 @@ describe('ModelStore', () => {
   });
 
   describe('settings management', () => {
-    it('should update completion settings', () => {
+    it('should update stop words', () => {
       const model = {...defaultModels[0]};
       modelStore.models = [model];
 
-      const newSettings = {
-        temperature: 0.8,
-        top_p: 0.9,
-      };
+      const newStopWords = ['stop1', 'stop2'];
 
-      modelStore.updateCompletionSettings(model.id, newSettings);
+      modelStore.updateModelStopWords(model.id, newStopWords);
 
-      expect(modelStore.models[0].completionSettings).toEqual(
-        expect.objectContaining(newSettings),
-      );
+      expect(modelStore.models[0].stopWords).toEqual(newStopWords);
     });
 
-    it('should reset model settings to defaults', () => {
+    it('should reset model stop words to defaults', () => {
       const model = {...defaultModels[0]};
-      const originalSettings = {...model.defaultCompletionSettings};
-      model.completionSettings = {
-        ...model.completionSettings,
-        temperature: 0.9,
-      };
+      const originalStopWords = [...(model.defaultStopWords || [])];
+      model.stopWords = ['custom1', 'custom2'];
       modelStore.models = [model];
 
-      modelStore.resetCompletionSettings(model.id);
+      modelStore.resetModelStopWords(model.id);
 
-      expect(modelStore.models[0].completionSettings).toEqual(originalSettings);
+      expect(modelStore.models[0].stopWords).toEqual(originalStopWords);
     });
   });
 

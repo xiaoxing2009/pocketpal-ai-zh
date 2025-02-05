@@ -3,7 +3,7 @@ import React, {useState, useEffect} from 'react';
 
 import Slider from '@react-native-community/slider';
 import {CompletionParams} from '@pocketpalai/llama.rn';
-import {Text, Switch, Chip, SegmentedButtons} from 'react-native-paper';
+import {Text, Switch, SegmentedButtons} from 'react-native-paper';
 
 import {TextInput} from '../../../components';
 
@@ -24,7 +24,6 @@ interface Props {
 
 export const CompletionSettings: React.FC<Props> = ({settings, onChange}) => {
   const [localSliderValues, setLocalSliderValues] = useState({});
-  const [newStopWord, setNewStopWord] = useState('');
   const theme = useTheme();
   const styles = createStyles(theme);
   const l10n = React.useContext(L10nContext);
@@ -117,49 +116,6 @@ export const CompletionSettings: React.FC<Props> = ({settings, onChange}) => {
     </View>
   );
 
-  const renderStopWords = () => (
-    <View style={styles.settingItem}>
-      <View style={styles.stopLabel}>
-        <Text variant="labelSmall" style={styles.settingLabel}>
-          STOP WORDS
-        </Text>
-      </View>
-
-      {/* Display existing stop words as chips */}
-      <View style={styles.stopWordsContainer}>
-        {(settings.stop ?? []).map((word, index) => (
-          <Chip
-            key={index}
-            onClose={() => {
-              const newStops = (settings.stop ?? []).filter(
-                (_, i) => i !== index,
-              );
-              onChange('stop', newStops);
-            }}
-            compact
-            textStyle={styles.stopChipText}
-            style={styles.stopChip}>
-            {word}
-          </Chip>
-        ))}
-      </View>
-
-      {/* Input for new stop words */}
-      <TextInput
-        value={newStopWord}
-        placeholder="Add new stop word"
-        onChangeText={setNewStopWord}
-        onSubmitEditing={() => {
-          if (newStopWord.trim()) {
-            onChange('stop', [...(settings.stop ?? []), newStopWord.trim()]);
-            setNewStopWord('');
-          }
-        }}
-        testID="stop-input"
-      />
-    </View>
-  );
-
   const renderMirostatSelector = () => {
     const descriptionKey = COMPLETION_PARAMS_METADATA.mirostat?.descriptionKey;
     const description = descriptionKey ? l10n[descriptionKey] : '';
@@ -193,7 +149,7 @@ export const CompletionSettings: React.FC<Props> = ({settings, onChange}) => {
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       {renderIntegerInput({name: 'n_predict'})}
       {renderSlider({name: 'temperature'})}
       {renderSlider({name: 'top_k', step: 1})}
@@ -214,7 +170,6 @@ export const CompletionSettings: React.FC<Props> = ({settings, onChange}) => {
         </>
       )}
       {renderIntegerInput({name: 'seed'})}
-      {renderStopWords()}
     </View>
   );
 };

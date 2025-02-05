@@ -75,6 +75,8 @@ export const mockBasicModel: Model = {
   chatTemplate: mockChatTemplate,
   defaultCompletionSettings: mockDefaultCompletionParams,
   completionSettings: mockCompletionParams,
+  defaultStopWords: mockDefaultCompletionParams.stop,
+  stopWords: mockCompletionParams.stop,
 };
 
 // Factory function for creating custom models

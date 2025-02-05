@@ -158,4 +158,7 @@ export const createStyles = (theme: Theme) =>
     divider: {
       marginTop: 8,
     },
+    sheetScrollViewContainer: {
+      padding: 16,
+    },
   });

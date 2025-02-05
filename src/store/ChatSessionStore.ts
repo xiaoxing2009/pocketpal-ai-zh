@@ -1,24 +1,29 @@
-import {LlamaContext} from '@pocketpalai/llama.rn';
+import {CompletionParams, LlamaContext} from '@pocketpalai/llama.rn';
 import * as RNFS from '@dr.pogodin/react-native-fs';
 import {makeAutoObservable, runInAction} from 'mobx';
 import {format, isToday, isYesterday} from 'date-fns';
 
-import {assistant} from '../utils/chat';
+import {assistant, defaultCompletionParams} from '../utils/chat';
 import {MessageType} from '../utils/types';
 
 const NEW_SESSION_TITLE = 'New Session';
 const TITLE_LIMIT = 40;
 
-interface SessionMetaData {
+export interface SessionMetaData {
   id: string;
   title: string;
   date: string;
   messages: MessageType.Any[];
+  completionSettings: CompletionParams;
 }
 
 interface SessionGroup {
   [key: string]: SessionMetaData[];
 }
+
+export const defaultCompletionSettings = {...defaultCompletionParams};
+delete defaultCompletionSettings.prompt;
+delete defaultCompletionSettings.stop;
 
 class ChatSessionStore {
   sessions: SessionMetaData[] = [];
@@ -26,6 +31,7 @@ class ChatSessionStore {
   isEditMode: boolean = false;
   editingMessageId: string | null = null;
   isGenerating: boolean = false;
+  newChatCompletionSettings: CompletionParams = defaultCompletionSettings;
 
   constructor() {
     makeAutoObservable(this);
@@ -82,6 +88,17 @@ class ChatSessionStore {
     }
   }
 
+  async duplicateSession(id: string) {
+    const session = this.sessions.find(s => s.id === id);
+    if (session) {
+      await this.createNewSession(
+        `${session.title} - Copy`,
+        session.messages,
+        session.completionSettings,
+      );
+    }
+  }
+
   resetActiveSession() {
     runInAction(() => {
       this.exitEditMode();
@@ -93,6 +110,7 @@ class ChatSessionStore {
     runInAction(() => {
       this.exitEditMode();
       this.activeSessionId = sessionId;
+      this.newChatCompletionSettings = defaultCompletionSettings;
     });
   }
 
@@ -165,9 +183,18 @@ class ChatSessionStore {
     }
   }
 
+  setNewChatCompletionSettings(settings: CompletionParams) {
+    this.newChatCompletionSettings = settings;
+  }
+
+  resetNewChatCompletionSettings() {
+    this.newChatCompletionSettings = defaultCompletionSettings;
+  }
+
   async createNewSession(
     title: string,
     initialMessages: MessageType.Any[] = [],
+    completionSettings: CompletionParams = defaultCompletionSettings,
   ): Promise<void> {
     const id = new Date().toISOString();
     const metaData: SessionMetaData = {
@@ -175,7 +202,14 @@ class ChatSessionStore {
       title,
       date: id,
       messages: initialMessages,
+      completionSettings,
     };
+
+    if (Object.keys(this.newChatCompletionSettings).length > 0) {
+      metaData.completionSettings = this.newChatCompletionSettings;
+      this.newChatCompletionSettings = defaultCompletionSettings;
+    }
+
     this.updateSessionTitle(metaData);
     this.sessions.push(metaData);
     this.activeSessionId = id;
@@ -197,6 +231,16 @@ class ChatSessionStore {
           } as MessageType.Text;
           this.saveSessionsMetadata();
         }
+      }
+    }
+  }
+
+  updateSessionCompletionSettings(settings: CompletionParams) {
+    if (this.activeSessionId) {
+      const session = this.sessions.find(s => s.id === this.activeSessionId);
+      if (session) {
+        session.completionSettings = settings;
+        this.saveSessionsMetadata();
       }
     }
   }

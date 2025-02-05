@@ -7,7 +7,7 @@ jest.useFakeTimers();
 
 describe('CompletionSettings', () => {
   it('renders all settings correctly', async () => {
-    const {getByDisplayValue, getByTestId, getByText} = render(
+    const {getByDisplayValue, getByTestId} = render(
       <CompletionSettings
         settings={{...mockCompletionParams, mirostat: 1}}
         onChange={jest.fn()}
@@ -72,10 +72,6 @@ describe('CompletionSettings', () => {
     expect(getByTestId('seed-input')).toBeTruthy();
     const seedInput = getByTestId('seed-input');
     expect(seedInput.props.value).toBe('0');
-
-    expect(getByTestId('stop-input')).toBeTruthy();
-    expect(getByText('<stop1>')).toBeTruthy();
-    expect(getByText('<stop2>')).toBeTruthy();
   });
 
   it('handles slider changes', () => {
@@ -121,34 +117,5 @@ describe('CompletionSettings', () => {
     const mirostatV2Button = getByText('v2');
     fireEvent.press(mirostatV2Button);
     expect(mockOnChange).toHaveBeenCalledWith('mirostat', 2);
-  });
-
-  it('handles stop words additions and removals', () => {
-    const mockOnChange = jest.fn();
-    const {getByTestId, getAllByRole} = render(
-      <CompletionSettings
-        settings={mockCompletionParams}
-        onChange={mockOnChange}
-      />,
-    );
-
-    // Test adding new stop word
-    const stopInput = getByTestId('stop-input');
-    fireEvent.changeText(stopInput, 'newstop');
-    fireEvent(stopInput, 'submitEditing');
-
-    expect(mockOnChange).toHaveBeenCalledWith('stop', [
-      ...(mockCompletionParams.stop ?? []),
-      'newstop',
-    ]);
-
-    // Test removing stop word
-    const closeButtons = getAllByRole('button', {name: /close/i});
-    fireEvent.press(closeButtons[0]);
-
-    expect(mockOnChange).toHaveBeenCalledWith(
-      'stop',
-      (mockCompletionParams.stop ?? []).filter(word => word !== '<stop1>'),
-    );
   });
 });

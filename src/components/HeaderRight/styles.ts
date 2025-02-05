@@ -5,4 +5,10 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  menuBtn: {
+    marginLeft: 0,
+  },
+  chatBtn: {
+    marginRight: 0,
+  },
 });

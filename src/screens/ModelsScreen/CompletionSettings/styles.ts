@@ -4,6 +4,11 @@ import {Theme} from '../../../utils/types';
 
 export const createStyles = (theme: Theme) =>
   StyleSheet.create({
+    container: {
+      padding: 16,
+      backgroundColor: theme.colors.surface,
+      borderRadius: theme.borders.default,
+    },
     row: {
       flexDirection: 'row',
       alignItems: 'center',

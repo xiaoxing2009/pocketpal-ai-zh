@@ -6,10 +6,7 @@ import {MenuItem} from '../../MenuItem';
 describe('SubMenu', () => {
   it('renders when visible', () => {
     const {getByText} = render(
-      <SubMenu
-        visible={true}
-        onDismiss={() => {}}
-        anchorPosition={{x: 100, y: 100}}>
+      <SubMenu visible={true} onDismiss={() => {}} anchor={{x: 100, y: 100}}>
         <MenuItem label="SubMenu Item" onPress={() => {}} />
       </SubMenu>,
     );
@@ -19,10 +16,7 @@ describe('SubMenu', () => {
 
   it('does not render when not visible', () => {
     const {queryByText} = render(
-      <SubMenu
-        visible={false}
-        onDismiss={() => {}}
-        anchorPosition={{x: 100, y: 100}}>
+      <SubMenu visible={false} onDismiss={() => {}} anchor={{x: 100, y: 100}}>
         <MenuItem label="SubMenu Item" onPress={() => {}} />
       </SubMenu>,
     );
@@ -32,10 +26,7 @@ describe('SubMenu', () => {
 
   it('handles multiple menu items', () => {
     const {getByText} = render(
-      <SubMenu
-        visible={true}
-        onDismiss={() => {}}
-        anchorPosition={{x: 100, y: 100}}>
+      <SubMenu visible={true} onDismiss={() => {}} anchor={{x: 100, y: 100}}>
         <MenuItem label="Item 1" onPress={() => {}} />
         <MenuItem label="Item 2" onPress={() => {}} />
         <MenuItem label="Item 3" onPress={() => {}} />

@@ -33,14 +33,14 @@ const createBaseColors = (isDark: boolean): MD3BaseColors => {
       onTertiary: '#014C4C',
       tertiaryContainer: '#016665',
       onTertiaryContainer: '#9EE6E5',
-      error: '#E69490',
+      error: md3BaseColors.error!,
       onError: '#4C100D',
       errorContainer: '#661511',
       onErrorContainer: '#E6ACA9',
       background: '#000000',
       onBackground: '#ffffff',
       surface: '#1E1E1E',
-      onSurface: '#e5e5e6',
+      onSurface: '#E2E2E2',
       surfaceVariant: '#646466',
       onSurfaceVariant: '#e3e4e6',
       outline: '#444444',
@@ -54,7 +54,7 @@ const createBaseColors = (isDark: boolean): MD3BaseColors => {
       inverseSecondary: md3BaseColors.secondary!,
       shadow: '#ffffff',
       scrim: 'rgba(0, 0, 0, 0.25)',
-      backdrop: 'rgba(255, 255, 255, 0.2)',
+      backdrop: 'rgba(38, 37, 37, 0.8)',
     };
   }
 
@@ -78,7 +78,7 @@ const createBaseColors = (isDark: boolean): MD3BaseColors => {
     onErrorContainer: '#330B09',
     background: '#ffffff',
     onBackground: '#111111',
-    surface: '#FAFAFA',
+    surface: '#F9FAFB',
     onSurface: '#333333',
     surfaceVariant: '#e4e4e6',
     onSurfaceVariant: '#646466',
@@ -93,7 +93,7 @@ const createBaseColors = (isDark: boolean): MD3BaseColors => {
     inverseSecondary: '#95ABE6',
     shadow: '#000000',
     scrim: 'rgba(0, 0, 0, 0.25)',
-    backdrop: 'rgba(0, 0, 0, 0.5)',
+    backdrop: 'rgba(51, 51, 51, 0.6)',
   };
 };
 
@@ -232,6 +232,7 @@ const createTheme = (isDark: boolean): Theme => {
     borders: {
       inputBorderRadius: 20,
       messageBorderRadius: 15,
+      default: 12,
     },
     fonts: {
       ...baseTheme.fonts,

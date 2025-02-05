@@ -3,7 +3,7 @@ import {runInAction} from 'mobx';
 import * as RNFS from '@dr.pogodin/react-native-fs';
 import {LlamaContext} from '@pocketpalai/llama.rn';
 
-import {chatSessionStore} from '../ChatSessionStore';
+import {chatSessionStore, defaultCompletionSettings} from '../ChatSessionStore';
 
 import {MessageType} from '../../utils/types';
 
@@ -66,6 +66,7 @@ describe('chatSessionStore', () => {
           title: 'Session 1',
           date: new Date().toISOString(),
           messages: [],
+          completionSettings: defaultCompletionSettings,
         },
       ];
       (RNFS.exists as jest.Mock).mockResolvedValue(true);
@@ -86,6 +87,7 @@ describe('chatSessionStore', () => {
           title: 'Session 1',
           date: new Date().toISOString(),
           messages: [],
+          completionSettings: defaultCompletionSettings,
         },
       ];
       (RNFS.exists as jest.Mock).mockResolvedValue(false);
@@ -115,6 +117,7 @@ describe('chatSessionStore', () => {
         title: 'Session 1',
         date: new Date().toISOString(),
         messages: [],
+        completionSettings: defaultCompletionSettings,
       };
       chatSessionStore.sessions = [mockSession];
       chatSessionStore.activeSessionId = mockSession.id;
@@ -137,6 +140,7 @@ describe('chatSessionStore', () => {
         title: 'Session 1',
         date: new Date().toISOString(),
         messages: [mockMessage],
+        completionSettings: defaultCompletionSettings,
       };
       chatSessionStore.sessions = [mockSession];
       chatSessionStore.activeSessionId = mockSession.id;
@@ -157,6 +161,7 @@ describe('chatSessionStore', () => {
         title: 'New Session',
         date: new Date().toISOString(),
         messages: [mockMessage],
+        completionSettings: defaultCompletionSettings,
       };
       chatSessionStore.updateSessionTitle(mockSession);
 
@@ -170,6 +175,7 @@ describe('chatSessionStore', () => {
         title: 'New Session',
         date: new Date().toISOString(),
         messages: [{...mockMessage, text: longMessage}],
+        completionSettings: defaultCompletionSettings,
       };
       chatSessionStore.updateSessionTitle(mockSession);
 
@@ -206,6 +212,7 @@ describe('chatSessionStore', () => {
         title: 'Session 1',
         date: new Date().toISOString(),
         messages: [],
+        completionSettings: defaultCompletionSettings,
       };
       chatSessionStore.sessions = [session];
 
@@ -223,6 +230,7 @@ describe('chatSessionStore', () => {
         title: 'Session 1',
         date: new Date().toISOString(),
         messages: [],
+        completionSettings: defaultCompletionSettings,
       };
       chatSessionStore.sessions = [session];
       (RNFS.writeFile as jest.Mock).mockRejectedValue(
@@ -250,6 +258,7 @@ describe('chatSessionStore', () => {
         title: 'Session 1',
         date: new Date().toISOString(),
         messages: [mockMessage],
+        completionSettings: defaultCompletionSettings,
       };
       chatSessionStore.sessions = [session];
       chatSessionStore.activeSessionId = session.id;
@@ -269,6 +278,7 @@ describe('chatSessionStore', () => {
         title: 'Session 1',
         date: new Date().toISOString(),
         messages: [mockMessage],
+        completionSettings: defaultCompletionSettings,
       };
       chatSessionStore.sessions = [session];
       chatSessionStore.activeSessionId = session.id;
@@ -298,6 +308,7 @@ describe('chatSessionStore', () => {
         title: 'Session 1',
         date: new Date().toISOString(),
         messages: [],
+        completionSettings: defaultCompletionSettings,
       };
       chatSessionStore.sessions = [session];
       chatSessionStore.activeSessionId = session.id;
@@ -339,18 +350,21 @@ describe('chatSessionStore', () => {
           title: 'Today Session',
           date: today.toISOString(),
           messages: [],
+          completionSettings: defaultCompletionSettings,
         },
         {
           id: '2',
           title: 'Yesterday Session',
           date: yesterday.toISOString(),
           messages: [],
+          completionSettings: defaultCompletionSettings,
         },
         {
           id: '3',
           title: 'Last Week Session',
           date: lastWeek.toISOString(),
           messages: [],
+          completionSettings: defaultCompletionSettings,
         },
       ];
 

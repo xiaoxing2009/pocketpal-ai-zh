@@ -5,13 +5,14 @@ import {Theme} from '../../../utils/types';
 export const createStyles = (theme: Theme) =>
   StyleSheet.create({
     menu: {
-      //minWidth: 220,
+      maxWidth: '90%',
       marginTop: 0,
       marginLeft: 0,
     },
     content: {
-      paddingVertical: 6,
+      paddingVertical: 0,
       backgroundColor: theme.colors.menuBackground,
-      borderRadius: 15,
+      borderRadius: 12,
+      overflow: 'hidden',
     },
   });

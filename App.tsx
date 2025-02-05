@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {Dimensions, StyleSheet} from 'react-native';
 
-import {reaction} from 'mobx';
 import {observer} from 'mobx-react';
 import {NavigationContainer} from '@react-navigation/native';
 import {Provider as PaperProvider} from 'react-native-paper';
@@ -16,8 +15,13 @@ import {KeyboardProvider} from 'react-native-keyboard-controller';
 
 import {useTheme} from './src/hooks';
 import {Theme} from './src/utils/types';
-import {modelStore, chatSessionStore} from './src/store';
-import {HeaderRight, SidebarContent, ModelsHeaderRight} from './src/components';
+
+import {
+  SidebarContent,
+  ModelsHeaderRight,
+  ChatHeader,
+  HeaderLeft,
+} from './src/components';
 import {
   ChatScreen,
   ModelsScreen,
@@ -30,17 +34,6 @@ const Drawer = createDrawerNavigator();
 const screenWidth = Dimensions.get('window').width;
 
 const App = observer(() => {
-  const [chatTitle, setChatTitle] = React.useState('Default Chat Page');
-
-  React.useEffect(() => {
-    const dispose = reaction(
-      () => modelStore.chatTitle,
-      newTitle => setChatTitle(newTitle),
-      {fireImmediately: true},
-    );
-    return () => dispose();
-  }, []);
-
   const theme = useTheme();
   const styles = createStyles(theme);
 
@@ -48,12 +41,13 @@ const App = observer(() => {
     <GestureHandlerRootView style={styles.root}>
       <SafeAreaProvider>
         <KeyboardProvider statusBarTranslucent navigationBarTranslucent>
-          <BottomSheetModalProvider>
-            <PaperProvider theme={theme}>
+          <PaperProvider theme={theme}>
+            <BottomSheetModalProvider>
               <NavigationContainer>
                 <Drawer.Navigator
                   useLegacyImplementation={false}
                   screenOptions={{
+                    headerLeft: () => <HeaderLeft />,
                     drawerStyle: {
                       width: screenWidth * 0.8,
                     },
@@ -68,11 +62,7 @@ const App = observer(() => {
                     name="Chat"
                     component={gestureHandlerRootHOC(ChatScreen)}
                     options={{
-                      title: chatTitle,
-                      headerRight: () => <HeaderRight />,
-                      headerStyle: chatSessionStore.shouldShowHeaderDivider
-                        ? styles.headerWithDivider
-                        : styles.headerWithoutDivider,
+                      header: () => <ChatHeader />,
                     }}
                   />
                   <Drawer.Screen
@@ -99,8 +89,8 @@ const App = observer(() => {
                   />
                 </Drawer.Navigator>
               </NavigationContainer>
-            </PaperProvider>
-          </BottomSheetModalProvider>
+            </BottomSheetModalProvider>
+          </PaperProvider>
         </KeyboardProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

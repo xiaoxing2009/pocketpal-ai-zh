@@ -1,9 +1,11 @@
 import {sessionFixtures} from '../../jest/fixtures/chatSessions';
+import {defaultCompletionSettings} from '../../src/store/ChatSessionStore';
 
 export const mockChatSessionStore = {
   sessions: sessionFixtures,
   //currentSessionMessages: [],
   activeSessionId: 'session-1',
+  newChatCompletionSettings: defaultCompletionSettings,
   loadSessionList: jest.fn().mockResolvedValue(undefined),
   deleteSession: jest.fn().mockResolvedValue(undefined),
   setActiveSession: jest.fn(),
@@ -22,6 +24,8 @@ export const mockChatSessionStore = {
   enterEditMode: jest.fn(),
   removeMessagesFromId: jest.fn(),
   setIsGenerating: jest.fn(),
+  duplicateSession: jest.fn().mockResolvedValue(undefined),
+  setNewChatCompletionSettings: jest.fn(),
 };
 
 Object.defineProperty(mockChatSessionStore, 'currentSessionMessages', {

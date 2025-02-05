@@ -232,19 +232,17 @@ class ModelStore {
 
         // For PRESET models, directly use defaultModel's default settings
         existingModel.defaultChatTemplate = defaultModel.defaultChatTemplate;
-        existingModel.defaultCompletionSettings =
-          defaultModel.defaultCompletionSettings;
-
-        // Deep merge chatTemplate and completionSettings
+        existingModel.defaultStopWords = defaultModel.defaultStopWords;
+        // Deep merge chatTemplate and stopWords
         existingModel.chatTemplate = deepMerge(
           existingModel.chatTemplate || {},
           defaultModel.chatTemplate || {},
         );
 
-        existingModel.completionSettings = deepMerge(
-          existingModel.completionSettings || {},
-          defaultModel.completionSettings || {},
-        );
+        existingModel.stopWords = [
+          ...(existingModel.stopWords || []),
+          ...(defaultModel.stopWords || []),
+        ];
 
         // **Merge other attributes from defaultModel**
 
@@ -254,11 +252,11 @@ class ModelStore {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           defaultChatTemplate,
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          defaultCompletionSettings,
+          defaultStopWords,
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           chatTemplate,
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          completionSettings,
+          stopWords,
           ...attributesToMerge
         } = defaultModel;
 
@@ -284,17 +282,13 @@ class ModelStore {
         if (model.origin === ModelOrigin.LOCAL || model.isLocal) {
           const defaultSettings = getLocalModelDefaultSettings();
           model.defaultChatTemplate = {...defaultSettings.chatTemplate};
-          model.defaultCompletionSettings = {
-            ...defaultSettings.completionParams,
-          };
+          model.defaultStopWords = defaultSettings.completionParams.stop;
         } else if (model.origin === ModelOrigin.HF) {
           const defaultSettings = getHFDefaultSettings(
             model.hfModel as HuggingFaceModel,
           );
           model.defaultChatTemplate = {...defaultSettings.chatTemplate};
-          model.defaultCompletionSettings = {
-            ...defaultSettings.completionParams,
-          };
+          model.defaultStopWords = defaultSettings.completionParams.stop;
         }
 
         // Update current settings while preserving any customizations
@@ -302,10 +296,10 @@ class ModelStore {
           model.chatTemplate || {},
           model.defaultChatTemplate,
         );
-        model.completionSettings = deepMerge(
-          model.completionSettings || {},
-          model.defaultCompletionSettings,
-        );
+        model.stopWords = [
+          ...(model.stopWords || []),
+          ...(model.defaultStopWords || []),
+        ];
       }
     });
 
@@ -848,7 +842,9 @@ class ModelStore {
       origin: ModelOrigin.LOCAL,
       defaultChatTemplate: {...defaultSettings.chatTemplate},
       chatTemplate: {...defaultSettings.chatTemplate},
-      defaultCompletionSettings: {...defaultSettings.completionParams},
+      defaultStopWords: [...(defaultSettings?.completionParams?.stop || [])],
+      stopWords: [...(defaultSettings?.completionParams?.stop || [])],
+      defaultCompletionSettings: defaultSettings.completionParams,
       completionSettings: {...defaultSettings.completionParams},
     };
 
@@ -870,14 +866,14 @@ class ModelStore {
     }
   };
 
-  updateCompletionSettings = (
+  updateModelStopWords = (
     modelId: string,
-    newSettings: CompletionParams,
+    newStopWords: CompletionParams['stop'],
   ) => {
     const model = this.models.find(m => m.id === modelId);
     if (model) {
       runInAction(() => {
-        model.completionSettings = newSettings;
+        model.stopWords = newStopWords;
       });
     }
   };
@@ -890,9 +886,11 @@ class ModelStore {
       const defaultSettings = getLocalModelDefaultSettings();
       // We change the default settings as well, in case the app introduces new settings.
       model.defaultChatTemplate = {...defaultSettings.chatTemplate};
-      model.defaultCompletionSettings = {...defaultSettings.completionParams};
+      model.defaultStopWords = [
+        ...(defaultSettings?.completionParams?.stop || []),
+      ];
       model.chatTemplate = {...defaultSettings.chatTemplate};
-      model.completionSettings = {...defaultSettings.completionParams};
+      model.stopWords = [...(defaultSettings?.completionParams?.stop || [])];
     });
 
     const hfModels = this.models.filter(
@@ -904,9 +902,11 @@ class ModelStore {
       );
       // We change the default settings as well, in case the app introduces new settings.
       model.defaultChatTemplate = {...defaultSettings.chatTemplate};
-      model.defaultCompletionSettings = {...defaultSettings.completionParams};
+      model.defaultStopWords = [
+        ...(defaultSettings?.completionParams?.stop || []),
+      ];
       model.chatTemplate = {...defaultSettings.chatTemplate};
-      model.completionSettings = {...defaultSettings.completionParams};
+      model.stopWords = [...(defaultSettings?.completionParams?.stop || [])];
     });
 
     runInAction(() => {
@@ -927,11 +927,11 @@ class ModelStore {
     }
   };
 
-  resetCompletionSettings = (modelId: string) => {
+  resetModelStopWords = (modelId: string) => {
     const model = this.models.find(m => m.id === modelId);
     if (model) {
       runInAction(() => {
-        model.completionSettings = {...model.defaultCompletionSettings};
+        model.stopWords = [...(model.defaultStopWords || [])];
       });
     }
   };
@@ -1006,20 +1006,18 @@ class ModelStore {
       if (stopTokens.length > 0) {
         runInAction(() => {
           // Helper function to check and update stop tokens
-          const updateStopTokens = (settings: CompletionParams) => {
+          const updateStopTokens = (words: CompletionParams['stop']) => {
             const uniqueStops = Array.from(
-              new Set([...(settings.stop || []), ...stopTokens]),
+              new Set([...(words || []), ...stopTokens]),
             ).filter(Boolean); // Remove any null/undefined/empty values
-            return {...settings, stop: uniqueStops};
+            return uniqueStops;
           };
 
           // Update both default and current completion settings
-          storeModel.defaultCompletionSettings = updateStopTokens(
-            storeModel.defaultCompletionSettings,
+          storeModel.defaultStopWords = updateStopTokens(
+            storeModel.defaultStopWords,
           );
-          storeModel.completionSettings = updateStopTokens(
-            storeModel.completionSettings,
-          );
+          storeModel.stopWords = updateStopTokens(storeModel.stopWords);
         });
       }
     } catch (error) {

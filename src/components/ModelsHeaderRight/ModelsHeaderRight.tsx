@@ -74,7 +74,7 @@ export const ModelsHeaderRight = observer(() => {
         }
         anchorPosition="bottom">
         {/* Filter section */}
-        <Menu.Item label="Filters" isGroupLabel style={styles.menuItem} />
+        <Menu.Item label="Filters" isGroupLabel />
         <Menu.Item
           icon={({size}) => (
             <Image
@@ -85,36 +85,32 @@ export const ModelsHeaderRight = observer(() => {
           onPress={() => toggleFilter('hf')}
           label={l10n.menuTitleHf}
           selected={filters.includes('hf')}
-          style={styles.menuItem}
         />
         <Menu.Item
           icon={filters.includes('downloaded') ? 'download-circle' : 'download'}
           onPress={() => toggleFilter('downloaded')}
           label={l10n.menuTitleDownloaded}
           selected={filters.includes('downloaded')}
-          style={styles.menuItem}
         />
 
         {/* View section */}
-        <Menu.Item label="View" isGroupLabel style={styles.menuItem} />
+        <Menu.Item label="View" isGroupLabel />
         <Menu.Item
           icon={filters.includes('grouped') ? 'layers' : 'layers-outline'}
           onPress={() => toggleFilter('grouped')}
           label={l10n.menuTitleGrouped}
           selected={filters.includes('grouped')}
-          style={styles.menuItem}
         />
 
         {/* Actions section */}
-        <Menu.GroupSeparator />
+        <Menu.Separator />
         <Menu.Item
-          icon="refresh"
+          leadingIcon="refresh"
           onPress={() => {
             setMenuVisible(false);
             showResetDialog();
           }}
           label={l10n.menuTitleReset}
-          style={styles.menuItem}
         />
       </Menu>
     </View>

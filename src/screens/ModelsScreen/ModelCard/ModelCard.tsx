@@ -17,26 +17,20 @@ import {
   Snackbar,
 } from 'react-native-paper';
 
-import {Dialog, Divider} from '../../../components';
+import {Divider} from '../../../components';
 
 import {useTheme, useMemoryCheck, useStorageCheck} from '../../../hooks';
 
 import {createStyles} from './styles';
-import {ModelSettings} from '../ModelSettings';
 
 import {uiStore, modelStore} from '../../../store';
 
-import {chatTemplates} from '../../../utils/chat';
 import {Model, ModelOrigin, RootDrawerParamList} from '../../../utils/types';
 import {
   getModelDescription,
   L10nContext,
   checkModelFileIntegrity,
 } from '../../../utils';
-import {
-  COMPLETION_PARAMS_METADATA,
-  validateCompletionSettings,
-} from '../../../utils/modelSettings';
 
 type ChatScreenNavigationProp = DrawerNavigationProp<RootDrawerParamList>;
 
@@ -44,10 +38,11 @@ interface ModelCardProps {
   model: Model;
   activeModelId?: string;
   onFocus?: () => void;
+  onOpenSettings?: () => void;
 }
 
 export const ModelCard: React.FC<ModelCardProps> = observer(
-  ({model, activeModelId, onFocus}) => {
+  ({model, activeModelId, onOpenSettings}) => {
     const l10n = React.useContext(L10nContext);
     const theme = useTheme();
     const styles = createStyles(theme);
@@ -55,7 +50,6 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
     const navigation = useNavigation<ChatScreenNavigationProp>();
 
     const [snackbarVisible, setSnackbarVisible] = useState(false); // Snackbar visibility
-    const [settingsModalVisible, setSettingsModalVisible] = useState(false);
     const [integrityError, setIntegrityError] = useState<string | null>(null);
 
     const {memoryWarning, shortMemoryWarning} = useMemoryCheck(model);
@@ -67,20 +61,6 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
     const isDownloading = modelStore.isDownloading(model.id);
     const isHfModel = model.origin === ModelOrigin.HF;
 
-    // temporary settings
-    const [tempChatTemplate, setTempChatTemplate] = useState(
-      model.chatTemplate,
-    );
-    const [tempCompletionSettings, setTempCompletionSettings] = useState(
-      model.completionSettings,
-    );
-
-    // Reset temp settings when model changes
-    useEffect(() => {
-      setTempChatTemplate(model.chatTemplate);
-      setTempCompletionSettings(model.completionSettings);
-    }, [model]);
-
     // Check integrity when model is downloaded
     useEffect(() => {
       if (isDownloaded) {
@@ -91,114 +71,6 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
         setIntegrityError(null);
       }
     }, [isDownloaded, model]);
-
-    const handleSettingsUpdate = useCallback((name: string, value: any) => {
-      setTempChatTemplate(prev => {
-        const newTemplate =
-          name === 'name' ? chatTemplates[value] : {...prev, [name]: value};
-        return newTemplate;
-      });
-    }, []);
-
-    const handleCompletionSettingsUpdate = useCallback(
-      (name: string, value: any) => {
-        setTempCompletionSettings(prev => ({
-          ...prev,
-          [name]: value,
-        }));
-      },
-      [],
-    );
-
-    const handleOpenSettings = useCallback(() => {
-      setSettingsModalVisible(true);
-    }, []);
-
-    const handleCloseSettings = useCallback(() => {
-      setSettingsModalVisible(false);
-    }, []);
-
-    const handleSaveSettings = useCallback(() => {
-      // Convert string values to numbers where needed
-      const processedSettings = Object.entries(tempCompletionSettings).reduce(
-        (acc, [key, value]) => {
-          const metadata = COMPLETION_PARAMS_METADATA[key];
-          if (metadata?.validation.type === 'numeric') {
-            // Handle numeric conversion
-            let numValue: number;
-            if (typeof value === 'string') {
-              numValue = Number(value);
-            } else if (typeof value === 'number') {
-              numValue = value;
-            } else {
-              // If it's neither string nor number, treat as invalid. Most probably won't happen.
-              acc.errors[key] = 'Must be a valid number';
-              return acc;
-            }
-
-            if (Number.isNaN(numValue)) {
-              acc.errors[key] = 'Must be a valid number';
-            } else {
-              acc.settings[key] = numValue;
-            }
-          } else {
-            // For non-numeric values, keep as is
-            acc.settings[key] = value;
-          }
-          return acc;
-        },
-        {settings: {}, errors: {}} as {
-          settings: typeof tempCompletionSettings;
-          errors: Record<string, string>;
-        },
-      );
-
-      // Validate the converted values
-      const validationResult = validateCompletionSettings(
-        processedSettings.settings,
-      );
-      const allErrors = {
-        ...processedSettings.errors,
-        ...validationResult.errors,
-      };
-
-      if (Object.keys(allErrors).length > 0) {
-        Alert.alert(
-          'Invalid Values',
-          'Please correct the following:\n' +
-            Object.entries(allErrors)
-              .map(([key, msg]) => `• ${key}: ${msg}`)
-              .join('\n'),
-          [{text: 'OK'}],
-        );
-        return;
-      }
-
-      // All validations passed, save the settings
-      modelStore.updateModelChatTemplate(model.id, tempChatTemplate);
-      modelStore.updateCompletionSettings(model.id, processedSettings.settings);
-      handleCloseSettings();
-    }, [
-      model.id,
-      tempChatTemplate,
-      tempCompletionSettings,
-      handleCloseSettings,
-    ]);
-
-    const handleCancelSettings = useCallback(() => {
-      // Reset to store values
-      setTempChatTemplate(model.chatTemplate);
-      setTempCompletionSettings(model.completionSettings);
-      handleCloseSettings();
-    }, [model.chatTemplate, model.completionSettings, handleCloseSettings]);
-
-    const handleReset = useCallback(() => {
-      // Reset to model default values
-      modelStore.resetModelChatTemplate(model.id);
-      modelStore.resetCompletionSettings(model.id);
-      setTempChatTemplate(model.chatTemplate);
-      setTempCompletionSettings(model.completionSettings);
-    }, [model.id, model.chatTemplate, model.completionSettings]);
 
     const handleDelete = useCallback(() => {
       if (model.isDownloaded) {
@@ -330,22 +202,6 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
       );
     };
 
-    const dialogActions = [
-      {
-        label: 'Reset',
-        onPress: handleReset,
-      },
-      {
-        label: 'Cancel',
-        onPress: handleCancelSettings,
-      },
-      {
-        label: 'Save Changes',
-        onPress: handleSaveSettings,
-        mode: 'contained' as const,
-      },
-    ];
-
     return (
       <>
         <Card
@@ -459,7 +315,7 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
                     icon="tune"
                     mode="text"
                     compact
-                    onPress={handleOpenSettings}>
+                    onPress={onOpenSettings}>
                     Settings
                   </Button>
                   <IconButton
@@ -502,24 +358,6 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
           }}>
           {memoryWarning}
         </Snackbar>
-
-        {/* Settings Modal */}
-        <Dialog
-          dismissable={false}
-          visible={settingsModalVisible}
-          onDismiss={handleCancelSettings}
-          title="Model Settings"
-          scrollable
-          avoidKeyboard
-          actions={dialogActions}>
-          <ModelSettings
-            chatTemplate={tempChatTemplate}
-            completionSettings={tempCompletionSettings}
-            onChange={handleSettingsUpdate}
-            onCompletionSettingsChange={handleCompletionSettingsUpdate}
-            onFocus={onFocus}
-          />
-        </Dialog>
       </>
     );
   },

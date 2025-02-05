@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {TouchableOpacity, View, TextInput, Modal} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
+import {TouchableOpacity, View, Alert} from 'react-native';
 
 import {observer} from 'mobx-react';
 import {Drawer, Text} from 'react-native-paper';
@@ -16,9 +16,11 @@ import {useTheme} from '../../hooks';
 
 import {createStyles} from './styles';
 
-import {chatSessionStore} from '../../store';
+import {chatSessionStore, SessionMetaData} from '../../store';
 
-import {Menu} from '..';
+import {Menu, RenameModal} from '..';
+import {EditIcon, TrashIcon} from '../../assets/icons';
+import {L10nContext} from '../../utils';
 
 export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
   props => {
@@ -29,9 +31,8 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
 
     const [menuVisible, setMenuVisible] = useState<string | null>(null); // Track which menu is visible
     const [menuPosition, setMenuPosition] = useState({x: 0, y: 0}); // Track menu position
-    const [renameModalVisible, setRenameModalVisible] = useState(false);
-    const [newTitle, setNewTitle] = useState('');
-    const [sessionToRename, setSessionToRename] = useState<string | null>(null);
+    const [sessionToRename, setSessionToRename] =
+      useState<SessionMetaData | null>(null);
 
     useEffect(() => {
       chatSessionStore.loadSessionList();
@@ -47,6 +48,7 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
 
     const theme = useTheme();
     const styles = createStyles(theme);
+    const i10n = useContext(L10nContext);
 
     const copyVersionToClipboard = () => {
       const versionString = `Version ${appInfo.version} (${appInfo.build})`;
@@ -61,16 +63,25 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
 
     const closeMenu = () => setMenuVisible(null);
 
-    const handleRename = () => {
-      if (sessionToRename && newTitle.trim()) {
-        chatSessionStore.updateSessionTitleBySessionId(
-          sessionToRename,
-          newTitle,
-        );
-        setRenameModalVisible(false);
-        setNewTitle('');
-        setSessionToRename(null);
+    const onPressDelete = (sessionId: string) => {
+      if (sessionId) {
+        Alert.alert(i10n.deleteChatTitle, i10n.deleteChatMessage, [
+          {
+            text: i10n.cancel,
+            style: 'cancel',
+          },
+          {
+            text: i10n.delete,
+            style: 'destructive',
+            onPress: () => {
+              chatSessionStore.resetActiveSession();
+              chatSessionStore.deleteSession(sessionId);
+              closeMenu();
+            },
+          },
+        ]);
       }
+      closeMenu();
     };
 
     return (
@@ -129,26 +140,27 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
                         <Menu
                           visible={menuVisible === session.id}
                           onDismiss={closeMenu}
-                          anchor={menuPosition}>
+                          anchor={menuPosition}
+                          style={styles.menu}
+                          contentStyle={{}}
+                          anchorPosition="bottom">
                           <Menu.Item
-                            style={styles.menu}
                             onPress={() => {
-                              setSessionToRename(session.id);
-                              setNewTitle(session.title);
-                              setRenameModalVisible(true);
+                              setSessionToRename(session);
                               closeMenu();
                             }}
-                            leadingIcon="pencil"
-                            label="Rename"
+                            label={i10n.rename}
+                            leadingIcon={() => (
+                              <EditIcon stroke={theme.colors.primary} />
+                            )}
                           />
                           <Menu.Item
-                            style={styles.menu}
-                            onPress={() => {
-                              chatSessionStore.deleteSession(session.id);
-                              closeMenu();
-                            }}
-                            leadingIcon="trash-can-outline"
-                            label="Delete"
+                            onPress={() => onPressDelete(session.id)}
+                            label={i10n.delete}
+                            labelStyle={{color: theme.colors.error}}
+                            leadingIcon={() => (
+                              <TrashIcon stroke={theme.colors.error} />
+                            )}
                           />
                         </Menu>
                       </View>
@@ -172,54 +184,11 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
             </TouchableOpacity>
           </SafeAreaView>
         </View>
-
-        {/* Rename Modal */}
-        <Modal
-          transparent={true}
-          visible={renameModalVisible}
-          onRequestClose={() => {
-            setRenameModalVisible(false);
-            setNewTitle('');
-            setSessionToRename(null);
-          }}
-          animationType="fade">
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Rename Chat</Text>
-              <TextInput
-                style={styles.textInput}
-                placeholder="New Title"
-                placeholderTextColor={theme.colors.onSurfaceVariant}
-                value={newTitle}
-                maxLength={40}
-                onChangeText={setNewTitle}
-                autoFocus={true}
-                onSubmitEditing={handleRename}
-                returnKeyType="done"
-              />
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                  style={styles.cancelButton}
-                  onPress={() => {
-                    setRenameModalVisible(false);
-                    setNewTitle('');
-                    setSessionToRename(null);
-                  }}>
-                  <Text style={styles.cancelText}>Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[
-                    styles.confirmButton,
-                    !newTitle.trim() && styles.disabledButton,
-                  ]}
-                  onPress={handleRename}
-                  disabled={!newTitle.trim()}>
-                  <Text style={styles.confirmText}>Done</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </Modal>
+        <RenameModal
+          visible={sessionToRename !== null}
+          onClose={() => setSessionToRename(null)}
+          session={sessionToRename}
+        />
       </GestureHandlerRootView>
     );
   },

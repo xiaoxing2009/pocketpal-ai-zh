@@ -113,24 +113,30 @@ export const useChatSession = (
       context,
     );
 
-    const completionParams = toJS(modelStore.activeModel?.completionSettings);
+    const activeSession = chatSessionStore.sessions.find(
+      s => s.id === chatSessionStore.activeSessionId,
+    );
 
+    const sessionCompletionSettings = toJS(activeSession?.completionSettings);
+    const stopWords = toJS(modelStore.activeModel?.stopWords);
+    const completionParams = {
+      ...sessionCompletionSettings,
+      prompt,
+      stop: stopWords,
+    };
     try {
-      const result = await context.completion(
-        {...completionParams, prompt},
-        data => {
-          if (data.token && currentMessageInfo.current) {
-            if (!modelStore.isStreaming) {
-              modelStore.setIsStreaming(true);
-            }
-            tokenBufferRef.current += data.token;
-            throttledFlushTokenBuffer(
-              currentMessageInfo.current.createdAt,
-              currentMessageInfo.current.id,
-            );
+      const result = await context.completion(completionParams, data => {
+        if (data.token && currentMessageInfo.current) {
+          if (!modelStore.isStreaming) {
+            modelStore.setIsStreaming(true);
           }
-        },
-      );
+          tokenBufferRef.current += data.token;
+          throttledFlushTokenBuffer(
+            currentMessageInfo.current.createdAt,
+            currentMessageInfo.current.id,
+          );
+        }
+      });
 
       // Flush any remaining tokens after completion
       if (
