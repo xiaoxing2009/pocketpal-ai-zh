@@ -1,6 +1,6 @@
 import React from 'react';
 import {Checkbox} from '../Checkbox';
-import {fireEvent, render, waitFor} from '../../../../jest/test-utils';
+import {fireEvent, render} from '../../../../jest/test-utils';
 
 describe('Checkbox', () => {
   it('renders correctly in unchecked state', () => {
@@ -18,10 +18,10 @@ describe('Checkbox', () => {
       <Checkbox checked={true} onPress={onPress} />,
     );
 
-    await waitFor(() => {
-      const checkIcon = findByTestId('check-icon');
-      expect(checkIcon).toBeDefined();
+    const checkIcon = await findByTestId('check-icon', {
+      includeHiddenElements: true,
     });
+    expect(checkIcon).toBeDefined();
   });
 
   it('calls onPress when clicked and not disabled', () => {

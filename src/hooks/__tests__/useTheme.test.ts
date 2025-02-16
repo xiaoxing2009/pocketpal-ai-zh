@@ -1,4 +1,5 @@
 import {renderHook} from '@testing-library/react-native';
+import {act} from 'react-test-renderer';
 
 jest.unmock('../useTheme');
 jest.unmock('../../store');
@@ -23,10 +24,16 @@ describe('useTheme', () => {
     );
   });
 
-  it('should return dark theme when colorScheme is dark', () => {
+  it('should return dark theme when colorScheme is dark', async () => {
     uiStore.setColorScheme('dark');
 
     const {result} = renderHook(() => useTheme());
+
+    // Wait for the next update to ensure the theme change is applied
+    await act(async () => {
+      await Promise.resolve();
+    });
+
     expect(result.current).toEqual(
       expect.objectContaining({
         ...darkTheme,
