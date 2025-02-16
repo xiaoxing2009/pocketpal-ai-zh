@@ -1,9 +1,6 @@
 import * as RNFS from '@dr.pogodin/react-native-fs';
 import {makeAutoObservable, observable} from 'mobx';
-import RNBackgroundDownloader, {
-  download,
-  completeHandler,
-} from '@kesha-antonov/react-native-background-downloader';
+import {NativeEventEmitter, NativeModules, Platform} from 'react-native';
 
 import {
   DownloadEventCallbacks,
@@ -15,14 +12,72 @@ import {
 import {Model} from '../../utils/types';
 import {formatBytes, hasEnoughSpace} from '../../utils';
 
+const {DownloadModule} = NativeModules;
+
 export class DownloadManager {
   private downloadJobs: DownloadMap;
   private callbacks: DownloadEventCallbacks = {};
+  private eventEmitter: NativeEventEmitter | null = null;
 
   constructor() {
     this.downloadJobs = observable.map(new Map());
     makeAutoObservable(this);
-    this.reattachBackgroundDownloads();
+
+    if (Platform.OS === 'android') {
+      this.setupAndroidEventListener();
+    }
+  }
+
+  private setupAndroidEventListener() {
+    if (DownloadModule) {
+      this.eventEmitter = new NativeEventEmitter(DownloadModule);
+      
+      this.eventEmitter.addListener('onDownloadProgress', event => {
+        const job = this.downloadJobs.get(event.downloadId);
+        if (!job) return;
+
+        const progress: DownloadProgress = {
+          bytesDownloaded: event.bytesWritten,
+          bytesTotal: event.totalBytes,
+          progress: event.progress,
+          speed: formatBytes(event.bytesWritten),
+          eta: this.calculateEta(event.bytesWritten, event.totalBytes, event.speed),
+          rawSpeed: event.speed,
+          rawEta: event.eta,
+        };
+
+        job.state.progress = progress;
+        this.callbacks.onProgress?.(event.downloadId, progress);
+      });
+
+      this.eventEmitter.addListener('onDownloadComplete', event => {
+        this.downloadJobs.delete(event.downloadId);
+        this.callbacks.onComplete?.(event.downloadId);
+      });
+
+      this.eventEmitter.addListener('onDownloadFailed', event => {
+        const job = this.downloadJobs.get(event.downloadId);
+        if (job) {
+          job.state.error = new Error(event.error);
+          job.state.isDownloading = false;
+        }
+        this.downloadJobs.delete(event.downloadId);
+        this.callbacks.onError?.(event.downloadId, new Error(event.error));
+      });
+    }else{
+      console.log('DownloadModule is not available');
+    }
+
+  }
+
+  private calculateEta(bytesDownloaded: number, totalBytes: number, speedBps: number): string {
+    if (speedBps <= 0) return 'calculating...';
+    
+    const remainingBytes = totalBytes - bytesDownloaded;
+    const etaSeconds = remainingBytes / speedBps;
+    const etaMinutes = Math.ceil(etaSeconds / 60);
+    
+    return etaSeconds >= 60 ? `${etaMinutes} min` : `${Math.ceil(etaSeconds)} sec`;
   }
 
   setCallbacks(callbacks: DownloadEventCallbacks) {
@@ -39,8 +94,6 @@ export class DownloadManager {
   }
 
   async startDownload(model: Model, destinationPath: string): Promise<void> {
-    const time = Date.now();
-    console.log('startDownload: ', time);
     if (this.isDownloading(model.id)) {
       console.log('Download already in progress for model:', model.id);
       return;
@@ -67,16 +120,20 @@ export class DownloadManager {
       throw err;
     }
 
-    try {
-      const task = download({
-        id: model.id,
-        url: model.downloadUrl,
-        destination: destinationPath,
-        metadata: {modelId: model.id},
-      });
+    if (Platform.OS === 'ios') {
+      await this.startIOSDownload(model, destinationPath);
+    } else {
+      await this.startAndroidDownload(model, destinationPath);
+    }
+  }
 
+  private async startIOSDownload(
+    model: Model,
+    destinationPath: string,
+  ): Promise<void> {
+    try {
       const downloadJob: DownloadJob = {
-        task,
+        task: null,
         model,
         state: {
           isDownloading: true,
@@ -88,12 +145,12 @@ export class DownloadManager {
       };
 
       this.downloadJobs.set(model.id, downloadJob);
+      this.callbacks.onStart?.(model.id);
 
-      task
-        .begin(() => {
-          this.callbacks.onStart?.(model.id);
-        })
-        .progress(({bytesDownloaded, bytesTotal}) => {
+      const result = await RNFS.downloadFile({
+        fromUrl: model.downloadUrl!,
+        toFile: destinationPath,
+        progress: res => {
           if (!this.downloadJobs.has(model.id)) {
             return;
           }
@@ -101,11 +158,11 @@ export class DownloadManager {
           const job = this.downloadJobs.get(model.id)!;
           const currentTime = Date.now();
           const timeDiff = (currentTime - job.lastUpdateTime) / 1000 || 1;
-          const bytesDiff = bytesDownloaded - job.lastBytesWritten;
+          const bytesDiff = res.bytesWritten - job.lastBytesWritten;
           const speedBps = bytesDiff / timeDiff;
           const speedMBps = (speedBps / (1024 * 1024)).toFixed(2);
 
-          const remainingBytes = bytesTotal - bytesDownloaded;
+          const remainingBytes = res.contentLength - res.bytesWritten;
           const etaSeconds = speedBps > 0 ? remainingBytes / speedBps : 0;
           const etaMinutes = Math.ceil(etaSeconds / 60);
           const etaText =
@@ -114,39 +171,86 @@ export class DownloadManager {
               : `${Math.ceil(etaSeconds)} sec`;
 
           const progress: DownloadProgress = {
-            bytesDownloaded,
-            bytesTotal,
-            progress: (bytesDownloaded / bytesTotal) * 100,
-            speed: `${formatBytes(bytesDownloaded, 0)} (${speedMBps} MB/s)`,
+            bytesDownloaded: res.bytesWritten,
+            bytesTotal: res.contentLength,
+            progress: (res.bytesWritten / res.contentLength) * 100,
+            speed: `${formatBytes(res.bytesWritten)} (${speedMBps} MB/s)`,
             eta: etaText,
+            rawSpeed: speedBps,
+            rawEta: etaSeconds,
           };
-          console.log('progress: ', progress.progress);
 
           job.state.progress = progress;
-          job.lastBytesWritten = bytesDownloaded;
+          job.lastBytesWritten = res.bytesWritten;
           job.lastUpdateTime = currentTime;
 
           this.callbacks.onProgress?.(model.id, progress);
-        })
-        .done(() => {
-          completeHandler(model.id);
-          this.downloadJobs.delete(model.id);
-          this.callbacks.onComplete?.(model.id);
-        })
-        .error(({error}) => {
-          console.error('Download failed:', error);
-          const job = this.downloadJobs.get(model.id);
-          if (job) {
-            job.state.error = new Error(error);
-            job.state.isDownloading = false;
-          }
-          this.downloadJobs.delete(model.id);
-          this.callbacks.onError?.(model.id, new Error(error));
-        });
-    } catch (err) {
-      console.error('Failed to start download:', err);
+        },
+      }).promise;
+
+      if (result.statusCode === 200) {
+        this.downloadJobs.delete(model.id);
+        this.callbacks.onComplete?.(model.id);
+      } else {
+        throw new Error(`Download failed with status: ${result.statusCode}`);
+      }
+    } catch (error) {
+      console.error('Download failed:', error);
+      const job = this.downloadJobs.get(model.id);
+      if (job) {
+        job.state.error =
+          error instanceof Error ? error : new Error(String(error));
+        job.state.isDownloading = false;
+      }
       this.downloadJobs.delete(model.id);
-      throw err;
+      this.callbacks.onError?.(
+        model.id,
+        error instanceof Error ? error : new Error(String(error)),
+      );
+      throw error;
+    }
+  }
+
+  private async startAndroidDownload(
+    model: Model,
+    destinationPath: string,
+  ): Promise<void> {
+    try {
+      const downloadJob: DownloadJob = {
+        task: null,
+        model,
+        state: {
+          isDownloading: true,
+          progress: null,
+          error: null,
+        },
+        lastBytesWritten: 0,
+        lastUpdateTime: Date.now(),
+      };
+      console.log('Starting Android download for model:', model.id);
+
+      this.downloadJobs.set(model.id, downloadJob);
+      this.callbacks.onStart?.(model.id);
+
+      await DownloadModule.startDownload(model.downloadUrl!, {
+        destination: destinationPath,
+        networkType: 'ANY',
+        priority: 1,
+      });
+    } catch (error) {
+      console.error('Failed to start Android download:', error);
+      const job = this.downloadJobs.get(model.id);
+      if (job) {
+        job.state.error =
+          error instanceof Error ? error : new Error(String(error));
+        job.state.isDownloading = false;
+      }
+      this.downloadJobs.delete(model.id);
+      this.callbacks.onError?.(
+        model.id,
+        error instanceof Error ? error : new Error(String(error)),
+      );
+      throw error;
     }
   }
 
@@ -154,7 +258,12 @@ export class DownloadManager {
     const job = this.downloadJobs.get(modelId);
     if (job) {
       try {
-        await job.task.stop();
+        if (Platform.OS === 'ios') {
+          // For iOS, we don't need to do anything special as the download
+          // will be automatically cancelled when we remove the job
+        } else if (Platform.OS === 'android' && DownloadModule) {
+          await DownloadModule.pauseDownload(modelId);
+        }
       } catch (err) {
         console.error('Error stopping download:', err);
       } finally {
@@ -163,49 +272,12 @@ export class DownloadManager {
     }
   }
 
-  private async reattachBackgroundDownloads() {
-    try {
-      const lostTasks =
-        await RNBackgroundDownloader.checkForExistingDownloads();
-
-      for (const task of lostTasks) {
-        const downloadJob: DownloadJob = {
-          task,
-          model: task.metadata?.model,
-          state: {
-            isDownloading: true,
-            progress: null,
-            error: null,
-          },
-          lastBytesWritten: 0,
-          lastUpdateTime: Date.now(),
-        };
-
-        task
-          .progress(({bytesDownloaded, bytesTotal}) => {
-            const progress: DownloadProgress = {
-              bytesDownloaded,
-              bytesTotal,
-              progress: (bytesDownloaded / bytesTotal) * 100,
-              speed: '', // We don't have previous data for speed calculation
-              eta: '',
-            };
-            this.callbacks.onProgress?.(task.id, progress);
-          })
-          .done(() => {
-            completeHandler(task.id);
-            this.downloadJobs.delete(task.id);
-            this.callbacks.onComplete?.(task.id);
-          })
-          .error(({error}) => {
-            this.downloadJobs.delete(task.id);
-            this.callbacks.onError?.(task.id, new Error(error));
-          });
-
-        this.downloadJobs.set(task.id, downloadJob);
-      }
-    } catch (err) {
-      console.error('Error reattaching background downloads:', err);
+  cleanup() {
+    if (Platform.OS === 'android' && this.eventEmitter) {
+      this.eventEmitter.removeAllListeners('onDownloadProgress');
+      this.eventEmitter.removeAllListeners('onDownloadComplete');
+      this.eventEmitter.removeAllListeners('onDownloadFailed');
     }
+    this.downloadJobs.clear();
   }
 }
