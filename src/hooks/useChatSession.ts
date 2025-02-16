@@ -1,4 +1,5 @@
 import React, {useRef, useCallback} from 'react';
+
 import {toJS} from 'mobx';
 import throttle from 'lodash.throttle';
 
@@ -8,6 +9,7 @@ import {chatSessionStore, modelStore} from '../store';
 
 import {MessageType, User} from '../utils/types';
 import {applyChatTemplate, convertToChatMessages} from '../utils/chat';
+import {activateKeepAwake, deactivateKeepAwake} from '../utils/keepAwake';
 
 export const useChatSession = (
   currentMessageInfo: React.MutableRefObject<{
@@ -85,6 +87,14 @@ export const useChatSession = (
     modelStore.setInferencing(true);
     modelStore.setIsStreaming(false);
     chatSessionStore.setIsGenerating(true);
+
+    // Keep screen awake during completion
+    try {
+      activateKeepAwake();
+    } catch (error) {
+      console.error('Failed to activate keep awake during chat:', error);
+      // Continue with chat even if keep awake fails
+    }
 
     const id = randId();
     const createdAt = Date.now();
@@ -166,6 +176,13 @@ export const useChatSession = (
       } else {
         addSystemMessage(`Completion failed: ${errorMessage}`);
       }
+    } finally {
+      // Always try to deactivate keep awake in finally block
+      try {
+        deactivateKeepAwake();
+      } catch (error) {
+        console.error('Failed to deactivate keep awake after chat:', error);
+      }
     }
   };
 
@@ -190,6 +207,15 @@ export const useChatSession = (
     }
     modelStore.setInferencing(false);
     modelStore.setIsStreaming(false);
+    // Deactivate keep awake when stopping completion
+    try {
+      deactivateKeepAwake();
+    } catch (error) {
+      console.error(
+        'Failed to deactivate keep awake after stopping chat:',
+        error,
+      );
+    }
   };
 
   return {
