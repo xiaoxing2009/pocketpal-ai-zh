@@ -19,6 +19,7 @@ export interface DownloadState {
 export interface DownloadJob {
   model: Model;
   jobId?: number; // For iOS downloads - RNFS uses number for jobId
+  downloadId?: string; // For Android downloads - UUID returned by WorkManager
   state: {
     isDownloading: boolean;
     progress: DownloadProgress | null;

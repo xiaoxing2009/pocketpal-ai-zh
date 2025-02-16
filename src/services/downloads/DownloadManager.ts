@@ -43,12 +43,14 @@ export class DownloadManager {
             bytesWritten: event.bytesWritten,
             totalBytes: event.totalBytes,
             progress: event.progress,
-            speed: event.speed,
-            jobExists: this.downloadJobs.has(event.downloadId),
           },
         );
 
-        const job = this.downloadJobs.get(event.downloadId);
+        // Find the job by download ID
+        const job = Array.from(this.downloadJobs.values()).find(
+          _job => _job.downloadId === event.downloadId,
+        );
+
         if (!job) {
           console.warn(
             `${TAG}: No job found for download ID: ${event.downloadId}. This may indicate the job was completed or cancelled.`,
@@ -56,31 +58,52 @@ export class DownloadManager {
           return;
         }
 
+        // Calculate speed
+        const currentTime = Date.now();
+        const timeDiff = (currentTime - job.lastUpdateTime) / 1000 || 1;
+        const bytesDiff = event.bytesWritten - job.lastBytesWritten;
+        const speedBps = bytesDiff / timeDiff;
+        const speedMBps = (speedBps / (1024 * 1024)).toFixed(2);
+
+        // Calculate ETA
+        const remainingBytes = event.totalBytes - event.bytesWritten;
+        const etaSeconds = speedBps > 0 ? remainingBytes / speedBps : 0;
+        const etaMinutes = Math.ceil(etaSeconds / 60);
+        const etaText =
+          etaSeconds >= 60
+            ? `${etaMinutes} min`
+            : `${Math.ceil(etaSeconds)} sec`;
+
         const progress: DownloadProgress = {
           bytesDownloaded: event.bytesWritten,
           bytesTotal: event.totalBytes,
           progress: event.progress,
-          speed: formatBytes(event.bytesWritten),
-          eta: this.calculateEta(
-            event.bytesWritten,
-            event.totalBytes,
-            event.speed,
-          ),
-          rawSpeed: event.speed,
-          rawEta: event.eta,
+          speed: `${formatBytes(event.bytesWritten)} (${speedMBps} MB/s)`,
+          eta: etaText,
+          rawSpeed: speedBps,
+          rawEta: etaSeconds,
         };
 
         console.log(
-          `${TAG}: Updating progress for ${event.downloadId}:`,
+          `${TAG}: Updating progress for model ${job.model.id}:`,
           progress,
         );
+
+        // Update job state
         job.state.progress = progress;
-        this.callbacks.onProgress?.(event.downloadId, progress);
+        job.lastBytesWritten = event.bytesWritten;
+        job.lastUpdateTime = currentTime;
+
+        this.callbacks.onProgress?.(job.model.id, progress);
       });
 
       this.eventEmitter.addListener('onDownloadComplete', event => {
         console.log(`${TAG}: Download completed for ID: ${event.downloadId}`);
-        const job = this.downloadJobs.get(event.downloadId);
+        // Find the job by download ID
+        const job = Array.from(this.downloadJobs.values()).find(
+          _job => _job.downloadId === event.downloadId,
+        );
+
         if (job) {
           // Set final state before removing
           job.state.isDownloading = false;
@@ -94,9 +117,9 @@ export class DownloadManager {
             rawEta: 0,
           };
           // Ensure callback is called before removing the job
-          this.callbacks.onComplete?.(event.downloadId);
-          this.downloadJobs.delete(event.downloadId);
-          console.log(`${TAG}: Removed completed job: ${event.downloadId}`);
+          this.callbacks.onComplete?.(job.model.id);
+          this.downloadJobs.delete(job.model.id);
+          console.log(`${TAG}: Removed completed job: ${job.model.id}`);
         } else {
           console.warn(
             `${TAG}: Completion event received for non-existent job: ${event.downloadId}`,
@@ -109,14 +132,18 @@ export class DownloadManager {
           `${TAG}: Download failed for ID: ${event.downloadId}`,
           event.error,
         );
-        const job = this.downloadJobs.get(event.downloadId);
+        // Find the job by download ID
+        const job = Array.from(this.downloadJobs.values()).find(
+          _job => _job.downloadId === event.downloadId,
+        );
+
         if (job) {
           job.state.error = new Error(event.error);
           job.state.isDownloading = false;
           // Ensure callback is called before removing the job
-          this.callbacks.onError?.(event.downloadId, new Error(event.error));
-          this.downloadJobs.delete(event.downloadId);
-          console.log(`${TAG}: Removed failed job: ${event.downloadId}`);
+          this.callbacks.onError?.(job.model.id, new Error(event.error));
+          this.downloadJobs.delete(job.model.id);
+          console.log(`${TAG}: Removed failed job: ${job.model.id}`);
         } else {
           console.warn(
             `${TAG}: Failure event received for non-existent job: ${event.downloadId}`,
@@ -367,15 +394,21 @@ export class DownloadManager {
         lastUpdateTime: Date.now(),
       };
 
-      this.downloadJobs.set(model.id, downloadJob);
-      this.callbacks.onStart?.(model.id);
-
-      await DownloadModule.startDownload(model.downloadUrl!, {
+      // Start the download first to get the download ID
+      const response = await DownloadModule.startDownload(model.downloadUrl!, {
         destination: destinationPath,
         networkType: 'ANY',
         priority: 1,
-        progressInterval: 5000, // Update progress every second by default
+        progressInterval: 1000,
       });
+
+      // Store the download ID
+      downloadJob.downloadId = response.downloadId;
+      console.log(`${TAG}: Download started with ID: ${response.downloadId}`);
+
+      // Add job to map after getting download ID
+      this.downloadJobs.set(model.id, downloadJob);
+      this.callbacks.onStart?.(model.id);
     } catch (error) {
       console.error(`${TAG}: Failed to start Android download:`, {
         modelId: model.id,
