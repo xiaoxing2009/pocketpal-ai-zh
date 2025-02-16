@@ -17,9 +17,14 @@ export interface DownloadState {
 }
 
 export interface DownloadJob {
-  task: any;
   model: Model;
-  state: DownloadState;
+  jobId?: number; // For iOS downloads - RNFS uses number for jobId
+  state: {
+    isDownloading: boolean;
+    progress: DownloadProgress | null;
+    error: Error | null;
+  };
+  destination: string;
   lastBytesWritten: number;
   lastUpdateTime: number;
 }
