@@ -15,12 +15,11 @@ data class DownloadEntity(
     val priority: Int,
     val networkType: NetworkType,
     val createdAt: Long,
-    val isPaused: Boolean = false,
     val error: String? = null
 )
 
 enum class DownloadStatus {
-    QUEUED, RUNNING, PAUSED, COMPLETED, FAILED
+    QUEUED, RUNNING, PAUSED, COMPLETED, FAILED, CANCELLED
 }
 
 enum class NetworkType {

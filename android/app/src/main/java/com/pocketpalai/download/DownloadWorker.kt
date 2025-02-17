@@ -22,9 +22,15 @@ class DownloadWorker(
         .addInterceptor(ProgressInterceptor())
         .build()
     private var lastProgressUpdate = 0L
+    private var currentCall: Call? = null
 
     init {
         Log.d(TAG, "Initializing DownloadWorker")
+    }
+
+    private fun handleStopped() {
+        Log.d(TAG, "Worker stopped, cancelling any ongoing network request")
+        currentCall?.cancel()
     }
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
@@ -32,13 +38,20 @@ class DownloadWorker(
             val downloadId = inputData.getString(KEY_DOWNLOAD_ID) ?: return@withContext Result.failure()
             Log.d(TAG, "Starting download work for ID: $downloadId")
 
+            if (isStopped) {
+                Log.d(TAG, "Work was cancelled before starting for ID: $downloadId")
+                handleStopped()
+                downloadDao.updateStatus(downloadId, DownloadStatus.CANCELLED, "Download cancelled")
+                return@withContext Result.failure()
+            }
+
             val progressInterval = inputData.getLong(KEY_PROGRESS_INTERVAL, DEFAULT_PROGRESS_INTERVAL)
             Log.d(TAG, "Progress update interval: $progressInterval ms")
 
             val download = downloadDao.getDownload(downloadId) ?: return@withContext Result.failure()
             Log.d(TAG, "Retrieved download info: $download")
 
-            if (download.isPaused) {
+            if (download.status == DownloadStatus.PAUSED) {
                 Log.d(TAG, "Download is paused, returning retry for ID: $downloadId")
                 return@withContext Result.retry()
             }
@@ -62,9 +75,15 @@ class DownloadWorker(
 
             Log.d(TAG, "Executing network request for ID: $downloadId")
             val response = suspendCoroutine { continuation ->
-                client.newCall(request).enqueue(object : Callback {
+                val call = client.newCall(request)
+                currentCall = call  // Store the call reference
+                call.enqueue(object : Callback {
                     override fun onFailure(call: Call, e: IOException) {
-                        Log.e(TAG, "Network request failed for ID: $downloadId", e)
+                        if (call.isCanceled()) {
+                            Log.d(TAG, "Network request was cancelled for ID: $downloadId")
+                        } else {
+                            Log.e(TAG, "Network request failed for ID: $downloadId", e)
+                        }
                         continuation.resumeWithException(e)
                     }
 
@@ -74,35 +93,81 @@ class DownloadWorker(
                     }
                 })
             }
+            currentCall = null  // Clear the reference after completion
 
-            if (!response.isSuccessful) {
-                val error = "Unexpected response: ${response.code}"
-                Log.e(TAG, error)
-                throw IOException(error)
+            if (file.exists() && file.length() > 0 && response.code == 200) {
+                Log.w(TAG, "Server ignored range request, returning full file. Restarting download from beginning.")
+                if (file.exists()) {
+                    Log.d(TAG, "Deleting partial file to restart download: ${file.absolutePath}")
+                    file.delete()
+                }
+            } else if (!response.isSuccessful) {
+                when (response.code) {
+                    416 -> {
+                        Log.e(TAG, "Server rejected the range request for ID: $downloadId")
+                        
+                        if (file.exists()) {
+                            Log.d(TAG, "Deleting invalid partial file: ${file.absolutePath}")
+                            file.delete()
+                        }
+                        
+                        downloadDao.updateStatus(
+                            downloadId,
+                            DownloadStatus.FAILED,
+                            "Download failed: The partial download was invalid or the file on server has changed"
+                        )
+                        
+                        return@withContext Result.failure()
+                    }
+                    in 400..499 -> {
+                        val error = "Client error: ${response.code}"
+                        Log.e(TAG, error)
+                        downloadDao.updateStatus(downloadId, DownloadStatus.FAILED, error)
+                        return@withContext Result.failure()
+                    }
+                    in 500..599 -> {
+                        val error = "Server error: ${response.code}"
+                        Log.e(TAG, error)
+                        downloadDao.updateStatus(downloadId, DownloadStatus.FAILED, error)
+                        return@withContext Result.retry()
+                    }
+                    else -> {
+                        val error = "Unexpected response: ${response.code}"
+                        Log.e(TAG, error)
+                        downloadDao.updateStatus(downloadId, DownloadStatus.FAILED, error)
+                        return@withContext Result.failure()
+                    }
+                }
             }
 
             response.body?.let { body ->
                 val contentLength = body.contentLength()
                 Log.d(TAG, "Content length: $contentLength bytes for ID: $downloadId")
                 var bytesWritten = if (file.exists()) file.length() else 0
-                Log.d(TAG, "Starting from $bytesWritten bytes for ID: $downloadId")
+                
+                downloadDao.updateProgress(downloadId, bytesWritten, contentLength, DownloadStatus.RUNNING)
+                Log.d(TAG, "Starting from $bytesWritten/$contentLength bytes for ID: $downloadId")
 
                 file.outputStream().buffered().use { output ->
                     body.byteStream().buffered().use { input ->
                         val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
                         var bytes = input.read(buffer)
                         
-                        while (bytes >= 0 && !isStopped) {
-                            val currentDownload = downloadDao.getDownload(downloadId)
-                            if (currentDownload?.isPaused == true) {
-                                Log.d(TAG, "Download paused during transfer for ID: $downloadId")
-                                return@withContext Result.retry()
-                            }
-
+                        while (bytes >= 0) {
                             if (isStopped) {
                                 Log.d(TAG, "Download cancelled during transfer for ID: $downloadId")
-                                downloadDao.updateStatus(downloadId, DownloadStatus.FAILED, "Download cancelled")
+                                downloadDao.updateStatus(downloadId, DownloadStatus.CANCELLED, "Download cancelled")
+                                if (file.exists()) {
+                                    file.delete()
+                                    Log.d(TAG, "Deleted partial download file: ${file.absolutePath}")
+                                }
                                 return@withContext Result.failure()
+                            }
+
+                            val currentDownload = downloadDao.getDownload(downloadId)
+                            if (currentDownload?.status == DownloadStatus.PAUSED) {
+                                Log.d(TAG, "Download paused during transfer for ID: $downloadId")
+                                return@withContext Result.retry()
                             }
 
                             output.write(buffer, 0, bytes)
@@ -116,7 +181,7 @@ class DownloadWorker(
                                 )
                                 Log.d(TAG, "Progress: $bytesWritten/$contentLength bytes for ID: $downloadId")
                                 setProgress(progress)
-                                downloadDao.updateProgress(downloadId, bytesWritten, DownloadStatus.RUNNING)
+                                downloadDao.updateProgress(downloadId, bytesWritten, contentLength, DownloadStatus.RUNNING)
                                 lastProgressUpdate = currentTime
                             }
                             
@@ -126,7 +191,7 @@ class DownloadWorker(
                 }
 
                 Log.d(TAG, "Download completed successfully for ID: $downloadId")
-                downloadDao.updateStatus(downloadId, DownloadStatus.COMPLETED)
+                downloadDao.updateProgress(downloadId, bytesWritten, contentLength, DownloadStatus.COMPLETED)
                 return@withContext Result.success()
             }
 
@@ -176,8 +241,10 @@ class DownloadWorker(
 class ProgressInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalResponse = chain.proceed(chain.request())
+        val originalBody = originalResponse.body
+        
         return originalResponse.newBuilder()
-            .body(originalResponse.body?.let { ProgressResponseBody(it) })
+            .body(if (originalBody != null) ProgressResponseBody(originalBody) else null)
             .build()
     }
 } 

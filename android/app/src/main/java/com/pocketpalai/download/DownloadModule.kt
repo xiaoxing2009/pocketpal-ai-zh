@@ -1,19 +1,22 @@
 package com.pocketpal.download
 
 import android.util.Log
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
+import androidx.lifecycle.Observer
+import androidx.work.*
 import com.facebook.react.bridge.*
 import com.facebook.react.modules.core.DeviceEventManagerModule
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
 import java.io.File
 import java.util.*
+import androidx.work.await
 
 class DownloadModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private val downloadDao = DownloadDatabase.getInstance(reactContext).downloadDao()
     private val workManager = WorkManager.getInstance(reactContext)
+    // Map to store work observers by download ID
+    private val workObservers = mutableMapOf<String, Observer<List<WorkInfo>>>()
 
     init {
         Log.d(TAG, "Initializing DownloadModule")
@@ -36,6 +39,15 @@ class DownloadModule(reactContext: ReactApplicationContext) : ReactContextBaseJa
         reactApplicationContext
             .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
             .emit(eventName, params)
+    }
+
+    private fun removeWorkObserver(downloadId: String) {
+        workObservers.remove(downloadId)?.let { observer ->
+            Log.d(TAG, "Removing work observer for download: $downloadId")
+            val workName = getWorkName(downloadId)
+            workManager.getWorkInfosForUniqueWorkLiveData(workName)
+                .removeObserver(observer)
+        }
     }
 
     @ReactMethod
@@ -79,47 +91,73 @@ class DownloadModule(reactContext: ReactApplicationContext) : ReactContextBaseJa
 
                 val workRequest = DownloadWorker.createWorkRequest(downloadId, progressInterval)
                 Log.d(TAG, "Created work request: ${workRequest.id}")
-                workManager.enqueue(workRequest)
-
-                workManager.getWorkInfoByIdLiveData(workRequest.id)
-                    .observeForever { workInfo ->
-                        Log.d(TAG, "Work state changed: ${workInfo.state} for ID: $downloadId")
-                        when (workInfo.state) {
-                            WorkInfo.State.RUNNING -> {
-                                val progress = workInfo.progress.getLong(DownloadWorker.KEY_PROGRESS, 0)
-                                val total = workInfo.progress.getLong(DownloadWorker.KEY_TOTAL, 0)
-                                Log.d(TAG, "Download progress: $progress/$total for ID: $downloadId")
-                                sendProgressEvent(downloadId, progress, total)
-                            }
-                            WorkInfo.State.SUCCEEDED -> {
-                                Log.d(TAG, "Download succeeded for ID: $downloadId")
-                                scope.launch {
-                                    val downloadInfo = downloadDao.getDownload(downloadId)
-                                    if (downloadInfo != null) {
-                                        Log.d(TAG, "Sending completion event for ID: $downloadId")
-                                        sendCompletionEvent(downloadId, downloadInfo.destination)
-                                    } else {
-                                        Log.w(TAG, "Download info not found for completed download: $downloadId")
-                                    }
+                
+                // Create the observer
+                val observer = Observer<List<WorkInfo>> { workInfos ->
+                    val workInfo = workInfos.firstOrNull() ?: return@Observer
+                    Log.d(TAG, "Work state changed: ${workInfo.state} for ID: $downloadId")
+                    when (workInfo.state) {
+                        WorkInfo.State.RUNNING -> {
+                            val progress = workInfo.progress.getLong(DownloadWorker.KEY_PROGRESS, 0)
+                            val total = workInfo.progress.getLong(DownloadWorker.KEY_TOTAL, 0)
+                            Log.d(TAG, "Download progress: $progress/$total for ID: $downloadId")
+                            sendProgressEvent(downloadId, progress, total)
+                        }
+                        WorkInfo.State.SUCCEEDED -> {
+                            Log.d(TAG, "Download succeeded for ID: $downloadId")
+                            scope.launch {
+                                val downloadInfo = downloadDao.getDownload(downloadId)
+                                if (downloadInfo != null) {
+                                    Log.d(TAG, "Sending completion event for ID: $downloadId")
+                                    sendCompletionEvent(downloadId, downloadInfo.destination)
+                                } else {
+                                    Log.w(TAG, "Download info not found for completed download: $downloadId")
                                 }
-                            }
-                            WorkInfo.State.FAILED -> {
-                                Log.e(TAG, "Download failed for ID: $downloadId")
-                                scope.launch {
-                                    val downloadInfo = downloadDao.getDownload(downloadId)
-                                    if (downloadInfo != null) {
-                                        Log.e(TAG, "Error details for ID $downloadId: ${downloadInfo.error}")
-                                        sendFailureEvent(downloadId, downloadInfo.error ?: "Unknown error")
-                                    } else {
-                                        Log.w(TAG, "Download info not found for failed download: $downloadId")
-                                    }
-                                }
-                            }
-                            else -> {
-                                Log.d(TAG, "Work state: ${workInfo.state} for ID: $downloadId")
+                                removeWorkObserver(downloadId)
                             }
                         }
+                        WorkInfo.State.FAILED -> {
+                            Log.e(TAG, "Download failed for ID: $downloadId")
+                            scope.launch {
+                                val downloadInfo = downloadDao.getDownload(downloadId)
+                                if (downloadInfo != null) {
+                                    Log.e(TAG, "Error details for ID $downloadId: ${downloadInfo.error}")
+                                    sendFailureEvent(downloadId, downloadInfo.error ?: "Unknown error")
+                                } else {
+                                    Log.w(TAG, "Download info not found for failed download: $downloadId")
+                                }
+                                removeWorkObserver(downloadId)
+                            }
+                        }
+                        WorkInfo.State.CANCELLED -> {
+                            Log.d(TAG, "Download cancelled for ID: $downloadId")
+                            removeWorkObserver(downloadId)
+                        }
+                        else -> {
+                            Log.d(TAG, "Work state: ${workInfo.state} for ID: $downloadId")
+                        }
                     }
+                }
+
+                // Store and register the observer
+                workObservers[downloadId]?.let { oldObserver ->
+                    // Clean up any existing observer for this download
+                    Log.d(TAG, "Removing existing observer for download: $downloadId")
+                    val workName = getWorkName(downloadId)
+                    workManager.getWorkInfosForUniqueWorkLiveData(workName)
+                        .removeObserver(oldObserver)
+                }
+                workObservers[downloadId] = observer
+                val workName = getWorkName(downloadId)
+                workManager.getWorkInfosForUniqueWorkLiveData(workName)
+                    .observeForever(observer)
+
+                // Enqueue the work
+                workManager.enqueueUniqueWork(
+                    workName,
+                    androidx.work.ExistingWorkPolicy.REPLACE,
+                    workRequest
+                )
 
                 val response = Arguments.createMap().apply {
                     putString("downloadId", downloadId)
@@ -175,11 +213,9 @@ class DownloadModule(reactContext: ReactApplicationContext) : ReactContextBaseJa
         scope.launch {
             try {
                 withContext(Dispatchers.IO) {
-                    Log.d(TAG, "Updating pause status in database for: $downloadId")
-                    downloadDao.updatePauseStatus(downloadId, true)
+                    Log.d(TAG, "Updating status to PAUSED for: $downloadId")
+                    downloadDao.updateStatus(downloadId, DownloadStatus.PAUSED)
                 }
-                Log.d(TAG, "Cancelling work for: $downloadId")
-                workManager.cancelUniqueWork(downloadId)
                 promise.resolve(true)
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to pause download: $downloadId", e)
@@ -194,13 +230,25 @@ class DownloadModule(reactContext: ReactApplicationContext) : ReactContextBaseJa
         scope.launch {
             try {
                 withContext(Dispatchers.IO) {
-                    Log.d(TAG, "Updating pause status in database for: $downloadId")
-                    downloadDao.updatePauseStatus(downloadId, false)
                     val download = downloadDao.getDownload(downloadId)
                     if (download != null) {
-                        Log.d(TAG, "Creating new work request for: $downloadId")
-                        val workRequest = DownloadWorker.createWorkRequest(downloadId)
-                        workManager.enqueue(workRequest)
+                        Log.d(TAG, "Updating status to QUEUED for: $downloadId")
+                        downloadDao.updateStatus(downloadId, DownloadStatus.QUEUED)
+                        
+                        // Create new work request only if there isn't one running
+                        val workName = getWorkName(downloadId)
+                        val workInfo = workManager.getWorkInfosForUniqueWork(workName).await().firstOrNull()
+                        if (workInfo == null || workInfo.state.isFinished) {
+                            Log.d(TAG, "Creating new work request for: $downloadId")
+                            val workRequest = DownloadWorker.createWorkRequest(downloadId)
+                            workManager.enqueueUniqueWork(
+                                workName,
+                                androidx.work.ExistingWorkPolicy.REPLACE,
+                                workRequest
+                            )
+                        } else {
+                            Log.d(TAG, "Work is already running for: $downloadId")
+                        }
                     } else {
                         Log.w(TAG, "No download found to resume: $downloadId")
                     }
@@ -243,15 +291,12 @@ class DownloadModule(reactContext: ReactApplicationContext) : ReactContextBaseJa
         Log.d(TAG, "Cancelling download: $downloadId")
         scope.launch {
             try {
-                // Cancel the work
-                workManager.cancelUniqueWork(downloadId)
-                
-                // Update the download status in the database
+                // First update the database to mark as cancelled
                 withContext(Dispatchers.IO) {
                     val download = downloadDao.getDownload(downloadId)
                     if (download != null) {
-                        Log.d(TAG, "Updating status to FAILED for cancelled download: $downloadId")
-                        downloadDao.updateStatus(downloadId, DownloadStatus.FAILED, "Download cancelled by user")
+                        Log.d(TAG, "Updating status to CANCELLED for download: $downloadId")
+                        downloadDao.updateStatus(downloadId, DownloadStatus.CANCELLED, "Download cancelled by user")
                         
                         // Clean up the partial download file
                         val file = File(download.destination)
@@ -261,6 +306,26 @@ class DownloadModule(reactContext: ReactApplicationContext) : ReactContextBaseJa
                         }
                     }
                 }
+
+                // Cancel the work using the work name format
+                val workName = getWorkName(downloadId)
+                val operation = workManager.cancelUniqueWork(workName)
+                
+                // Wait for cancellation to complete
+                withContext(Dispatchers.IO) {
+                    try {
+                        operation.result.await()
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error waiting for work cancellation", e)
+                    }
+                }
+
+                // Force stop any ongoing work
+                workManager.pruneWork()
+                
+                // Send cancellation event to notify the JS side
+                sendCancellationEvent(downloadId)
+                
                 promise.resolve(true)
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to cancel download: $downloadId", e)
@@ -295,13 +360,27 @@ class DownloadModule(reactContext: ReactApplicationContext) : ReactContextBaseJa
         sendEvent("onDownloadFailed", params)
     }
 
+    private fun sendCancellationEvent(downloadId: String) {
+        val params = Arguments.createMap().apply {
+            putString("downloadId", downloadId)
+            putString("message", "Download cancelled by user")
+        }
+        sendEvent("onDownloadCancelled", params)
+    }
+
     override fun onCatalystInstanceDestroy() {
         Log.d(TAG, "Cleaning up DownloadModule")
+        // Clean up all observers
+        workObservers.entries.forEach { (downloadId, observer) ->
+            removeWorkObserver(downloadId)
+        }
+        workObservers.clear()
         super.onCatalystInstanceDestroy()
         scope.cancel()
     }
 
     companion object {
         private const val TAG = "DownloadModule"
+        private fun getWorkName(downloadId: String) = "download_$downloadId"
     }
 } 

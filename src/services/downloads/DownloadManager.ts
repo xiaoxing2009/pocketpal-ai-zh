@@ -444,7 +444,7 @@ export class DownloadManager {
           }
         } else if (Platform.OS === 'android' && DownloadModule) {
           console.log(`${TAG}: Cancelling Android download:`, modelId);
-          await DownloadModule.cancelDownload(modelId);
+          await DownloadModule.cancelDownload(job.downloadId);
         }
 
         // Clean up the partial download file
