@@ -1,13 +1,18 @@
 import React from 'react';
 
 import DeviceInfo from 'react-native-device-info';
-import {render, fireEvent, act} from '@testing-library/react-native';
+
+import {render, fireEvent, act} from '../../../../jest/test-utils';
 
 import {UsageStats} from '../UsageStats';
 
 describe('UsageStats Component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  const mockMeasure = jest.fn(callback => {
+    callback(0, 0, 100, 50, 10, 20); // mock x, y, width, height, pageX, pageY
   });
 
   it('fetches and displays memory stats correctly', async () => {
@@ -29,8 +34,16 @@ describe('UsageStats Component', () => {
       jest.advanceTimersByTime(3000);
     });
 
+    // Mock the measure function
+    const touchable = getByTestId('memory-usage-touchable') as any;
+    touchable._nativeTag = 'mock-tag';
+    touchable.measure = mockMeasure;
+
     // Press the graph to display the tooltip
-    fireEvent.press(getByTestId('memory-usage-touchable'));
+    fireEvent.press(touchable, {
+      target: touchable,
+      nativeEvent: {pageX: 10, pageY: 20},
+    });
 
     // Check if the tooltip shows the correct values
     expect(getByText('Used: 2 GB')).toBeTruthy();
@@ -71,13 +84,23 @@ describe('UsageStats Component', () => {
       jest.advanceTimersByTime(3000);
     });
 
+    const touchable = getByTestId('memory-usage-touchable') as any;
+    touchable._nativeTag = 'mock-tag';
+    touchable.measure = mockMeasure;
+
     // Press the graph to display the tooltip
-    fireEvent.press(getByTestId('memory-usage-touchable'));
+    fireEvent.press(touchable, {
+      target: touchable,
+      nativeEvent: {pageX: 10, pageY: 20},
+    });
 
     expect(getByTestId('memory-usage-tooltip')).toBeTruthy();
 
     // hide the tooltip
-    fireEvent.press(getByTestId('memory-usage-touchable'));
+    fireEvent.press(getByTestId('memory-usage-touchable'), {
+      target: touchable,
+      nativeEvent: {pageX: 10, pageY: 20},
+    });
 
     expect(queryByTestId('memory-usage-tooltip')).toBeNull();
   });

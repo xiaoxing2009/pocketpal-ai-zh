@@ -1,5 +1,9 @@
 import {applyTemplate, Templates} from 'chat-formatter';
-import {CompletionParams, LlamaContext} from '@pocketpalai/llama.rn';
+import {
+  CompletionParams,
+  JinjaFormattedChatResult,
+  LlamaContext,
+} from '@pocketpalai/llama.rn';
 
 import {
   ChatMessage,
@@ -45,13 +49,13 @@ export async function applyChatTemplate(
   messages: ChatMessage[],
   model: Model | null,
   context: LlamaContext | null,
-): Promise<string> {
+): Promise<string | JinjaFormattedChatResult> {
   const modelChatTemplate = model?.chatTemplate;
   const contextChatTemplate = (context?.model as any)?.metadata?.[
     'tokenizer.chat_template'
   ];
 
-  let formattedChat: string | undefined;
+  let formattedChat: string | JinjaFormattedChatResult | undefined;
 
   try {
     // Model's custom chat template. This uses chat-formatter, which is based on Nunjucks (as opposed to Jinja2).
@@ -214,7 +218,7 @@ export function getHFDefaultSettings(hfModel: HuggingFaceModel): {
 
 export const defaultCompletionParams: CompletionParams = {
   prompt: '',
-  n_predict: 400, // The maximum number of tokens to predict when generating text.
+  n_predict: 1024, // The maximum number of tokens to predict when generating text.
   temperature: 0.7, // The randomness of the generated text.
   top_k: 40, // Limit the next token selection to the K most probable tokens.
   top_p: 0.95, // Limit the next token selection to a subset of tokens with a cumulative probability above a threshold P.
@@ -229,7 +233,7 @@ export const defaultCompletionParams: CompletionParams = {
   mirostat: 0, //Enable Mirostat sampling, controlling perplexity during text generation. Default: `0`, where `0` is disabled, `1` is Mirostat, and `2` is Mirostat 2.0.
   mirostat_tau: 5, // Set the Mirostat target entropy, parameter tau. Default: `5.0`
   mirostat_eta: 0.1, // Set the Mirostat learning rate, parameter eta.  Default: `0.1`
-  seed: 0,
+  seed: -1,
   n_probs: 0, // If greater than 0, the response also contains the probabilities of top N tokens for each generated token given the sampling settings.
   stop: ['</s>'],
   // emit_partial_completion: true, // This is not used in the current version of llama.rn

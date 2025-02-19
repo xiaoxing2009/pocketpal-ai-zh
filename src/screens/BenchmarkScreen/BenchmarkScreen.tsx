@@ -293,6 +293,7 @@ export const BenchmarkScreen: React.FC = observer(() => {
       visible={showModelMenu}
       onDismiss={() => setShowModelMenu(false)}
       anchorPosition="bottom"
+      selectable
       anchor={
         <Button
           mode="outlined"

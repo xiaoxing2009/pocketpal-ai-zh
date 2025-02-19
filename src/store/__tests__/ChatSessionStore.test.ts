@@ -6,6 +6,7 @@ import {LlamaContext} from '@pocketpalai/llama.rn';
 import {chatSessionStore, defaultCompletionSettings} from '../ChatSessionStore';
 
 import {MessageType} from '../../utils/types';
+import {mockContextModel} from '../../../jest/fixtures/models';
 
 describe('chatSessionStore', () => {
   const mockMessage = {
@@ -287,7 +288,7 @@ describe('chatSessionStore', () => {
         contextId: 1,
         gpu: false,
         reasonNoGPU: 'Test environment',
-        model: 'mock-model',
+        model: mockContextModel,
       });
 
       chatSessionStore.updateMessageToken(
@@ -317,7 +318,7 @@ describe('chatSessionStore', () => {
         contextId: 1,
         gpu: false,
         reasonNoGPU: 'Test environment',
-        model: 'mock-model',
+        model: mockContextModel,
       });
       const newMessageId = 'new-message';
       const createdAt = Date.now();

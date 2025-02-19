@@ -1,4 +1,4 @@
-import {CompletionParams} from '@pocketpalai/llama.rn';
+import {CompletionParams, NativeLlamaContext} from '@pocketpalai/llama.rn';
 
 import {deviceInfo} from './device-info';
 
@@ -9,6 +9,38 @@ import {
   ModelFile,
   ModelOrigin,
 } from '../../src/utils/types';
+
+export const mockContextModel: NativeLlamaContext['model'] = {
+  desc: '',
+  size: 0,
+  nEmbd: 0,
+  nParams: 0,
+  chatTemplates: {
+    llamaChat: false,
+    minja: {
+      default: false,
+      defaultCaps: {
+        tools: false,
+        toolCalls: false,
+        toolResponses: false,
+        systemRole: false,
+        parallelToolCalls: false,
+        toolCallId: false,
+      },
+      toolUse: false,
+      toolUseCaps: {
+        tools: false,
+        toolCalls: false,
+        toolResponses: false,
+        systemRole: false,
+        parallelToolCalls: false,
+        toolCallId: false,
+      },
+    },
+  },
+  isChatTemplateSupported: false,
+  metadata: {},
+};
 
 export const mockDefaultCompletionParams: CompletionParams = {
   prompt: '',

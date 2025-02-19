@@ -15,6 +15,7 @@ import {
 import {BenchmarkScreen} from '../BenchmarkScreen';
 
 import {benchmarkStore, modelStore, uiStore} from '../../../store';
+import {mockContextModel} from '../../../../jest/fixtures/models';
 
 jest.mock('../../../api/benchmark', () => ({
   submitBenchmark: jest.fn().mockResolvedValue(undefined),
@@ -115,7 +116,7 @@ describe('BenchmarkScreen', () => {
         contextId: 1,
         gpu: false,
         reasonNoGPU: '',
-        model: {},
+        model: mockContextModel,
       });
 
       const {getByText, getByTestId} = render(<BenchmarkScreen />);
@@ -133,7 +134,7 @@ describe('BenchmarkScreen', () => {
         contextId: 1,
         gpu: false,
         reasonNoGPU: '',
-        model: {},
+        model: mockContextModel,
       });
       const {getByTestId} = render(<BenchmarkScreen />);
       const startButton = getByTestId('start-test-button');
@@ -186,7 +187,7 @@ describe('BenchmarkScreen', () => {
         contextId: 1,
         gpu: false,
         reasonNoGPU: '',
-        model: {},
+        model: mockContextModel,
       });
 
       const {getByText, getByTestId} = render(<BenchmarkScreen />);

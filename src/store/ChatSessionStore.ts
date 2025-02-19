@@ -15,6 +15,7 @@ export interface SessionMetaData {
   date: string;
   messages: MessageType.Any[];
   completionSettings: CompletionParams;
+  activePalId?: string;
 }
 
 interface SessionGroup {
@@ -32,6 +33,7 @@ class ChatSessionStore {
   editingMessageId: string | null = null;
   isGenerating: boolean = false;
   newChatCompletionSettings: CompletionParams = defaultCompletionSettings;
+  newChatPalId: string | undefined = undefined;
 
   constructor() {
     makeAutoObservable(this);
@@ -101,6 +103,7 @@ class ChatSessionStore {
 
   resetActiveSession() {
     runInAction(() => {
+      this.newChatPalId = this.activePalId;
       this.exitEditMode();
       this.activeSessionId = null;
     });
@@ -111,6 +114,7 @@ class ChatSessionStore {
       this.exitEditMode();
       this.activeSessionId = sessionId;
       this.newChatCompletionSettings = defaultCompletionSettings;
+      this.newChatPalId = undefined;
     });
   }
 
@@ -143,8 +147,6 @@ class ChatSessionStore {
     if (this.activeSessionId) {
       const session = this.sessions.find(s => s.id === this.activeSessionId);
       if (session) {
-        console.log('session.title', session.title);
-        console.log('message.type', message.type);
         session.messages.unshift(message);
         this.updateSessionTitle(session);
         this.saveSessionsMetadata();
@@ -208,6 +210,11 @@ class ChatSessionStore {
     if (Object.keys(this.newChatCompletionSettings).length > 0) {
       metaData.completionSettings = this.newChatCompletionSettings;
       this.newChatCompletionSettings = defaultCompletionSettings;
+    }
+
+    if (this.newChatPalId) {
+      metaData.activePalId = this.newChatPalId;
+      this.newChatPalId = undefined;
     }
 
     this.updateSessionTitle(metaData);
@@ -435,6 +442,28 @@ class ChatSessionStore {
           });
         }
       }
+    }
+  }
+
+  get activePalId(): string | undefined {
+    if (this.activeSessionId) {
+      const session = this.sessions.find(s => s.id === this.activeSessionId);
+      return session?.activePalId;
+    }
+    return this.newChatPalId;
+  }
+
+  setActivePal(palId: string | undefined): void {
+    if (this.activeSessionId) {
+      const session = this.sessions.find(s => s.id === this.activeSessionId);
+      if (session) {
+        runInAction(() => {
+          session.activePalId = palId;
+          this.saveSessionsMetadata();
+        });
+      }
+    } else {
+      this.newChatPalId = palId;
     }
   }
 }

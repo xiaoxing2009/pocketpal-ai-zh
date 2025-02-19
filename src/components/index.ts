@@ -31,4 +31,6 @@ export * from './StatusIcon';
 export * from './TextInput';
 export * from './TextMessage';
 export * from './UsageStats';
-export {ChatHeader} from './ChatHeader';
+export * from './ChatHeader';
+export * from './ChatPalModelPickerSheet';
+export * from './ChatEmptyPlaceholder';

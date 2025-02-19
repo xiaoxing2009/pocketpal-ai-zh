@@ -8,6 +8,7 @@ import {modelStore} from '../ModelStore';
 import {defaultModels} from '../defaultModels';
 
 import {ModelOrigin} from '../../utils/types';
+import {mockContextModel} from '../../../jest/fixtures/models';
 
 describe('ModelStore', () => {
   beforeEach(() => {
@@ -182,7 +183,7 @@ describe('ModelStore', () => {
           contextId: 1,
           gpu: false,
           reasonNoGPU: '',
-          model: {},
+          model: mockContextModel,
         }),
       );
       modelStore.initContext = mockInitContext;

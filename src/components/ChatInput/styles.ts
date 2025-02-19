@@ -1,6 +1,7 @@
 import {StyleSheet} from 'react-native';
 
 import {Theme} from '../../utils/types';
+import {fontStyles} from '../../utils/theme';
 
 export const createStyles = ({
   theme,
@@ -13,6 +14,20 @@ export const createStyles = ({
     container: {
       alignItems: 'center',
       flexDirection: 'row',
+    },
+    palBtn: {
+      height: 28,
+      width: 28,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: theme.colors.inverseTextSecondary,
+      borderRadius: 100,
+    },
+    inputWrapper: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      gap: 13,
+      flexShrink: 1,
     },
     input: {
       ...theme.fonts.inputTextStyle,
@@ -59,5 +74,19 @@ export const createStyles = ({
       paddingHorizontal: 24,
       paddingVertical: 20,
       marginTop: isEditMode ? 28 : 0,
+    },
+    palNameWrapper: {
+      ...fontStyles.regular,
+      color: theme.colors.inverseOnSurface,
+      fontSize: 12,
+    },
+    palName: {
+      fontSize: 12,
+      color: theme.colors.inverseOnSurface,
+      ...fontStyles.semibold,
+    },
+    inputInnerContainer: {
+      flexShrink: 1,
+      flexGrow: 1,
     },
   });

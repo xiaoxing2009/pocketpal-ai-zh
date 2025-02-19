@@ -87,7 +87,7 @@ const createBaseColors = (isDark: boolean): MD3BaseColors => {
     // Additional required MD3 colors
     surfaceDisabled: withOpacity('#fcfcfc', 0.12),
     onSurfaceDisabled: withOpacity('#333333', 0.38),
-    inverseSurface: '#333333',
+    inverseSurface: '#858585',
     inverseOnSurface: '#fcfcfc',
     inversePrimary: '#DEE0E6',
     inverseSecondary: '#95ABE6',
@@ -230,13 +230,18 @@ const createTheme = (isDark: boolean): Theme => {
       ...semanticColors,
     },
     borders: {
-      inputBorderRadius: 20,
+      inputBorderRadius: 16,
       messageBorderRadius: 15,
       default: 12,
     },
     fonts: {
       ...baseTheme.fonts,
       ...configuredFonts,
+      titleMediumLight: {
+        ...fontStyles.regular,
+        fontSize: 16,
+        lineHeight: 22,
+      },
       dateDividerTextStyle: {
         ...fontStyles.extraBold,
         color: baseColors.onSurface,
@@ -318,6 +323,9 @@ const createTheme = (isDark: boolean): Theme => {
     insets: {
       messageInsetsHorizontal: 20,
       messageInsetsVertical: 10,
+    },
+    spacing: {
+      default: 16,
     },
     icons: {},
   };

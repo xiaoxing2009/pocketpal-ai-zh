@@ -7,6 +7,7 @@ import {ChatScreen} from '../ChatScreen';
 import {chatSessionStore, modelStore} from '../../../store';
 
 import {l10n} from '../../../utils/l10n';
+import {mockContextModel} from '../../../../jest/fixtures/models';
 
 describe('ChatScreen', () => {
   let llamaRN;
@@ -17,8 +18,10 @@ describe('ChatScreen', () => {
   });
 
   it('renders correctly when model is not loaded', () => {
-    const {getByText} = render(<ChatScreen />, {withNavigation: true});
-    expect(getByText(l10n.en.pleaseLoadModel)).toBeTruthy();
+    const {getByPlaceholderText} = render(<ChatScreen />, {
+      withNavigation: true,
+    });
+    expect(getByPlaceholderText(l10n.en.modelNotLoaded)).toBeTruthy();
   });
 
   it('renders correctly when model is loading', () => {
@@ -34,7 +37,7 @@ describe('ChatScreen', () => {
       contextId: 1,
       gpu: false,
       reasonNoGPU: '',
-      model: {},
+      model: mockContextModel,
     });
     const {getByPlaceholderText} = render(<ChatScreen />, {
       withNavigation: true,
@@ -47,7 +50,7 @@ describe('ChatScreen', () => {
       contextId: 1,
       gpu: false,
       reasonNoGPU: '',
-      model: {},
+      model: mockContextModel,
     });
     modelStore.context.completion = jest.fn().mockResolvedValue({
       timings: {predicted_per_token_ms: 10, predicted_per_second: 100},
@@ -85,7 +88,7 @@ describe('ChatScreen', () => {
       contextId: 1,
       gpu: false,
       reasonNoGPU: '',
-      model: {},
+      model: mockContextModel,
     });
     modelStore.context.completion = jest
       .fn()
@@ -119,7 +122,7 @@ describe('ChatScreen', () => {
       contextId: 1,
       gpu: false,
       reasonNoGPU: '',
-      model: {},
+      model: mockContextModel,
     });
     jest
       .spyOn(chatSessionStore, 'currentSessionMessages', 'get')

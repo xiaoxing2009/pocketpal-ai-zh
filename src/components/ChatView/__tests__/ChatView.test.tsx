@@ -1,6 +1,5 @@
 //import {fireEvent, render} from '@testing-library/react-native';
 import * as React from 'react';
-import {Text} from 'react-native';
 
 import {
   fileMessage,
@@ -12,8 +11,14 @@ import {l10n} from '../../../utils/l10n';
 import {MessageType} from '../../../utils/types';
 import {ChatView} from '../ChatView';
 import {fireEvent, render} from '../../../../jest/test-utils';
+import {ChatEmptyPlaceholder} from '../../ChatEmptyPlaceholder';
 
 jest.useFakeTimers();
+
+// Mock ChatEmptyPlaceholder component
+jest.mock('../../ChatEmptyPlaceholder', () => ({
+  ChatEmptyPlaceholder: jest.fn(() => null),
+}));
 
 describe('chat', () => {
   it('renders image preview', async () => {
@@ -67,6 +72,7 @@ describe('chat', () => {
         textInputProps={{defaultValue: 'text'}}
         user={user}
       />,
+      {withNavigation: true},
     );
     const textInput = getByPlaceholderText(l10n.en.inputPlaceholder);
     fireEvent.changeText(textInput, 'text');
@@ -94,6 +100,7 @@ describe('chat', () => {
         showUserAvatars
         user={user}
       />,
+      {withNavigation: true},
     );
 
     const button = getByLabelText(l10n.en.fileButtonAccessibilityLabel);
@@ -123,6 +130,7 @@ describe('chat', () => {
         showUserAvatars
         user={user}
       />,
+      {withNavigation: true},
     );
 
     const button = getByTestId('ContentContainer');
@@ -152,6 +160,7 @@ describe('chat', () => {
         showUserAvatars
         user={user}
       />,
+      {withNavigation: true},
     );
 
     const button = getByTestId('ContentContainer');
@@ -159,43 +168,21 @@ describe('chat', () => {
     expect(onMessageLongPress).toHaveBeenCalledWith(imageMessage);
   });
 
-  it('renders empty chat placeholder', () => {
+  it('renders ChatEmptyPlaceholder when no messages', () => {
     expect.assertions(1);
     const messages = [];
     const onSendPress = jest.fn();
     const onMessagePress = jest.fn();
-    const {getByTestId} = render(
+    render(
       <ChatView
         messages={messages}
         onMessagePress={onMessagePress}
         onSendPress={onSendPress}
         user={user}
       />,
+      {withNavigation: true},
     );
 
-    const placeholder = getByTestId('empty-state-component');
-    expect(placeholder).toBeDefined();
-  });
-
-  it('renders custom bottom component', () => {
-    expect.assertions(1);
-    const customBottomComponent = jest.fn(() => <Text>Bottom</Text>);
-    const messages = [];
-    const onSendPress = jest.fn();
-    const onMessagePress = jest.fn();
-    const {getByText} = render(
-      <ChatView
-        {...{
-          customBottomComponent,
-          messages,
-          onMessagePress,
-          onSendPress,
-          user,
-        }}
-      />,
-    );
-
-    const customComponent = getByText('Bottom');
-    expect(customComponent).toBeDefined();
+    expect(ChatEmptyPlaceholder).toHaveBeenCalled();
   });
 });

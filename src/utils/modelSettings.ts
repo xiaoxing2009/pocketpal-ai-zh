@@ -111,7 +111,7 @@ export const COMPLETION_PARAMS_METADATA: Partial<
   seed: {
     validation: {
       type: 'numeric',
-      min: 0,
+      min: -1,
       max: Number.MAX_SAFE_INTEGER,
       required: true,
     },

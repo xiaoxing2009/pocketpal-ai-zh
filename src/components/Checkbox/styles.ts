@@ -4,6 +4,11 @@ import type {Theme} from '../../utils/types';
 
 export const createStyles = (theme: Theme) =>
   StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+    },
     checkbox: {
       borderWidth: 2,
       borderRadius: 4,

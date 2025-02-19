@@ -1,13 +1,10 @@
 import React, {useRef, ReactNode} from 'react';
 
 import {observer} from 'mobx-react';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 import {Bubble, ChatView} from '../../components';
 
 import {useChatSession} from '../../hooks';
-
-import {ModelNotLoadedMessage} from './ModelNotLoadedMessage';
 
 import {modelStore, chatSessionStore} from '../../store';
 
@@ -50,31 +47,24 @@ export const ChatScreen: React.FC = observer(() => {
   const isThinking = modelStore.inferencing && !modelStore.isStreaming;
 
   return (
-    <SafeAreaProvider>
-      <ChatView
-        customBottomComponent={
-          !modelStore.context && !modelStore.isContextLoading
-            ? () => <ModelNotLoadedMessage />
-            : undefined
-        }
-        renderBubble={renderBubble}
-        messages={chatSessionStore.currentSessionMessages}
-        onSendPress={handleSendPress}
-        onStopPress={handleStopPress}
-        user={user}
-        isStopVisible={modelStore.inferencing}
-        isThinking={isThinking}
-        isStreaming={modelStore.isStreaming}
-        sendButtonVisibilityMode="editing"
-        textInputProps={{
-          editable: !!modelStore.context,
-          placeholder: !modelStore.context
-            ? modelStore.isContextLoading
-              ? l10n.loadingModel
-              : l10n.modelNotLoaded
-            : l10n.typeYourMessage,
-        }}
-      />
-    </SafeAreaProvider>
+    <ChatView
+      renderBubble={renderBubble}
+      messages={chatSessionStore.currentSessionMessages}
+      onSendPress={handleSendPress}
+      onStopPress={handleStopPress}
+      user={user}
+      isStopVisible={modelStore.inferencing}
+      isThinking={isThinking}
+      isStreaming={modelStore.isStreaming}
+      sendButtonVisibilityMode="editing"
+      textInputProps={{
+        editable: !!modelStore.context,
+        placeholder: !modelStore.context
+          ? modelStore.isContextLoading
+            ? l10n.loadingModel
+            : l10n.modelNotLoaded
+          : l10n.typeYourMessage,
+      }}
+    />
   );
 });

@@ -1,8 +1,8 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {TouchableOpacity, View, Alert} from 'react-native';
+import {TouchableOpacity, View, Alert, Linking} from 'react-native';
 
 import {observer} from 'mobx-react';
-import {Drawer, Text} from 'react-native-paper';
+import {Button, Divider, Drawer, Text} from 'react-native-paper';
 import DeviceInfo from 'react-native-device-info';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -19,7 +19,15 @@ import {createStyles} from './styles';
 import {chatSessionStore, SessionMetaData} from '../../store';
 
 import {Menu, RenameModal} from '..';
-import {EditIcon, TrashIcon} from '../../assets/icons';
+import {
+  BenchmarkIcon,
+  ChatIcon,
+  EditIcon,
+  ModelIcon,
+  PalIcon,
+  SettingsIcon,
+  TrashIcon,
+} from '../../assets/icons';
 import {L10nContext} from '../../utils';
 
 export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
@@ -84,37 +92,61 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
       closeMenu();
     };
 
+    const openSponsorPage = async () => {
+      const link = 'https://buymeacoffee.com/aghorbani';
+      const canOpen = await Linking.canOpenURL(link);
+      if (canOpen) {
+        Linking.openURL(link);
+      }
+    };
+
     return (
       <GestureHandlerRootView style={styles.sidebarContainer}>
         <View style={styles.contentWrapper}>
           <DrawerContentScrollView {...props}>
-            <Drawer.Section>
+            <Drawer.Section showDivider={false}>
               <Drawer.Item
                 label={'Chat'}
-                icon={'comment-text'}
+                icon={() => <ChatIcon stroke={theme.colors.primary} />}
                 onPress={() => props.navigation.navigate('Chat')}
+                style={styles.menuDrawerItem}
               />
               <Drawer.Item
                 label={'Models'}
-                icon={'view-grid'}
+                icon={() => <ModelIcon stroke={theme.colors.primary} />}
                 onPress={() => props.navigation.navigate('Models')}
+                style={styles.menuDrawerItem}
+              />
+              <Drawer.Item
+                label={'Pals'}
+                icon={() => <PalIcon stroke={theme.colors.primary} />}
+                onPress={() => props.navigation.navigate('Pals (experimental)')}
+                style={styles.menuDrawerItem}
               />
               <Drawer.Item
                 label={'Benchmark'}
-                icon={'speedometer'}
+                icon={() => <BenchmarkIcon stroke={theme.colors.primary} />}
                 onPress={() => props.navigation.navigate('Benchmark')}
+                style={styles.menuDrawerItem}
               />
               <Drawer.Item
                 label={'Settings'}
-                icon={'cog'}
+                icon={() => (
+                  <SettingsIcon
+                    width={24}
+                    height={24}
+                    stroke={theme.colors.primary}
+                  />
+                )}
                 onPress={() => props.navigation.navigate('Settings')}
+                style={styles.menuDrawerItem}
               />
             </Drawer.Section>
-
+            <Divider style={styles.divider} />
             {/* Loop over the session groups and render them */}
             {Object.entries(chatSessionStore.groupedSessions).map(
               ([dateLabel, sessions]) => (
-                <Drawer.Section key={dateLabel} style={styles.drawerSection}>
+                <View key={dateLabel} style={styles.drawerSection}>
                   <Text variant="bodySmall" style={styles.dateLabel}>
                     {dateLabel}
                   </Text>
@@ -133,6 +165,7 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
                           <Drawer.Item
                             active={isActive}
                             label={session.title}
+                            style={styles.sessionDrawerItem}
                           />
                         </TouchableOpacity>
 
@@ -166,12 +199,19 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
                       </View>
                     );
                   })}
-                </Drawer.Section>
+                </View>
               ),
             )}
           </DrawerContentScrollView>
 
           <SafeAreaView edges={['bottom']} style={styles.versionSafeArea}>
+            <Button
+              mode="outlined"
+              style={{borderColor: theme.colors.onSurfaceDisabled}}
+              labelStyle={styles.sponsorButtonLabel}
+              onPress={openSponsorPage}>
+              <Text variant="bodySmall">Become a Sponsor</Text>
+            </Button>
             <TouchableOpacity
               onPress={copyVersionToClipboard}
               style={styles.versionContainer}>

@@ -4,6 +4,7 @@ import {
   extractHFModelType,
   formatBytes,
   getTextSizeInBytes,
+  safeParseJSON,
   unwrap,
 } from '..';
 
@@ -190,5 +191,49 @@ describe('extractHFModelTitle', () => {
     expect(extractHFModelTitle('owner/modelWithoutSuffix')).toBe(
       'modelWithoutSuffix',
     );
+  });
+});
+
+describe('safeParseJSON', () => {
+  // Case 1: Normal valid JSON
+  test('parses valid JSON correctly', () => {
+    const validJson = '{"prompt": "Hello world"}';
+    expect(safeParseJSON(validJson)).toEqual({prompt: 'Hello world'});
+  });
+
+  // Case 2: JSON with trailing text
+  test('parses JSON with trailing text', () => {
+    const jsonWithTrailing = '{"prompt": "Hello world"} Some extra text here';
+    expect(safeParseJSON(jsonWithTrailing)).toEqual({prompt: 'Hello world'});
+  });
+
+  // Case 3: Incomplete JSON missing closing brace
+  test('handles incomplete JSON with missing closing brace', () => {
+    const incompleteJson = '{"prompt": "Hello world';
+    expect(safeParseJSON(incompleteJson)).toEqual({prompt: 'Hello world'});
+  });
+
+  // Additional edge cases
+  test('handles different quote styles and spacing around prompt key', () => {
+    const variations = [
+      '{"prompt" : "Hello"}',
+      '{"prompt"  :  "Hello"}',
+      '{"prompt"\n:\n"Hello"}',
+    ];
+
+    variations.forEach(json => {
+      expect(safeParseJSON(json)).toHaveProperty('prompt', 'Hello');
+    });
+  });
+
+  test('returns null for invalid JSON', () => {
+    const invalidCases = ['', 'not json at all', '{notEvenJson}'];
+
+    invalidCases.forEach(invalid => {
+      expect(safeParseJSON(invalid)).toEqual({
+        prompt: '',
+        error: expect.any(Error),
+      });
+    });
   });
 });

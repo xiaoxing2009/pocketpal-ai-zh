@@ -8,17 +8,22 @@ export const createStyles = (theme: MD3Theme) =>
       flex: 1,
       backgroundColor: theme.colors.surface,
     },
+    divider: {
+      marginHorizontal: 16,
+      backgroundColor: theme.colors.onSurfaceVariant,
+      height: 1,
+      opacity: 0.1,
+    },
     contentWrapper: {
       flex: 1,
       display: 'flex',
       flexDirection: 'column',
     },
     versionContainer: {
-      paddingTop: 12,
-      paddingBottom: 0,
-      paddingHorizontal: 26,
-      width: '100%',
       alignItems: 'center',
+      justifyContent: 'center',
+      flexWrap: 'wrap',
+      gap: 10,
     },
     versionRow: {
       flexDirection: 'row',
@@ -30,6 +35,12 @@ export const createStyles = (theme: MD3Theme) =>
       color: theme.colors.onSurfaceVariant,
       opacity: 0.4,
       fontSize: 12,
+    },
+    sessionDrawerItem: {
+      height: 40,
+    },
+    menuDrawerItem: {
+      height: 44,
     },
     versionText: {
       color: theme.colors.onSurfaceVariant,
@@ -50,12 +61,11 @@ export const createStyles = (theme: MD3Theme) =>
       textAlign: 'center',
     },
     drawerSection: {
-      marginVertical: 10,
+      marginTop: 10,
     },
     dateLabel: {
-      color: theme.colors.onSurfaceVariant,
-      paddingLeft: 26,
-      paddingBottom: 15,
+      paddingLeft: 16,
+      paddingVertical: 10,
     },
     scrollViewContent: {
       flexGrow: 1,
@@ -65,7 +75,21 @@ export const createStyles = (theme: MD3Theme) =>
       flex: 1,
     },
     versionSafeArea: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
       backgroundColor: theme.colors.surface,
+      flexShrink: 1,
+      paddingHorizontal: 16,
+      paddingVertical: 16,
+      flexWrap: 'wrap',
+      gap: 10,
+    },
+    sponsorButtonLabel: {
+      marginHorizontal: 16,
+    },
+    sponsorButton: {
+      height: 40,
     },
     menu: {
       width: 170,

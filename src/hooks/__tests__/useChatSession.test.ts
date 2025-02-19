@@ -2,7 +2,11 @@ import {LlamaContext} from '@pocketpalai/llama.rn';
 import {renderHook, act, waitFor} from '@testing-library/react-native';
 
 import {textMessage} from '../../../jest/fixtures';
-import {mockBasicModel, modelsList} from '../../../jest/fixtures/models';
+import {
+  mockBasicModel,
+  mockContextModel,
+  modelsList,
+} from '../../../jest/fixtures/models';
 
 import {useChatSession} from '../useChatSession';
 
@@ -24,7 +28,7 @@ beforeEach(() => {
     contextId: 1,
     gpu: false,
     reasonNoGPU: '',
-    model: {},
+    model: mockContextModel,
   });
 });
 modelStore.models = modelsList;

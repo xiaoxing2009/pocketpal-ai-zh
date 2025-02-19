@@ -16,18 +16,14 @@ import {KeyboardProvider} from 'react-native-keyboard-controller';
 import {useTheme} from './src/hooks';
 import {Theme} from './src/utils/types';
 
-import {
-  SidebarContent,
-  ModelsHeaderRight,
-  ChatHeader,
-  HeaderLeft,
-} from './src/components';
+import {SidebarContent, ModelsHeaderRight, HeaderLeft} from './src/components';
 import {
   ChatScreen,
   ModelsScreen,
   SettingsScreen,
   BenchmarkScreen,
 } from './src/screens';
+import {PalsScreen} from './src/screens/PalsScreen';
 
 const Drawer = createDrawerNavigator();
 
@@ -42,8 +38,8 @@ const App = observer(() => {
       <SafeAreaProvider>
         <KeyboardProvider statusBarTranslucent navigationBarTranslucent>
           <PaperProvider theme={theme}>
-            <BottomSheetModalProvider>
-              <NavigationContainer>
+            <NavigationContainer>
+              <BottomSheetModalProvider>
                 <Drawer.Navigator
                   useLegacyImplementation={false}
                   screenOptions={{
@@ -62,7 +58,7 @@ const App = observer(() => {
                     name="Chat"
                     component={gestureHandlerRootHOC(ChatScreen)}
                     options={{
-                      header: () => <ChatHeader />,
+                      headerShown: false,
                     }}
                   />
                   <Drawer.Screen
@@ -74,8 +70,8 @@ const App = observer(() => {
                     }}
                   />
                   <Drawer.Screen
-                    name="Settings"
-                    component={gestureHandlerRootHOC(SettingsScreen)}
+                    name="Pals (experimental)"
+                    component={gestureHandlerRootHOC(PalsScreen)}
                     options={{
                       headerStyle: styles.headerWithoutDivider,
                     }}
@@ -87,9 +83,16 @@ const App = observer(() => {
                       headerStyle: styles.headerWithoutDivider,
                     }}
                   />
+                  <Drawer.Screen
+                    name="Settings"
+                    component={gestureHandlerRootHOC(SettingsScreen)}
+                    options={{
+                      headerStyle: styles.headerWithoutDivider,
+                    }}
+                  />
                 </Drawer.Navigator>
-              </NavigationContainer>
-            </BottomSheetModalProvider>
+              </BottomSheetModalProvider>
+            </NavigationContainer>
           </PaperProvider>
         </KeyboardProvider>
       </SafeAreaProvider>
