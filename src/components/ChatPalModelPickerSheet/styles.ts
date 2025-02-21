@@ -5,6 +5,7 @@ export const createStyles = ({theme}: {theme: Theme}) =>
   StyleSheet.create({
     sheetContainer: {
       backgroundColor: theme.colors.surface,
+      flex: 1,
     },
     handle: {
       backgroundColor: theme.colors.outline,
