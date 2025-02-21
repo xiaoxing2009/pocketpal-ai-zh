@@ -1431,7 +1431,7 @@ PODS:
     - Yoga
   - react-native-get-random-values (1.11.0):
     - React-Core
-  - react-native-keyboard-controller (1.15.2):
+  - react-native-keyboard-controller (1.16.4):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1909,7 +1909,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreens (4.4.0):
+  - RNScreens (4.8.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2300,7 +2300,7 @@ SPEC CHECKSUMS:
   react-native-config: ea75335a7cca1d3326de1da384227e580a7c082e
   react-native-document-picker: 530879d9e89b490f0954bcc4ab697c5b5e35d659
   react-native-get-random-values: d16467cf726c618e9c7a8c3c39c31faa2244bbba
-  react-native-keyboard-controller: b2535550c830b58d647b21a4e9ec6f10552d4ae5
+  react-native-keyboard-controller: 7d22c56345d4ca825c9f2940b9636e0c2697d0df
   react-native-render-html: 5afc4751f1a98621b3009432ef84c47019dcb2bd
   react-native-safe-area-context: 758e894ca5a9bd1868d2a9cfbca7326a2b6bf9dc
   react-native-slider: fc7f35c082abec47e341dfe43657a1c26f38db2f
@@ -2341,7 +2341,7 @@ SPEC CHECKSUMS:
   RNGestureHandler: 5b24d10761754ad271b714e536c457fd89b17c54
   RNReactNativeHapticFeedback: 00ba111b82aa266bb3ee1aa576831c2ea9a9dfad
   RNReanimated: 929c26a706dfe1af8feee9f2cf78004394e4dd04
-  RNScreens: 4a5ab20b324ed1e3fe3862796b8f8e0a6208c415
+  RNScreens: 4376940e34de0d1cbf2d845ba735b1e0318b7724
   RNSVG: 86fecdfc637614ba9def63f7f3f2e7795e018356
   RNVectorIcons: 182892e7d1a2f27b52d3c627eca5d2665a22ee28
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748

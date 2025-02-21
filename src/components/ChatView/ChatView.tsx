@@ -778,6 +778,7 @@ export const ChatView = observer(
                   onModelSelect={handleModelSelect}
                   onPalSelect={handlePalSelect}
                   chatInputHeight={chatInputHeight.height}
+                  keyboardHeight={keyboardHeight}
                 />
               </View>
             </KeyboardAvoidingView>

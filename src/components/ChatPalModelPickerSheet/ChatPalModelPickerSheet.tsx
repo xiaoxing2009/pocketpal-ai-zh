@@ -1,8 +1,12 @@
 import React, {useRef, useEffect} from 'react';
-import {Alert, Dimensions, View, FlatList, Pressable} from 'react-native';
+import {Alert, Dimensions, View, Pressable} from 'react-native';
 import {observer} from 'mobx-react';
 import {Text} from 'react-native-paper';
-import BottomSheet, {BottomSheetView} from '@gorhom/bottom-sheet';
+import BottomSheet, {
+  BottomSheetFlatList,
+  BottomSheetFlatListMethods,
+  BottomSheetView,
+} from '@gorhom/bottom-sheet';
 
 import {useTheme} from '../../hooks';
 import {createStyles} from './styles';
@@ -22,6 +26,7 @@ interface ChatPalModelPickerSheetProps {
   onClose: () => void;
   onModelSelect?: (modelId: string) => void;
   onPalSelect?: (palId: string | undefined) => void;
+  keyboardHeight: number;
 }
 
 const TABS: {id: Tab; label: string}[] = [
@@ -36,13 +41,14 @@ export const ChatPalModelPickerSheet = observer(
     onModelSelect,
     onPalSelect,
     chatInputHeight,
+    keyboardHeight,
   }: ChatPalModelPickerSheetProps) => {
     const [activeTab, setActiveTab] = React.useState<Tab>('models');
     const theme = useTheme();
     const insets = useSafeAreaInsets();
     const styles = createStyles({theme});
     const bottomSheetRef = useRef<BottomSheet>(null);
-    const flatListRef = useRef<FlatList>(null);
+    const flatListRef = useRef<BottomSheetFlatListMethods>(null);
 
     useEffect(() => {
       if (isVisible) {
@@ -223,7 +229,7 @@ export const ChatPalModelPickerSheet = observer(
           backgroundColor: theme.colors.background,
         }}
         maxDynamicContentSize={
-          Dimensions.get('screen').height - insets.top - 16
+          Dimensions.get('screen').height - insets.top - 16 - keyboardHeight
         }
         handleIndicatorStyle={{
           backgroundColor: theme.colors.primary,
@@ -232,7 +238,7 @@ export const ChatPalModelPickerSheet = observer(
           <View style={styles.tabs}>
             {TABS.map((tab, index) => renderTab(tab.id, tab.label, index))}
           </View>
-          <FlatList
+          <BottomSheetFlatList
             ref={flatListRef}
             data={TABS}
             renderItem={renderContent}
