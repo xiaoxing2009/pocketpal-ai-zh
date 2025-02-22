@@ -218,6 +218,8 @@ class ModelStore {
       await this.initializeDownloadStatus();
       this.removeInvalidLocalModels();
     }
+
+    this.initializeUseMetal();
   };
 
   mergeModelLists = () => {
@@ -726,6 +728,7 @@ class ModelStore {
         cache_type_k: this.cache_type_k,
         cache_type_v: this.cache_type_v,
         n_gpu_layers: this.useMetal ? this.n_gpu_layers : 0,
+        no_gpu_devices: !this.useMetal,
       };
       const ctx = await initLlama(
         {
@@ -941,6 +944,18 @@ class ModelStore {
       });
     }
   };
+
+  private initializeUseMetal() {
+    const isIOS18OrHigher =
+      Platform.OS === 'ios' && parseInt(Platform.Version as string, 10) >= 18;
+    // If we're not on iOS 18+ or not on iOS at all, force useMetal to false
+    if (!isIOS18OrHigher) {
+      runInAction(() => {
+        this.useMetal = false;
+      });
+    }
+    // If we are on iOS 18+, the persisted value will be used
+  }
 
   updateUseMetal = (useMetal: boolean) => {
     runInAction(() => {

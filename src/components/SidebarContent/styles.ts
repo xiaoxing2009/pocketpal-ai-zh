@@ -23,12 +23,12 @@ export const createStyles = (theme: MD3Theme) =>
       alignItems: 'center',
       justifyContent: 'center',
       flexWrap: 'wrap',
-      gap: 10,
+      //gap: 10,
     },
     versionRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: 4,
+      //gap: 4,
       justifyContent: 'center',
     },
     versionLabel: {
@@ -76,14 +76,14 @@ export const createStyles = (theme: MD3Theme) =>
     },
     versionSafeArea: {
       flexDirection: 'row',
-      justifyContent: 'space-between',
+      justifyContent: 'space-around',
       alignItems: 'center',
       backgroundColor: theme.colors.surface,
       flexShrink: 1,
       paddingHorizontal: 16,
       paddingVertical: 16,
       flexWrap: 'wrap',
-      gap: 10,
+      //gap: 10,
     },
     sponsorButtonLabel: {
       marginHorizontal: 16,
