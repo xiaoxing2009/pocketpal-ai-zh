@@ -1,4 +1,10 @@
-import {AppState, AppStateStatus, NativeModules} from 'react-native';
+import {
+  AppState,
+  AppStateStatus,
+  Platform,
+  NativeModules,
+  Alert,
+} from 'react-native';
 
 import {v4 as uuidv4} from 'uuid';
 import 'react-native-get-random-values';
@@ -238,6 +244,8 @@ class ModelStore {
       await this.initializeDownloadStatus();
       this.removeInvalidLocalModels();
     }
+
+    this.initializeUseMetal();
 
     // Sync download manager with active downloads
     await downloadManager.syncWithActiveDownloads(this.models);
@@ -619,6 +627,7 @@ class ModelStore {
         cache_type_k: this.cache_type_k,
         cache_type_v: this.cache_type_v,
         n_gpu_layers: this.useMetal ? this.n_gpu_layers : 0,
+        no_gpu_devices: !this.useMetal,
       };
       const ctx = await initLlama(
         {
@@ -835,6 +844,18 @@ class ModelStore {
     }
   };
 
+  private initializeUseMetal() {
+    const isIOS18OrHigher =
+      Platform.OS === 'ios' && parseInt(Platform.Version as string, 10) >= 18;
+    // If we're not on iOS 18+ or not on iOS at all, force useMetal to false
+    if (!isIOS18OrHigher) {
+      runInAction(() => {
+        this.useMetal = false;
+      });
+    }
+    // If we are on iOS 18+, the persisted value will be used
+  }
+
   updateUseMetal = (useMetal: boolean) => {
     runInAction(() => {
       this.useMetal = useMetal;
@@ -989,6 +1010,13 @@ class ModelStore {
         model.hash = hash;
       });
     }
+  };
+
+  isModelAvailable = (modelId?: string): boolean => {
+    if (!modelId) {
+      return false;
+    }
+    return this.availableModels.some(m => m.id === modelId);
   };
 }
 

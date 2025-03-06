@@ -8,7 +8,10 @@ export const createStyles = (theme: Theme) =>
       borderWidth: 1,
       borderColor: theme.colors.border,
       borderRadius: 10,
+      borderTopStartRadius: 10,
+      borderTopEndRadius: 10,
       alignSelf: 'stretch',
+      backgroundColor: 'transparent',
     },
     input: {
       backgroundColor: 'transparent',

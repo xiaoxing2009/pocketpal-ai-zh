@@ -9,8 +9,6 @@ export const createStyles = (theme: Theme) =>
     },
     tooltip: {
       position: 'absolute',
-      top: 25,
-      left: -30,
       padding: 8,
       borderRadius: 4,
       backgroundColor: theme.colors.surface,

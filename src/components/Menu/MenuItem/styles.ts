@@ -24,6 +24,12 @@ export const createStyles = (theme: Theme) =>
       maxWidth: 'auto',
       flexGrow: 1,
     },
+    noLeadingIcon: {
+      marginLeft: 0,
+    },
+    noTrailingIcon: {
+      marginRight: 0,
+    },
     label: {
       ...theme.fonts.titleSmall,
       textAlign: 'left',

@@ -32,7 +32,7 @@ import {usePrevious, useTheme, useMessageActions} from '../../hooks';
 import ImageView from './ImageView';
 import {createStyles} from './styles';
 
-import {chatSessionStore, modelStore} from '../../store';
+import {chatSessionStore, modelStore, palStore} from '../../store';
 
 import {l10n} from '../../utils/l10n';
 import {MessageType, User} from '../../utils/types';
@@ -53,7 +53,9 @@ import {
   ChatInputTopLevelProps,
   Menu,
   LoadingBubble,
-  PocketPalIconAnimation,
+  ChatPalModelPickerSheet,
+  ChatHeader,
+  ChatEmptyPlaceholder,
 } from '..';
 import {
   CopyIcon,
@@ -61,6 +63,21 @@ import {
   PencilLineIcon,
   RefreshIcon,
 } from '../../assets/icons';
+
+type MenuItem = {
+  label: string;
+  onPress?: () => void;
+  icon?: () => React.ReactNode;
+  disabled: boolean;
+  submenu?: SubMenuItem[];
+};
+
+type SubMenuItem = {
+  label: string;
+  onPress: () => void;
+  disabled?: boolean;
+  width?: number;
+};
 
 // Untestable
 /* istanbul ignore next */
@@ -73,8 +90,6 @@ dayjs.extend(calendar);
 export type ChatTopLevelProps = ChatInputTopLevelProps & MessageTopLevelProps;
 
 export interface ChatProps extends ChatTopLevelProps {
-  /** Allows you to replace the default Input widget e.g. if you want to create a channel view. */
-  customBottomComponent?: () => React.ReactNode;
   /** If {@link ChatProps.dateFormat} and/or {@link ChatProps.timeFormat} is not enough to
    * customize date headers in your case, use this to return an arbitrary
    * string based on a `dateTime` of a particular message. Can be helpful to
@@ -127,25 +142,9 @@ export interface ChatProps extends ChatTopLevelProps {
   user: User;
 }
 
-type MenuItem = {
-  label: string;
-  onPress?: () => void;
-  icon?: () => React.ReactNode;
-  disabled: boolean;
-  submenu?: SubMenuItem[];
-};
-
-type SubMenuItem = {
-  label: string;
-  onPress: () => void;
-  disabled?: boolean;
-  width?: number;
-};
-
 /** Entry component, represents the complete chat */
 export const ChatView = observer(
   ({
-    customBottomComponent,
     customDateHeaderText,
     dateFormat,
     disableImageGallery,
@@ -184,31 +183,24 @@ export const ChatView = observer(
     const styles = createStyles({theme});
 
     const [inputText, setInputText] = React.useState('');
+    const [isPickerVisible, setIsPickerVisible] = React.useState(false);
 
     const animationRef = React.useRef(false);
     const list = React.useRef<FlatList<MessageType.DerivedAny>>(null);
     const insets = useSafeAreaInsets();
     const {progress} = useKeyboardAnimation();
     const headerHeight = useHeaderHeight();
+    const activePalId = chatSessionStore.activePalId;
+    const activePal = palStore.pals.find(pal => pal.id === activePalId);
 
     const {onLayout, size} = useComponentSize();
     const {onLayout: onLayoutChatInput, size: chatInputHeight} =
       useComponentSize();
-    const {
-      onLayout: onLayoutCustomBottomComponent,
-      size: customBottomComponentHeight,
-    } = useComponentSize();
 
     const bottomComponentHeight = React.useMemo(() => {
-      const height = customBottomComponent
-        ? customBottomComponentHeight.height
-        : chatInputHeight.height;
+      const height = chatInputHeight.height;
       return height;
-    }, [
-      customBottomComponent,
-      customBottomComponentHeight.height,
-      chatInputHeight.height,
-    ]);
+    }, [chatInputHeight.height]);
 
     const listPaddingBottom = progress.interpolate({
       inputRange: [0, 1],
@@ -234,6 +226,19 @@ export const ChatView = observer(
 
     const [showScrollButton, setShowScrollButton] = React.useState(false);
     const [isUserScrolling, setIsUserScrolling] = React.useState(false);
+
+    React.useEffect(() => {
+      if (activePal) {
+        if (!modelStore.activeModel && activePal.defaultModel) {
+          const palDefaultModel = modelStore.availableModels.find(
+            m => m.id === activePal.defaultModel?.id,
+          );
+          if (palDefaultModel) {
+            modelStore.initContext(palDefaultModel);
+          }
+        }
+      }
+    }, [activePal]);
 
     const handleScroll = React.useCallback(event => {
       const {contentOffset} = event.nativeEvent;
@@ -588,8 +593,13 @@ export const ChatView = observer(
     );
 
     const renderListEmptyComponent = React.useCallback(
-      () => <PocketPalIconAnimation testID="empty-state-component" />,
-      [],
+      () => (
+        <ChatEmptyPlaceholder
+          bottomComponentHeight={bottomComponentHeight}
+          onSelectModel={() => setIsPickerVisible(true)}
+        />
+      ),
+      [bottomComponentHeight, setIsPickerVisible],
     );
 
     const renderListFooterComponent = React.useCallback(
@@ -641,7 +651,7 @@ export const ChatView = observer(
             onScroll={handleScroll}
             {...unwrap(flatListProps)}
             data={chatMessages}
-            inverted
+            inverted={chatMessages.length > 0}
             keyboardDismissMode="interactive"
             keyExtractor={keyExtractor}
             onEndReached={handleEndReached}
@@ -698,59 +708,80 @@ export const ChatView = observer(
       ],
     );
 
+    const [_selectedModel, setSelectedModel] = React.useState<string | null>(
+      null,
+    );
+    const [_selectedPal, setSelectedPal] = React.useState<string | undefined>();
+
+    const handleModelSelect = React.useCallback((model: string) => {
+      setSelectedModel(model);
+      setIsPickerVisible(false);
+    }, []);
+
+    const handlePalSelect = React.useCallback((pal: string | undefined) => {
+      setSelectedPal(pal);
+      setIsPickerVisible(false);
+    }, []);
+
+    const inputBackgroundColor = activePal?.color?.[1]
+      ? activePal.color?.[1]
+      : theme.colors.primary;
     return (
       <UserContext.Provider value={user}>
         <L10nContext.Provider value={l10nValue}>
           <View style={styles.container} onLayout={onLayout}>
-            {customBottomComponent ? (
-              <>
-                <View style={styles.container}>{renderChatList()}</View>
-                <View
-                  onLayout={onLayoutCustomBottomComponent}
-                  style={styles.customBottomComponent}>
-                  {customBottomComponent()}
-                </View>
-              </>
-            ) : (
-              <>
-                <KeyboardAvoidingView
-                  behavior="padding"
-                  keyboardVerticalOffset={headerHeight}
-                  style={styles.container}>
-                  <View style={styles.chatContainer}>
-                    {renderChatList()}
-                    <Animated.View
-                      onLayout={onLayoutChatInput}
-                      style={[
-                        styles.inputContainer,
-                        {
-                          paddingBottom: insets.bottom,
-                          transform: [{translateY}],
-                        },
-                      ]}>
-                      <ChatInput
-                        {...{
-                          ...unwrap(inputProps),
-                          isAttachmentUploading,
-                          isStreaming,
-                          onAttachmentPress,
-                          onSendPress: wrappedOnSendPress,
-                          onStopPress,
-                          onCancelEdit: handleCancelEdit,
-                          isStopVisible,
-                          sendButtonVisibilityMode,
-                          textInputProps: {
-                            ...textInputProps,
-                            value: inputText,
-                            onChangeText: setInputText,
-                          },
-                        }}
-                      />
-                    </Animated.View>
-                  </View>
-                </KeyboardAvoidingView>
-              </>
-            )}
+            <KeyboardAvoidingView
+              behavior="padding"
+              keyboardVerticalOffset={headerHeight}
+              style={styles.container}>
+              <View style={styles.chatContainer}>
+                <ChatHeader />
+                {renderChatList()}
+                <Animated.View
+                  onLayout={onLayoutChatInput}
+                  style={[
+                    styles.inputContainer,
+                    // eslint-disable-next-line react-native/no-inline-styles
+                    {
+                      paddingBottom: insets.bottom,
+                      transform: [{translateY}],
+                      zIndex: 10,
+                    },
+                    {backgroundColor: inputBackgroundColor},
+                  ]}>
+                  <ChatInput
+                    {...{
+                      ...unwrap(inputProps),
+                      isAttachmentUploading,
+                      isStreaming,
+                      onAttachmentPress,
+                      onSendPress: wrappedOnSendPress,
+                      onStopPress,
+                      chatInputHeight,
+                      inputBackgroundColor,
+                      onCancelEdit: handleCancelEdit,
+                      onPalBtnPress: () => setIsPickerVisible(!isPickerVisible),
+                      isStopVisible,
+                      isPickerVisible,
+                      sendButtonVisibilityMode,
+                      textInputProps: {
+                        ...textInputProps,
+                        value: inputText,
+                        onChangeText: setInputText,
+                      },
+                    }}
+                  />
+                </Animated.View>
+                <ChatPalModelPickerSheet
+                  isVisible={isPickerVisible}
+                  onClose={() => setIsPickerVisible(false)}
+                  onModelSelect={handleModelSelect}
+                  onPalSelect={handlePalSelect}
+                  chatInputHeight={chatInputHeight.height}
+                  keyboardHeight={keyboardHeight}
+                />
+              </View>
+            </KeyboardAvoidingView>
             <ImageView
               imageIndex={imageViewIndex}
               images={gallery}

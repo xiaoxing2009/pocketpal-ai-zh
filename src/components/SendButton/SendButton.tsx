@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {
   GestureResponderEvent,
-  Image,
   StyleSheet,
   TouchableOpacity,
   TouchableOpacityProps,
@@ -10,9 +9,11 @@ import {
 import {useTheme} from '../../hooks';
 
 import {L10nContext} from '../../utils';
+import {SendIcon} from '../../assets/icons';
 
 export interface SendButtonPropsAdditionalProps {
   touchableOpacityProps?: TouchableOpacityProps;
+  color?: string;
 }
 
 export interface SendButtonProps extends SendButtonPropsAdditionalProps {
@@ -22,6 +23,7 @@ export interface SendButtonProps extends SendButtonPropsAdditionalProps {
 
 export const SendButton = ({
   onPress,
+  color,
   touchableOpacityProps,
 }: SendButtonProps) => {
   const l10n = React.useContext(L10nContext);
@@ -40,9 +42,10 @@ export const SendButton = ({
       onPress={handlePress}
       style={styles.sendButton}>
       {theme.icons?.sendButtonIcon?.() ?? (
-        <Image
-          source={require('../../assets/icon-send.png')}
-          style={{tintColor: theme.colors.inverseOnSurface}}
+        <SendIcon
+          stroke={color ?? theme.colors.inverseOnSurface}
+          width={24}
+          height={24}
         />
       )}
     </TouchableOpacity>

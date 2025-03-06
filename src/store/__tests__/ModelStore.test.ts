@@ -7,6 +7,7 @@ import {defaultModels} from '../defaultModels';
 import {downloadManager} from '../../services/downloads';
 
 import {ModelOrigin} from '../../utils/types';
+import {mockContextModel} from '../../../jest/fixtures/models';
 
 import {modelStore, uiStore} from '..';
 
@@ -200,7 +201,7 @@ describe('ModelStore', () => {
           contextId: 1,
           gpu: false,
           reasonNoGPU: '',
-          model: {},
+          model: mockContextModel,
         }),
       );
       modelStore.initContext = mockInitContext;

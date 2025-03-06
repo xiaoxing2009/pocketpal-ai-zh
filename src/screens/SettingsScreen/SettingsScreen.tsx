@@ -117,6 +117,9 @@ export const SettingsScreen: React.FC = observer(() => {
     );
   };
 
+  const isIOS18OrHigher =
+    Platform.OS === 'ios' && parseInt(Platform.Version as string, 10) >= 18;
+
   return (
     <SafeAreaView style={styles.safeArea} edges={['bottom']}>
       <TouchableWithoutFeedback onPress={handleOutsidePress}>
@@ -137,7 +140,9 @@ export const SettingsScreen: React.FC = observer(() => {
                         <Text
                           variant="labelSmall"
                           style={styles.textDescription}>
-                          {l10n.metalDescription}
+                          {isIOS18OrHigher
+                            ? l10n.metalDescription
+                            : 'Metal acceleration requires iOS 18 or higher. Please upgrade your device to use this feature.'}
                         </Text>
                       </View>
                       <Switch
@@ -146,6 +151,8 @@ export const SettingsScreen: React.FC = observer(() => {
                         onValueChange={value =>
                           modelStore.updateUseMetal(value)
                         }
+                        // disabled={!isIOS18OrHigher}
+                        // We don't disable for cases where the users has has set to true in the past.
                       />
                     </View>
                     <Slider

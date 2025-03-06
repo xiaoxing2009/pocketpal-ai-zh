@@ -228,6 +228,7 @@ export interface ThemeBorders {
 }
 
 export interface ThemeFonts extends MD3Typescale {
+  titleMediumLight: TextStyle;
   dateDividerTextStyle: TextStyle;
   emptyChatPlaceholderTextStyle: TextStyle;
   inputTextStyle: TextStyle;
@@ -248,9 +249,14 @@ export interface ThemeInsets {
   messageInsetsVertical: number;
 }
 
+export interface ThemeSpacing {
+  default: number;
+}
+
 export interface Theme extends MD3Theme {
   colors: MD3BaseColors & SemanticColors;
   borders: ThemeBorders;
+  spacing: ThemeSpacing;
   fonts: ThemeFonts;
   insets: ThemeInsets;
   icons?: ThemeIcons;

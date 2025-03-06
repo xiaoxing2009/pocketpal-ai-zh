@@ -6,9 +6,8 @@ import {
   TouchableOpacityProps,
 } from 'react-native';
 
-import Icon from 'react-native-vector-icons/MaterialIcons';
-
 import {useTheme} from '../../hooks';
+import {StopIcon} from '../../assets/icons';
 
 // import {L10nContext} from '../../utils';
 
@@ -19,11 +18,13 @@ export interface StopButtonPropsAdditionalProps {
 export interface StopButtonProps extends StopButtonPropsAdditionalProps {
   /** Callback for stop button tap event */
   onPress?: () => void;
+  color?: string;
 }
 
 export const StopButton = ({
   onPress,
   touchableOpacityProps,
+  color,
 }: StopButtonProps) => {
   // const l10n = React.useContext(L10nContext);
   const theme = useTheme();
@@ -42,15 +43,17 @@ export const StopButton = ({
       {...touchableOpacityProps}
       onPress={handlePress}
       style={styles.stopButton}>
-      <Icon name="stop-circle" size={24} color={theme.colors.background} />
+      <StopIcon
+        stroke={color ?? theme.colors.background}
+        width={24}
+        height={24}
+      />
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   stopButton: {
-    marginLeft: 8,
-    borderRadius: 20,
-    padding: 8,
+    marginLeft: 16,
   },
 });

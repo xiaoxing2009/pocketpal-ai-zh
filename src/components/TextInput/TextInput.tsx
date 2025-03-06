@@ -21,15 +21,23 @@ export const TextInput = forwardRef<RNTextInput, TextInputProps>(
   ({style, showDivider = false, error, helperText, ...rest}, ref) => {
     const theme = useTheme();
     const styles = createStyles(theme);
+    const multilineStyle =
+      rest.numberOfLines && rest.numberOfLines > 1
+        ? {
+            minHeight: rest.numberOfLines * 18,
+            textAlignVertical: 'top',
+          }
+        : {};
 
     return (
-      <View style={styles.container}>
+      <View>
         <PaperTextInput
           ref={ref}
           {...rest}
           dense
           underlineColor={theme.colors.border}
-          style={[styles.input, style]}
+          style={[styles.container, style]}
+          contentStyle={multilineStyle as PaperTextInputProps['contentStyle']}
           placeholderTextColor={theme.colors.placeholder}
           error={error}
         />

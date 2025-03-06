@@ -13,6 +13,7 @@ type Props = {
   onPress: () => void;
   size?: number;
   disabled?: boolean;
+  children?: React.ReactNode;
 };
 
 export const Checkbox: React.FC<Props> = ({
@@ -21,6 +22,7 @@ export const Checkbox: React.FC<Props> = ({
   onPress,
   size = 20,
   disabled = false,
+  children,
 }) => {
   const theme = useTheme();
   const styles = createStyles(theme);
@@ -29,6 +31,7 @@ export const Checkbox: React.FC<Props> = ({
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled}
+      style={styles.container}
       testID={testID ?? 'checkbox'}>
       <View
         style={[
@@ -45,6 +48,7 @@ export const Checkbox: React.FC<Props> = ({
           />
         )}
       </View>
+      {children}
     </TouchableOpacity>
   );
 };

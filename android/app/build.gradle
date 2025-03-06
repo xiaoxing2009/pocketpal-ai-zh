@@ -90,8 +90,8 @@ android {
         applicationId "com.pocketpalai"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 47 
-        versionName "1.6.8"
+        versionCode 55 
+        versionName "1.8.5"
         ndk {
             abiFilters "arm64-v8a", "x86_64"
         }
@@ -139,16 +139,15 @@ dependencies {
     implementation 'com.google.firebase:firebase-appcheck-playintegrity'
     implementation 'com.google.firebase:firebase-appcheck-debug'
 
-    // WorkManager
-    implementation "androidx.work:work-runtime-ktx:2.9.0"
+    // for edge-to-edge display
+    implementation "androidx.activity:activity-ktx:1.9.3" 
     
-    // Room
+    // for download manager
+    implementation "androidx.work:work-runtime-ktx:2.9.0"
     def room_version = "2.6.1"
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
-    
-    // OkHttp
     implementation "com.squareup.okhttp3:okhttp:4.12.0"
     
 }

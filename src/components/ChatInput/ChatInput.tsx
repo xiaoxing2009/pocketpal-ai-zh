@@ -1,14 +1,20 @@
 import * as React from 'react';
-import {TextInput, TextInputProps, View, Animated} from 'react-native';
+import {
+  TextInput,
+  TextInputProps,
+  View,
+  Animated,
+  TouchableOpacity,
+} from 'react-native';
 
 import {observer} from 'mobx-react';
 import {IconButton, Text} from 'react-native-paper';
 
 import {useTheme} from '../../hooks';
-
+import Color from 'tinycolor2';
 import {createStyles} from './styles';
 
-import {chatSessionStore} from '../../store';
+import {chatSessionStore, modelStore, palStore, uiStore} from '../../store';
 
 import {MessageType} from '../../utils/types';
 import {L10nContext, unwrap, UserContext} from '../../utils';
@@ -21,6 +27,7 @@ import {
   SendButton,
   StopButton,
 } from '..';
+import {ChevronUpIcon} from '../../assets/icons';
 
 export interface ChatInputTopLevelProps {
   /** Whether attachment is uploading. Will replace attachment button with a
@@ -37,11 +44,14 @@ export interface ChatInputTopLevelProps {
   onSendPress: (message: MessageType.PartialText) => void;
   onStopPress?: () => void;
   onCancelEdit?: () => void;
+  onPalBtnPress?: () => void;
   isStopVisible?: boolean;
   /** Controls the visibility behavior of the {@link SendButton} based on the
    * `TextInput` state. Defaults to `editing`. */
   sendButtonVisibilityMode?: 'always' | 'editing';
   textInputProps?: TextInputProps;
+  isPickerVisible?: boolean;
+  inputBackgroundColor?: string;
 }
 
 export interface ChatInputAdditionalProps {
@@ -63,16 +73,23 @@ export const ChatInput = observer(
     onSendPress,
     onStopPress,
     onCancelEdit,
+    onPalBtnPress,
     isStopVisible,
     sendButtonVisibilityMode,
     textInputProps,
+    isPickerVisible,
+    inputBackgroundColor,
   }: ChatInputProps) => {
     const l10n = React.useContext(L10nContext);
     const theme = useTheme();
     const user = React.useContext(UserContext);
     const inputRef = React.useRef<TextInput>(null);
     const editBarHeight = React.useRef(new Animated.Value(0)).current;
+    const iconRotation = React.useRef(new Animated.Value(0)).current;
+    const activePalId = chatSessionStore.activePalId;
+    const activePal = palStore.pals.find(pal => pal.id === activePalId);
 
+    const hasActiveModel = !!modelStore.activeModelId;
     // Use `defaultValue` if provided
     const [text, setText] = React.useState(textInputProps?.defaultValue ?? '');
     const isEditMode = chatSessionStore.isEditMode;
@@ -101,6 +118,14 @@ export const ChatInput = observer(
       }
     }, [isEditMode, editBarHeight, onCancelEdit]);
 
+    React.useEffect(() => {
+      Animated.spring(iconRotation, {
+        toValue: isPickerVisible ? 1 : 0,
+        useNativeDriver: true,
+        friction: 8,
+      }).start();
+    }, [isPickerVisible, iconRotation]);
+
     const handleChangeText = (newText: string) => {
       setText(newText);
       textInputProps?.onChangeText?.(newText);
@@ -124,6 +149,14 @@ export const ChatInput = observer(
       !isStopVisible &&
       user &&
       (sendButtonVisibilityMode === 'always' || value.trim());
+
+    const rotateInterpolate = iconRotation.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['0deg', '180deg'],
+    });
+
+    const isBackgroundLight = Color(inputBackgroundColor).isLight();
+    const inputTextColor = isBackgroundLight ? '#333333' : '#DADDE6';
 
     return (
       <View style={styles.container}>
@@ -166,19 +199,83 @@ export const ChatInput = observer(
                   />
                 )
               ))}
-            <TextInput
-              ref={inputRef}
-              multiline
-              placeholder={l10n.inputPlaceholder}
-              placeholderTextColor={theme.colors.inverseTextSecondary}
-              underlineColorAndroid="transparent"
-              {...textInputProps}
-              style={[styles.input, textInputProps?.style]}
-              onChangeText={handleChangeText}
-              value={value}
-            />
-            {isSendButtonVisible ? <SendButton onPress={handleSend} /> : null}
-            {isStopVisible && <StopButton onPress={onStopPress} />}
+            <View style={styles.inputWrapper}>
+              <TouchableOpacity
+                style={[
+                  styles.palBtn,
+                  {
+                    backgroundColor:
+                      uiStore.colorScheme === 'dark'
+                        ? theme.colors.inverseOnSurface
+                        : theme.colors.inverseSurface,
+                  },
+                  activePal?.color && {
+                    backgroundColor: activePal?.color?.[0],
+                  },
+                ]}
+                onPress={onPalBtnPress}>
+                <Animated.View
+                  style={{
+                    transform: [{rotate: rotateInterpolate}],
+                  }}>
+                  <ChevronUpIcon stroke={theme.colors.onSurface} />
+                </Animated.View>
+              </TouchableOpacity>
+              <View style={styles.inputInnerContainer}>
+                {activePal?.name && hasActiveModel && (
+                  <Text
+                    style={[
+                      styles.palNameWrapper,
+                      {
+                        color: activePal.color?.[0],
+                      },
+                    ]}>
+                    Pal:{' '}
+                    <Text
+                      style={[
+                        styles.palName,
+                        {
+                          color: activePal.color?.[0],
+                        },
+                      ]}>
+                      {activePal?.name}
+                    </Text>
+                  </Text>
+                )}
+                <TextInput
+                  ref={inputRef}
+                  multiline
+                  key={inputTextColor}
+                  placeholder={l10n.inputPlaceholder}
+                  placeholderTextColor={inputTextColor}
+                  underlineColorAndroid="transparent"
+                  {...textInputProps}
+                  style={[
+                    styles.input,
+                    textInputProps?.style,
+                    {
+                      color: inputTextColor,
+                    },
+                  ]}
+                  onChangeText={handleChangeText}
+                  value={value}
+                />
+              </View>
+              {isSendButtonVisible ? (
+                <SendButton
+                  key={inputTextColor}
+                  color={inputTextColor}
+                  onPress={handleSend}
+                />
+              ) : null}
+              {isStopVisible && (
+                <StopButton
+                  key={inputTextColor}
+                  color={inputTextColor}
+                  onPress={onStopPress}
+                />
+              )}
+            </View>
           </View>
         </View>
       </View>

@@ -66,10 +66,6 @@ export const MenuItem: React.FC<MenuItemProps> = ({
   const styles = createStyles(theme);
 
   const renderLeadingIcon = props => {
-    if (!selectable && !leadingIcon) {
-      return undefined;
-    }
-
     return (
       <View
         style={[
@@ -129,6 +125,13 @@ export const MenuItem: React.FC<MenuItemProps> = ({
     return undefined;
   };
 
+  const getLeadingIcon = () => {
+    if (!selectable && !leadingIcon) {
+      return undefined;
+    }
+    return renderLeadingIcon;
+  };
+
   const handlePress = (e: any) => {
     if (submenu) {
       itemRef.current?.measure((x, y, width, height, pageX, pageY) => {
@@ -160,7 +163,11 @@ export const MenuItem: React.FC<MenuItemProps> = ({
           style,
         ]}
         dense
-        contentStyle={styles.contentContainer}
+        contentStyle={[
+          styles.contentContainer,
+          !getLeadingIcon() && styles.noLeadingIcon,
+          !getTrailingIcon() && styles.noTrailingIcon,
+        ]}
         titleStyle={[
           styles.label,
           {
@@ -169,9 +176,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
           menuItemProps.disabled && styles.labelDisabled,
           labelStyle,
         ]}
-        {...(!selectable && !leadingIcon
-          ? {}
-          : {leadingIcon: renderLeadingIcon})}
+        leadingIcon={getLeadingIcon()}
         trailingIcon={getTrailingIcon()}
       />
       {submenu && (

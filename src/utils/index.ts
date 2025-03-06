@@ -585,3 +585,42 @@ export const checkModelFileIntegrity = async (
     };
   }
 };
+
+export const safeParseJSON = (json: string) => {
+  try {
+    // First try parsing the string as-is
+    try {
+      return JSON.parse(json);
+    } catch {
+      // Clean up common issues
+      let cleanJson = json.trim();
+
+      // Find the first { and last } to extract the main JSON object
+      const startIdx = cleanJson.indexOf('{');
+      let endIdx = cleanJson.lastIndexOf('}');
+
+      if (startIdx === -1) {
+        throw new Error('No JSON object found');
+      }
+
+      // Check for prompt key with flexible spacing
+      const hasPromptKey = /["']prompt["']\s*:/.test(cleanJson);
+
+      // If no closing brace is found but we have the opening structure with prompt key
+      if (endIdx === -1 && hasPromptKey) {
+        // Add closing brace and quote if missing
+        cleanJson = cleanJson + '"}';
+        endIdx = cleanJson.length - 1;
+      }
+
+      // Extract what looks like the main JSON object
+      cleanJson = cleanJson.substring(startIdx, endIdx + 1);
+
+      return JSON.parse(cleanJson);
+    }
+  } catch (error) {
+    console.log('Original json: ', json);
+    console.error('Error parsing JSON:', error);
+    return {prompt: '', error: error};
+  }
+};

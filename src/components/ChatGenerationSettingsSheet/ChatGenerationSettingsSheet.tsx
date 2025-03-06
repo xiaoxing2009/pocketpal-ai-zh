@@ -101,9 +101,11 @@ export const ChatGenerationSettingsSheet = ({
     }
 
     if (session) {
-      chatSessionStore.updateSessionCompletionSettings(settings);
+      chatSessionStore.updateSessionCompletionSettings(
+        processedSettings.settings,
+      );
     } else {
-      chatSessionStore.setNewChatCompletionSettings(settings);
+      chatSessionStore.setNewChatCompletionSettings(processedSettings.settings);
     }
     onCloseSheet();
   };

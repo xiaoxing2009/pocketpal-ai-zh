@@ -5,11 +5,12 @@ import throttle from 'lodash.throttle';
 
 import {randId} from '../utils';
 import {L10nContext} from '../utils';
-import {chatSessionStore, modelStore} from '../store';
+import {chatSessionStore, modelStore, palStore} from '../store';
 
 import {MessageType, User} from '../utils/types';
 import {applyChatTemplate, convertToChatMessages} from '../utils/chat';
 import {activateKeepAwake, deactivateKeepAwake} from '../utils/keepAwake';
+import {CompletionParams} from '@pocketpalai/llama.rn';
 
 export const useChatSession = (
   currentMessageInfo: React.MutableRefObject<{
@@ -100,15 +101,45 @@ export const useChatSession = (
     const createdAt = Date.now();
     currentMessageInfo.current = {createdAt, id};
 
+    const activeSession = chatSessionStore.sessions.find(
+      s => s.id === chatSessionStore.activeSessionId,
+    );
+    let systemPrompt = '';
+    if (activeSession?.activePalId) {
+      const pal = palStore.pals.find(p => p.id === activeSession.activePalId);
+      if (pal?.systemPrompt) {
+        systemPrompt = pal.systemPrompt;
+      }
+    }
+
+    const getSystemMessage = () => {
+      // If no system prompt is available at all, return empty array
+      if (
+        !systemPrompt &&
+        !modelStore.activeModel?.chatTemplate?.systemPrompt?.trim()
+      ) {
+        return [];
+      }
+
+      // Prefer custom system prompt, fall back to template's system prompt
+      const finalSystemPrompt =
+        systemPrompt ||
+        modelStore.activeModel?.chatTemplate?.systemPrompt ||
+        '';
+
+      if (finalSystemPrompt?.trim() === '') {
+        return [];
+      }
+      return [
+        {
+          role: 'system' as 'system',
+          content: finalSystemPrompt,
+        },
+      ];
+    };
+
     const chatMessages = [
-      ...(modelStore.activeModel?.chatTemplate?.systemPrompt?.trim()
-        ? [
-            {
-              role: 'system' as 'system',
-              content: modelStore.activeModel.chatTemplate.systemPrompt,
-            },
-          ]
-        : []),
+      ...getSystemMessage(),
       ...convertToChatMessages([
         textMessage,
         ...chatSessionStore.currentSessionMessages.filter(
@@ -117,14 +148,10 @@ export const useChatSession = (
       ]),
     ];
 
-    const prompt = await applyChatTemplate(
+    let prompt = await applyChatTemplate(
       chatMessages,
       modelStore.activeModel ?? null,
       context,
-    );
-
-    const activeSession = chatSessionStore.sessions.find(
-      s => s.id === chatSessionStore.activeSessionId,
     );
 
     const sessionCompletionSettings = toJS(activeSession?.completionSettings);
@@ -135,18 +162,21 @@ export const useChatSession = (
       stop: stopWords,
     };
     try {
-      const result = await context.completion(completionParams, data => {
-        if (data.token && currentMessageInfo.current) {
-          if (!modelStore.isStreaming) {
-            modelStore.setIsStreaming(true);
+      const result = await context.completion(
+        completionParams as CompletionParams,
+        data => {
+          if (data.token && currentMessageInfo.current) {
+            if (!modelStore.isStreaming) {
+              modelStore.setIsStreaming(true);
+            }
+            tokenBufferRef.current += data.token;
+            throttledFlushTokenBuffer(
+              currentMessageInfo.current.createdAt,
+              currentMessageInfo.current.id,
+            );
           }
-          tokenBufferRef.current += data.token;
-          throttledFlushTokenBuffer(
-            currentMessageInfo.current.createdAt,
-            currentMessageInfo.current.id,
-          );
-        }
-      });
+        },
+      );
 
       // Flush any remaining tokens after completion
       if (

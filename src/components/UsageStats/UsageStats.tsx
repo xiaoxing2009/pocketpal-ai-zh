@@ -1,7 +1,7 @@
 import {View, TouchableWithoutFeedback, Text} from 'react-native';
 import React, {useState, useEffect, useCallback, useMemo} from 'react';
 
-import {Surface} from 'react-native-paper';
+import {Surface, Portal} from 'react-native-paper';
 import DeviceInfo from 'react-native-device-info';
 import {Svg, Path, Rect, Line} from 'react-native-svg';
 
@@ -77,29 +77,60 @@ export const UsageStats: React.FC<UsageStatsProps> = ({
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }, []);
 
+  const [menuPosition, setMenuPosition] = useState({x: 0, y: 0});
+
   const Tooltip = useCallback(
     () => (
-      <Surface testID="memory-usage-tooltip" style={styles.tooltip}>
-        <Text style={styles.tooltipTitle}>Memory Usage</Text>
-        <Text style={styles.tooltipText}>
-          Used: {formatBytes(memoryStats.usedMemory)}
-        </Text>
-        <Text style={styles.tooltipText}>
-          Total: {formatBytes(memoryStats.totalMemory)}
-        </Text>
-        <Text style={styles.tooltipText}>
-          Usage: {memoryStats.percentage.toFixed(1)}%
-        </Text>
-      </Surface>
+      <Portal>
+        <Surface
+          testID="memory-usage-tooltip"
+          style={[
+            styles.tooltip,
+            {
+              top: menuPosition.y + height,
+              left: menuPosition.x - 10,
+            },
+          ]}>
+          <Text style={styles.tooltipTitle}>Memory Usage</Text>
+          <Text style={styles.tooltipText}>
+            Used: {formatBytes(memoryStats.usedMemory)}
+          </Text>
+          <Text style={styles.tooltipText}>
+            Total: {formatBytes(memoryStats.totalMemory)}
+          </Text>
+          <Text style={styles.tooltipText}>
+            Usage: {memoryStats.percentage.toFixed(1)}%
+          </Text>
+        </Surface>
+      </Portal>
     ),
-    [memoryStats, formatBytes, styles],
+    [memoryStats, formatBytes, styles, menuPosition, height],
+  );
+
+  const handlePress = useCallback(
+    event => {
+      event.target.measure(
+        (
+          x: number,
+          y: number,
+          w: number,
+          h: number,
+          pageX: number,
+          pageY: number,
+        ) => {
+          setMenuPosition({x: pageX, y: pageY});
+          setShowTooltip(!showTooltip);
+        },
+      );
+    },
+    [showTooltip],
   );
 
   return (
     <View style={styles.container}>
       <TouchableWithoutFeedback
         testID="memory-usage-touchable"
-        onPress={() => setShowTooltip(!showTooltip)}>
+        onPress={handlePress}>
         <View style={{width, height}}>
           <Svg testID="memory-usage-svg" width={width} height={height}>
             <Rect
