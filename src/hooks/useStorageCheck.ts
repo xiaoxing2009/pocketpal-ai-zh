@@ -11,6 +11,27 @@ export const useStorageCheck = (model: Model) => {
     isOk: true,
     message: '',
   });
+  const [freeDiskStorage, setFreeDiskStorage] = useState<number | null>(null);
+
+  // Effect to fetch and update free disk storage
+  useEffect(() => {
+    const fetchFreeDiskStorage = async () => {
+      try {
+        const freeDisk = await DeviceInfo.getFreeDiskStorage('important');
+        setFreeDiskStorage(freeDisk);
+      } catch (error) {
+        console.error('Failed to get free disk storage:', error);
+      }
+    };
+
+    fetchFreeDiskStorage();
+    // Update free disk storage every 5 seconds
+    const diskCheckInterval = setInterval(fetchFreeDiskStorage, 5000);
+
+    return () => {
+      clearInterval(diskCheckInterval);
+    };
+  }, []);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -42,6 +63,11 @@ export const useStorageCheck = (model: Model) => {
               model.size,
             )} > ${formatBytes(freeDisk)} free`,
           });
+        } else {
+          setStorageStatus({
+            isOk: true,
+            message: '',
+          });
         }
       } catch (error) {
         if (!abortController.signal.aborted) {
@@ -58,7 +84,7 @@ export const useStorageCheck = (model: Model) => {
       abortController.abort();
       clearInterval(intervalId);
     };
-  }, [model]);
+  }, [model, freeDiskStorage]);
 
   return storageStatus;
 };
