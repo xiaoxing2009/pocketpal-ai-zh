@@ -18,6 +18,7 @@ jest.mock('../../services/downloads', () => ({
     startDownload: jest.fn(),
     cancelDownload: jest.fn(),
     setCallbacks: jest.fn(),
+    syncWithActiveDownloads: jest.fn().mockResolvedValue(undefined),
   },
 }));
 
@@ -30,6 +31,10 @@ describe('ModelStore', () => {
     modelStore.models = []; // Clear models before each test
     modelStore.context = undefined;
     modelStore.activeModelId = undefined;
+
+    (downloadManager.syncWithActiveDownloads as jest.Mock).mockResolvedValue(
+      undefined,
+    );
   });
 
   afterEach(() => {

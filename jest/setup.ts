@@ -79,3 +79,7 @@ jest.mock('../src/hooks/useTheme', () => {
     useTheme: jest.fn().mockReturnValue(themeFixtures.lightTheme),
   };
 });
+
+jest.mock('../src/services/downloads', () => ({
+  downloadManager: require('../__mocks__/services/downloads').downloadManager,
+}));

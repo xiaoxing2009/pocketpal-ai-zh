@@ -11,6 +11,8 @@ import {
 
 import {ModelFileCard} from '../ModelFileCard';
 
+import {downloadManager} from '../../../../../../services/downloads';
+
 import {modelStore} from '../../../../../../store';
 
 describe('ModelFileCard', () => {
@@ -20,16 +22,18 @@ describe('ModelFileCard', () => {
     oid: 'test-oid',
     canFitInStorage: true,
   };
-  const downloadedHFModel = createModel({
-    ...hfModel1,
-    isDownloaded: true,
-  });
+  let downloadedHFModel;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    downloadedHFModel = createModel({
+      ...hfModel1,
+      isDownloaded: true,
+    });
     modelStore.models = modelsList;
-    modelStore.downloadJobs.clear();
+    jest.clearAllMocks();
     jest.spyOn(Alert, 'alert');
+
+    (downloadManager.isDownloading as jest.Mock).mockReset();
   });
 
   it('renders correctly with initial props', () => {
@@ -97,7 +101,9 @@ describe('ModelFileCard', () => {
   it('handles download cancellation', async () => {
     modelStore.models = [hfModel1];
 
-    modelStore.downloadJobs.set(hfModel1.id, {jobId: 'test-job-id'});
+    (downloadManager.isDownloading as jest.Mock).mockImplementation(modelId => {
+      return modelId === hfModel1.id;
+    });
     const {getByTestId} = render(
       <ModelFileCard
         modelFile={hfModel1.hfModelFile!}
