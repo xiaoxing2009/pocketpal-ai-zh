@@ -238,6 +238,9 @@ class ModelStore {
       await this.initializeDownloadStatus();
       this.removeInvalidLocalModels();
     }
+
+    // Sync download manager with active downloads
+    await downloadManager.syncWithActiveDownloads(this.models);
   };
 
   mergeModelLists = () => {

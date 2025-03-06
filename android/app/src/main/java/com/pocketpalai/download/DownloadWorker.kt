@@ -7,6 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.*
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -58,6 +59,20 @@ class DownloadWorker(
 
             val file = File(download.destination)
             Log.d(TAG, "Download destination: ${file.absolutePath}")
+            
+            // Check if file size and database are in sync
+            if (file.exists() && file.length() > 0) {
+                // If file exists but size doesn't match database, update database
+                if (file.length() != download.downloadedBytes) {
+                    Log.d(TAG, "File size (${file.length()}) doesn't match database (${download.downloadedBytes}). Updating database.")
+                    downloadDao.updateProgress(downloadId, file.length(), download.totalBytes, download.status)
+                    // Reload download info after update
+                    val updatedDownload = downloadDao.getDownload(downloadId)
+                    if (updatedDownload != null) {
+                        Log.d(TAG, "Updated download info: $updatedDownload")
+                    }
+                }
+            }
             
             val request = Request.Builder()
                 .url(download.url)
@@ -141,14 +156,45 @@ class DownloadWorker(
             }
 
             response.body?.let { body ->
+                // Get content length from response
                 val contentLength = body.contentLength()
-                Log.d(TAG, "Content length: $contentLength bytes for ID: $downloadId")
-                var bytesWritten = if (file.exists()) file.length() else 0
+                Log.d(TAG, "Content length from response: $contentLength bytes for ID: $downloadId")
                 
-                downloadDao.updateProgress(downloadId, bytesWritten, contentLength, DownloadStatus.RUNNING)
-                Log.d(TAG, "Starting from $bytesWritten/$contentLength bytes for ID: $downloadId")
+                // Get existing bytes written
+                var bytesWritten = if (file.exists()) file.length() else 0
+                Log.d(TAG, "Existing bytes written: $bytesWritten for ID: $downloadId")
+                
+                // Calculate total expected size based on response code
+                val totalBytes = when (response.code) {
+                    206 -> {
+                        // For partial content (206), the content-length is just the remaining bytes
+                        // So add existing bytes to get total size
+                        val total = bytesWritten + contentLength
+                        Log.d(TAG, "Partial content (206): Total size = $bytesWritten + $contentLength = $total bytes")
+                        total
+                    }
+                    200 -> {
+                        // For full content (200), use the content length as total size
+                        Log.d(TAG, "Full content (200): Total size = $contentLength bytes")
+                        contentLength
+                    }
+                    else -> {
+                        // For other responses, use the larger of content length or existing total
+                        val total = maxOf(contentLength, download.totalBytes)
+                        Log.d(TAG, "Other response (${response.code}): Using total size = $total bytes")
+                        total
+                    }
+                }
+                
+                // Update database with correct progress information
+                downloadDao.updateProgress(downloadId, bytesWritten, totalBytes, DownloadStatus.RUNNING)
+                Log.d(TAG, "Updated database: $bytesWritten/$totalBytes bytes (${(bytesWritten.toFloat() / totalBytes * 100).toInt()}%) for ID: $downloadId")
 
-                file.outputStream().buffered().use { output ->
+                // Determine if we should append to the file
+                val appendMode = file.exists() && response.code == 206
+                Log.d(TAG, "Opening file in ${if (appendMode) "append" else "overwrite"} mode")
+                
+                FileOutputStream(file, appendMode).buffered().use { output ->
                     body.byteStream().buffered().use { input ->
                         val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
                         var bytes = input.read(buffer)
@@ -177,11 +223,11 @@ class DownloadWorker(
                             if (currentTime - lastProgressUpdate >= progressInterval) {
                                 val progress = workDataOf(
                                     KEY_PROGRESS to bytesWritten,
-                                    KEY_TOTAL to contentLength
+                                    KEY_TOTAL to totalBytes
                                 )
-                                Log.d(TAG, "Progress: $bytesWritten/$contentLength bytes for ID: $downloadId")
+                                Log.d(TAG, "Progress: $bytesWritten/$totalBytes bytes for ID: $downloadId")
                                 setProgress(progress)
-                                downloadDao.updateProgress(downloadId, bytesWritten, contentLength, DownloadStatus.RUNNING)
+                                downloadDao.updateProgress(downloadId, bytesWritten, totalBytes, DownloadStatus.RUNNING)
                                 lastProgressUpdate = currentTime
                             }
                             
@@ -191,7 +237,7 @@ class DownloadWorker(
                 }
 
                 Log.d(TAG, "Download completed successfully for ID: $downloadId")
-                downloadDao.updateProgress(downloadId, bytesWritten, contentLength, DownloadStatus.COMPLETED)
+                downloadDao.updateProgress(downloadId, bytesWritten, totalBytes, DownloadStatus.COMPLETED)
                 return@withContext Result.success()
             }
 

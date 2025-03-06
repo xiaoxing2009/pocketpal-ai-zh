@@ -185,10 +185,6 @@ export class DownloadManager {
 
   isDownloading(modelId: string): boolean {
     const isDownloading = this.downloadJobs.has(modelId);
-    console.log(
-      `${TAG}: Checking if model ${modelId} is downloading:`,
-      isDownloading,
-    );
     return isDownloading;
   }
 
@@ -502,4 +498,108 @@ export class DownloadManager {
     this.downloadJobs.clear();
     console.log(`${TAG}: Download jobs cleared`);
   }
+
+  /**
+   * Synchronizes the downloadJobs map with active downloads in the native layer.
+   * This should be called after the model store is initialized.
+   */
+  syncWithActiveDownloads = async (models: Model[]): Promise<void> => {
+    if (Platform.OS !== 'android' || !DownloadModule) {
+      return;
+    }
+
+    try {
+      console.log(`${TAG}: Syncing download jobs with native layer`);
+
+      // Get active downloads from native module
+      const activeDownloads = await DownloadModule.getActiveDownloads();
+      console.log(
+        `${TAG}: Found ${activeDownloads.length} active downloads in native layer`,
+      );
+
+      if (activeDownloads.length === 0) {
+        return;
+      }
+
+      // For each active download, find the corresponding model and create a download job
+      for (const download of activeDownloads) {
+        const model = models.find(m => {
+          return m.downloadUrl && download.url === m.downloadUrl;
+        });
+
+        if (!model) {
+          console.warn(
+            `${TAG}: Could not find model for download: ${download.destination}`,
+          );
+          continue;
+        }
+
+        // Parse numeric values safely
+        const bytesWritten =
+          typeof download.bytesWritten === 'string'
+            ? parseInt(download.bytesWritten, 10)
+            : download.bytesWritten || 0;
+
+        const totalBytes =
+          typeof download.totalBytes === 'string'
+            ? parseInt(download.totalBytes, 10)
+            : download.totalBytes || 0;
+
+        const progress =
+          typeof download.progress === 'string'
+            ? parseFloat(download.progress)
+            : download.progress || 0;
+
+        // Create a download job for this model
+        const downloadJob: DownloadJob = {
+          model,
+          downloadId: download.id,
+          state: {
+            isDownloading: true,
+            progress: {
+              bytesDownloaded: bytesWritten,
+              bytesTotal: totalBytes,
+              progress: progress,
+              speed: '0 B/s',
+              eta: 'calculating...',
+              rawSpeed: 0,
+              rawEta: 0,
+            },
+            error: null,
+          },
+          destination: download.destination,
+          lastBytesWritten: bytesWritten,
+          lastUpdateTime: Date.now(),
+        };
+
+        // Add to downloadJobs map
+        this.downloadJobs.set(model.id, downloadJob);
+        console.log(
+          `${TAG}: Restored download job for model: ${model.id}, progress: ${progress}%`,
+        );
+
+        // Notify listeners that download is in progress
+        this.callbacks.onStart?.(model.id);
+
+        // Re-register for progress updates by calling the native module
+        try {
+          // We need to tell the native module to re-register the observer for this download
+          if (DownloadModule.reattachDownloadObserver) {
+            await DownloadModule.reattachDownloadObserver(download.id);
+            console.log(
+              `${TAG}: Re-attached observer for download ID: ${download.id}`,
+            );
+          } else {
+            console.warn(
+              `${TAG}: reattachDownloadObserver method not available in DownloadModule`,
+            );
+          }
+        } catch (error) {
+          console.error(`${TAG}: Error re-attaching observer:`, error);
+        }
+      }
+    } catch (error) {
+      console.error(`${TAG}: Error syncing download jobs:`, error);
+    }
+  };
 }
