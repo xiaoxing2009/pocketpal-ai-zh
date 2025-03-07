@@ -229,6 +229,9 @@ class ModelStore {
   initializeStore = async () => {
     const storedVersion = this.version || 0;
 
+    // Sync download manager with active downloads
+    await downloadManager.syncWithActiveDownloads(this.models);
+
     if (storedVersion < MODEL_LIST_VERSION) {
       this.mergeModelLists();
       runInAction(() => {
@@ -240,9 +243,6 @@ class ModelStore {
     }
 
     this.initializeUseMetal();
-
-    // Sync download manager with active downloads
-    await downloadManager.syncWithActiveDownloads(this.models);
   };
 
   mergeModelLists = () => {
