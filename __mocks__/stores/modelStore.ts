@@ -1,6 +1,8 @@
-import {computed, makeAutoObservable, ObservableMap} from 'mobx';
+import {computed, makeAutoObservable} from 'mobx';
 
 import {modelsList} from '../../jest/fixtures/models';
+
+import {downloadManager} from '../services/downloads';
 
 import {Model} from '../../src/utils/types';
 
@@ -14,7 +16,6 @@ class MockModelStore {
   activeModelId: string | undefined;
   inferencing = false;
   isStreaming = false;
-  downloadJobs = new ObservableMap();
 
   refreshDownloadStatuses: jest.Mock;
   addLocalModel: jest.Mock;
@@ -88,7 +89,7 @@ class MockModelStore {
 
   get isDownloading() {
     return (modelId: string) => {
-      return this.downloadJobs.has(modelId);
+      return downloadManager.isDownloading(modelId);
     };
   }
 

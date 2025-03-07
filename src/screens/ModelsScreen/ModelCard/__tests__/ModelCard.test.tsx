@@ -13,6 +13,8 @@ import {
 
 import {ModelCard} from '../ModelCard';
 
+import {downloadManager} from '../../../../services/downloads';
+
 import {modelStore, uiStore} from '../../../../store';
 
 import {l10n} from '../../../../utils/l10n';
@@ -85,6 +87,10 @@ describe('ModelCard', () => {
   }, 10000);
 
   it('handles download overlay and download button correctly', async () => {
+    if (!jest.isMockFunction(modelStore.checkSpaceAndDownload)) {
+      jest.spyOn(modelStore, 'checkSpaceAndDownload');
+    }
+
     const {getByTestId, queryByTestId} = customRender(
       <ModelCard model={basicModel} />,
     );
@@ -105,6 +111,18 @@ describe('ModelCard', () => {
   });
 
   it('progress bar is shown when downloading', async () => {
+    // Mock the isDownloading method to return true for the downloadingModel
+    (downloadManager.isDownloading as jest.Mock).mockImplementation(modelId => {
+      return modelId === downloadingModel.id;
+    });
+
+    // Mock the getDownloadProgress method to return a progress value
+    (downloadManager.getDownloadProgress as jest.Mock).mockImplementation(
+      modelId => {
+        return modelId === downloadingModel.id ? 50 : 0; // 50% progress
+      },
+    );
+
     const {getByTestId, queryByTestId, rerender} = render(
       <ModelCard model={basicModel} />,
     );
@@ -113,8 +131,6 @@ describe('ModelCard', () => {
       expect(getByTestId('download-button')).toBeTruthy();
       expect(queryByTestId('download-progress-bar')).toBeNull();
     });
-
-    modelStore.downloadJobs.set(downloadingModel.id, true);
 
     rerender(<ModelCard model={downloadingModel} />);
 
