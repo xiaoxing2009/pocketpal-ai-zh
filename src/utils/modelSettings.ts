@@ -158,6 +158,10 @@ export const validateNumericField = (
     };
   }
 
+  if (typeof value === 'string' && !/^-?\d*\.?\d*$/.test(value)) {
+    return {isValid: false, errorMessage: 'Please enter a valid number'};
+  }
+
   const isValid = numValue >= rule.min && numValue <= rule.max;
   return {
     isValid,
