@@ -22,8 +22,12 @@ import {
   ModelsScreen,
   SettingsScreen,
   BenchmarkScreen,
+  TestCompletionScreen,
 } from './src/screens';
 import {PalsScreen} from './src/screens/PalsScreen';
+
+// Check if app is in debug mode
+const isDebugMode = __DEV__;
 
 const Drawer = createDrawerNavigator();
 
@@ -90,6 +94,17 @@ const App = observer(() => {
                       headerStyle: styles.headerWithoutDivider,
                     }}
                   />
+
+                  {/* Only show Test Completion screen in debug mode */}
+                  {isDebugMode && (
+                    <Drawer.Screen
+                      name="Test Completion"
+                      component={gestureHandlerRootHOC(TestCompletionScreen)}
+                      options={{
+                        headerStyle: styles.headerWithoutDivider,
+                      }}
+                    />
+                  )}
                 </Drawer.Navigator>
               </BottomSheetModalProvider>
             </NavigationContainer>
