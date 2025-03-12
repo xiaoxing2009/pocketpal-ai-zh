@@ -248,5 +248,6 @@ export const stops = [
   '<|EOT|>',
   '<|END_OF_TURN_TOKEN|>',
   '<|end_of_turn|>',
+  '<end_of_turn>',
   '<|endoftext|>',
 ];

@@ -30,6 +30,9 @@ import {
 } from '../../assets/icons';
 import {L10nContext} from '../../utils';
 
+// Check if app is in debug mode
+const isDebugMode = __DEV__;
+
 export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
   props => {
     const [appInfo, setAppInfo] = useState({
@@ -147,6 +150,22 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
                 onPress={() => props.navigation.navigate('Settings')}
                 style={styles.menuDrawerItem}
               />
+
+              {/* Only show Test Completion in debug mode */}
+              {isDebugMode && (
+                <Drawer.Item
+                  label={'Test Completion'}
+                  icon={() => (
+                    <SettingsIcon
+                      width={24}
+                      height={24}
+                      stroke={theme.colors.primary}
+                    />
+                  )}
+                  onPress={() => props.navigation.navigate('Test Completion')}
+                  style={styles.menuDrawerItem}
+                />
+              )}
             </Drawer.Section>
             <Divider style={styles.divider} />
             {/* Loop over the session groups and render them */}
