@@ -707,7 +707,7 @@ export const TestCompletionScreen: React.FC = observer(() => {
           params: {
             grammar: JSON_GBNF,
             grammar_lazy: true,
-            grammar_triggers: [{type: 3, value: 'true'}], // type 3 = PATTERN_START
+            grammar_triggers: [{type: 3, value: 'true', token: 0}], // type 3 = PATTERN_START
           },
           // This test uses PATTERN_START trigger with value 'true'
           // Expected: The grammar will be activated when 'true' appears at the start of a token
@@ -718,7 +718,7 @@ export const TestCompletionScreen: React.FC = observer(() => {
           params: {
             grammar: JSON_GBNF,
             grammar_lazy: true,
-            grammar_triggers: [{type: 2, value: 'false'}], // type 2 = PATTERN
+            grammar_triggers: [{type: 2, value: 'false', token: 0}], // type 2 = PATTERN
           },
           // This test uses PATTERN trigger with value 'false'
           // Expected: The grammar will be activated when 'false' appears anywhere in the text
@@ -729,7 +729,8 @@ export const TestCompletionScreen: React.FC = observer(() => {
           params: {
             grammar: JSON_GBNF,
             grammar_lazy: true,
-            grammar_triggers: [{type: 1, value: 'json'}], // type 1 = WORD
+            grammar_triggers: [{type: 1, value: 'json', token: 0}], // type 1 = WORD
+            preserved_tokens: ['json'],
           },
           // This test uses WORD trigger with value 'json'
           // Expected: The grammar will be activated when the complete word 'json' appears
@@ -740,7 +741,7 @@ export const TestCompletionScreen: React.FC = observer(() => {
           params: {
             grammar: JSON_GBNF,
             grammar_lazy: true,
-            grammar_triggers: [{type: 0, value: '{'}], // type 0 = TOKEN
+            grammar_triggers: [{type: 0, value: '{', token: 0}], // type 0 = TOKEN
           },
           // This test uses TOKEN trigger with value '{'
           // Expected: The grammar will be activated when the model generates the '{' character
