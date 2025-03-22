@@ -1,13 +1,11 @@
 import DeviceInfo from 'react-native-device-info';
 import {renderHook} from '@testing-library/react-hooks';
 
-import {deviceInfo} from '../../../jest/fixtures/device-info';
 import {largeMemoryModel, localModel} from '../../../jest/fixtures/models';
 
 import {useMemoryCheck} from '../useMemoryCheck';
 
 import {l10n} from '../../utils/l10n';
-import {formatBytes} from '../../utils';
 
 describe('useMemoryCheck', () => {
   beforeEach(() => {
@@ -47,10 +45,7 @@ describe('useMemoryCheck', () => {
     }
 
     expect(result.current).toEqual({
-      memoryWarning: l10n.en.memoryWarning.replace(
-        '{{totalMemory}}',
-        formatBytes(deviceInfo.totalMemory),
-      ),
+      memoryWarning: l10n.en.memoryWarning,
       shortMemoryWarning: l10n.en.shortMemoryWarning,
     });
   });
