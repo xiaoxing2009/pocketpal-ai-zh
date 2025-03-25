@@ -49,7 +49,7 @@ const App = observer(() => {
                   screenOptions={{
                     headerLeft: () => <HeaderLeft />,
                     drawerStyle: {
-                      width: screenWidth * 0.8,
+                      width: screenWidth > 400 ? 320 : screenWidth * 0.8,
                     },
                     headerStyle: {
                       backgroundColor: theme.colors.background,
