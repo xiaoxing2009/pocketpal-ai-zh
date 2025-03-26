@@ -53,8 +53,10 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
     const [integrityError, setIntegrityError] = useState<string | null>(null);
 
     const {memoryWarning, shortMemoryWarning} = useMemoryCheck(model);
-    const {isOk: storageOk, message: storageNOkMessage} =
-      useStorageCheck(model);
+    const {isOk: storageOk, message: storageNOkMessage} = useStorageCheck(
+      model,
+      {enablePeriodicCheck: true, checkInterval: 10000},
+    );
 
     const isActiveModel = activeModelId === model.id;
     const isDownloaded = model.isDownloaded;

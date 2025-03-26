@@ -6,33 +6,33 @@ import {formatBytes, hasEnoughSpace} from '../utils';
 
 import {Model, ModelOrigin} from '../utils/types';
 
-export const useStorageCheck = (model: Model) => {
+interface StorageCheckOptions {
+  /**
+   * Whether to periodically check storage.
+   * If false, storage will only be checked once.
+   * @default true
+   */
+  enablePeriodicCheck?: boolean;
+  /**
+   * Interval in milliseconds for storage checks when periodic checking is enabled
+   * @default 10000 (10 seconds)
+   */
+  checkInterval?: number;
+}
+
+export const useStorageCheck = (
+  model: Model,
+  options: StorageCheckOptions = {},
+) => {
+  const {enablePeriodicCheck = true, checkInterval = 10000} = options;
+
   const [storageStatus, setStorageStatus] = useState({
     isOk: true,
     message: '',
   });
-  const [freeDiskStorage, setFreeDiskStorage] = useState<number | null>(null);
+  //const [freeDiskStorage, setFreeDiskStorage] = useState<number | null>(null);
 
-  // Effect to fetch and update free disk storage
-  useEffect(() => {
-    const fetchFreeDiskStorage = async () => {
-      try {
-        const freeDisk = await DeviceInfo.getFreeDiskStorage('important');
-        setFreeDiskStorage(freeDisk);
-      } catch (error) {
-        console.error('Failed to get free disk storage:', error);
-      }
-    };
-
-    fetchFreeDiskStorage();
-    // Update free disk storage every 5 seconds
-    const diskCheckInterval = setInterval(fetchFreeDiskStorage, 5000);
-
-    return () => {
-      clearInterval(diskCheckInterval);
-    };
-  }, []);
-
+  // Effect to check storage and set up periodic checking if enabled
   useEffect(() => {
     const abortController = new AbortController();
 
@@ -78,13 +78,18 @@ export const useStorageCheck = (model: Model) => {
     };
 
     checkStorage();
-    const intervalId = setInterval(checkStorage, 30000);
+    let intervalId: NodeJS.Timeout | undefined;
+    if (enablePeriodicCheck) {
+      intervalId = setInterval(checkStorage, checkInterval);
+    }
 
     return () => {
       abortController.abort();
-      clearInterval(intervalId);
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
     };
-  }, [model, freeDiskStorage]);
+  }, [model, enablePeriodicCheck, checkInterval]);
 
   return storageStatus;
 };
