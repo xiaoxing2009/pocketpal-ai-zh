@@ -539,8 +539,8 @@ export const ChatView = observer(
           showUserAvatars &&
           message.type !== 'dateHeader' &&
           message.author?.id !== user.id
-            ? Math.floor(Math.min(size.width * 0.9, 440))
-            : Math.floor(Math.min(size.width * 0.92, 440));
+            ? Math.floor(Math.min(size.width * 0.9, 900))
+            : Math.floor(Math.min(size.width * 0.92, 900));
 
         const roundBorder =
           message.type !== 'dateHeader' && message.nextMessageInGroup;
