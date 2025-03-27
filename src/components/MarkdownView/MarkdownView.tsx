@@ -48,6 +48,14 @@ export const MarkdownView: React.FC<MarkdownViewProps> = React.memo(
           tagName: 'think',
           contentModel: HTMLContentModel.block,
         }),
+        thought: HTMLElementModel.fromCustomModel({
+          tagName: 'thought',
+          contentModel: HTMLContentModel.block,
+        }),
+        thinking: HTMLElementModel.fromCustomModel({
+          tagName: 'thinking',
+          contentModel: HTMLContentModel.block,
+        }),
       }),
       [],
     );
@@ -55,6 +63,8 @@ export const MarkdownView: React.FC<MarkdownViewProps> = React.memo(
     const renderers = useMemo(
       () => ({
         think: props => ThinkRenderer(props, styles),
+        thought: props => ThinkRenderer(props, styles),
+        thinking: props => ThinkRenderer(props, styles),
       }),
       [styles],
     );
