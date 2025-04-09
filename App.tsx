@@ -23,6 +23,7 @@ import {
   SettingsScreen,
   BenchmarkScreen,
   TestCompletionScreen,
+  FeedbackScreen,
 } from './src/screens';
 import {PalsScreen} from './src/screens/PalsScreen';
 
@@ -90,6 +91,13 @@ const App = observer(() => {
                   <Drawer.Screen
                     name="Settings"
                     component={gestureHandlerRootHOC(SettingsScreen)}
+                    options={{
+                      headerStyle: styles.headerWithoutDivider,
+                    }}
+                  />
+                  <Drawer.Screen
+                    name="Feedback"
+                    component={gestureHandlerRootHOC(FeedbackScreen)}
                     options={{
                       headerStyle: styles.headerWithoutDivider,
                     }}

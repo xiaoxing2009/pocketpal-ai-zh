@@ -135,6 +135,45 @@ export const l10n = {
       'Set a minimum probability threshold for tokens to be removed via XTC sampler. (> 0.5 disables XTC)',
     'modelSettings.typical_p':
       'Enable locally typical sampling with parameter p. 1.0 is disabled',
+    feedback: {
+      title: 'Send Feedback',
+      description:
+        'Your voice matters! Tell us how PocketPal AI is helping you and what we can do to make it even more useful.',
+      useCase: {
+        label: 'What are you using PocketPal AI for?',
+        placeholder: 'e.g., summarization, roleplay, etc.',
+      },
+      featureRequests: {
+        label: 'What features would you like to see in the future?',
+        placeholder: 'Share your feature ideas and suggestions',
+      },
+      generalFeedback: {
+        label: 'Any other feedback?',
+        placeholder:
+          "Share any other thoughts you may have. Like what you like, what you don't like, etc.",
+      },
+      usageFrequency: {
+        label: 'How often do you use PocketPal AI? (Optional)',
+        options: {
+          daily: 'Daily',
+          weekly: 'Weekly',
+          monthly: 'Monthly',
+          rarely: 'Rarely',
+        },
+      },
+      email: {
+        label: 'Contact Email (Optional)',
+        placeholder: 'Your email address',
+      },
+      submit: 'Submit Feedback',
+      validation: {
+        required: 'Please provide at least some feedback',
+      },
+      success: 'Thank you for your feedback!',
+      error: {
+        general: 'Error sending feedback. Please try again.',
+      },
+    },
   },
   es: {
     model: 'Modelo',
@@ -267,6 +306,45 @@ export const l10n = {
       'Ignorar token de fin de secuencia y continuar generando',
     'modelSettings.logit_bias': 'Modificar probabilidad de tokens específicos',
     'modelSettings.seed': 'Semilla del generador de números aleatorios',
+    feedback: {
+      title: 'Enviar Comentarios',
+      description:
+        '¡Tu opinión es importante! Cuéntanos cómo PocketPal AI te está ayudando y qué podemos hacer para que sea aún más útil.',
+      useCase: {
+        label: '¿Para qué estás usando PocketPal AI?',
+        placeholder: 'ej., resúmenes, roleplay, etc.',
+      },
+      featureRequests: {
+        label: '¿Qué características te gustaría ver en el futuro?',
+        placeholder: 'Comparte tus ideas y sugerencias de características',
+      },
+      generalFeedback: {
+        label: '¿Algún otro comentario?',
+        placeholder:
+          'Comparte cualquier otro pensamiento que tengas. Lo que te gusta, lo que no te gusta, etc.',
+      },
+      usageFrequency: {
+        label: '¿Con qué frecuencia usas PocketPal AI? (Opcional)',
+        options: {
+          daily: 'Diariamente',
+          weekly: 'Semanalmente',
+          monthly: 'Mensualmente',
+          rarely: 'Rara vez',
+        },
+      },
+      email: {
+        label: 'Correo de Contacto (Opcional)',
+        placeholder: 'Tu dirección de correo electrónico',
+      },
+      submit: 'Enviar Comentarios',
+      validation: {
+        required: 'Por favor, proporciona al menos algún comentario',
+      },
+      success: '¡Gracias por tus comentarios!',
+      error: {
+        general: 'Error al enviar comentarios. Por favor, inténtalo de nuevo.',
+      },
+    },
   },
   ko: {
     model: '모델',
@@ -380,6 +458,44 @@ export const l10n = {
     'modelSettings.ignore_eos': '스트림 종료 토큰을 무시하고 생성 계속',
     'modelSettings.logit_bias': '특정 토큰의 확률 수정',
     'modelSettings.seed': '난수 생성기 시드',
+    feedback: {
+      title: '피드백 보내기',
+      description:
+        '여러분의 의견이 중요합니다! PocketPal AI가 어떻게 도움이 되고 있는지, 그리고 어떻게 하면 더 유용하게 만들 수 있을지 알려주세요.',
+      useCase: {
+        label: 'PocketPal AI를 어떤 용도로 사용하고 계신가요?',
+        placeholder: '예: 요약, 롤플레잉 등',
+      },
+      featureRequests: {
+        label: '앞으로 어떤 기능이 추가되면 좋을까요?',
+        placeholder: '원하는 기능과 제안을 공유해주세요',
+      },
+      generalFeedback: {
+        label: '기타 의견이 있으신가요?',
+        placeholder: '좋았던 점, 아쉬웠던 점 등 자유롭게 의견을 남겨주세요.',
+      },
+      usageFrequency: {
+        label: 'PocketPal AI 사용 빈도는 어떻게 되시나요? (선택사항)',
+        options: {
+          daily: '매일',
+          weekly: '주간',
+          monthly: '월간',
+          rarely: '가끔',
+        },
+      },
+      email: {
+        label: '연락처 이메일 (선택사항)',
+        placeholder: '이메일 주소',
+      },
+      submit: '피드백 보내기',
+      validation: {
+        required: '최소한 하나의 피드백을 작성해주세요',
+      },
+      success: '피드백 감사합니다!',
+      error: {
+        general: '피드백 전송 중 오류가 발생했습니다. 다시 시도해주세요.',
+      },
+    },
   },
   pl: {
     model: 'Model',
@@ -507,6 +623,46 @@ export const l10n = {
       'Ignorar token de fim de fluxo e continuar gerando',
     'modelSettings.logit_bias': 'Modificar probabilidade de tokens específicos',
     'modelSettings.seed': 'Semente do gerador de números aleatórios',
+    feedback: {
+      title: 'Wyślij opinię',
+      description:
+        'Twoja opinia jest ważna! Powiedz nam, jak PocketPal AI Ci pomaga i co możemy zrobić, aby był jeszcze bardziej przydatny.',
+      useCase: {
+        label: 'Do czego używasz PocketPal AI?',
+        placeholder: 'np. podsumowania, roleplay, itp.',
+      },
+      featureRequests: {
+        label: 'Jakie funkcje chciałbyś zobaczyć w przyszłości?',
+        placeholder:
+          'Podziel się swoimi pomysłami i sugestiami dotyczącymi funkcji',
+      },
+      generalFeedback: {
+        label: 'Inne uwagi?',
+        placeholder:
+          'Podziel się swoimi przemyśleniami. Co Ci się podoba, co nie, itp.',
+      },
+      usageFrequency: {
+        label: 'Jak często używasz PocketPal AI? (Opcjonalne)',
+        options: {
+          daily: 'Codziennie',
+          weekly: 'Co tydzień',
+          monthly: 'Co miesiąc',
+          rarely: 'Rzadko',
+        },
+      },
+      email: {
+        label: 'Email kontaktowy (Opcjonalny)',
+        placeholder: 'Twój adres email',
+      },
+      submit: 'Wyślij opinię',
+      validation: {
+        required: 'Proszę podać przynajmniej jedną opinię',
+      },
+      success: 'Dziękujemy za opinię!',
+      error: {
+        general: 'Błąd podczas wysyłania opinii. Spróbuj ponownie.',
+      },
+    },
   },
   pt: {
     model: 'Modelo',
@@ -635,6 +791,45 @@ export const l10n = {
       'Ignorar token de fim de fluxo e continuar gerando',
     'modelSettings.logit_bias': 'Modificar probabilidade de tokens específicos',
     'modelSettings.seed': 'Semente do gerador de números aleatórios',
+    feedback: {
+      title: 'Enviar Feedback',
+      description:
+        'Sua opinião é importante! Conte-nos como o PocketPal AI está te ajudando e o que podemos fazer para torná-lo ainda mais útil.',
+      useCase: {
+        label: 'Para que você está usando o PocketPal AI?',
+        placeholder: 'ex: resumos, roleplay, etc.',
+      },
+      featureRequests: {
+        label: 'Quais recursos você gostaria de ver no futuro?',
+        placeholder: 'Compartilhe suas ideias e sugestões de recursos',
+      },
+      generalFeedback: {
+        label: 'Outros comentários?',
+        placeholder:
+          'Compartilhe seus pensamentos. O que você gosta, o que não gosta, etc.',
+      },
+      usageFrequency: {
+        label: 'Com que frequência você usa o PocketPal AI? (Opcional)',
+        options: {
+          daily: 'Diariamente',
+          weekly: 'Semanalmente',
+          monthly: 'Mensalmente',
+          rarely: 'Raramente',
+        },
+      },
+      email: {
+        label: 'Email de Contato (Opcional)',
+        placeholder: 'Seu endereço de email',
+      },
+      submit: 'Enviar Feedback',
+      validation: {
+        required: 'Por favor, forneça pelo menos um feedback',
+      },
+      success: 'Obrigado pelo seu feedback!',
+      error: {
+        general: 'Erro ao enviar feedback. Por favor, tente novamente.',
+      },
+    },
   },
   ru: {
     model: 'Модель',
@@ -765,6 +960,45 @@ export const l10n = {
       'Ігнорувати токен кінця потоку і продовжувати генерацію',
     'modelSettings.logit_bias': 'Змінити ймовірність певних токенів',
     'modelSettings.seed': 'Зерно генератора випадкових чисел',
+    feedback: {
+      title: 'Отправить отзыв',
+      description:
+        'Ваше мнение важно! Расскажите нам, как PocketPal AI помогает вам и что мы можем сделать, чтобы он стал еще более полезным.',
+      useCase: {
+        label: 'Для чего вы используете PocketPal AI?',
+        placeholder: 'например, резюме, ролевые игры и т.д.',
+      },
+      featureRequests: {
+        label: 'Какие функции вы хотели бы видеть в будущем?',
+        placeholder: 'Поделитесь своими идеями и предложениями по функциям',
+      },
+      generalFeedback: {
+        label: 'Другие комментарии?',
+        placeholder:
+          'Поделитесь своими размышлениями. Что вам нравится, что нет, и т.д.',
+      },
+      usageFrequency: {
+        label: 'Как часто вы используете PocketPal AI? (Необязательно)',
+        options: {
+          daily: 'Ежедневно',
+          weekly: 'Еженедельно',
+          monthly: 'Ежемесячно',
+          rarely: 'Редко',
+        },
+      },
+      email: {
+        label: 'Email для связи (Необязательно)',
+        placeholder: 'Ваш адрес электронной почты',
+      },
+      submit: 'Отправить отзыв',
+      validation: {
+        required: 'Пожалуйста, предоставьте хотя бы один отзыв',
+      },
+      success: 'Спасибо за ваш отзыв!',
+      error: {
+        general: 'Ошибка при отправке отзыва. Пожалуйста, попробуйте еще раз.',
+      },
+    },
   },
   tr: {
     model: 'Model',
@@ -887,6 +1121,46 @@ export const l10n = {
       'Akış sonu tokenini yoksay ve üretmeye devam et',
     'modelSettings.logit_bias': 'Belirli tokenlerin olasılığını değiştir',
     'modelSettings.seed': 'Rastgele sayı üreteci tohumu',
+    feedback: {
+      title: 'Geri Bildirim Gönder',
+      description:
+        "Görüşleriniz önemli! PocketPal AI'ın size nasıl yardımcı olduğunu ve onu daha faydalı hale getirmek için neler yapabileceğimizi bize anlatın.",
+      useCase: {
+        label: "PocketPal AI'ı ne için kullanıyorsunuz?",
+        placeholder: 'örn: özetleme, rol yapma, vb.',
+      },
+      featureRequests: {
+        label: 'Gelecekte hangi özellikleri görmek istersiniz?',
+        placeholder: 'Özellik fikirlerinizi ve önerilerinizi paylaşın',
+      },
+      generalFeedback: {
+        label: 'Başka geri bildiriminiz var mı?',
+        placeholder:
+          'Düşüncelerinizi paylaşın. Neleri beğendiğinizi, beğenmediğinizi vb.',
+      },
+      usageFrequency: {
+        label: "PocketPal AI'ı ne sıklıkla kullanıyorsunuz? (İsteğe bağlı)",
+        options: {
+          daily: 'Günlük',
+          weekly: 'Haftalık',
+          monthly: 'Aylık',
+          rarely: 'Nadiren',
+        },
+      },
+      email: {
+        label: 'İletişim E-postası (İsteğe bağlı)',
+        placeholder: 'E-posta adresiniz',
+      },
+      submit: 'Geri Bildirim Gönder',
+      validation: {
+        required: 'Lütfen en az bir geri bildirim sağlayın',
+      },
+      success: 'Geri bildiriminiz için teşekkürler!',
+      error: {
+        general:
+          'Geri bildirim gönderilirken hata oluştu. Lütfen tekrar deneyin.',
+      },
+    },
   },
   uk: {
     model: 'Модель',
@@ -1017,6 +1291,46 @@ export const l10n = {
       'Ігнорувати токен кінця потоку і продовжувати генерацію',
     'modelSettings.logit_bias': 'Змінити ймовірність певних токенів',
     'modelSettings.seed': 'Зерно генератора випадкових чисел',
+    feedback: {
+      title: 'Надіслати відгук',
+      description:
+        'Ваша думка важлива! Розкажіть нам, як PocketPal AI допомагає вам і що ми можемо зробити, щоб зробити його ще кориснішим.',
+      useCase: {
+        label: 'Для чого ви використовуєте PocketPal AI?',
+        placeholder: 'напр: підсумки, рольові ігри тощо',
+      },
+      featureRequests: {
+        label: 'Які функції ви хотіли б побачити в майбутньому?',
+        placeholder: 'Поділіться своїми ідеями та пропозиціями щодо функцій',
+      },
+      generalFeedback: {
+        label: 'Інші коментарі?',
+        placeholder:
+          'Поділіться своїми думками. Що вам подобається, що не подобається тощо',
+      },
+      usageFrequency: {
+        label: "Як часто ви використовуєте PocketPal AI? (Необов'язково)",
+        options: {
+          daily: 'Щоденно',
+          weekly: 'Щотижня',
+          monthly: 'Щомісяця',
+          rarely: 'Рідко',
+        },
+      },
+      email: {
+        label: "Контактна електронна пошта (Необов'язково)",
+        placeholder: 'Ваша електронна адреса',
+      },
+      submit: 'Надіслати відгук',
+      validation: {
+        required: 'Будь ласка, надайте хоча б один відгук',
+      },
+      success: 'Дякуємо за ваш відгук!',
+      error: {
+        general:
+          'Під час надсилання відгуку сталася помилка. Будь ласка, спробуйте ще раз.',
+      },
+    },
   },
   ca: {
     model: 'Model',
@@ -1148,5 +1462,46 @@ export const l10n = {
       'Ignorar token de fin de secuencia y continuar generando',
     'modelSettings.logit_bias': 'Modificar probabilidad de tokens específicos',
     'modelSettings.seed': 'Semilla del generador de números aleatorios',
+    feedback: {
+      title: 'Enviar Comentaris',
+      description:
+        "La vostra opinió és important! Explica'ns com PocketPal AI t'està ajudant i què podem fer per fer-lo encara més útil.",
+      useCase: {
+        label: 'Per a què utilitzes PocketPal AI?',
+        placeholder: 'ex: resums, jocs de rol, etc.',
+      },
+      featureRequests: {
+        label: "Quines funcionalitats t'agradaria veure en el futur?",
+        placeholder:
+          'Comparteix les teves idees i suggeriments de funcionalitats',
+      },
+      generalFeedback: {
+        label: 'Altres comentaris?',
+        placeholder:
+          "Comparteix els teus pensaments. Què t'agrada, què no t'agrada, etc.",
+      },
+      usageFrequency: {
+        label: 'Amb quina freqüència utilitzes PocketPal AI? (Opcional)',
+        options: {
+          daily: 'Diàriament',
+          weekly: 'Setmanalment',
+          monthly: 'Mensualment',
+          rarely: 'Rarament',
+        },
+      },
+      email: {
+        label: 'Correu electrònic de contacte (Opcional)',
+        placeholder: 'La teva adreça de correu electrònic',
+      },
+      submit: 'Enviar Comentaris',
+      validation: {
+        required: 'Si us plau, proporciona almenys un comentari',
+      },
+      success: 'Gràcies pels teus comentaris!',
+      error: {
+        general:
+          "S'ha produït un error en enviar els comentaris. Si us plau, torna-ho a provar.",
+      },
+    },
   },
 };
