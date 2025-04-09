@@ -1,5 +1,5 @@
-import {View, Linking} from 'react-native';
 import React, {useState} from 'react';
+import {View, Linking} from 'react-native';
 
 import {Card, Text, Button, Tooltip} from 'react-native-paper';
 
@@ -7,8 +7,9 @@ import {useTheme} from '../../../hooks';
 
 import {createStyles} from './styles';
 
-import {formatBytes, formatNumber} from '../../../utils';
 import {BenchmarkResult} from '../../../utils/types';
+import {formatBytes, formatNumber} from '../../../utils';
+import {NetworkError, AppCheckError, ServerError} from '../../../utils/errors';
 
 type Props = {
   result: BenchmarkResult;
@@ -16,21 +17,38 @@ type Props = {
   onShare: (result: BenchmarkResult) => Promise<void>;
 };
 
+type ErrorType = 'network' | 'appCheck' | 'server' | 'generic' | null;
+
 export const BenchResultCard = ({result, onDelete, onShare}: Props) => {
   const theme = useTheme();
   const styles = createStyles(theme);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [errorType, setErrorType] = useState<ErrorType>(null);
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
     setSubmitError(null);
+    setErrorType(null);
+
     try {
       await onShare(result);
     } catch (error) {
-      setSubmitError(
-        error instanceof Error ? error.message : 'Failed to submit benchmark',
-      );
+      if (error instanceof NetworkError) {
+        setErrorType('network');
+        setSubmitError(error.message);
+      } else if (error instanceof AppCheckError) {
+        setErrorType('appCheck');
+        setSubmitError(error.message);
+      } else if (error instanceof ServerError) {
+        setErrorType('server');
+        setSubmitError(error.message);
+      } else {
+        setErrorType('generic');
+        setSubmitError(
+          error instanceof Error ? error.message : 'Failed to submit benchmark',
+        );
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -53,6 +71,42 @@ export const BenchResultCard = ({result, onDelete, onShare}: Props) => {
     Linking.openURL(
       'https://huggingface.co/spaces/a-ghorbani/ai-phone-leaderboard',
     );
+  };
+
+  const getErrorIcon = () => {
+    switch (errorType) {
+      case 'network':
+        return '📶'; // wifi icon
+      case 'appCheck':
+        return '🔒'; // lock icon
+      case 'server':
+        return '🖥️'; // server icon
+      default:
+        return '❌'; // generic error icon
+    }
+  };
+
+  const getRetryText = () => {
+    switch (errorType) {
+      case 'network':
+        return 'Check connection & retry';
+      case 'appCheck':
+        return 'Retry submission';
+      case 'server':
+        return 'Try again later';
+      default:
+        return 'Retry';
+    }
+  };
+
+  const getErrorStyle = () => {
+    if (!errorType) {
+      return styles.errorGeneric;
+    }
+
+    const capitalized = errorType.charAt(0).toUpperCase() + errorType.slice(1);
+
+    return styles[`error${capitalized}`] || styles.errorGeneric;
   };
 
   return (
@@ -208,7 +262,23 @@ export const BenchResultCard = ({result, onDelete, onShare}: Props) => {
           )}
         </View>
 
-        {submitError && <Text style={styles.errorText}>{submitError}</Text>}
+        {submitError && (
+          <View style={[styles.errorContainer, getErrorStyle()]}>
+            <Text style={styles.errorText}>
+              {getErrorIcon()} {submitError}
+            </Text>
+            {errorType && (
+              <Button
+                mode="text"
+                onPress={handleSubmit}
+                disabled={isSubmitting || errorType === 'server'}
+                compact
+                style={styles.retryButton}>
+                {getRetryText()}
+              </Button>
+            )}
+          </View>
+        )}
       </Card.Content>
     </Card>
   );

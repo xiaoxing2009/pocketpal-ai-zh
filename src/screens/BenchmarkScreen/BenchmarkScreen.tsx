@@ -441,6 +441,7 @@ export const BenchmarkScreen: React.FC = observer(() => {
           onPress: () => {
             setShowShareDialog(false);
             setPendingShareResult(null);
+            setShareError(null);
           },
           disabled: isSubmitting,
         },
