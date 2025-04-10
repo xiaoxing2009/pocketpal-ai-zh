@@ -16,4 +16,7 @@ export const urls = {
 
   // Benchmark Endpoint
   benchmarkSubmit: () => `${FIREBASE_FUNCTIONS_URL}/api/v1/submit`,
+
+  // Feedback Endpoint
+  feedbackSubmit: () => `${FIREBASE_FUNCTIONS_URL}/feedback`,
 };

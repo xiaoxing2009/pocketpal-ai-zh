@@ -157,4 +157,32 @@ export const createStyles = (theme: Theme) =>
       color: theme.colors.primary,
       textDecorationLine: 'underline',
     },
+    errorContainer: {
+      marginTop: 10,
+      padding: 10,
+      borderRadius: 6,
+      borderWidth: 1,
+      backgroundColor: theme.colors.errorContainer,
+      borderColor: theme.colors.error,
+    },
+    errorNetwork: {
+      backgroundColor: theme.colors.errorContainer || '#FFF9C4',
+      borderColor: theme.colors.error || '#FBC02D',
+    },
+    errorAppCheck: {
+      backgroundColor: theme.colors.errorContainer,
+      borderColor: theme.colors.error,
+    },
+    errorServer: {
+      backgroundColor: theme.colors.surfaceVariant,
+      borderColor: theme.colors.onSurfaceVariant,
+    },
+    errorGeneric: {
+      backgroundColor: theme.colors.errorContainer,
+      borderColor: theme.colors.error,
+    },
+    retryButton: {
+      marginTop: 5,
+      alignSelf: 'flex-end',
+    },
   });

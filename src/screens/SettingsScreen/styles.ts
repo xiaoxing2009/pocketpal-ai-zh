@@ -6,7 +6,7 @@ export const createStyles = (theme: Theme) =>
   StyleSheet.create({
     safeArea: {
       flex: 1,
-      backgroundColor: theme.colors.background,
+      backgroundColor: theme.colors.surface,
     },
     container: {
       padding: 16,
@@ -18,7 +18,7 @@ export const createStyles = (theme: Theme) =>
     card: {
       marginVertical: 8,
       borderRadius: 12,
-      backgroundColor: theme.colors.surface,
+      backgroundColor: theme.colors.background,
     },
     settingItemContainer: {
       marginVertical: 16,
@@ -73,7 +73,7 @@ export const createStyles = (theme: Theme) =>
     },
     advancedAccordion: {
       height: 55,
-      backgroundColor: theme.colors.surface,
+      //backgroundColor: theme.colors.surface,
     },
     accordionTitle: {
       fontSize: 14,

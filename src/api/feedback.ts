@@ -1,6 +1,10 @@
-import axios from 'axios';
 import {Platform} from 'react-native';
+
+import axios from 'axios';
+import DeviceInfo from 'react-native-device-info';
+
 import {urls} from '../config';
+import {feedbackStore} from '../store';
 import {
   getAppCheckToken,
   checkConnectivity,
@@ -9,20 +13,22 @@ import {
   ServerError,
   initializeAppCheck,
 } from '../utils';
-import {BenchmarkResult, DeviceInfo} from '../utils/types';
 
-type SubmissionData = {
-  deviceInfo: DeviceInfo;
-  benchmarkResult: BenchmarkResult;
+type FeedbackData = {
+  useCase: string;
+  featureRequests: string;
+  generalFeedback: string;
+  usageFrequency: string;
+  email?: string;
+  appFeedbackId: string;
 };
 
 /**
- * Submits benchmark data to the server with App Check verification
+ * Submits feedback data to the server with App Check verification
  */
-export async function submitBenchmark(
-  deviceInfo: DeviceInfo,
-  benchmarkResult: BenchmarkResult,
-): Promise<{message: string; id: number}> {
+export async function submitFeedback(
+  feedbackData: Omit<FeedbackData, 'appFeedbackId'>,
+): Promise<{message: string}> {
   try {
     // Check network connectivity first
     const isConnected = await checkConnectivity();
@@ -34,7 +40,7 @@ export async function submitBenchmark(
 
     const storeName =
       Platform.OS === 'android' ? 'Google Play Store' : 'Apple App Store';
-    let errMessage = `App verification failed. Benchmark sharing is only available for official builds from ${storeName}.`;
+    let errMessage = `App verification failed. Feedback submission is only available for official builds from ${storeName}.`;
 
     // Get App Check token
     let appCheckToken: string | null = null;
@@ -43,7 +49,6 @@ export async function submitBenchmark(
       appCheckToken = await getAppCheckToken();
     } catch (error) {
       console.error('App Check error:', error);
-
       throw new AppCheckError(errMessage);
     }
 
@@ -51,20 +56,23 @@ export async function submitBenchmark(
       throw new AppCheckError(errMessage);
     }
 
-    // Prepare data and submit to server
-    const data: SubmissionData = {
-      deviceInfo,
-      benchmarkResult,
-    };
-
     try {
-      const response = await axios.post(urls.benchmarkSubmit(), data, {
-        headers: {
-          'X-Firebase-AppCheck': appCheckToken,
-          'Content-Type': 'application/json',
+      const response = await axios.post(
+        urls.feedbackSubmit(),
+        {
+          ...feedbackData,
+          appFeedbackId: feedbackStore.feedbackId,
+          appVersion: DeviceInfo.getVersion(),
+          appBuild: DeviceInfo.getBuildNumber(),
         },
-        timeout: 10000,
-      });
+        {
+          headers: {
+            'X-Firebase-AppCheck': appCheckToken,
+            'Content-Type': 'application/json',
+          },
+          timeout: 10000,
+        },
+      );
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -92,7 +100,7 @@ export async function submitBenchmark(
       throw error;
     }
   } catch (error) {
-    console.error('Error submitting benchmark:', error);
+    console.error('Error submitting feedback:', error);
 
     if (
       error instanceof NetworkError ||
@@ -104,7 +112,7 @@ export async function submitBenchmark(
 
     throw new Error(
       error instanceof Error
-        ? `Failed to submit benchmark: ${error.message}`
+        ? `Failed to submit feedback: ${error.message}`
         : 'An unexpected error occurred',
     );
   }

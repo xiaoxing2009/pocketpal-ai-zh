@@ -1,11 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {TouchableOpacity, View, Alert, Linking, Platform} from 'react-native';
-
+import {TouchableOpacity, View, Alert} from 'react-native';
 import {observer} from 'mobx-react';
-import {Button, Divider, Drawer, Text} from 'react-native-paper';
-import DeviceInfo from 'react-native-device-info';
-import Clipboard from '@react-native-clipboard/clipboard';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {Divider, Drawer, Text} from 'react-native-paper';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {
   DrawerContentScrollView,
@@ -13,11 +9,8 @@ import {
 } from '@react-navigation/drawer';
 
 import {useTheme} from '../../hooks';
-
 import {createStyles} from './styles';
-
 import {chatSessionStore, SessionMetaData} from '../../store';
-
 import {Menu, RenameModal} from '..';
 import {
   BenchmarkIcon,
@@ -25,6 +18,7 @@ import {
   EditIcon,
   ModelIcon,
   PalIcon,
+  PlaceholderIcon,
   SettingsIcon,
   TrashIcon,
 } from '../../assets/icons';
@@ -35,36 +29,18 @@ const isDebugMode = __DEV__;
 
 export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
   props => {
-    const [appInfo, setAppInfo] = useState({
-      version: '',
-      build: '',
-    });
-
-    const [menuVisible, setMenuVisible] = useState<string | null>(null); // Track which menu is visible
-    const [menuPosition, setMenuPosition] = useState({x: 0, y: 0}); // Track menu position
+    const [menuVisible, setMenuVisible] = useState<string | null>(null);
+    const [menuPosition, setMenuPosition] = useState({x: 0, y: 0});
     const [sessionToRename, setSessionToRename] =
       useState<SessionMetaData | null>(null);
 
     useEffect(() => {
       chatSessionStore.loadSessionList();
-
-      // Get app version and build number
-      const version = DeviceInfo.getVersion();
-      const buildNumber = DeviceInfo.getBuildNumber();
-      setAppInfo({
-        version,
-        build: buildNumber,
-      });
     }, []);
 
     const theme = useTheme();
     const styles = createStyles(theme);
     const i10n = useContext(L10nContext);
-
-    const copyVersionToClipboard = () => {
-      const versionString = `Version ${appInfo.version} (${appInfo.build})`;
-      Clipboard.setString(versionString);
-    };
 
     const openMenu = (sessionId: string, event: any) => {
       const {nativeEvent} = event;
@@ -94,20 +70,6 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
       }
       closeMenu();
     };
-
-    const openSponsorPage = async () => {
-      const link =
-        Platform.OS === 'ios' // Due to Apple's policies, we can't use Buy Me a Coffee on iOS.
-          ? 'https://github.com/a-ghorbani/pocketpal-ai'
-          : 'https://buymeacoffee.com/aghorbani';
-      const canOpen = await Linking.canOpenURL(link);
-      if (canOpen) {
-        Linking.openURL(link);
-      }
-    };
-
-    const sponsorText =
-      Platform.OS === 'ios' ? 'Leave a star on GitHub' : 'Become a Sponsor';
 
     return (
       <GestureHandlerRootView style={styles.sidebarContainer}>
@@ -151,6 +113,19 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
                 style={styles.menuDrawerItem}
               />
 
+              <Drawer.Item
+                label={'App Info'}
+                icon={() => (
+                  <PlaceholderIcon
+                    width={24}
+                    height={24}
+                    stroke={theme.colors.primary}
+                  />
+                )}
+                onPress={() => props.navigation.navigate('App Info')}
+                style={styles.menuDrawerItem}
+              />
+
               {/* Only show Test Completion in debug mode */}
               {isDebugMode && (
                 <Drawer.Item
@@ -185,7 +160,7 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
                             chatSessionStore.setActiveSession(session.id);
                             props.navigation.navigate('Chat');
                           }}
-                          onLongPress={event => openMenu(session.id, event)} // Open menu on long press
+                          onLongPress={event => openMenu(session.id, event)}
                           style={styles.sessionTouchable}>
                           <Drawer.Item
                             active={isActive}
@@ -228,26 +203,6 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
               ),
             )}
           </DrawerContentScrollView>
-
-          <SafeAreaView edges={['bottom']} style={styles.versionSafeArea}>
-            <Button
-              mode="outlined"
-              style={{borderColor: theme.colors.onSurfaceDisabled}}
-              labelStyle={styles.sponsorButtonLabel}
-              onPress={openSponsorPage}>
-              <Text variant="bodySmall">{sponsorText}</Text>
-            </Button>
-            <TouchableOpacity
-              onPress={copyVersionToClipboard}
-              style={styles.versionContainer}>
-              <View style={styles.versionRow}>
-                <Text style={styles.versionLabel}>v</Text>
-                <Text style={styles.versionText}>{appInfo.version}</Text>
-                <Text style={styles.buildText}>({appInfo.build})</Text>
-              </View>
-              <Text style={styles.copyHint}>Tap to copy</Text>
-            </TouchableOpacity>
-          </SafeAreaView>
         </View>
         <RenameModal
           visible={sessionToRename !== null}

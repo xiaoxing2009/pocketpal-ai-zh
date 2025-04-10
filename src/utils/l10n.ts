@@ -135,6 +135,60 @@ export const l10n = {
       'Set a minimum probability threshold for tokens to be removed via XTC sampler. (> 0.5 disables XTC)',
     'modelSettings.typical_p':
       'Enable locally typical sampling with parameter p. 1.0 is disabled',
+    about: {
+      screenTitle: 'App Info',
+      description:
+        'An app that brings language models directly to your phone. Sits on the shoulders of llama.cpp and llama.rn.',
+      supportProject: 'Support the Project',
+      supportProjectDescription:
+        'If you enjoy using PocketPal AI, please consider supporting the project by:',
+      githubButton: 'Star on GitHub',
+      orText: 'or',
+      orBy: 'or by',
+      sponsorButton: 'Become a Sponsor',
+      versionCopiedTitle: 'Version copied',
+      versionCopiedDescription:
+        'Version information has been copied to clipboard',
+    },
+    feedback: {
+      title: 'Send Feedback',
+      description:
+        'Your voice matters! Tell us how PocketPal AI is helping you and what we can do to make it even more useful.',
+      shareThoughtsButton: 'Sharing your thoughts',
+      useCase: {
+        label: 'What are you using PocketPal AI for?',
+        placeholder: 'e.g., summarization, roleplay, etc.',
+      },
+      featureRequests: {
+        label: 'Feature Request',
+        placeholder: 'What features would you like to see?',
+      },
+      generalFeedback: {
+        label: 'General Feedback',
+        placeholder: 'Share any other thoughts you may have.',
+      },
+      usageFrequency: {
+        label: 'How often do you use PocketPal AI? (Optional)',
+        options: {
+          daily: 'Daily',
+          weekly: 'Weekly',
+          monthly: 'Monthly',
+          rarely: 'Rarely',
+        },
+      },
+      email: {
+        label: 'Contact Email (Optional)',
+        placeholder: 'Your email address',
+      },
+      submit: 'Submit Feedback',
+      validation: {
+        required: 'Please provide at least some feedback',
+      },
+      success: 'Thank you for your feedback!',
+      error: {
+        general: 'Error sending feedback. Please try again.',
+      },
+    },
   },
   es: {
     model: 'Modelo',
@@ -267,6 +321,61 @@ export const l10n = {
       'Ignorar token de fin de secuencia y continuar generando',
     'modelSettings.logit_bias': 'Modificar probabilidad de tokens específicos',
     'modelSettings.seed': 'Semilla del generador de números aleatorios',
+    about: {
+      screenTitle: 'Información de la App',
+      description:
+        'Una aplicación que lleva los modelos de lenguaje directamente a tu teléfono. Se apoya en llama.cpp y llama.rn.',
+      supportProject: 'Apoya el Proyecto',
+      supportProjectDescription:
+        'Si disfrutas usando PocketPal AI, considera apoyar el proyecto de las siguientes formas:',
+      githubButton: 'Estrella en GitHub',
+      orText: 'o',
+      orBy: 'o mediante',
+      sponsorButton: 'Convertirse en Patrocinador',
+      versionCopiedTitle: 'Versión copiada',
+      versionCopiedDescription:
+        'La información de la versión ha sido copiada al portapapeles',
+    },
+    feedback: {
+      title: 'Enviar Comentarios',
+      description:
+        '¡Tu opinión es importante! Cuéntanos cómo PocketPal AI te está ayudando y qué podemos hacer para que sea aún más útil.',
+      shareThoughtsButton: 'Comparte tus opiniones',
+      useCase: {
+        label: '¿Para qué estás usando PocketPal AI?',
+        placeholder: 'ej., resúmenes, roleplay, etc.',
+      },
+      featureRequests: {
+        label: '¿Qué características te gustaría ver en el futuro?',
+        placeholder: 'Comparte tus ideas y sugerencias de características',
+      },
+      generalFeedback: {
+        label: '¿Algún otro comentario?',
+        placeholder:
+          'Comparte cualquier otro pensamiento que tengas. Lo que te gusta, lo que no te gusta, etc.',
+      },
+      usageFrequency: {
+        label: '¿Con qué frecuencia usas PocketPal AI? (Opcional)',
+        options: {
+          daily: 'Diariamente',
+          weekly: 'Semanalmente',
+          monthly: 'Mensualmente',
+          rarely: 'Rara vez',
+        },
+      },
+      email: {
+        label: 'Correo de Contacto (Opcional)',
+        placeholder: 'Tu dirección de correo electrónico',
+      },
+      submit: 'Enviar Comentarios',
+      validation: {
+        required: 'Por favor, proporciona al menos algún comentario',
+      },
+      success: '¡Gracias por tus comentarios!',
+      error: {
+        general: 'Error al enviar comentarios. Por favor, inténtalo de nuevo.',
+      },
+    },
   },
   ko: {
     model: '모델',
@@ -380,6 +489,59 @@ export const l10n = {
     'modelSettings.ignore_eos': '스트림 종료 토큰을 무시하고 생성 계속',
     'modelSettings.logit_bias': '특정 토큰의 확률 수정',
     'modelSettings.seed': '난수 생성기 시드',
+    about: {
+      screenTitle: '앱 정보',
+      description:
+        '언어 모델을 직접 휴대폰에서 사용할 수 있게 해주는 앱입니다. llama.cpp와 llama.rn을 기반으로 제작되었습니다.',
+      supportProject: '프로젝트 지원하기',
+      supportProjectDescription:
+        'PocketPal AI가 마음에 드신다면, 다음과 같은 방법으로 프로젝트를 지원해 주세요:',
+      githubButton: 'GitHub에서 스타 주기',
+      orText: '또는',
+      orBy: '또는',
+      sponsorButton: '스폰서 되기',
+      versionCopiedTitle: '버전 복사됨',
+      versionCopiedDescription: '버전 정보가 클립보드에 복사되었습니다',
+    },
+    feedback: {
+      title: '피드백 보내기',
+      description:
+        '여러분의 의견이 중요합니다! PocketPal AI가 어떻게 도움이 되고 있는지, 그리고 어떻게 하면 더 유용하게 만들 수 있을지 알려주세요.',
+      shareThoughtsButton: '의견 공유하기',
+      useCase: {
+        label: 'PocketPal AI를 어떤 용도로 사용하고 계신가요?',
+        placeholder: '예: 요약, 롤플레잉 등',
+      },
+      featureRequests: {
+        label: '앞으로 어떤 기능이 추가되면 좋을까요?',
+        placeholder: '원하는 기능과 제안을 공유해주세요',
+      },
+      generalFeedback: {
+        label: '기타 의견이 있으신가요?',
+        placeholder: '좋았던 점, 아쉬웠던 점 등 자유롭게 의견을 남겨주세요.',
+      },
+      usageFrequency: {
+        label: 'PocketPal AI 사용 빈도는 어떻게 되시나요? (선택사항)',
+        options: {
+          daily: '매일',
+          weekly: '주간',
+          monthly: '월간',
+          rarely: '가끔',
+        },
+      },
+      email: {
+        label: '연락처 이메일 (선택사항)',
+        placeholder: '이메일 주소',
+      },
+      submit: '피드백 보내기',
+      validation: {
+        required: '최소한 하나의 피드백을 작성해주세요',
+      },
+      success: '피드백 감사합니다!',
+      error: {
+        general: '피드백 전송 중 오류가 발생했습니다. 다시 시도해주세요.',
+      },
+    },
   },
   pl: {
     model: 'Model',
@@ -507,6 +669,62 @@ export const l10n = {
       'Ignorar token de fim de fluxo e continuar gerando',
     'modelSettings.logit_bias': 'Modificar probabilidade de tokens específicos',
     'modelSettings.seed': 'Semente do gerador de números aleatórios',
+    about: {
+      screenTitle: 'Informacje o aplikacji',
+      description:
+        'Aplikacja, która umożliwia korzystanie z modeli językowych bezpośrednio na telefonie. Bazuje na llama.cpp i llama.rn.',
+      supportProject: 'Wesprzyj projekt',
+      supportProjectDescription:
+        'Jeśli podoba Ci się PocketPal AI, rozważ wsparcie projektu w następujący sposób:',
+      githubButton: 'Gwiazdka GitHub',
+      orText: 'lub',
+      orBy: 'lub poprzez',
+      sponsorButton: 'Zostań sponsorem',
+      versionCopiedTitle: 'Wersja skopiowana',
+      versionCopiedDescription:
+        'Informacje o wersji zostały skopiowane do schowka',
+    },
+    feedback: {
+      title: 'Wyślij opinię',
+      description:
+        'Twoja opinia jest ważna! Powiedz nam, jak PocketPal AI Ci pomaga i co możemy zrobić, aby był jeszcze bardziej przydatny.',
+      shareThoughtsButton: 'Podziel się swoimi przemyśleniami',
+      useCase: {
+        label: 'Do czego używasz PocketPal AI?',
+        placeholder: 'np. podsumowania, roleplay, itp.',
+      },
+      featureRequests: {
+        label: 'Jakie funkcje chciałbyś zobaczyć w przyszłości?',
+        placeholder:
+          'Podziel się swoimi pomysłami i sugestiami dotyczącymi funkcji',
+      },
+      generalFeedback: {
+        label: 'Inne uwagi?',
+        placeholder:
+          'Podziel się swoimi przemyśleniami. Co Ci się podoba, co nie, itp.',
+      },
+      usageFrequency: {
+        label: 'Jak często używasz PocketPal AI? (Opcjonalne)',
+        options: {
+          daily: 'Codziennie',
+          weekly: 'Co tydzień',
+          monthly: 'Co miesiąc',
+          rarely: 'Rzadko',
+        },
+      },
+      email: {
+        label: 'Email kontaktowy (Opcjonalny)',
+        placeholder: 'Twój adres email',
+      },
+      submit: 'Wyślij opinię',
+      validation: {
+        required: 'Proszę podać przynajmniej jedną opinię',
+      },
+      success: 'Dziękujemy za opinię!',
+      error: {
+        general: 'Błąd podczas wysyłania opinii. Spróbuj ponownie.',
+      },
+    },
   },
   pt: {
     model: 'Modelo',
@@ -635,6 +853,61 @@ export const l10n = {
       'Ignorar token de fim de fluxo e continuar gerando',
     'modelSettings.logit_bias': 'Modificar probabilidade de tokens específicos',
     'modelSettings.seed': 'Semente do gerador de números aleatórios',
+    about: {
+      screenTitle: 'Informações do Aplicativo',
+      description:
+        'Um aplicativo que traz modelos de linguagem diretamente para seu telefone. Baseado em llama.cpp e llama.rn.',
+      supportProject: 'Apoie o Projeto',
+      supportProjectDescription:
+        'Se você gosta de usar o PocketPal AI, considere apoiar o projeto das seguintes formas:',
+      githubButton: 'Favoritar no GitHub',
+      orText: 'ou',
+      orBy: 'ou por',
+      sponsorButton: 'Torne-se um Patrocinador',
+      versionCopiedTitle: 'Versão copiada',
+      versionCopiedDescription:
+        'As informações da versão foram copiadas para a área de transferência',
+    },
+    feedback: {
+      title: 'Enviar Feedback',
+      description:
+        'Sua opinião é importante! Conte-nos como o PocketPal AI está te ajudando e o que podemos fazer para torná-lo ainda mais útil.',
+      shareThoughtsButton: 'Compartilhe suas opiniões',
+      useCase: {
+        label: 'Para que você está usando o PocketPal AI?',
+        placeholder: 'ex: resumos, roleplay, etc.',
+      },
+      featureRequests: {
+        label: 'Quais recursos você gostaria de ver no futuro?',
+        placeholder: 'Compartilhe suas ideias e sugestões de recursos',
+      },
+      generalFeedback: {
+        label: 'Outros comentários?',
+        placeholder:
+          'Compartilhe seus pensamentos. O que você gosta, o que não gosta, etc.',
+      },
+      usageFrequency: {
+        label: 'Com que frequência você usa o PocketPal AI? (Opcional)',
+        options: {
+          daily: 'Diariamente',
+          weekly: 'Semanalmente',
+          monthly: 'Mensalmente',
+          rarely: 'Raramente',
+        },
+      },
+      email: {
+        label: 'Email de Contato (Opcional)',
+        placeholder: 'Seu endereço de email',
+      },
+      submit: 'Enviar Feedback',
+      validation: {
+        required: 'Por favor, forneça pelo menos um feedback',
+      },
+      success: 'Obrigado pelo seu feedback!',
+      error: {
+        general: 'Erro ao enviar feedback. Por favor, tente novamente.',
+      },
+    },
   },
   ru: {
     model: 'Модель',
@@ -765,6 +1038,61 @@ export const l10n = {
       'Ігнорувати токен кінця потоку і продовжувати генерацію',
     'modelSettings.logit_bias': 'Змінити ймовірність певних токенів',
     'modelSettings.seed': 'Зерно генератора випадкових чисел',
+    about: {
+      screenTitle: 'Информация о приложении',
+      description:
+        'Приложение, которое позволяет использовать языковые модели прямо на вашем телефоне. Основано на llama.cpp и llama.rn.',
+      supportProject: 'Поддержать проект',
+      supportProjectDescription:
+        'Если вам нравится PocketPal AI, рассмотрите возможность поддержки проекта следующими способами:',
+      githubButton: 'Отметить звездой на GitHub',
+      orText: 'или',
+      orBy: 'или через',
+      sponsorButton: 'Стать спонсором',
+      versionCopiedTitle: 'Версия скопирована',
+      versionCopiedDescription:
+        'Информация о версии скопирована в буфер обмена',
+    },
+    feedback: {
+      title: 'Отправить отзыв',
+      description:
+        'Ваше мнение важно! Расскажите нам, как PocketPal AI помогает вам и что мы можем сделать, чтобы он стал еще более полезным.',
+      shareThoughtsButton: 'Поделитесь своими мыслями',
+      useCase: {
+        label: 'Для чего вы используете PocketPal AI?',
+        placeholder: 'например, резюме, ролевые игры и т.д.',
+      },
+      featureRequests: {
+        label: 'Какие функции вы хотели бы видеть в будущем?',
+        placeholder: 'Поделитесь своими идеями и предложениями по функциям',
+      },
+      generalFeedback: {
+        label: 'Другие комментарии?',
+        placeholder:
+          'Поделитесь своими размышлениями. Что вам нравится, что нет, и т.д.',
+      },
+      usageFrequency: {
+        label: 'Как часто вы используете PocketPal AI? (Необязательно)',
+        options: {
+          daily: 'Ежедневно',
+          weekly: 'Еженедельно',
+          monthly: 'Ежемесячно',
+          rarely: 'Редко',
+        },
+      },
+      email: {
+        label: 'Email для связи (Необязательно)',
+        placeholder: 'Ваш адрес электронной почты',
+      },
+      submit: 'Отправить отзыв',
+      validation: {
+        required: 'Пожалуйста, предоставьте хотя бы один отзыв',
+      },
+      success: 'Спасибо за ваш отзыв!',
+      error: {
+        general: 'Ошибка при отправке отзыва. Пожалуйста, попробуйте еще раз.',
+      },
+    },
   },
   tr: {
     model: 'Model',
@@ -887,6 +1215,61 @@ export const l10n = {
       'Akış sonu tokenini yoksay ve üretmeye devam et',
     'modelSettings.logit_bias': 'Belirli tokenlerin olasılığını değiştir',
     'modelSettings.seed': 'Rastgele sayı üreteci tohumu',
+    about: {
+      screenTitle: 'Uygulama Hakkında',
+      description:
+        'Dil modellerini doğrudan telefonunuzda kullanmanızı sağlayan bir uygulama. llama.cpp ve llama.rn tabanlı.',
+      supportProject: 'Projeyi Destekle',
+      supportProjectDescription:
+        "PocketPal AI'yı beğendiyseniz, aşağıdaki yollarla projeyi desteklemeyi düşünebilirsiniz:",
+      githubButton: "GitHub'da Yıldızla",
+      orText: 'veya',
+      orBy: 'ya da',
+      sponsorButton: 'Sponsor Ol',
+      versionCopiedTitle: 'Sürüm kopyalandı',
+      versionCopiedDescription: 'Sürüm bilgileri panoya kopyalandı',
+    },
+    feedback: {
+      title: 'Geri Bildirim Gönder',
+      description:
+        "Görüşleriniz önemli! PocketPal AI'ın size nasıl yardımcı olduğunu ve onu daha faydalı hale getirmek için neler yapabileceğimizi bize anlatın.",
+      shareThoughtsButton: 'Düşüncelerinizi paylaşın',
+      useCase: {
+        label: "PocketPal AI'ı ne için kullanıyorsunuz?",
+        placeholder: 'örn: özetleme, rol yapma, vb.',
+      },
+      featureRequests: {
+        label: 'Gelecekte hangi özellikleri görmek istersiniz?',
+        placeholder: 'Özellik fikirlerinizi ve önerilerinizi paylaşın',
+      },
+      generalFeedback: {
+        label: 'Başka geri bildiriminiz var mı?',
+        placeholder:
+          'Düşüncelerinizi paylaşın. Neleri beğendiğinizi, beğenmediğinizi vb.',
+      },
+      usageFrequency: {
+        label: "PocketPal AI'ı ne sıklıkla kullanıyorsunuz? (İsteğe bağlı)",
+        options: {
+          daily: 'Günlük',
+          weekly: 'Haftalık',
+          monthly: 'Aylık',
+          rarely: 'Nadiren',
+        },
+      },
+      email: {
+        label: 'İletişim E-postası (İsteğe bağlı)',
+        placeholder: 'E-posta adresiniz',
+      },
+      submit: 'Geri Bildirim Gönder',
+      validation: {
+        required: 'Lütfen en az bir geri bildirim sağlayın',
+      },
+      success: 'Geri bildiriminiz için teşekkürler!',
+      error: {
+        general:
+          'Geri bildirim gönderilirken hata oluştu. Lütfen tekrar deneyin.',
+      },
+    },
   },
   uk: {
     model: 'Модель',
@@ -1017,6 +1400,62 @@ export const l10n = {
       'Ігнорувати токен кінця потоку і продовжувати генерацію',
     'modelSettings.logit_bias': 'Змінити ймовірність певних токенів',
     'modelSettings.seed': 'Зерно генератора випадкових чисел',
+    about: {
+      screenTitle: 'Інформація про додаток',
+      description:
+        'Додаток, який дозволяє використовувати мовні моделі прямо на вашому телефоні. Базується на llama.cpp та llama.rn.',
+      supportProject: 'Підтримати проект',
+      supportProjectDescription:
+        'Якщо вам подобається PocketPal AI, розгляньте можливість підтримки проекту наступними способами:',
+      githubButton: 'Зірка на GitHub',
+      orText: 'або',
+      orBy: 'або через',
+      sponsorButton: 'Стати спонсором',
+      versionCopiedTitle: 'Версію скопійовано',
+      versionCopiedDescription:
+        'Інформацію про версію скопійовано в буфер обміну',
+    },
+    feedback: {
+      title: 'Надіслати відгук',
+      description:
+        'Ваша думка важлива! Розкажіть нам, як PocketPal AI допомагає вам і що ми можемо зробити, щоб зробити його ще кориснішим.',
+      shareThoughtsButton: 'Поділіться своїми думками',
+      useCase: {
+        label: 'Для чого ви використовуєте PocketPal AI?',
+        placeholder: 'напр: підсумки, рольові ігри тощо',
+      },
+      featureRequests: {
+        label: 'Які функції ви хотіли б побачити в майбутньому?',
+        placeholder: 'Поділіться своїми ідеями та пропозиціями щодо функцій',
+      },
+      generalFeedback: {
+        label: 'Інші коментарі?',
+        placeholder:
+          'Поділіться своїми думками. Що вам подобається, що не подобається тощо',
+      },
+      usageFrequency: {
+        label: "Як часто ви використовуєте PocketPal AI? (Необов'язково)",
+        options: {
+          daily: 'Щоденно',
+          weekly: 'Щотижня',
+          monthly: 'Щомісяця',
+          rarely: 'Рідко',
+        },
+      },
+      email: {
+        label: "Контактна електронна пошта (Необов'язково)",
+        placeholder: 'Ваша електронна адреса',
+      },
+      submit: 'Надіслати відгук',
+      validation: {
+        required: 'Будь ласка, надайте хоча б один відгук',
+      },
+      success: 'Дякуємо за ваш відгук!',
+      error: {
+        general:
+          'Під час надсилання відгуку сталася помилка. Будь ласка, спробуйте ще раз.',
+      },
+    },
   },
   ca: {
     model: 'Model',
@@ -1148,5 +1587,62 @@ export const l10n = {
       'Ignorar token de fin de secuencia y continuar generando',
     'modelSettings.logit_bias': 'Modificar probabilidad de tokens específicos',
     'modelSettings.seed': 'Semilla del generador de números aleatorios',
+    about: {
+      screenTitle: "Informació sobre l'aplicació",
+      description:
+        'Una aplicació que porta models de llenguatge directament al teu telèfon. Basat en llama.cpp i llama.rn.',
+      supportProject: 'Dona suport al projecte',
+      supportProjectDescription:
+        "Si t'agrada utilitzar PocketPal AI, considera donar suport al projecte de les següents maneres:",
+      githubButton: 'Estrella a GitHub',
+      orText: 'o',
+      orBy: 'o mitjançant',
+      sponsorButton: 'Fes-te patrocinador',
+      versionCopiedTitle: 'Versió copiada',
+      versionCopiedDescription:
+        "La informació de la versió s'ha copiat al porta-retalls",
+    },
+    feedback: {
+      title: 'Enviar Comentaris',
+      description:
+        "La vostra opinió és important! Explica'ns com PocketPal AI t'està ajudant i què podem fer per fer-lo encara més útil.",
+      shareThoughtsButton: 'Comparteix els teus pensaments',
+      useCase: {
+        label: 'Per a què utilitzes PocketPal AI?',
+        placeholder: 'ex: resums, jocs de rol, etc.',
+      },
+      featureRequests: {
+        label: "Quines funcionalitats t'agradaria veure en el futur?",
+        placeholder:
+          'Comparteix les teves idees i suggeriments de funcionalitats',
+      },
+      generalFeedback: {
+        label: 'Altres comentaris?',
+        placeholder:
+          "Comparteix els teus pensaments. Què t'agrada, què no t'agrada, etc.",
+      },
+      usageFrequency: {
+        label: 'Amb quina freqüència utilitzes PocketPal AI? (Opcional)',
+        options: {
+          daily: 'Diàriament',
+          weekly: 'Setmanalment',
+          monthly: 'Mensualment',
+          rarely: 'Rarament',
+        },
+      },
+      email: {
+        label: 'Correu electrònic de contacte (Opcional)',
+        placeholder: 'La teva adreça de correu electrònic',
+      },
+      submit: 'Enviar Comentaris',
+      validation: {
+        required: 'Si us plau, proporciona almenys un comentari',
+      },
+      success: 'Gràcies pels teus comentaris!',
+      error: {
+        general:
+          "S'ha produït un error en enviar els comentaris. Si us plau, torna-ho a provar.",
+      },
+    },
   },
 };

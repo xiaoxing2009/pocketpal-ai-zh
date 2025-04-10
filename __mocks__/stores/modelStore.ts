@@ -100,6 +100,10 @@ class MockModelStore {
   get availableModels() {
     return this.models.filter(model => model.isDownloaded);
   }
+
+  isModelAvailable(modelId: string) {
+    return this.availableModels.some(model => model.id === modelId);
+  }
 }
 
 export const mockModelStore = new MockModelStore();

@@ -85,7 +85,6 @@ describe('submitBenchmark', () => {
     const result = await submitBenchmark(mockDeviceInfo, mockBenchmarkResult);
 
     // Verify AppCheck initialization and token retrieval
-    expect(mockedFb.initializeAppCheck).toHaveBeenCalled();
     expect(mockedFb.getAppCheckToken).toHaveBeenCalled();
 
     // Verify API call
@@ -100,6 +99,7 @@ describe('submitBenchmark', () => {
           'X-Firebase-AppCheck': mockAppCheckToken,
           'Content-Type': 'application/json',
         },
+        timeout: 10000,
       },
     );
 
@@ -115,7 +115,9 @@ describe('submitBenchmark', () => {
 
     await expect(
       submitBenchmark(mockDeviceInfo, mockBenchmarkResult),
-    ).rejects.toThrow('Failed to obtain App Check token');
+    ).rejects.toThrow(
+      'App verification failed. Benchmark sharing is only available for official builds from Apple App Store.',
+    );
 
     expect(mockedAxios.post).not.toHaveBeenCalled();
   });
