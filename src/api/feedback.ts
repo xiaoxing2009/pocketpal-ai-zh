@@ -1,6 +1,10 @@
-import axios from 'axios';
 import {Platform} from 'react-native';
+
+import axios from 'axios';
+import DeviceInfo from 'react-native-device-info';
+
 import {urls} from '../config';
+import {feedbackStore} from '../store';
 import {
   getAppCheckToken,
   checkConnectivity,
@@ -9,7 +13,6 @@ import {
   ServerError,
   initializeAppCheck,
 } from '../utils';
-import {feedbackStore} from '../store';
 
 type FeedbackData = {
   useCase: string;
@@ -59,6 +62,8 @@ export async function submitFeedback(
         {
           ...feedbackData,
           appFeedbackId: feedbackStore.feedbackId,
+          appVersion: DeviceInfo.getVersion(),
+          appBuild: DeviceInfo.getBuildNumber(),
         },
         {
           headers: {
