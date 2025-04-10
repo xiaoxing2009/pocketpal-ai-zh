@@ -23,9 +23,9 @@ import {
   SettingsScreen,
   BenchmarkScreen,
   TestCompletionScreen,
-  FeedbackScreen,
+  AboutScreen,
+  PalsScreen,
 } from './src/screens';
-import {PalsScreen} from './src/screens/PalsScreen';
 
 // Check if app is in debug mode
 const isDebugMode = __DEV__;
@@ -96,8 +96,8 @@ const App = observer(() => {
                     }}
                   />
                   <Drawer.Screen
-                    name="Feedback"
-                    component={gestureHandlerRootHOC(FeedbackScreen)}
+                    name="App Info"
+                    component={gestureHandlerRootHOC(AboutScreen)}
                     options={{
                       headerStyle: styles.headerWithoutDivider,
                     }}
