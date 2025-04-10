@@ -109,18 +109,8 @@ export const createStyles = (theme: Theme, insets: EdgeInsets) =>
       color: theme.colors.onPrimary,
       letterSpacing: 0.5,
     },
-    feedbackButton: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      paddingVertical: theme.spacing.default,
-    },
-    feedbackButtonText: {
-      ...theme.fonts.titleMedium,
-      color: theme.colors.primary,
-    },
-    feedbackButtonIcon: {
-      marginLeft: theme.spacing.default / 2,
+    feedbackButtonContent: {
+      flexDirection: 'row-reverse',
     },
     feedbackForm: {
       padding: theme.spacing.default,
@@ -129,7 +119,7 @@ export const createStyles = (theme: Theme, insets: EdgeInsets) =>
       marginBottom: theme.spacing.default,
     },
     label: {
-      ...theme.fonts.titleMedium,
+      ...theme.fonts.labelMedium,
       color: theme.colors.onSurface,
       marginBottom: theme.spacing.default / 2,
     },
@@ -138,5 +128,8 @@ export const createStyles = (theme: Theme, insets: EdgeInsets) =>
     },
     submitButton: {
       marginTop: theme.spacing.default,
+    },
+    secondaryButtons: {
+      flexDirection: 'row',
     },
   });

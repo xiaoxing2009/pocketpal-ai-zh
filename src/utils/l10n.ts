@@ -135,22 +135,37 @@ export const l10n = {
       'Set a minimum probability threshold for tokens to be removed via XTC sampler. (> 0.5 disables XTC)',
     'modelSettings.typical_p':
       'Enable locally typical sampling with parameter p. 1.0 is disabled',
+    about: {
+      screenTitle: 'App Info',
+      description:
+        'An app that brings language models directly to your phone. Sits on the shoulders of llama.cpp and llama.rn.',
+      supportProject: 'Support the Project',
+      supportProjectDescription:
+        'If you enjoy using PocketPal AI, please consider supporting the project by:',
+      githubButton: 'Start on GitHub',
+      orText: 'or',
+      orBy: 'or by',
+      sponsorButton: 'Become a Sponsor',
+      versionCopiedTitle: 'Version copied',
+      versionCopiedDescription:
+        'Version information has been copied to clipboard',
+    },
     feedback: {
       title: 'Send Feedback',
       description:
         'Your voice matters! Tell us how PocketPal AI is helping you and what we can do to make it even more useful.',
+      shareThoughtsButton: 'Sharing your thoughts',
       useCase: {
         label: 'What are you using PocketPal AI for?',
         placeholder: 'e.g., summarization, roleplay, etc.',
       },
       featureRequests: {
-        label: 'What features would you like to see in the future?',
-        placeholder: 'Share your feature ideas and suggestions',
+        label: 'Feature Request',
+        placeholder: 'What features would you like to see?',
       },
       generalFeedback: {
-        label: 'Any other feedback?',
-        placeholder:
-          "Share any other thoughts you may have. Like what you like, what you don't like, etc.",
+        label: 'General Feedback',
+        placeholder: 'Share any other thoughts you may have.',
       },
       usageFrequency: {
         label: 'How often do you use PocketPal AI? (Optional)',
@@ -306,10 +321,26 @@ export const l10n = {
       'Ignorar token de fin de secuencia y continuar generando',
     'modelSettings.logit_bias': 'Modificar probabilidad de tokens específicos',
     'modelSettings.seed': 'Semilla del generador de números aleatorios',
+    about: {
+      screenTitle: 'Información de la App',
+      description:
+        'Una aplicación que lleva los modelos de lenguaje directamente a tu teléfono. Se apoya en llama.cpp y llama.rn.',
+      supportProject: 'Apoya el Proyecto',
+      supportProjectDescription:
+        'Si disfrutas usando PocketPal AI, considera apoyar el proyecto de las siguientes formas:',
+      githubButton: 'Contribuir en GitHub',
+      orText: 'o',
+      orBy: 'o mediante',
+      sponsorButton: 'Convertirse en Patrocinador',
+      versionCopiedTitle: 'Versión copiada',
+      versionCopiedDescription:
+        'La información de la versión ha sido copiada al portapapeles',
+    },
     feedback: {
       title: 'Enviar Comentarios',
       description:
         '¡Tu opinión es importante! Cuéntanos cómo PocketPal AI te está ayudando y qué podemos hacer para que sea aún más útil.',
+      shareThoughtsButton: 'Comparte tus opiniones',
       useCase: {
         label: '¿Para qué estás usando PocketPal AI?',
         placeholder: 'ej., resúmenes, roleplay, etc.',
@@ -458,10 +489,26 @@ export const l10n = {
     'modelSettings.ignore_eos': '스트림 종료 토큰을 무시하고 생성 계속',
     'modelSettings.logit_bias': '특정 토큰의 확률 수정',
     'modelSettings.seed': '난수 생성기 시드',
+    about: {
+      screenTitle: 'App Info',
+      description:
+        'An app that brings language models directly to your phone. Sits on the shoulders of llama.cpp and llama.rn.',
+      supportProject: 'Support the Project',
+      supportProjectDescription:
+        'If you enjoy using PocketPal AI, please consider supporting the project by:',
+      githubButton: 'Start on GitHub',
+      orText: 'or',
+      orBy: 'or by',
+      sponsorButton: 'Become a Sponsor',
+      versionCopiedTitle: 'Version copied',
+      versionCopiedDescription:
+        'Version information has been copied to clipboard',
+    },
     feedback: {
       title: '피드백 보내기',
       description:
         '여러분의 의견이 중요합니다! PocketPal AI가 어떻게 도움이 되고 있는지, 그리고 어떻게 하면 더 유용하게 만들 수 있을지 알려주세요.',
+      shareThoughtsButton: '의견 공유하기',
       useCase: {
         label: 'PocketPal AI를 어떤 용도로 사용하고 계신가요?',
         placeholder: '예: 요약, 롤플레잉 등',
@@ -623,10 +670,26 @@ export const l10n = {
       'Ignorar token de fim de fluxo e continuar gerando',
     'modelSettings.logit_bias': 'Modificar probabilidade de tokens específicos',
     'modelSettings.seed': 'Semente do gerador de números aleatórios',
+    about: {
+      screenTitle: 'Informacje o aplikacji',
+      description:
+        'Aplikacja, która umożliwia korzystanie z modeli językowych bezpośrednio na telefonie. Bazuje na llama.cpp i llama.rn.',
+      supportProject: 'Wesprzyj projekt',
+      supportProjectDescription:
+        'Jeśli podoba Ci się PocketPal AI, rozważ wsparcie projektu w następujący sposób:',
+      githubButton: 'Rozpocznij na GitHub',
+      orText: 'lub',
+      orBy: 'lub poprzez',
+      sponsorButton: 'Zostań sponsorem',
+      versionCopiedTitle: 'Wersja skopiowana',
+      versionCopiedDescription:
+        'Informacje o wersji zostały skopiowane do schowka',
+    },
     feedback: {
       title: 'Wyślij opinię',
       description:
         'Twoja opinia jest ważna! Powiedz nam, jak PocketPal AI Ci pomaga i co możemy zrobić, aby był jeszcze bardziej przydatny.',
+      shareThoughtsButton: 'Podziel się swoimi przemyśleniami',
       useCase: {
         label: 'Do czego używasz PocketPal AI?',
         placeholder: 'np. podsumowania, roleplay, itp.',
@@ -791,10 +854,26 @@ export const l10n = {
       'Ignorar token de fim de fluxo e continuar gerando',
     'modelSettings.logit_bias': 'Modificar probabilidade de tokens específicos',
     'modelSettings.seed': 'Semente do gerador de números aleatórios',
+    about: {
+      screenTitle: 'Informações do Aplicativo',
+      description:
+        'Um aplicativo que traz modelos de linguagem diretamente para seu telefone. Baseado em llama.cpp e llama.rn.',
+      supportProject: 'Apoie o Projeto',
+      supportProjectDescription:
+        'Se você gosta de usar o PocketPal AI, considere apoiar o projeto das seguintes formas:',
+      githubButton: 'Começar no GitHub',
+      orText: 'ou',
+      orBy: 'ou por',
+      sponsorButton: 'Torne-se um Patrocinador',
+      versionCopiedTitle: 'Versão copiada',
+      versionCopiedDescription:
+        'As informações da versão foram copiadas para a área de transferência',
+    },
     feedback: {
       title: 'Enviar Feedback',
       description:
         'Sua opinião é importante! Conte-nos como o PocketPal AI está te ajudando e o que podemos fazer para torná-lo ainda mais útil.',
+      shareThoughtsButton: 'Compartilhe suas opiniões',
       useCase: {
         label: 'Para que você está usando o PocketPal AI?',
         placeholder: 'ex: resumos, roleplay, etc.',
@@ -960,10 +1039,26 @@ export const l10n = {
       'Ігнорувати токен кінця потоку і продовжувати генерацію',
     'modelSettings.logit_bias': 'Змінити ймовірність певних токенів',
     'modelSettings.seed': 'Зерно генератора випадкових чисел',
+    about: {
+      screenTitle: 'Информация о приложении',
+      description:
+        'Приложение, которое позволяет использовать языковые модели прямо на вашем телефоне. Основано на llama.cpp и llama.rn.',
+      supportProject: 'Поддержать проект',
+      supportProjectDescription:
+        'Если вам нравится PocketPal AI, рассмотрите возможность поддержки проекта следующими способами:',
+      githubButton: 'Начать на GitHub',
+      orText: 'или',
+      orBy: 'или через',
+      sponsorButton: 'Стать спонсором',
+      versionCopiedTitle: 'Версия скопирована',
+      versionCopiedDescription:
+        'Информация о версии скопирована в буфер обмена',
+    },
     feedback: {
       title: 'Отправить отзыв',
       description:
         'Ваше мнение важно! Расскажите нам, как PocketPal AI помогает вам и что мы можем сделать, чтобы он стал еще более полезным.',
+      shareThoughtsButton: 'Поделитесь своими мыслями',
       useCase: {
         label: 'Для чего вы используете PocketPal AI?',
         placeholder: 'например, резюме, ролевые игры и т.д.',
@@ -1121,10 +1216,25 @@ export const l10n = {
       'Akış sonu tokenini yoksay ve üretmeye devam et',
     'modelSettings.logit_bias': 'Belirli tokenlerin olasılığını değiştir',
     'modelSettings.seed': 'Rastgele sayı üreteci tohumu',
+    about: {
+      screenTitle: 'Uygulama Hakkında',
+      description:
+        'Dil modellerini doğrudan telefonunuzda kullanmanızı sağlayan bir uygulama. llama.cpp ve llama.rn tabanlı.',
+      supportProject: 'Projeyi Destekle',
+      supportProjectDescription:
+        "PocketPal AI'yı beğendiyseniz, aşağıdaki yollarla projeyi desteklemeyi düşünebilirsiniz:",
+      githubButton: "GitHub'da Başlat",
+      orText: 'veya',
+      orBy: 'ya da',
+      sponsorButton: 'Sponsor Ol',
+      versionCopiedTitle: 'Sürüm kopyalandı',
+      versionCopiedDescription: 'Sürüm bilgileri panoya kopyalandı',
+    },
     feedback: {
       title: 'Geri Bildirim Gönder',
       description:
         "Görüşleriniz önemli! PocketPal AI'ın size nasıl yardımcı olduğunu ve onu daha faydalı hale getirmek için neler yapabileceğimizi bize anlatın.",
+      shareThoughtsButton: 'Düşüncelerinizi paylaşın',
       useCase: {
         label: "PocketPal AI'ı ne için kullanıyorsunuz?",
         placeholder: 'örn: özetleme, rol yapma, vb.',
@@ -1291,10 +1401,26 @@ export const l10n = {
       'Ігнорувати токен кінця потоку і продовжувати генерацію',
     'modelSettings.logit_bias': 'Змінити ймовірність певних токенів',
     'modelSettings.seed': 'Зерно генератора випадкових чисел',
+    about: {
+      screenTitle: 'Інформація про додаток',
+      description:
+        'Додаток, який дозволяє використовувати мовні моделі прямо на вашому телефоні. Базується на llama.cpp та llama.rn.',
+      supportProject: 'Підтримати проект',
+      supportProjectDescription:
+        'Якщо вам подобається PocketPal AI, розгляньте можливість підтримки проекту наступними способами:',
+      githubButton: 'Поставити зірку на GitHub',
+      orText: 'або',
+      orBy: 'або через',
+      sponsorButton: 'Стати спонсором',
+      versionCopiedTitle: 'Версію скопійовано',
+      versionCopiedDescription:
+        'Інформацію про версію скопійовано в буфер обміну',
+    },
     feedback: {
       title: 'Надіслати відгук',
       description:
         'Ваша думка важлива! Розкажіть нам, як PocketPal AI допомагає вам і що ми можемо зробити, щоб зробити його ще кориснішим.',
+      shareThoughtsButton: 'Поділіться своїми думками',
       useCase: {
         label: 'Для чого ви використовуєте PocketPal AI?',
         placeholder: 'напр: підсумки, рольові ігри тощо',
@@ -1462,10 +1588,26 @@ export const l10n = {
       'Ignorar token de fin de secuencia y continuar generando',
     'modelSettings.logit_bias': 'Modificar probabilidad de tokens específicos',
     'modelSettings.seed': 'Semilla del generador de números aleatorios',
+    about: {
+      screenTitle: "Informació sobre l'aplicació",
+      description:
+        'Una aplicació que porta models de llenguatge directament al teu telèfon. Basat en llama.cpp i llama.rn.',
+      supportProject: 'Dona suport al projecte',
+      supportProjectDescription:
+        "Si t'agrada utilitzar PocketPal AI, considera donar suport al projecte de les següents maneres:",
+      githubButton: 'Començar a GitHub',
+      orText: 'o',
+      orBy: 'o mitjançant',
+      sponsorButton: 'Fes-te patrocinador',
+      versionCopiedTitle: 'Versió copiada',
+      versionCopiedDescription:
+        "La informació de la versió s'ha copiat al porta-retalls",
+    },
     feedback: {
       title: 'Enviar Comentaris',
       description:
         "La vostra opinió és important! Explica'ns com PocketPal AI t'està ajudant i què podem fer per fer-lo encara més útil.",
+      shareThoughtsButton: 'Comparteix els teus pensaments',
       useCase: {
         label: 'Per a què utilitzes PocketPal AI?',
         placeholder: 'ex: resums, jocs de rol, etc.',

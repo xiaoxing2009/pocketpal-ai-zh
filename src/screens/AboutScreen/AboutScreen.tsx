@@ -20,6 +20,14 @@ import {useTheme} from '../../hooks';
 import {createStyles} from './styles';
 import {L10nContext} from '../../utils';
 
+const GithubButtonIcon = ({color}: {color: string}) => (
+  <GithubIcon stroke={color} />
+);
+
+const ChevronRightButtonIcon = ({color}: {color: string}) => (
+  <ChevronRightIcon stroke={color} />
+);
+
 export const AboutScreen: React.FC = () => {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
@@ -52,8 +60,8 @@ export const AboutScreen: React.FC = () => {
     const versionString = `Version ${appInfo.version} (${appInfo.build})`;
     Clipboard.setString(versionString);
     Alert.alert(
-      'Version copied',
-      'Version information has been copied to clipboard',
+      l10n.about.versionCopiedTitle,
+      l10n.about.versionCopiedDescription,
     );
   };
 
@@ -99,8 +107,7 @@ export const AboutScreen: React.FC = () => {
                 PocketPal AI
               </Text>
               <Text variant="bodyMedium" style={styles.description}>
-                An app that brings language models directly to your phone. Sits
-                on the shoulders of llama.cpp and llama.rn.
+                {l10n.about.description}
               </Text>
               <View style={styles.versionContainer}>
                 <TouchableOpacity
@@ -120,10 +127,9 @@ export const AboutScreen: React.FC = () => {
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Support the Project</Text>
+            <Text style={styles.sectionTitle}>{l10n.about.supportProject}</Text>
             <Text variant="bodyMedium" style={styles.description}>
-              If you enjoy using PocketPal AI, please consider supporting the
-              project by:
+              {l10n.about.supportProjectDescription}
             </Text>
             <Button
               mode="outlined"
@@ -131,110 +137,130 @@ export const AboutScreen: React.FC = () => {
                 Linking.openURL('https://github.com/a-ghorbani/pocketpal-ai')
               }
               style={styles.actionButton}
-              icon={() => <GithubIcon stroke={theme.colors.primary} />}>
-              Star on GitHub
+              icon={GithubButtonIcon}>
+              {l10n.about.githubButton}
             </Button>
-            <Text style={styles.orText}>or</Text>
+            <Text style={styles.orText}>{l10n.about.orText}</Text>
             <TouchableOpacity
               style={styles.supportButton}
               onPress={() =>
                 Linking.openURL('https://www.buymeacoffee.com/aghorbani')
               }>
               <HeartIcon stroke={theme.colors.onPrimary} />
-              <Text style={styles.supportButtonText}>Become a Sponsor</Text>
+              <Text style={styles.supportButtonText}>
+                {l10n.about.sponsorButton}
+              </Text>
             </TouchableOpacity>
-            <Text style={styles.orText}>or by</Text>
+            <Text style={styles.orText}>{l10n.about.orBy}</Text>
             <Button
               mode="outlined"
               style={styles.actionButton}
-              contentStyle={{flexDirection: 'row-reverse'}}
-              icon={() => <ChevronRightIcon stroke={theme.colors.primary} />}
+              contentStyle={styles.feedbackButtonContent}
+              icon={ChevronRightButtonIcon}
               onPress={() => setShowFeedback(true)}>
-              <Text style={styles.feedbackButtonText}>
-                Sharing your thoughts
-              </Text>
+              {l10n.feedback.shareThoughtsButton}
             </Button>
           </View>
         </View>
       </ScrollView>
 
       <Sheet
-        title="Share your feedback"
+        title={l10n.feedback.title}
         isVisible={showFeedback}
+        displayFullHeight
         onClose={() => setShowFeedback(false)}>
-        <Sheet.ScrollView>
-          <View style={styles.feedbackForm}>
-            <View style={styles.field}>
-              <Text style={styles.label}>How do you use PocketPal AI?</Text>
-              <TextInput
-                value={useCase}
-                onChangeText={setUseCase}
-                placeholder="Tell us about your use case"
-                multiline
-                numberOfLines={3}
-              />
-            </View>
+        <Sheet.ScrollView contentContainerStyle={styles.feedbackForm}>
+          <View style={styles.field}>
+            <Text style={styles.label}>{l10n.feedback.useCase.label}</Text>
+            <TextInput
+              value={useCase}
+              onChangeText={setUseCase}
+              placeholder={l10n.feedback.useCase.placeholder}
+              multiline
+              numberOfLines={3}
+            />
+          </View>
 
-            <View style={styles.field}>
-              <Text style={styles.label}>Feature Requests</Text>
-              <TextInput
-                value={featureRequests}
-                onChangeText={setFeatureRequests}
-                placeholder="What features would you like to see?"
-                multiline
-                numberOfLines={3}
-              />
-            </View>
+          <View style={styles.field}>
+            <Text style={styles.label}>
+              {l10n.feedback.featureRequests.label}
+            </Text>
+            <TextInput
+              value={featureRequests}
+              onChangeText={setFeatureRequests}
+              placeholder={l10n.feedback.featureRequests.placeholder}
+              multiline
+              numberOfLines={3}
+            />
+          </View>
 
-            <View style={styles.field}>
-              <Text style={styles.label}>General Feedback</Text>
-              <TextInput
-                value={generalFeedback}
-                onChangeText={setGeneralFeedback}
-                placeholder="Share your thoughts and suggestions"
-                multiline
-                numberOfLines={3}
-              />
-            </View>
+          <View style={styles.field}>
+            <Text style={styles.label}>
+              {l10n.feedback.generalFeedback.label}
+            </Text>
+            <TextInput
+              value={generalFeedback}
+              onChangeText={setGeneralFeedback}
+              placeholder={l10n.feedback.generalFeedback.placeholder}
+              multiline
+              numberOfLines={3}
+            />
+          </View>
 
-            <View style={styles.field}>
-              <Text style={styles.label}>
-                How often do you use PocketPal AI?
-              </Text>
-              <SegmentedButtons
-                value={usageFrequency}
-                onValueChange={setUsageFrequency}
-                buttons={[
-                  {value: 'daily', label: 'Daily'},
-                  {value: 'weekly', label: 'Weekly'},
-                  {value: 'monthly', label: 'Monthly'},
-                  {value: 'rarely', label: 'Rarely'},
-                ]}
-                style={styles.segmentedButtons}
-              />
-            </View>
+          <View style={styles.field}>
+            <Text style={styles.label}>
+              {l10n.feedback.usageFrequency.label}
+            </Text>
+            <SegmentedButtons
+              value={usageFrequency}
+              onValueChange={setUsageFrequency}
+              buttons={[
+                {
+                  value: 'daily',
+                  label: l10n.feedback.usageFrequency.options.daily,
+                },
+                {
+                  value: 'weekly',
+                  label: l10n.feedback.usageFrequency.options.weekly,
+                },
+                {
+                  value: 'monthly',
+                  label: l10n.feedback.usageFrequency.options.monthly,
+                },
+                {
+                  value: 'rarely',
+                  label: l10n.feedback.usageFrequency.options.rarely,
+                },
+              ]}
+              style={styles.segmentedButtons}
+            />
+          </View>
 
-            <View style={styles.field}>
-              <Text style={styles.label}>Email (optional)</Text>
-              <TextInput
-                value={email}
-                onChangeText={setEmail}
-                placeholder="Your email address"
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-            </View>
-
-            <Button
-              mode="contained"
-              onPress={handleSubmit}
-              loading={isSubmitting}
-              disabled={isSubmitting}
-              style={styles.submitButton}>
-              Submit Feedback
-            </Button>
+          <View style={styles.field}>
+            <Text style={styles.label}>Email (optional)</Text>
+            <TextInput
+              value={email}
+              onChangeText={setEmail}
+              placeholder={l10n.feedback.email.placeholder}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
           </View>
         </Sheet.ScrollView>
+        <Sheet.Actions>
+          <View style={styles.secondaryButtons}>
+            <Button mode="text" onPress={() => setShowFeedback(false)}>
+              {l10n.cancel}
+            </Button>
+          </View>
+          <Button
+            mode="contained"
+            onPress={handleSubmit}
+            loading={isSubmitting}
+            disabled={isSubmitting}>
+            {l10n.feedback.submit}
+          </Button>
+        </Sheet.Actions>
       </Sheet>
     </SafeAreaView>
   );
