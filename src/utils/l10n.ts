@@ -142,7 +142,7 @@ export const l10n = {
       supportProject: 'Support the Project',
       supportProjectDescription:
         'If you enjoy using PocketPal AI, please consider supporting the project by:',
-      githubButton: 'Start on GitHub',
+      githubButton: 'Star on GitHub',
       orText: 'or',
       orBy: 'or by',
       sponsorButton: 'Become a Sponsor',
@@ -328,7 +328,7 @@ export const l10n = {
       supportProject: 'Apoya el Proyecto',
       supportProjectDescription:
         'Si disfrutas usando PocketPal AI, considera apoyar el proyecto de las siguientes formas:',
-      githubButton: 'Contribuir en GitHub',
+      githubButton: 'Estrella en GitHub',
       orText: 'o',
       orBy: 'o mediante',
       sponsorButton: 'Convertirse en Patrocinador',
@@ -490,19 +490,18 @@ export const l10n = {
     'modelSettings.logit_bias': '특정 토큰의 확률 수정',
     'modelSettings.seed': '난수 생성기 시드',
     about: {
-      screenTitle: 'App Info',
+      screenTitle: '앱 정보',
       description:
-        'An app that brings language models directly to your phone. Sits on the shoulders of llama.cpp and llama.rn.',
-      supportProject: 'Support the Project',
+        '언어 모델을 직접 휴대폰에서 사용할 수 있게 해주는 앱입니다. llama.cpp와 llama.rn을 기반으로 제작되었습니다.',
+      supportProject: '프로젝트 지원하기',
       supportProjectDescription:
-        'If you enjoy using PocketPal AI, please consider supporting the project by:',
-      githubButton: 'Start on GitHub',
-      orText: 'or',
-      orBy: 'or by',
-      sponsorButton: 'Become a Sponsor',
-      versionCopiedTitle: 'Version copied',
-      versionCopiedDescription:
-        'Version information has been copied to clipboard',
+        'PocketPal AI가 마음에 드신다면, 다음과 같은 방법으로 프로젝트를 지원해 주세요:',
+      githubButton: 'GitHub에서 스타 주기',
+      orText: '또는',
+      orBy: '또는',
+      sponsorButton: '스폰서 되기',
+      versionCopiedTitle: '버전 복사됨',
+      versionCopiedDescription: '버전 정보가 클립보드에 복사되었습니다',
     },
     feedback: {
       title: '피드백 보내기',
@@ -677,7 +676,7 @@ export const l10n = {
       supportProject: 'Wesprzyj projekt',
       supportProjectDescription:
         'Jeśli podoba Ci się PocketPal AI, rozważ wsparcie projektu w następujący sposób:',
-      githubButton: 'Rozpocznij na GitHub',
+      githubButton: 'Gwiazdka GitHub',
       orText: 'lub',
       orBy: 'lub poprzez',
       sponsorButton: 'Zostań sponsorem',
@@ -861,7 +860,7 @@ export const l10n = {
       supportProject: 'Apoie o Projeto',
       supportProjectDescription:
         'Se você gosta de usar o PocketPal AI, considere apoiar o projeto das seguintes formas:',
-      githubButton: 'Começar no GitHub',
+      githubButton: 'Favoritar no GitHub',
       orText: 'ou',
       orBy: 'ou por',
       sponsorButton: 'Torne-se um Patrocinador',
@@ -1046,7 +1045,7 @@ export const l10n = {
       supportProject: 'Поддержать проект',
       supportProjectDescription:
         'Если вам нравится PocketPal AI, рассмотрите возможность поддержки проекта следующими способами:',
-      githubButton: 'Начать на GitHub',
+      githubButton: 'Отметить звездой на GitHub',
       orText: 'или',
       orBy: 'или через',
       sponsorButton: 'Стать спонсором',
@@ -1223,7 +1222,7 @@ export const l10n = {
       supportProject: 'Projeyi Destekle',
       supportProjectDescription:
         "PocketPal AI'yı beğendiyseniz, aşağıdaki yollarla projeyi desteklemeyi düşünebilirsiniz:",
-      githubButton: "GitHub'da Başlat",
+      githubButton: "GitHub'da Yıldızla",
       orText: 'veya',
       orBy: 'ya da',
       sponsorButton: 'Sponsor Ol',
@@ -1408,7 +1407,7 @@ export const l10n = {
       supportProject: 'Підтримати проект',
       supportProjectDescription:
         'Якщо вам подобається PocketPal AI, розгляньте можливість підтримки проекту наступними способами:',
-      githubButton: 'Поставити зірку на GitHub',
+      githubButton: 'Зірка на GitHub',
       orText: 'або',
       orBy: 'або через',
       sponsorButton: 'Стати спонсором',
@@ -1595,7 +1594,7 @@ export const l10n = {
       supportProject: 'Dona suport al projecte',
       supportProjectDescription:
         "Si t'agrada utilitzar PocketPal AI, considera donar suport al projecte de les següents maneres:",
-      githubButton: 'Començar a GitHub',
+      githubButton: 'Estrella a GitHub',
       orText: 'o',
       orBy: 'o mitjançant',
       sponsorButton: 'Fes-te patrocinador',
