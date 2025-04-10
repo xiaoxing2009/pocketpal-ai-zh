@@ -1,5 +1,12 @@
 import React, {useState, useContext} from 'react';
-import {View, ScrollView, TouchableOpacity, Alert, Linking} from 'react-native';
+import {
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Alert,
+  Linking,
+  Platform,
+} from 'react-native';
 
 import DeviceInfo from 'react-native-device-info';
 import Clipboard from '@react-native-clipboard/clipboard';
@@ -140,17 +147,21 @@ export const AboutScreen: React.FC = () => {
               icon={GithubButtonIcon}>
               {l10n.about.githubButton}
             </Button>
-            <Text style={styles.orText}>{l10n.about.orText}</Text>
-            <TouchableOpacity
-              style={styles.supportButton}
-              onPress={() =>
-                Linking.openURL('https://www.buymeacoffee.com/aghorbani')
-              }>
-              <HeartIcon stroke={theme.colors.onPrimary} />
-              <Text style={styles.supportButtonText}>
-                {l10n.about.sponsorButton}
-              </Text>
-            </TouchableOpacity>
+            {Platform.OS !== 'ios' && (
+              <>
+                <Text style={styles.orText}>{l10n.about.orText}</Text>
+                <TouchableOpacity
+                  style={styles.supportButton}
+                  onPress={() =>
+                    Linking.openURL('https://www.buymeacoffee.com/aghorbani')
+                  }>
+                  <HeartIcon stroke={theme.colors.onPrimary} />
+                  <Text style={styles.supportButtonText}>
+                    {l10n.about.sponsorButton}
+                  </Text>
+                </TouchableOpacity>
+              </>
+            )}
             <Text style={styles.orText}>{l10n.about.orBy}</Text>
             <Button
               mode="outlined"
