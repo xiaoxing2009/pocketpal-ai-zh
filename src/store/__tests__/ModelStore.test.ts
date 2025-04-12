@@ -7,7 +7,7 @@ import {defaultModels} from '../defaultModels';
 import {downloadManager} from '../../services/downloads';
 
 import {ModelOrigin} from '../../utils/types';
-import {mockContextModel} from '../../../jest/fixtures/models';
+import {basicModel, mockContextModel} from '../../../jest/fixtures/models';
 
 import {modelStore, uiStore} from '..';
 
@@ -316,6 +316,246 @@ describe('ModelStore', () => {
       modelStore.lastUsedModelId = model.id;
 
       expect(modelStore.lastUsedModel).toEqual(model);
+    });
+  });
+
+  // Add tests for inferencing and streaming flags
+  describe('inferencing and streaming flags', () => {
+    it('should set and get inferencing flag', () => {
+      modelStore.inferencing = false;
+      expect(modelStore.inferencing).toBe(false);
+
+      modelStore.setInferencing(true);
+      expect(modelStore.inferencing).toBe(true);
+    });
+
+    it('should set and get isStreaming flag', () => {
+      modelStore.isStreaming = false;
+      expect(modelStore.isStreaming).toBe(false);
+
+      modelStore.setIsStreaming(true);
+      expect(modelStore.isStreaming).toBe(true);
+    });
+  });
+
+  // Add tests for manual context release
+  describe('manual context release', () => {
+    it('should release context manually', async () => {
+      // Set up mock context
+      const mockRelease = jest.fn();
+      modelStore.context = {
+        release: mockRelease,
+      } as any;
+      modelStore.activeModelId = 'test-id';
+
+      await modelStore.manualReleaseContext();
+
+      expect(mockRelease).toHaveBeenCalled();
+      expect(modelStore.context).toBeUndefined();
+      expect(modelStore.activeModelId).toBeUndefined();
+    });
+  });
+
+  // Add tests for HF model handling
+  describe('HF model handling', () => {
+    it('should download HF model', async () => {
+      const hfModel = {
+        id: 'test/hf-model',
+        model_id: 'test/hf-model',
+        siblings: [
+          {
+            rfilename: 'model.gguf',
+            size: 1000,
+            url: 'test-url',
+            oid: 'test-oid',
+          },
+        ],
+      };
+
+      const modelFile = hfModel.siblings[0];
+
+      const mockAddHFModel = jest.fn();
+      modelStore.addHFModel = mockAddHFModel.mockResolvedValue({
+        id: 'test-model-id',
+        isDownloaded: false,
+      } as any);
+
+      const mockCheckSpaceAndDownload = jest.fn();
+      modelStore.checkSpaceAndDownload =
+        mockCheckSpaceAndDownload.mockResolvedValue(undefined);
+
+      await modelStore.downloadHFModel(hfModel as any, modelFile as any);
+
+      expect(mockAddHFModel).toHaveBeenCalledWith(hfModel, modelFile);
+      expect(mockCheckSpaceAndDownload).toHaveBeenCalledWith('test-model-id');
+    });
+
+    it('should catch and throw errors when downloading HF model fails', async () => {
+      const hfModel = {
+        id: 'test/hf-model',
+        siblings: [{rfilename: 'model.gguf'}],
+      };
+
+      const modelFile = hfModel.siblings[0];
+
+      // Mock addHFModel to throw an error
+      const mockAddHFModel = jest.fn();
+      modelStore.addHFModel = mockAddHFModel.mockRejectedValue(
+        new Error('Mock error'),
+      );
+
+      await expect(
+        modelStore.downloadHFModel(hfModel as any, modelFile as any),
+      ).rejects.toThrow('Mock error');
+    });
+  });
+
+  // Add tests for model chat template handling
+  describe('model chat template handling', () => {
+    it('should update model chat template', () => {
+      const model = {
+        ...basicModel,
+        chatTemplate: {
+          ...basicModel.chatTemplate,
+          chatTemplate: 'original',
+        },
+      };
+
+      modelStore.models = [model];
+
+      const newConfig = {chatTemplate: 'updated'};
+      modelStore.updateModelChatTemplate(model.id, newConfig as any);
+
+      expect(modelStore.models[0].chatTemplate).toEqual(newConfig);
+    });
+
+    it('should reset model chat template to defaults', () => {
+      const model = {
+        ...basicModel,
+        defaultChatTemplate: {
+          ...basicModel.defaultChatTemplate,
+          chatTemplate: 'default',
+        },
+        chatTemplate: {
+          ...basicModel.chatTemplate,
+          chatTemplate: 'custom',
+        },
+      };
+
+      modelStore.models = [model];
+
+      modelStore.resetModelChatTemplate(model.id);
+
+      expect(modelStore.models[0].chatTemplate).toEqual(
+        model.defaultChatTemplate,
+      );
+    });
+  });
+
+  // Add tests for resetting models
+  describe('resetting models', () => {
+    beforeEach(() => {
+      // Set up some models of different origins
+      const localModel = {
+        id: 'local-model',
+        isLocal: true,
+        origin: ModelOrigin.LOCAL,
+      };
+
+      const hfModel = {
+        id: 'hf-model',
+        origin: ModelOrigin.HF,
+        hfModel: {id: 'test/hf-model'},
+      };
+
+      modelStore.models = [localModel, hfModel] as any;
+    });
+
+    it('should reset models while preserving local and HF models', () => {
+      // Spy on mergeModelLists
+      const mockMergeModelLists = jest.fn();
+      modelStore.mergeModelLists = mockMergeModelLists;
+
+      modelStore.resetModels();
+
+      // Check that models were cleared and restored
+      expect(mockMergeModelLists).toHaveBeenCalled();
+
+      // Should still have the local and HF models
+      expect(modelStore.models.some(m => m.id === 'local-model')).toBe(true);
+      expect(modelStore.models.some(m => m.id === 'hf-model')).toBe(true);
+    });
+  });
+
+  // Add tests for use metal and auto release settings
+  describe('settings', () => {
+    it('should update useMetal setting', () => {
+      modelStore.useMetal = false;
+
+      modelStore.updateUseMetal(true);
+
+      expect(modelStore.useMetal).toBe(true);
+    });
+
+    it('should update useAutoRelease setting', () => {
+      modelStore.useAutoRelease = true;
+
+      modelStore.updateUseAutoRelease(false);
+
+      expect(modelStore.useAutoRelease).toBe(false);
+    });
+  });
+
+  // Add tests for chat title
+  describe('chatTitle', () => {
+    it('should return loading message when context is loading', () => {
+      modelStore.isContextLoading = true;
+
+      expect(modelStore.chatTitle).toBe('Loading model ...');
+    });
+
+    it('should return model name from context metadata', () => {
+      modelStore.isContextLoading = false;
+      modelStore.context = {
+        model: {
+          metadata: {
+            'general.name': 'Test Model Name',
+          },
+        },
+      } as any;
+
+      expect(modelStore.chatTitle).toBe('Test Model Name');
+    });
+
+    it('should return default title when no context or name', () => {
+      modelStore.isContextLoading = false;
+      modelStore.context = undefined;
+
+      expect(modelStore.chatTitle).toBe('Chat Page');
+    });
+  });
+
+  // Add tests for isModelAvailable
+  describe('isModelAvailable', () => {
+    beforeEach(() => {
+      // Set up some available models
+      modelStore.models = [
+        {id: 'model1', isDownloaded: true},
+        {id: 'model2', isDownloaded: true},
+      ] as any;
+    });
+
+    it('should return false if modelId is undefined', () => {
+      expect(modelStore.isModelAvailable(undefined)).toBe(false);
+    });
+
+    it('should return true if model exists in available models', () => {
+      // Available models are those that are downloaded
+      expect(modelStore.isModelAvailable('model1')).toBe(true);
+    });
+
+    it('should return false if model does not exist in available models', () => {
+      expect(modelStore.isModelAvailable('non-existent-model')).toBe(false);
     });
   });
 });

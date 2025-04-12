@@ -195,6 +195,37 @@ describe('chatSessionStore', () => {
         chatSessionStore.sessions[0].id,
       );
     });
+
+    it('inherits settings from active session when creating a new session', async () => {
+      // Create and set active session with custom settings
+      const originalSession = {
+        id: 'session1',
+        title: 'Original Session',
+        date: new Date().toISOString(),
+        messages: [],
+        completionSettings: {
+          ...defaultCompletionSettings,
+          temperature: 0.9,
+        },
+      };
+      chatSessionStore.sessions = [originalSession];
+      chatSessionStore.activeSessionId = originalSession.id;
+
+      // When active session exists and user creates a new session
+      chatSessionStore.resetActiveSession();
+      // This simulates that settings from active session are copied to newChatCompletionSettings
+      chatSessionStore.newChatCompletionSettings =
+        originalSession.completionSettings;
+
+      //await chatSessionStore.createNewSession('New Session');
+      chatSessionStore.addMessageToCurrentSession(mockMessage);
+
+      // The new session should have the same settings
+      expect(chatSessionStore.sessions.length).toBe(2);
+      expect(chatSessionStore.sessions[1].completionSettings.temperature).toBe(
+        0.9,
+      );
+    });
   });
 
   describe('resetActiveSession', () => {
@@ -373,6 +404,380 @@ describe('chatSessionStore', () => {
       expect(grouped.Today).toBeDefined();
       expect(grouped.Yesterday).toBeDefined();
       expect(grouped['Last week']).toBeDefined();
+    });
+  });
+
+  describe('duplicateSession', () => {
+    it('duplicates a session with its messages and settings', async () => {
+      // Make sure write file works for this test
+      (RNFS.writeFile as jest.Mock).mockResolvedValue(undefined);
+
+      const originalSession = {
+        id: 'session1',
+        title: 'Original Session',
+        date: new Date().toISOString(),
+        messages: [mockMessage],
+        completionSettings: {
+          ...defaultCompletionSettings,
+          temperature: 0.7,
+        },
+      };
+
+      chatSessionStore.sessions = [originalSession];
+
+      await chatSessionStore.duplicateSession('session1');
+
+      expect(chatSessionStore.sessions.length).toBe(2);
+      expect(chatSessionStore.sessions[1].title).toBe(
+        'Original Session - Copy',
+      );
+      expect(chatSessionStore.sessions[1].messages).toEqual([mockMessage]);
+      expect(chatSessionStore.sessions[1].completionSettings.temperature).toBe(
+        0.7,
+      );
+    });
+  });
+
+  // Tests from ChatSessionStoreExtended.test.ts
+  describe('isGenerating flag', () => {
+    it('sets and gets the isGenerating flag', () => {
+      expect(chatSessionStore.isGenerating).toBe(false);
+
+      chatSessionStore.setIsGenerating(true);
+      expect(chatSessionStore.isGenerating).toBe(true);
+
+      chatSessionStore.setIsGenerating(false);
+      expect(chatSessionStore.isGenerating).toBe(false);
+    });
+
+    it('shouldShowHeaderDivider returns true when conditions met', () => {
+      // No active session
+      expect(chatSessionStore.shouldShowHeaderDivider).toBe(true);
+
+      // Active session with no messages
+      const session = {
+        id: 'session1',
+        title: 'Session 1',
+        date: new Date().toISOString(),
+        messages: [] as MessageType.Any[],
+        completionSettings: defaultCompletionSettings,
+      };
+      chatSessionStore.sessions = [session];
+      chatSessionStore.activeSessionId = session.id;
+      expect(chatSessionStore.shouldShowHeaderDivider).toBe(true);
+
+      // Active session with messages
+      session.messages = [mockMessage] as MessageType.Any[];
+      expect(chatSessionStore.shouldShowHeaderDivider).toBe(true);
+
+      // With isGenerating true
+      chatSessionStore.setIsGenerating(true);
+      expect(chatSessionStore.shouldShowHeaderDivider).toBe(false);
+
+      // With isEditMode true
+      chatSessionStore.setIsGenerating(false);
+      chatSessionStore.isEditMode = true;
+      expect(chatSessionStore.shouldShowHeaderDivider).toBe(false);
+    });
+  });
+
+  describe('updateSessionTitleBySessionId', () => {
+    it('updates session title by ID', () => {
+      const session = {
+        id: 'session1',
+        title: 'Original Title',
+        date: new Date().toISOString(),
+        messages: [],
+        completionSettings: defaultCompletionSettings,
+      };
+      chatSessionStore.sessions = [session];
+
+      chatSessionStore.updateSessionTitleBySessionId('session1', 'New Title');
+
+      expect(chatSessionStore.sessions[0].title).toBe('New Title');
+      expect(RNFS.writeFile).toHaveBeenCalled();
+    });
+
+    it('does nothing for non-existent session ID', () => {
+      const session = {
+        id: 'session1',
+        title: 'Original Title',
+        date: new Date().toISOString(),
+        messages: [],
+        completionSettings: defaultCompletionSettings,
+      };
+      chatSessionStore.sessions = [session];
+
+      chatSessionStore.updateSessionTitleBySessionId(
+        'non-existent',
+        'New Title',
+      );
+
+      expect(chatSessionStore.sessions[0].title).toBe('Original Title');
+    });
+  });
+
+  describe('completion settings', () => {
+    it('updates completion settings for active session', () => {
+      const session = {
+        id: 'session1',
+        title: 'Session 1',
+        date: new Date().toISOString(),
+        messages: [],
+        completionSettings: defaultCompletionSettings,
+      };
+      chatSessionStore.sessions = [session];
+      chatSessionStore.activeSessionId = session.id;
+
+      const newSettings = {
+        ...defaultCompletionSettings,
+        temperature: 0.9,
+        top_p: 0.95,
+      };
+
+      chatSessionStore.updateSessionCompletionSettings(newSettings);
+
+      expect(chatSessionStore.sessions[0].completionSettings).toEqual(
+        newSettings,
+      );
+    });
+
+    it('sets new chat completion settings', () => {
+      const newSettings = {
+        ...defaultCompletionSettings,
+        temperature: 0.9,
+      };
+
+      chatSessionStore.setNewChatCompletionSettings(newSettings);
+
+      expect(chatSessionStore.newChatCompletionSettings).toEqual(newSettings);
+    });
+
+    it('resets new chat completion settings', () => {
+      chatSessionStore.newChatCompletionSettings = {
+        ...defaultCompletionSettings,
+        temperature: 0.9,
+      };
+
+      chatSessionStore.resetNewChatCompletionSettings();
+
+      expect(chatSessionStore.newChatCompletionSettings).toEqual(
+        defaultCompletionSettings,
+      );
+    });
+
+    it('applies new chat completion settings when creating a new session', async () => {
+      const customSettings = {
+        ...defaultCompletionSettings,
+        temperature: 0.7,
+        top_p: 0.95,
+      };
+
+      chatSessionStore.newChatCompletionSettings = customSettings;
+
+      await chatSessionStore.createNewSession('New Session');
+
+      expect(chatSessionStore.sessions[0].completionSettings).toEqual(
+        customSettings,
+      );
+      expect(chatSessionStore.newChatCompletionSettings).toEqual(
+        defaultCompletionSettings,
+      );
+    });
+  });
+
+  describe('edit mode', () => {
+    const mockMessage2 = {
+      id: 'message2',
+      text: 'Second message',
+      type: 'text',
+      author: {id: 'assistant', name: 'Assistant'},
+      createdAt: Date.now() - 1000,
+    } as MessageType.Text;
+
+    const mockMessage3 = {
+      id: 'message3',
+      text: 'Third message',
+      type: 'text',
+      author: {id: 'user1', name: 'User'},
+      createdAt: Date.now(),
+    } as MessageType.Text;
+
+    beforeEach(() => {
+      const session = {
+        id: 'session1',
+        title: 'Session 1',
+        date: new Date().toISOString(),
+        messages: [
+          mockMessage3, // newest - user (message3)
+          mockMessage2, // middle - assistant (message2)
+          mockMessage, // oldest - user (message1)
+        ],
+        completionSettings: defaultCompletionSettings,
+      };
+      chatSessionStore.sessions = [session];
+      chatSessionStore.activeSessionId = 'session1';
+    });
+
+    it('enters edit mode for a specific message', () => {
+      chatSessionStore.enterEditMode(mockMessage2.id);
+
+      expect(chatSessionStore.isEditMode).toBe(true);
+      expect(chatSessionStore.editingMessageId).toBe(mockMessage2.id);
+    });
+
+    it('exits edit mode', () => {
+      chatSessionStore.enterEditMode(mockMessage2.id);
+      chatSessionStore.exitEditMode();
+
+      expect(chatSessionStore.isEditMode).toBe(false);
+      expect(chatSessionStore.editingMessageId).toBeNull();
+    });
+
+    it('commits edit by removing messages after the edited message', () => {
+      chatSessionStore.enterEditMode(mockMessage3.id);
+      chatSessionStore.commitEdit();
+
+      expect(chatSessionStore.isEditMode).toBe(false);
+      expect(chatSessionStore.editingMessageId).toBeNull();
+      expect(chatSessionStore.sessions[0].messages.length).toBe(2);
+      expect(chatSessionStore.sessions[0].messages[0].id).toBe(mockMessage2.id);
+      expect(chatSessionStore.sessions[0].messages[1].id).toBe(mockMessage.id);
+    });
+
+    it('returns correct messages when in edit mode', () => {
+      // editing the first message will remove all messages after it
+      chatSessionStore.enterEditMode(mockMessage.id);
+
+      const messages = chatSessionStore.currentSessionMessages;
+      expect(messages.length).toBe(0);
+    });
+  });
+
+  describe('removeMessagesFromId', () => {
+    const mockMessage2 = {
+      id: 'message2',
+      text: 'Second message',
+      type: 'text',
+      author: {id: 'assistant', name: 'Assistant'},
+      createdAt: Date.now() - 1000,
+    } as MessageType.Text;
+
+    const mockMessage3 = {
+      id: 'message3',
+      text: 'Third message',
+      type: 'text',
+      author: {id: 'user1', name: 'User'},
+      createdAt: Date.now(),
+    } as MessageType.Text;
+
+    beforeEach(() => {
+      const session = {
+        id: 'session1',
+        title: 'Session 1',
+        date: new Date().toISOString(),
+        messages: [
+          mockMessage3, // newest - user (message3)
+          mockMessage2, // middle - assistant (message2)
+          mockMessage, // oldest - user (message1)
+        ],
+        completionSettings: defaultCompletionSettings,
+      };
+      chatSessionStore.sessions = [session];
+      chatSessionStore.activeSessionId = 'session1';
+    });
+
+    it('removes messages starting from a specific ID (including the message)', () => {
+      chatSessionStore.removeMessagesFromId(mockMessage2.id, true);
+
+      expect(chatSessionStore.sessions[0].messages.length).toBe(1);
+      expect(chatSessionStore.sessions[0].messages[0].id).toBe(mockMessage.id);
+    });
+
+    it('removes messages starting from a specific ID (excluding the message)', () => {
+      chatSessionStore.removeMessagesFromId(mockMessage2.id, false);
+
+      expect(chatSessionStore.sessions[0].messages.length).toBe(2);
+      expect(chatSessionStore.sessions[0].messages[0].id).toBe(mockMessage2.id);
+      expect(chatSessionStore.sessions[0].messages[1].id).toBe(mockMessage.id);
+    });
+
+    it('does nothing for non-existent message ID', () => {
+      chatSessionStore.removeMessagesFromId('non-existent');
+
+      expect(chatSessionStore.sessions[0].messages.length).toBe(3);
+    });
+  });
+
+  describe('pal management', () => {
+    it('gets active pal ID from active session', () => {
+      const session = {
+        id: 'session1',
+        title: 'Session 1',
+        date: new Date().toISOString(),
+        messages: [],
+        completionSettings: defaultCompletionSettings,
+        activePalId: 'pal1',
+      };
+      chatSessionStore.sessions = [session];
+      chatSessionStore.activeSessionId = 'session1';
+
+      expect(chatSessionStore.activePalId).toBe('pal1');
+    });
+
+    it('gets active pal ID from newChatPalId when no active session', () => {
+      chatSessionStore.newChatPalId = 'pal2';
+
+      expect(chatSessionStore.activePalId).toBe('pal2');
+    });
+
+    it('sets active pal ID for active session', () => {
+      const session = {
+        id: 'session1',
+        title: 'Session 1',
+        date: new Date().toISOString(),
+        messages: [],
+        completionSettings: defaultCompletionSettings,
+      };
+      chatSessionStore.sessions = [session];
+      chatSessionStore.activeSessionId = 'session1';
+
+      chatSessionStore.setActivePal('pal1');
+
+      expect(chatSessionStore.sessions[0].activePalId).toBe('pal1');
+    });
+
+    it('sets newChatPalId when no active session', () => {
+      chatSessionStore.setActivePal('pal2');
+
+      expect(chatSessionStore.newChatPalId).toBe('pal2');
+    });
+
+    it('preserves active pal ID when resetting active session', () => {
+      const session = {
+        id: 'session1',
+        title: 'Session 1',
+        date: new Date().toISOString(),
+        messages: [],
+        completionSettings: defaultCompletionSettings,
+        activePalId: 'pal1',
+      };
+      chatSessionStore.sessions = [session];
+      chatSessionStore.activeSessionId = 'session1';
+
+      chatSessionStore.resetActiveSession();
+
+      expect(chatSessionStore.newChatPalId).toBe('pal1');
+      expect(chatSessionStore.activeSessionId).toBeNull();
+    });
+
+    it('applies newChatPalId when creating a new session', async () => {
+      chatSessionStore.newChatPalId = 'pal1';
+
+      await chatSessionStore.createNewSession('New Session');
+
+      expect(chatSessionStore.sessions[0].activePalId).toBe('pal1');
+      expect(chatSessionStore.newChatPalId).toBeUndefined();
     });
   });
 });

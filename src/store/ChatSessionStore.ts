@@ -8,6 +8,7 @@ import {MessageType} from '../utils/types';
 
 const NEW_SESSION_TITLE = 'New Session';
 const TITLE_LIMIT = 40;
+const GLOBAL_SETTINGS_FILE = 'global-completion-settings.json';
 
 export interface SessionMetaData {
   id: string;
@@ -38,6 +39,7 @@ class ChatSessionStore {
   constructor() {
     makeAutoObservable(this);
     this.loadSessionList();
+    this.loadGlobalSettings();
   }
 
   get shouldShowHeaderDivider(): boolean {
@@ -62,6 +64,35 @@ class ChatSessionStore {
       });
     } catch (error) {
       console.error('Failed to load session list:', error);
+    }
+  }
+
+  async loadGlobalSettings(): Promise<void> {
+    const path = `${RNFS.DocumentDirectoryPath}/${GLOBAL_SETTINGS_FILE}`;
+    try {
+      const exists = await RNFS.exists(path);
+      if (exists) {
+        const data = await RNFS.readFile(path);
+        runInAction(() => {
+          this.newChatCompletionSettings = JSON.parse(data);
+        });
+      } else {
+        // If file doesn't exist, persist default settings
+        await this.saveGlobalSettings();
+      }
+    } catch (error) {
+      console.error('Failed to load global settings:', error);
+    }
+  }
+
+  async saveGlobalSettings(): Promise<void> {
+    try {
+      await RNFS.writeFile(
+        `${RNFS.DocumentDirectoryPath}/${GLOBAL_SETTINGS_FILE}`,
+        JSON.stringify(this.newChatCompletionSettings),
+      );
+    } catch (error) {
+      console.error('Failed to save global settings:', error);
     }
   }
 
@@ -104,6 +135,8 @@ class ChatSessionStore {
   resetActiveSession() {
     runInAction(() => {
       this.newChatPalId = this.activePalId;
+      // Do not copy completion settings from session to global settings
+      // Instead, preserve global settings as they are
       this.exitEditMode();
       this.activeSessionId = null;
     });
@@ -113,7 +146,7 @@ class ChatSessionStore {
     runInAction(() => {
       this.exitEditMode();
       this.activeSessionId = sessionId;
-      this.newChatCompletionSettings = defaultCompletionSettings;
+      // Don't modify global settings when changing sessions
       this.newChatPalId = undefined;
     });
   }
@@ -152,7 +185,9 @@ class ChatSessionStore {
         this.saveSessionsMetadata();
       }
     } else {
-      this.createNewSession(NEW_SESSION_TITLE, [message]);
+      // Always use the global settings for new sessions
+      const settings = {...this.newChatCompletionSettings};
+      this.createNewSession(NEW_SESSION_TITLE, [message], settings);
     }
   }
 
@@ -187,10 +222,12 @@ class ChatSessionStore {
 
   setNewChatCompletionSettings(settings: CompletionParams) {
     this.newChatCompletionSettings = settings;
+    this.saveGlobalSettings();
   }
 
   resetNewChatCompletionSettings() {
-    this.newChatCompletionSettings = defaultCompletionSettings;
+    this.newChatCompletionSettings = {...defaultCompletionSettings};
+    this.saveGlobalSettings();
   }
 
   async createNewSession(
@@ -204,13 +241,8 @@ class ChatSessionStore {
       title,
       date: id,
       messages: initialMessages,
-      completionSettings,
+      completionSettings: {...completionSettings}, // Make a copy of the settings
     };
-
-    if (Object.keys(this.newChatCompletionSettings).length > 0) {
-      metaData.completionSettings = this.newChatCompletionSettings;
-      this.newChatCompletionSettings = defaultCompletionSettings;
-    }
 
     if (this.newChatPalId) {
       metaData.activePalId = this.newChatPalId;
@@ -219,6 +251,7 @@ class ChatSessionStore {
 
     this.updateSessionTitle(metaData);
     this.sessions.push(metaData);
+    console.log('this.sessions', this.sessions);
     this.activeSessionId = id;
     await RNFS.writeFile(
       `${RNFS.DocumentDirectoryPath}/session-metadata.json`,
@@ -247,6 +280,28 @@ class ChatSessionStore {
       const session = this.sessions.find(s => s.id === this.activeSessionId);
       if (session) {
         session.completionSettings = settings;
+        this.saveSessionsMetadata();
+      }
+    }
+  }
+
+  // Apply current session settings to global settings
+  applySessionSettingsToGlobal() {
+    if (this.activeSessionId) {
+      const session = this.sessions.find(s => s.id === this.activeSessionId);
+      if (session) {
+        this.newChatCompletionSettings = {...session.completionSettings};
+        this.saveGlobalSettings();
+      }
+    }
+  }
+
+  // Reset current session settings to match global settings
+  resetSessionSettingsToGlobal() {
+    if (this.activeSessionId) {
+      const session = this.sessions.find(s => s.id === this.activeSessionId);
+      if (session) {
+        session.completionSettings = {...this.newChatCompletionSettings};
         this.saveSessionsMetadata();
       }
     }

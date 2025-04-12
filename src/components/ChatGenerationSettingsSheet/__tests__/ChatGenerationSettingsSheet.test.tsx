@@ -146,7 +146,7 @@ describe('ChatGenerationSettingsSheet', () => {
     );
 
     await act(async () => {
-      fireEvent.press(getByText('Save Changes'));
+      fireEvent.press(getByText('Save'));
     });
 
     expect(chatSessionStore.updateSessionCompletionSettings).toHaveBeenCalled();
@@ -182,26 +182,18 @@ describe('ChatGenerationSettingsSheet', () => {
       fireEvent.press(getByText('Reset'));
     });
 
+    await act(async () => {
+      fireEvent.press(getByText('Reset to System Defaults'));
+    });
+
     // After reset, saving should use default settings
     await act(async () => {
-      fireEvent.press(getByText('Save Changes'));
+      fireEvent.press(getByText('Save'));
     });
 
     expect(
       chatSessionStore.updateSessionCompletionSettings,
     ).toHaveBeenCalledWith(defaultCompletionSettings);
-  });
-
-  it('handles cancel correctly', async () => {
-    const {getByText} = render(
-      <ChatGenerationSettingsSheet {...defaultProps} />,
-    );
-
-    await act(async () => {
-      fireEvent.press(getByText('Cancel'));
-    });
-
-    expect(defaultProps.onClose).toHaveBeenCalled();
   });
 
   it('validates numeric values before saving', async () => {
@@ -222,7 +214,7 @@ describe('ChatGenerationSettingsSheet', () => {
     });
 
     await act(async () => {
-      fireEvent.press(getByText('Save Changes'));
+      fireEvent.press(getByText('Save'));
     });
 
     // Should show alert for invalid value
