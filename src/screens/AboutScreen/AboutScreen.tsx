@@ -50,7 +50,6 @@ export const AboutScreen: React.FC = () => {
   const [useCase, setUseCase] = useState('');
   const [featureRequests, setFeatureRequests] = useState('');
   const [generalFeedback, setGeneralFeedback] = useState('');
-  const [email, setEmail] = useState('');
   const [usageFrequency, setUsageFrequency] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -85,7 +84,6 @@ export const AboutScreen: React.FC = () => {
         featureRequests,
         generalFeedback,
         usageFrequency,
-        email: email || undefined,
       });
       Alert.alert('Success', l10n.feedback.success);
       setShowFeedback(false);
@@ -93,7 +91,6 @@ export const AboutScreen: React.FC = () => {
       setUseCase('');
       setFeatureRequests('');
       setGeneralFeedback('');
-      setEmail('');
       setUsageFrequency('');
     } catch (error) {
       const errorMessage =
@@ -184,11 +181,11 @@ export const AboutScreen: React.FC = () => {
           <View style={styles.field}>
             <Text style={styles.label}>{l10n.feedback.useCase.label}</Text>
             <TextInput
-              value={useCase}
+              defaultValue={useCase}
               onChangeText={setUseCase}
               placeholder={l10n.feedback.useCase.placeholder}
               multiline
-              numberOfLines={3}
+              numberOfLines={4}
             />
           </View>
 
@@ -197,11 +194,11 @@ export const AboutScreen: React.FC = () => {
               {l10n.feedback.featureRequests.label}
             </Text>
             <TextInput
-              value={featureRequests}
+              defaultValue={featureRequests}
               onChangeText={setFeatureRequests}
               placeholder={l10n.feedback.featureRequests.placeholder}
               multiline
-              numberOfLines={3}
+              numberOfLines={4}
             />
           </View>
 
@@ -210,11 +207,11 @@ export const AboutScreen: React.FC = () => {
               {l10n.feedback.generalFeedback.label}
             </Text>
             <TextInput
-              value={generalFeedback}
+              defaultValue={generalFeedback}
               onChangeText={setGeneralFeedback}
               placeholder={l10n.feedback.generalFeedback.placeholder}
               multiline
-              numberOfLines={3}
+              numberOfLines={4}
             />
           </View>
 
@@ -244,17 +241,6 @@ export const AboutScreen: React.FC = () => {
                 },
               ]}
               style={styles.segmentedButtons}
-            />
-          </View>
-
-          <View style={styles.field}>
-            <Text style={styles.label}>Email (optional)</Text>
-            <TextInput
-              value={email}
-              onChangeText={setEmail}
-              placeholder={l10n.feedback.email.placeholder}
-              keyboardType="email-address"
-              autoCapitalize="none"
             />
           </View>
         </Sheet.ScrollView>

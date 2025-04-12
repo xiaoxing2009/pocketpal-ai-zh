@@ -19,7 +19,6 @@ type FeedbackData = {
   featureRequests: string;
   generalFeedback: string;
   usageFrequency: string;
-  email?: string;
   appFeedbackId: string;
 };
 
