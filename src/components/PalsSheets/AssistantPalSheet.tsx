@@ -1,4 +1,10 @@
-import React, {useContext, useRef, useEffect, useCallback} from 'react';
+import React, {
+  useContext,
+  useRef,
+  useEffect,
+  useCallback,
+  useMemo,
+} from 'react';
 import {View, TextInput as RNTextInput} from 'react-native';
 import {Button} from 'react-native-paper';
 import {observer} from 'mobx-react-lite';
@@ -14,7 +20,7 @@ import {FormField} from './FormField';
 import {SystemPromptSection} from './SystemPromptSection';
 import {ColorSection} from './ColorSection';
 import {ModelSelector} from './ModelSelector';
-import {assistantFormSchema, PalType, type AssistantFormData} from './types';
+import {createSchemaWithL10n, PalType, type AssistantFormData} from './types';
 import {ModelNotAvailable} from './ModelNotAvailable';
 
 interface AssistantPalSheetProps {
@@ -41,6 +47,10 @@ export const AssistantPalSheet: React.FC<AssistantPalSheetProps> = observer(
     const styles = createStyles(theme);
     const l10n = useContext(L10nContext);
 
+    // Create localized schema using current l10n context
+    const schemas = useMemo(() => createSchemaWithL10n(l10n), [l10n]);
+    const assistantFormSchema = schemas.assistantSchema;
+
     const inputRefs = useRef<{[key: string]: RNTextInput | null}>({});
 
     const methods = useForm<AssistantFormData>({
@@ -59,12 +69,15 @@ export const AssistantPalSheet: React.FC<AssistantPalSheetProps> = observer(
       if (formState.useAIPrompt) {
         if (!formState.generatingPrompt) {
           methods.setError('generatingPrompt', {
-            message: 'Generating prompt is required',
+            message:
+              l10n.components.assistantPalSheet.validation
+                .generatingPromptRequired,
           });
         }
         if (!formState.promptGenerationModel) {
           methods.setError('promptGenerationModel', {
-            message: 'Prompt generation model is required',
+            message:
+              l10n.components.assistantPalSheet.validation.promptModelRequired,
           });
         }
         return Boolean(
@@ -102,7 +115,11 @@ export const AssistantPalSheet: React.FC<AssistantPalSheetProps> = observer(
 
     return (
       <Sheet
-        title={`${editPal ? 'Edit' : 'Create'} Assistant Pal`}
+        title={
+          editPal
+            ? l10n.components.assistantPalSheet.title.edit
+            : l10n.components.assistantPalSheet.title.create
+        }
         isVisible={isVisible}
         displayFullHeight
         onClose={handleClose}>
@@ -114,8 +131,10 @@ export const AssistantPalSheet: React.FC<AssistantPalSheetProps> = observer(
               <FormField
                 ref={ref => (inputRefs.current.name = ref)}
                 name="name"
-                label="Pal Name"
-                placeholder="Name"
+                label={l10n.components.assistantPalSheet.palName}
+                placeholder={
+                  l10n.components.assistantPalSheet.palNamePlaceholder
+                }
                 required
                 onSubmitEditing={() => inputRefs.current.defaultModel?.focus()}
               />
@@ -127,8 +146,10 @@ export const AssistantPalSheet: React.FC<AssistantPalSheetProps> = observer(
                   <ModelSelector
                     value={value}
                     onChange={onChange}
-                    label="Default Model"
-                    placeholder="Select model"
+                    label={l10n.components.assistantPalSheet.defaultModel}
+                    placeholder={
+                      l10n.components.assistantPalSheet.defaultModelPlaceholder
+                    }
                     error={!!error}
                     helperText={error?.message}
                     inputRef={ref => (inputRefs.current.defaultModel = ref)}
@@ -158,13 +179,15 @@ export const AssistantPalSheet: React.FC<AssistantPalSheetProps> = observer(
                 style={styles.actionBtn}
                 mode="text"
                 onPress={handleClose}>
-                {l10n.cancel}
+                {l10n.common.cancel}
               </Button>
               <Button
                 style={styles.actionBtn}
                 mode="contained"
                 onPress={methods.handleSubmit(onSubmit)}>
-                {editPal ? l10n.save : 'Create'}
+                {editPal
+                  ? l10n.common.save
+                  : l10n.components.assistantPalSheet.create}
               </Button>
             </View>
           </Sheet.Actions>

@@ -1,4 +1,10 @@
-import React, {useContext, useRef, useEffect, useCallback} from 'react';
+import React, {
+  useContext,
+  useRef,
+  useEffect,
+  useCallback,
+  useMemo,
+} from 'react';
 import {View, TextInput as RNTextInput} from 'react-native';
 import {Button} from 'react-native-paper';
 import {observer} from 'mobx-react-lite';
@@ -15,7 +21,7 @@ import {SystemPromptSection} from './SystemPromptSection';
 import {ColorSection} from './ColorSection';
 import {ModelSelector} from './ModelSelector';
 import {SectionDivider} from './SectionDivider';
-import {roleplayFormSchema, PalType, type RoleplayFormData} from './types';
+import {createSchemaWithL10n, PalType, type RoleplayFormData} from './types';
 import {generateRoleplayPrompt} from './utils';
 
 interface RoleplayPalSheetProps {
@@ -46,6 +52,10 @@ export const RoleplayPalSheet: React.FC<RoleplayPalSheetProps> = observer(
     const theme = useTheme();
     const styles = createStyles(theme);
     const l10n = useContext(L10nContext);
+
+    // Create localized schema using current l10n context
+    const schemas = useMemo(() => createSchemaWithL10n(l10n), [l10n]);
+    const roleplayFormSchema = schemas.roleplaySchema;
 
     const inputRefs = useRef<{[key: string]: RNTextInput | null}>({});
 
@@ -85,7 +95,8 @@ export const RoleplayPalSheet: React.FC<RoleplayPalSheetProps> = observer(
       if (formState.useAIPrompt) {
         if (!formState.promptGenerationModel) {
           methods.setError('promptGenerationModel', {
-            message: 'Prompt generation model is required',
+            message:
+              l10n.components.roleplayPalSheet.validation.promptModelRequired,
           });
           result = false;
         }
@@ -113,7 +124,11 @@ export const RoleplayPalSheet: React.FC<RoleplayPalSheetProps> = observer(
 
     return (
       <Sheet
-        title={`${editPal ? 'Edit' : 'Create'} Roleplay Pal`}
+        title={
+          editPal
+            ? l10n.components.roleplayPalSheet.title.edit
+            : l10n.components.roleplayPalSheet.title.create
+        }
         isVisible={isVisible}
         displayFullHeight
         onClose={handleClose}>
@@ -129,8 +144,10 @@ export const RoleplayPalSheet: React.FC<RoleplayPalSheetProps> = observer(
                 <FormField
                   ref={ref => (inputRefs.current.name = ref)}
                   name="name"
-                  label="Pal Name"
-                  placeholder="Name"
+                  label={l10n.components.roleplayPalSheet.palName}
+                  placeholder={
+                    l10n.components.roleplayPalSheet.palNamePlaceholder
+                  }
                   required
                   onSubmitEditing={() =>
                     inputRefs.current.defaultModel?.focus()
@@ -144,8 +161,10 @@ export const RoleplayPalSheet: React.FC<RoleplayPalSheetProps> = observer(
                     <ModelSelector
                       value={value}
                       onChange={onChange}
-                      label="Default Model"
-                      placeholder="Select model"
+                      label={l10n.components.roleplayPalSheet.defaultModel}
+                      placeholder={
+                        l10n.components.roleplayPalSheet.defaultModelPlaceholder
+                      }
                       error={!!error}
                       helperText={error?.message}
                       inputRef={ref => (inputRefs.current.defaultModel = ref)}
@@ -154,13 +173,17 @@ export const RoleplayPalSheet: React.FC<RoleplayPalSheetProps> = observer(
                   )}
                 />
 
-                <SectionDivider label="Description" />
+                <SectionDivider
+                  label={l10n.components.roleplayPalSheet.descriptionSection}
+                />
 
                 <FormField
                   ref={ref => (inputRefs.current.world = ref)}
                   name="world"
-                  label="World"
-                  placeholder="Fantasy"
+                  label={l10n.components.roleplayPalSheet.world}
+                  placeholder={
+                    l10n.components.roleplayPalSheet.worldPlaceholder
+                  }
                   required
                   onSubmitEditing={() => inputRefs.current.location?.focus()}
                 />
@@ -168,9 +191,11 @@ export const RoleplayPalSheet: React.FC<RoleplayPalSheetProps> = observer(
                 <FormField
                   ref={ref => (inputRefs.current.location = ref)}
                   name="location"
-                  label="Location"
-                  placeholder="Enchanted Forest"
-                  sublabel="Where does the story take place?"
+                  label={l10n.components.roleplayPalSheet.location}
+                  placeholder={
+                    l10n.components.roleplayPalSheet.locationPlaceholder
+                  }
+                  sublabel={l10n.components.roleplayPalSheet.locationSublabel}
                   required
                   onSubmitEditing={() => inputRefs.current.aiRole?.focus()}
                 />
@@ -178,9 +203,11 @@ export const RoleplayPalSheet: React.FC<RoleplayPalSheetProps> = observer(
                 <FormField
                   ref={ref => (inputRefs.current.aiRole = ref)}
                   name="aiRole"
-                  label="AI's Role"
-                  placeholder="Eldara, a mischievous forest sprite"
-                  sublabel="Set the role for character"
+                  label={l10n.components.roleplayPalSheet.aiRole}
+                  placeholder={
+                    l10n.components.roleplayPalSheet.aiRolePlaceholder
+                  }
+                  sublabel={l10n.components.roleplayPalSheet.aiRoleSublabel}
                   required
                   onSubmitEditing={() => inputRefs.current.userRole?.focus()}
                 />
@@ -188,9 +215,11 @@ export const RoleplayPalSheet: React.FC<RoleplayPalSheetProps> = observer(
                 <FormField
                   ref={ref => (inputRefs.current.userRole = ref)}
                   name="userRole"
-                  label="User Role"
-                  placeholder="Sir Elandor, a brave knight"
-                  sublabel="Who are you?"
+                  label={l10n.components.roleplayPalSheet.userRole}
+                  placeholder={
+                    l10n.components.roleplayPalSheet.userRolePlaceholder
+                  }
+                  sublabel={l10n.components.roleplayPalSheet.userRoleSublabel}
                   required
                   onSubmitEditing={() => inputRefs.current.situation?.focus()}
                 />
@@ -198,8 +227,10 @@ export const RoleplayPalSheet: React.FC<RoleplayPalSheetProps> = observer(
                 <FormField
                   ref={ref => (inputRefs.current.situation = ref)}
                   name="situation"
-                  label="Situation"
-                  placeholder="Rescue mission, solving a mystery"
+                  label={l10n.components.roleplayPalSheet.situation}
+                  placeholder={
+                    l10n.components.roleplayPalSheet.situationPlaceholder
+                  }
                   required
                   onSubmitEditing={() => inputRefs.current.toneStyle?.focus()}
                 />
@@ -207,8 +238,10 @@ export const RoleplayPalSheet: React.FC<RoleplayPalSheetProps> = observer(
                 <FormField
                   ref={ref => (inputRefs.current.toneStyle = ref)}
                   name="toneStyle"
-                  label="Tone/Style"
-                  placeholder="Serious"
+                  label={l10n.components.roleplayPalSheet.toneStyle}
+                  placeholder={
+                    l10n.components.roleplayPalSheet.toneStylePlaceholder
+                  }
                   required
                 />
               </View>
@@ -228,13 +261,15 @@ export const RoleplayPalSheet: React.FC<RoleplayPalSheetProps> = observer(
                 style={styles.actionBtn}
                 mode="text"
                 onPress={handleClose}>
-                {l10n.cancel}
+                {l10n.common.cancel}
               </Button>
               <Button
                 style={styles.actionBtn}
                 mode="contained"
                 onPress={methods.handleSubmit(onSubmit)}>
-                {editPal ? l10n.save : 'Create'}
+                {editPal
+                  ? l10n.common.save
+                  : l10n.components.roleplayPalSheet.create}
               </Button>
             </View>
           </Sheet.Actions>

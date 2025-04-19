@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useMemo, useContext} from 'react';
 import {StyleSheet, View} from 'react-native';
 
 import {Text} from 'react-native-paper';
@@ -6,6 +6,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import {useTheme} from '../../../hooks';
+import {L10nContext} from '../../../utils';
 
 import {styles} from './styles';
 
@@ -30,6 +31,7 @@ export const ChatTemplatePicker: React.FC<TemplatePickerProps> = ({
   handleChatTemplateNameChange,
 }) => {
   const theme = useTheme();
+  const l10n = useContext(L10nContext);
 
   const pickerItems = useMemo(
     () =>
@@ -71,7 +73,7 @@ export const ChatTemplatePicker: React.FC<TemplatePickerProps> = ({
 
   return (
     <View style={styles.container}>
-      <Text variant="labelMedium">Base Chat Template:</Text>
+      <Text variant="labelMedium">{l10n.models.chatTemplate.label}</Text>
       <View style={styles.pickerContainer}>
         <RNPickerSelect
           onValueChange={handleChatTemplateNameChange}

@@ -39,7 +39,7 @@ export const HeaderRight: React.FC = observer(() => {
     setMenuVisible(true);
   };
   const closeMenu = () => setMenuVisible(false);
-  const i10n = useContext(L10nContext);
+  const l10n = useContext(L10nContext);
 
   const models = modelStore.availableModels;
   const activeModelId = modelStore.activeModelId;
@@ -59,21 +59,25 @@ export const HeaderRight: React.FC = observer(() => {
 
   const onPressDelete = () => {
     if (session?.id) {
-      Alert.alert(i10n.deleteChatTitle, i10n.deleteChatMessage, [
-        {
-          text: i10n.cancel,
-          style: 'cancel',
-        },
-        {
-          text: i10n.delete,
-          style: 'destructive',
-          onPress: () => {
-            chatSessionStore.resetActiveSession();
-            chatSessionStore.deleteSession(session.id);
-            closeMenu();
+      Alert.alert(
+        l10n.components.headerRight.deleteChatTitle,
+        l10n.components.headerRight.deleteChatMessage,
+        [
+          {
+            text: l10n.common.cancel,
+            style: 'cancel',
           },
-        },
-      ]);
+          {
+            text: l10n.common.delete,
+            style: 'destructive',
+            onPress: () => {
+              chatSessionStore.resetActiveSession();
+              chatSessionStore.deleteSession(session.id);
+              closeMenu();
+            },
+          },
+        ],
+      );
     }
     closeMenu();
   };
@@ -115,7 +119,7 @@ export const HeaderRight: React.FC = observer(() => {
         }>
         <Menu.Item
           onPress={onPressGenerationSettings}
-          label={i10n.generationSettings}
+          label={l10n.components.headerRight.generationSettings}
           leadingIcon={() => <SettingsIcon stroke={theme.colors.primary} />}
         />
         <Menu.Item
@@ -129,7 +133,7 @@ export const HeaderRight: React.FC = observer(() => {
               selected={model.id === activeModelId}
             />
           ))}
-          label={i10n.model}
+          label={l10n.components.headerRight.model}
           leadingIcon={() => <GridIcon stroke={theme.colors.primary} />}
         />
         {session?.id && (
@@ -137,31 +141,31 @@ export const HeaderRight: React.FC = observer(() => {
             <Menu.Separator />
             <Menu.Item
               onPress={onPressDuplicate}
-              label={i10n.duplicateChatHistory}
+              label={l10n.components.headerRight.duplicateChatHistory}
               leadingIcon={() => (
                 <DuplicateIcon stroke={theme.colors.primary} />
               )}
             />
             {/* <Menu.Item
               onPress={() => {}}
-              label={i10n.exportChatSession}
+              label={l10n.components.headerRight.exportChatSession}
               leadingIcon={() => <ShareIcon stroke={theme.colors.primary} />}
             /> */}
             <Menu.Item
               onPress={onPressRename}
-              label={i10n.rename}
+              label={l10n.common.rename}
               leadingIcon={() => <EditIcon stroke={theme.colors.primary} />}
             />
             <Menu.Item
               onPress={onPressDelete}
-              label={i10n.delete}
+              label={l10n.common.delete}
               labelStyle={{color: theme.colors.error}}
               leadingIcon={() => <TrashIcon stroke={theme.colors.error} />}
             />
             {/* <Menu.Separator />
             <Menu.Item
               onPress={() => {}}
-              label={i10n.makeChatTemporary}
+              label={l10n.components.headerRight.makeChatTemporary}
               leadingIcon={() => (
                 <ClockFastForwardIcon stroke={theme.colors.primary} />
               )}

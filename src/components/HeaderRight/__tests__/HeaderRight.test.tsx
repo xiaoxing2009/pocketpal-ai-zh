@@ -9,6 +9,7 @@ import {chatSessionStore, modelStore, uiStore} from '../../../store';
 import {defaultCompletionSettings} from '../../../store/ChatSessionStore';
 import {L10nContext} from '../../../utils';
 import {modelsList} from '../../../../jest/fixtures/models';
+import {l10n} from '../../../utils/l10n';
 
 jest.mock('../../UsageStats', () => ({
   UsageStats: jest.fn(() => {
@@ -30,23 +31,9 @@ jest.mock(
   }),
 );
 
-// Using only the translations we need for the tests
-const mockI18nValues = {
-  model: 'Model',
-  generationSettings: 'Generation settings',
-  duplicateChatHistory: 'Duplicate chat history',
-  rename: 'Rename',
-  delete: 'Delete',
-  deleteChatTitle: 'Delete Chat',
-  deleteChatMessage: 'Are you sure you want to delete this chat?',
-  cancel: 'Cancel',
-} as const;
-
 const renderWithI18n = (ui: React.ReactElement) => {
   return render(
-    <L10nContext.Provider value={mockI18nValues as any}>
-      {ui}
-    </L10nContext.Provider>,
+    <L10nContext.Provider value={l10n.en as any}>{ui}</L10nContext.Provider>,
   );
 };
 
@@ -119,11 +106,17 @@ describe('HeaderRight', () => {
         const menuButton = getByTestId('menu-button');
         fireEvent.press(menuButton);
 
-        expect(await findByText('Generation settings')).toBeTruthy();
-        expect(await findByText('Model')).toBeTruthy();
-        expect(await findByText('Duplicate chat history')).toBeTruthy();
-        expect(await findByText('Rename')).toBeTruthy();
-        expect(await findByText('Delete')).toBeTruthy();
+        expect(
+          await findByText(l10n.en.components.headerRight.generationSettings),
+        ).toBeTruthy();
+        expect(
+          await findByText(l10n.en.components.headerRight.model),
+        ).toBeTruthy();
+        expect(
+          await findByText(l10n.en.components.headerRight.duplicateChatHistory),
+        ).toBeTruthy();
+        expect(await findByText(l10n.en.common.rename)).toBeTruthy();
+        expect(await findByText(l10n.en.common.delete)).toBeTruthy();
       });
 
       it('handles generation settings press', async () => {
@@ -131,7 +124,9 @@ describe('HeaderRight', () => {
         const menuButton = getByTestId('menu-button');
         fireEvent.press(menuButton);
 
-        const settingsButton = await findByText('Generation settings');
+        const settingsButton = await findByText(
+          l10n.en.components.headerRight.generationSettings,
+        );
         fireEvent.press(settingsButton);
 
         expect(getByTestId('chat-generation-settings-sheet')).toBeTruthy();

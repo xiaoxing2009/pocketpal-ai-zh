@@ -6,6 +6,7 @@ import {
   mockHFModel2,
 } from '../../../../../../jest/fixtures/models';
 import {formatNumber, timeAgo} from '../../../../../utils';
+import {l10n} from '../../../../../utils/l10n';
 
 describe('DetailsView', () => {
   it('renders basic model information', () => {
@@ -20,7 +21,9 @@ describe('DetailsView', () => {
     const {getByText} = render(<DetailsView hfModel={mockHFModel1} />);
 
     // Check stats are displayed with correct formatting
-    expect(getByText(timeAgo(mockHFModel1.lastModified))).toBeDefined();
+    expect(
+      getByText(timeAgo(mockHFModel1.lastModified, l10n.en, 'long')),
+    ).toBeDefined();
     expect(getByText(formatNumber(mockHFModel1.downloads, 0))).toBeDefined();
     expect(getByText(formatNumber(mockHFModel1.likes, 0))).toBeDefined();
   });

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {Keyboard, Platform, TouchableOpacity, View} from 'react-native';
 
 import {observer} from 'mobx-react';
@@ -17,7 +17,12 @@ import {createStyles} from './styles';
 import {hfStore} from '../../../../store';
 
 import {HuggingFaceModel} from '../../../../utils/types';
-import {extractHFModelTitle, formatNumber, timeAgo} from '../../../../utils';
+import {
+  extractHFModelTitle,
+  formatNumber,
+  timeAgo,
+  L10nContext,
+} from '../../../../utils';
 
 interface SearchViewProps {
   testID?: string;
@@ -29,6 +34,7 @@ export const SearchView = observer(
   ({testID, onModelSelect, onChangeSearchQuery}: SearchViewProps) => {
     const theme = useTheme();
     const insets = useSafeAreaInsets();
+    const l10n = useContext(L10nContext);
     const [keyboardVisible, setKeyboardVisible] = useState(false);
 
     useEffect(() => {
@@ -69,7 +75,7 @@ export const SearchView = observer(
               color={theme.colors.onSurfaceVariant}
             />
             <Text variant="labelSmall" style={styles.statText}>
-              {timeAgo(item.lastModified, '', ' ago')}
+              {timeAgo(item.lastModified, l10n, 'short')}
             </Text>
           </View>
           <View style={styles.statItem}>
@@ -116,19 +122,23 @@ export const SearchView = observer(
           }}
           ListEmptyComponent={
             !hfStore.isLoading && searchQuery.length > 0 ? (
-              <Text style={styles.noResultsText}>No models found</Text>
+              <Text style={styles.noResultsText}>
+                {l10n.models.search.noResults}
+              </Text>
             ) : null
           }
           ListFooterComponent={() =>
             hfStore.isLoading ? (
-              <Text style={styles.loadingMoreText}>Loading more...</Text>
+              <Text style={styles.loadingMoreText}>
+                {l10n.models.search.loadingMore}
+              </Text>
             ) : null
           }
         />
         <Searchbar
           value={searchQuery}
           onChangeText={handleSearchChange}
-          placeholder="Search Hugging Face models"
+          placeholder={l10n.models.search.searchPlaceholder}
           containerStyle={styles.searchbarContainer}
         />
       </BottomSheetView>

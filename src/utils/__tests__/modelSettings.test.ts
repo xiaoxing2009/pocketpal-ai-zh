@@ -128,7 +128,6 @@ describe('modelSettings', () => {
             metadata.validation.max,
           );
         }
-        expect(metadata.descriptionKey).toBeTruthy();
       });
     });
   });

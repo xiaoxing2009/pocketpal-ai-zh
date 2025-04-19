@@ -34,15 +34,8 @@ import {createStyles} from './styles';
 
 import {chatSessionStore, modelStore, palStore} from '../../store';
 
-import {l10n} from '../../utils/l10n';
 import {MessageType, User} from '../../utils/types';
-import {
-  calculateChatMessages,
-  initLocale,
-  L10nContext,
-  unwrap,
-  UserContext,
-} from '../../utils';
+import {calculateChatMessages, unwrap, UserContext} from '../../utils';
 
 import {
   Message,
@@ -120,11 +113,6 @@ export interface ChatProps extends ChatTopLevelProps {
   isStreaming?: boolean;
   /** Indicates if the AI is currently thinking (processing but not yet streaming) */
   isThinking?: boolean;
-  /** Override the default localized copy. */
-  l10nOverride?: Partial<
-    Record<keyof (typeof l10n)[keyof typeof l10n], string>
-  >;
-  locale?: keyof typeof l10n;
   messages: MessageType.Any[];
   /** Used for pagination (infinite scroll). Called when user scrolls
    * to the very end of the list (minus `onEndReachedThreshold`).
@@ -156,8 +144,6 @@ export const ChatView = observer(
     isStopVisible,
     isStreaming = false,
     isThinking = false,
-    l10nOverride,
-    locale = 'en',
     messages,
     onAttachmentPress,
     onEndReached,
@@ -283,11 +269,6 @@ export const ChatView = observer(
         setInputText,
       });
 
-    const l10nValue = React.useMemo(
-      () => ({...l10n[locale], ...unwrap(l10nOverride)}),
-      [l10nOverride, locale],
-    );
-
     const {chatMessages, gallery} = calculateChatMessages(messages, user, {
       customDateHeaderText,
       dateFormat,
@@ -310,10 +291,6 @@ export const ChatView = observer(
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [chatMessages]);
-
-    React.useEffect(() => {
-      initLocale(locale);
-    }, [locale]);
 
     // Untestable
     /* istanbul ignore next */
@@ -728,75 +705,73 @@ export const ChatView = observer(
       : theme.colors.primary;
     return (
       <UserContext.Provider value={user}>
-        <L10nContext.Provider value={l10nValue}>
-          <View style={styles.container} onLayout={onLayout}>
-            <KeyboardAvoidingView
-              behavior="padding"
-              keyboardVerticalOffset={headerHeight}
-              style={styles.container}>
-              <View style={styles.chatContainer}>
-                <ChatHeader />
-                {renderChatList()}
-                <Animated.View
-                  onLayout={onLayoutChatInput}
-                  style={[
-                    styles.inputContainer,
-                    // eslint-disable-next-line react-native/no-inline-styles
-                    {
-                      paddingBottom: insets.bottom,
-                      transform: [{translateY}],
-                      zIndex: 10,
+        <View style={styles.container} onLayout={onLayout}>
+          <KeyboardAvoidingView
+            behavior="padding"
+            keyboardVerticalOffset={headerHeight}
+            style={styles.container}>
+            <View style={styles.chatContainer}>
+              <ChatHeader />
+              {renderChatList()}
+              <Animated.View
+                onLayout={onLayoutChatInput}
+                style={[
+                  styles.inputContainer,
+                  // eslint-disable-next-line react-native/no-inline-styles
+                  {
+                    paddingBottom: insets.bottom,
+                    transform: [{translateY}],
+                    zIndex: 10,
+                  },
+                  {backgroundColor: inputBackgroundColor},
+                ]}>
+                <ChatInput
+                  {...{
+                    ...unwrap(inputProps),
+                    isAttachmentUploading,
+                    isStreaming,
+                    onAttachmentPress,
+                    onSendPress: wrappedOnSendPress,
+                    onStopPress,
+                    chatInputHeight,
+                    inputBackgroundColor,
+                    onCancelEdit: handleCancelEdit,
+                    onPalBtnPress: () => setIsPickerVisible(!isPickerVisible),
+                    isStopVisible,
+                    isPickerVisible,
+                    sendButtonVisibilityMode,
+                    textInputProps: {
+                      ...textInputProps,
+                      value: inputText,
+                      onChangeText: setInputText,
                     },
-                    {backgroundColor: inputBackgroundColor},
-                  ]}>
-                  <ChatInput
-                    {...{
-                      ...unwrap(inputProps),
-                      isAttachmentUploading,
-                      isStreaming,
-                      onAttachmentPress,
-                      onSendPress: wrappedOnSendPress,
-                      onStopPress,
-                      chatInputHeight,
-                      inputBackgroundColor,
-                      onCancelEdit: handleCancelEdit,
-                      onPalBtnPress: () => setIsPickerVisible(!isPickerVisible),
-                      isStopVisible,
-                      isPickerVisible,
-                      sendButtonVisibilityMode,
-                      textInputProps: {
-                        ...textInputProps,
-                        value: inputText,
-                        onChangeText: setInputText,
-                      },
-                    }}
-                  />
-                </Animated.View>
-                <ChatPalModelPickerSheet
-                  isVisible={isPickerVisible}
-                  onClose={() => setIsPickerVisible(false)}
-                  onModelSelect={handleModelSelect}
-                  onPalSelect={handlePalSelect}
-                  chatInputHeight={chatInputHeight.height}
-                  keyboardHeight={keyboardHeight}
+                  }}
                 />
-              </View>
-            </KeyboardAvoidingView>
-            <ImageView
-              imageIndex={imageViewIndex}
-              images={gallery}
-              onRequestClose={handleRequestClose}
-              visible={isImageViewVisible}
-            />
-            <Menu
-              visible={menuVisible}
-              onDismiss={handleMenuDismiss}
-              selectable={false}
-              anchor={menuPosition}>
-              {menuItems.map(renderMenuItem)}
-            </Menu>
-          </View>
-        </L10nContext.Provider>
+              </Animated.View>
+              <ChatPalModelPickerSheet
+                isVisible={isPickerVisible}
+                onClose={() => setIsPickerVisible(false)}
+                onModelSelect={handleModelSelect}
+                onPalSelect={handlePalSelect}
+                chatInputHeight={chatInputHeight.height}
+                keyboardHeight={keyboardHeight}
+              />
+            </View>
+          </KeyboardAvoidingView>
+          <ImageView
+            imageIndex={imageViewIndex}
+            images={gallery}
+            onRequestClose={handleRequestClose}
+            visible={isImageViewVisible}
+          />
+          <Menu
+            visible={menuVisible}
+            onDismiss={handleMenuDismiss}
+            selectable={false}
+            anchor={menuPosition}>
+            {menuItems.map(renderMenuItem)}
+          </Menu>
+        </View>
       </UserContext.Provider>
     );
   },

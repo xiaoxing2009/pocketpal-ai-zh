@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {View} from 'react-native';
 
 import {Title, Text, Chip, Tooltip} from 'react-native-paper';
@@ -9,7 +9,12 @@ import {createStyles} from './styles';
 import {ModelFileCard} from './ModelFileCard';
 
 import {HuggingFaceModel} from '../../../../utils/types';
-import {extractHFModelTitle, formatNumber, timeAgo} from '../../../../utils';
+import {
+  extractHFModelTitle,
+  formatNumber,
+  L10nContext,
+  timeAgo,
+} from '../../../../utils';
 
 interface DetailsViewProps {
   hfModel: HuggingFaceModel;
@@ -18,6 +23,7 @@ interface DetailsViewProps {
 export const DetailsView = ({hfModel}: DetailsViewProps) => {
   const theme = useTheme();
   const styles = createStyles(theme);
+  const l10n = useContext(L10nContext);
 
   return (
     <View style={styles.content}>
@@ -35,7 +41,7 @@ export const DetailsView = ({hfModel}: DetailsViewProps) => {
       </Tooltip>
       <View style={styles.modelStats}>
         <Chip icon="clock" compact style={styles.stat}>
-          {timeAgo(hfModel.lastModified)}
+          {timeAgo(hfModel.lastModified, l10n, 'long')}
         </Chip>
         <Chip icon="download" compact style={styles.stat}>
           {formatNumber(hfModel.downloads, 0)}
@@ -49,7 +55,7 @@ export const DetailsView = ({hfModel}: DetailsViewProps) => {
           </Chip>
         )}
       </View>
-      <Title style={styles.sectionTitle}>Available GGUF Files</Title>
+      <Title style={styles.sectionTitle}>{l10n.models.details.title}</Title>
       {hfModel.siblings.map((file, index) => (
         <ModelFileCard key={index} modelFile={file} hfModel={hfModel} />
       ))}

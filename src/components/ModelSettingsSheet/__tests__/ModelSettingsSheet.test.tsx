@@ -74,7 +74,6 @@ describe('ModelSettingsSheet', () => {
     id: 'test-model',
     author: 'test-author',
     name: 'Test Model',
-    description: 'Test Description',
     size: 1000,
     params: 1000000,
     isDownloaded: true,

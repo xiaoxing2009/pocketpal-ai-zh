@@ -24,7 +24,9 @@ export const FileMessage = ({message}: FileMessageProps) => {
 
   return (
     <View
-      accessibilityLabel={l10n.fileButtonAccessibilityLabel}
+      accessibilityLabel={
+        l10n.components.fileMessage.fileButtonAccessibilityLabel
+      }
       style={container}>
       <View style={iconContainer}>
         {theme.icons?.documentIcon?.() ?? (

@@ -11,7 +11,7 @@ import {useTheme} from '../../hooks';
 
 import {styles} from './styles';
 
-import {UserContext} from '../../utils';
+import {UserContext, L10nContext} from '../../utils';
 import {MessageType} from '../../utils/types';
 
 const hapticOptions = {
@@ -33,11 +33,16 @@ export const Bubble = ({
 }) => {
   const theme = useTheme();
   const user = useContext(UserContext);
+  const l10n = useContext(L10nContext);
   const currentUserIsAuthor = user?.id === message.author.id;
   const {copyable, timings} = message.metadata || {};
-  const timingsString = `${timings?.predicted_per_token_ms?.toFixed()}ms per token, ${timings?.predicted_per_second?.toFixed(
-    2,
-  )} tokens per second`;
+
+  const timingsString = l10n.components.bubble.timingsString
+    .replace('{{predictedMs}}', timings?.predicted_per_token_ms?.toFixed())
+    .replace(
+      '{{predictedPerSecond}}',
+      timings?.predicted_per_second?.toFixed(2),
+    );
 
   const {contentContainer, dateHeaderContainer, dateHeader, iconContainer} =
     styles({

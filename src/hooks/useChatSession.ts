@@ -68,7 +68,7 @@ export const useChatSession = (
   const handleSendPress = async (message: MessageType.PartialText) => {
     const context = modelStore.context;
     if (!context) {
-      addSystemMessage(l10n.modelNotLoaded);
+      addSystemMessage(l10n.chat.modelNotLoaded);
       return;
     }
 
@@ -202,9 +202,9 @@ export const useChatSession = (
       const errorMessage = (error as Error).message;
       if (errorMessage.includes('network')) {
         // TODO: This can be removed. We don't use network for chat.
-        addSystemMessage(l10n.networkError);
+        addSystemMessage(l10n.common.networkError);
       } else {
-        addSystemMessage(`Completion failed: ${errorMessage}`);
+        addSystemMessage(`${l10n.chat.completionFailed}${errorMessage}`);
       }
     } finally {
       // Always try to deactivate keep awake in finally block
@@ -218,7 +218,7 @@ export const useChatSession = (
 
   const handleResetConversation = () => {
     conversationIdRef.current = randId();
-    addSystemMessage(l10n.conversationReset);
+    addSystemMessage(l10n.chat.conversationReset);
   };
 
   const handleStopPress = () => {

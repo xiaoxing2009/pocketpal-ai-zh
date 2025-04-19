@@ -5,17 +5,17 @@ import Slider from '@react-native-community/slider';
 import {CompletionParams} from '@pocketpalai/llama.rn';
 import {Text, Switch, SegmentedButtons} from 'react-native-paper';
 
-import {TextInput} from '../../../components';
+import {TextInput} from '..';
 
-import {useTheme} from '../../../hooks';
+import {useTheme} from '../../hooks';
 
 import {createStyles} from './styles';
 
-import {L10nContext} from '../../../utils';
+import {L10nContext} from '../../utils';
 import {
   COMPLETION_PARAMS_METADATA,
   validateNumericField,
-} from '../../../utils/modelSettings';
+} from '../../utils/modelSettings';
 
 interface Props {
   settings: CompletionParams;
@@ -42,9 +42,7 @@ export const CompletionSettings: React.FC<Props> = ({settings, onChange}) => {
       <Text variant="labelSmall" style={styles.settingLabel}>
         {name.toUpperCase().replace('_', ' ')}
       </Text>
-      <Text style={styles.description}>
-        {l10n[COMPLETION_PARAMS_METADATA[name]?.descriptionKey]}
-      </Text>
+      <Text style={styles.description}>{l10n.completionParams[name]}</Text>
       <Slider
         style={styles.slider}
         minimumValue={COMPLETION_PARAMS_METADATA[name]?.validation.min}
@@ -84,7 +82,7 @@ export const CompletionSettings: React.FC<Props> = ({settings, onChange}) => {
         <Text variant="labelSmall" style={styles.settingLabel}>
           {name.toUpperCase().replace('_', ' ')}
         </Text>
-        <Text style={styles.description}>{l10n[metadata.descriptionKey]}</Text>
+        <Text style={styles.description}>{l10n.completionParams[name]}</Text>
         <TextInput
           value={value}
           onChangeText={_value => onChange(name, _value)}
@@ -104,9 +102,7 @@ export const CompletionSettings: React.FC<Props> = ({settings, onChange}) => {
         <Text variant="labelSmall" style={styles.settingLabel}>
           {name.toUpperCase().replace('_', ' ')}
         </Text>
-        <Text style={styles.description}>
-          {l10n[COMPLETION_PARAMS_METADATA[name]?.descriptionKey]}
-        </Text>
+        <Text style={styles.description}>{l10n.completionParams[name]}</Text>
       </View>
       <Switch
         value={settings[name]}
@@ -117,8 +113,7 @@ export const CompletionSettings: React.FC<Props> = ({settings, onChange}) => {
   );
 
   const renderMirostatSelector = () => {
-    const descriptionKey = COMPLETION_PARAMS_METADATA.mirostat?.descriptionKey;
-    const description = descriptionKey ? l10n[descriptionKey] : '';
+    const description = l10n.completionParams.mirostat;
 
     return (
       <View style={styles.settingItem}>

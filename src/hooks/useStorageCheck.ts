@@ -1,8 +1,9 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useState, useContext} from 'react';
 
 import DeviceInfo from 'react-native-device-info';
 
 import {formatBytes, hasEnoughSpace} from '../utils';
+import {L10nContext} from '../utils';
 
 import {Model, ModelOrigin} from '../utils/types';
 
@@ -25,6 +26,7 @@ export const useStorageCheck = (
   options: StorageCheckOptions = {},
 ) => {
   const {enablePeriodicCheck = true, checkInterval = 10000} = options;
+  const l10n = useContext(L10nContext);
 
   const [storageStatus, setStorageStatus] = useState({
     isOk: true,
@@ -57,11 +59,14 @@ export const useStorageCheck = (
             return;
           }
 
+          // Use localized template string with variables
+          const message = l10n.storage.lowStorage
+            .replace('{{modelSize}}', formatBytes(model.size))
+            .replace('{{freeSpace}}', formatBytes(freeDisk));
+
           setStorageStatus({
             isOk: false,
-            message: `Storage low! Model ${formatBytes(
-              model.size,
-            )} > ${formatBytes(freeDisk)} free`,
+            message,
           });
         } else {
           setStorageStatus({
@@ -72,7 +77,7 @@ export const useStorageCheck = (
       } catch (error) {
         if (!abortController.signal.aborted) {
           console.error('Storage check failed:', error);
-          setStorageStatus({isOk: false, message: 'Failed to check storage'});
+          setStorageStatus({isOk: false, message: l10n.storage.checkFailed});
         }
       }
     };
@@ -89,7 +94,7 @@ export const useStorageCheck = (
         clearInterval(intervalId);
       }
     };
-  }, [model, enablePeriodicCheck, checkInterval]);
+  }, [model, enablePeriodicCheck, checkInterval, l10n]);
 
   return storageStatus;
 };

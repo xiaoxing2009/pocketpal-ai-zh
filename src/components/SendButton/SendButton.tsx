@@ -35,7 +35,7 @@ export const SendButton = ({
 
   return (
     <TouchableOpacity
-      accessibilityLabel={l10n.sendButtonAccessibilityLabel}
+      accessibilityLabel={l10n.components.sendButton.accessibilityLabel}
       accessibilityRole="button"
       testID="send-button"
       {...touchableOpacityProps}

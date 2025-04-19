@@ -27,8 +27,8 @@ export const useMemoryCheck = (model: Model) => {
         const memoryRequirement = memoryRequirementEstimate(model);
 
         if (memoryRequirement > availableMemory) {
-          setShortMemoryWarning(l10n.shortMemoryWarning);
-          setMemoryWarning(l10n.memoryWarning);
+          setShortMemoryWarning(l10n.memory.shortWarning);
+          setMemoryWarning(l10n.memory.warning);
         }
       } catch (error) {
         // TODO: Handle error appropriately

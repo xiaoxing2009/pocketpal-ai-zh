@@ -25,7 +25,9 @@ describe('ModelsHeaderRight', () => {
     fireEvent.press(getByTestId('models-menu-button'));
 
     // Press HF filter option
-    const hfOption = getByText(l10n.en.menuTitleHf);
+    const hfOption = getByText(
+      l10n.en.components.modelsHeaderRight.menuTitleHf,
+    );
     fireEvent.press(hfOption);
 
     expect(uiStore.setValue).toHaveBeenCalledWith(
@@ -42,7 +44,9 @@ describe('ModelsHeaderRight', () => {
     fireEvent.press(getByTestId('models-menu-button'));
 
     // Press downloaded filter option
-    const downloadedOption = getByText(l10n.en.menuTitleDownloaded);
+    const downloadedOption = getByText(
+      l10n.en.components.modelsHeaderRight.menuTitleDownloaded,
+    );
     fireEvent.press(downloadedOption);
 
     expect(uiStore.setValue).toHaveBeenCalledWith(
@@ -59,7 +63,9 @@ describe('ModelsHeaderRight', () => {
     fireEvent.press(getByTestId('models-menu-button'));
 
     // Press group option
-    const groupOption = getByText(l10n.en.menuTitleGrouped);
+    const groupOption = getByText(
+      l10n.en.components.modelsHeaderRight.menuTitleGrouped,
+    );
     fireEvent.press(groupOption);
 
     expect(uiStore.setValue).toHaveBeenCalledWith(
@@ -78,7 +84,9 @@ describe('ModelsHeaderRight', () => {
     fireEvent.press(getByTestId('models-menu-button'));
 
     // Press reset option
-    const resetOption = getByText(l10n.en.menuTitleReset);
+    const resetOption = getByText(
+      l10n.en.components.modelsHeaderRight.menuTitleReset,
+    );
     fireEvent.press(resetOption);
 
     await waitFor(() => {

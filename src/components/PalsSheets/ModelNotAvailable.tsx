@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {Button, Paragraph, ProgressBar, Text} from 'react-native-paper';
 import {modelStore} from '../../store';
 import {Model} from '../../utils/types';
@@ -7,12 +7,14 @@ import {View} from 'react-native';
 import {createStyles} from './styles';
 import {useNavigation} from '@react-navigation/native';
 import {observer} from 'mobx-react';
+import {L10nContext} from '../../utils';
 
 export const ModelNotAvailable = observer(
   ({model, closeSheet}: {model?: Model; closeSheet: () => void}) => {
     const theme = useTheme();
     const navigation = useNavigation<any>();
     const styles = createStyles(theme);
+    const l10n = useContext(L10nContext);
 
     const isPalModelDownloaded = modelStore.isModelAvailable(model?.id);
     const defaultModel = modelStore.models.find(m => m.id === model?.id);
@@ -45,11 +47,10 @@ export const ModelNotAvailable = observer(
       return (
         <View style={styles.modelNotDownloaded}>
           <Text style={{color: theme.colors.error}}>
-            You do not have any models downloaded yet. Please download a model
-            first.
+            {l10n.components.modelNotAvailable.noModelsDownloaded}
           </Text>
           <Button onPress={handleNavigateToModels} mode="contained-tonal">
-            Download a model
+            {l10n.components.modelNotAvailable.downloadAModel}
           </Button>
         </View>
       );
@@ -69,7 +70,7 @@ export const ModelNotAvailable = observer(
             </>
           ) : (
             <Text style={{color: theme.colors.error}}>
-              Default model is not downloaded yet. Please download it first.
+              {l10n.components.modelNotAvailable.defaultModelNotDownloaded}
             </Text>
           )}
 
@@ -80,7 +81,9 @@ export const ModelNotAvailable = observer(
                 : handleDownloadModel(model)
             }
             mode="contained-tonal">
-            {isDownloading ? 'Cancel download' : 'Download'}
+            {isDownloading
+              ? l10n.components.modelNotAvailable.cancelDownload
+              : l10n.components.modelNotAvailable.download}
           </Button>
         </View>
       );

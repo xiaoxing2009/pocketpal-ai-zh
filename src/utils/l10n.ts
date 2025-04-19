@@ -1,140 +1,301 @@
 /** Base chat l10n containing all required properties to provide localized copy. */
 export const l10n = {
   en: {
-    model: 'Model',
-    modelSettings: 'Model Settings',
-    chatGenerationSettings: 'Chat Generation Settings',
-    generationSettings: 'Generation settings',
-    duplicateChatHistory: 'Duplicate chat history',
-    exportChatSession: 'Export chat session',
-    rename: 'Rename',
-    makeChatTemporary: 'Make chat temporary',
-    attachmentButtonAccessibilityLabel: 'Send media',
-    emptyChatPlaceholder: 'No messages here yet',
-    fileButtonAccessibilityLabel: 'File',
-    inputPlaceholder: 'Message',
-    sendButtonAccessibilityLabel: 'Send',
-    modelNotLoaded: 'Model not loaded. Please initialize the model.',
-    loadingModel: 'Loading model ...',
-    typeYourMessage: 'Type your message here',
-    conversationReset: 'Conversation reset!',
-    networkError: 'Network error. Please try again.',
-    goToModels: 'Go to Models',
-    readyToChat: 'Ready to chat? Load the last used model.',
-    pleaseLoadModel: 'Load a model to chat.',
-    shortMemoryWarning: 'Memory Warning',
-    memoryWarning:
-      'Warning: Model size may exceed available memory. This could affect performance and stability of your device.',
-    load: 'Load',
-    cancel: 'Cancel',
-    download: 'Download',
-    offload: 'Offload',
-    reset: 'Reset',
-    saveChanges: 'Save Changes',
-    save: 'Save',
-    delete: 'Delete',
-    dismiss: 'Dismiss',
-    replace: 'Replace',
-    keepBoth: 'Keep Both',
-    fileAlreadyExists: 'File already exists',
-    deleteChatTitle: 'Delete Chat',
-    deleteChatMessage: 'Are you sure you want to delete this chat?',
-    fileAlreadyExistsMessage:
-      'A file with this name already exists. What would you like to do?',
-    addLocalModel: 'Add Local Model',
-    localModel: 'Local',
-    hfModel: 'HF',
-    hfFABLabel: 'Add from Hugging Face',
-    localFABLabel: 'Add Local Model',
-    resetFABLabel: 'Reset',
-    downloaded: 'Downloaded',
-    grouped: 'Grouped',
-    proceedWithReset: 'Proceed with Reset',
-    confirmReset: 'Confirm Reset',
-    modelSettingsTitle: 'Model Settings',
-    autoOffloadLoad: 'Auto Offload/Load',
-    autoOffloadLoadDescription: 'Offload model when app is in background.',
-    metal: 'Metal',
-    metalDescription: "Apple's hardware-accelerated API.",
-    layersOnGPU: 'Layers on GPU: {{gpuLayers}}',
-    contextSize: 'Context Size',
-    contextSizePlaceholder: 'Enter context size (min {{minContextSize}})',
-    invalidContextSizeError:
-      'Please enter a valid number (minimum {{minContextSize}})',
-    modelReloadNotice: 'Model reload needed for changes to take effect.',
-    autoNavigateToChat: 'Auto-Navigate to Chat',
-    autoNavigateToChatDescription: 'Navigate to chat when loading starts.',
-    uiSettingsTitle: 'UI Settings',
-    darkMode: 'Dark Mode',
-    darkModeDescription: 'Toggle dark mode on or off.',
-    displayMemoryUsage: 'Display Memory Usage',
-    displayMemoryUsageDescription: 'Display memory usage in the chat page.',
-    tooltipGroupByType: 'Group by model type',
-    tooltipDownloaded: 'Show downloaded only',
-    tooltipHf: 'Show HuggingFace-sourced models',
-    unknownGroup: 'Unknown',
-    menuTitleHf: 'Hugging Face Models',
-    menuTitleDownloaded: 'Downloaded Models',
-    menuTitleGrouped: 'Group by Model Type',
-    menuTitleReset: 'Reset Models List',
-    iOSBackgroundDownload: 'Background Download',
-    iOSBackgroundDownloadDescription:
-      'Allow downloads to continue in the background (it will be slower).',
-    availableToUse: 'Ready to Use',
-    availableToDownload: 'Available to Download',
-    useAddButtonForMore: 'Use + button to find more models',
-    // modelSettings
-    'modelSettings.grammar':
-      'Enforce specific grammar rules to ensure the generated text follows a particular structure or format',
-    'modelSettings.stop':
-      'Define specific phrases that will stop text generation',
-    'modelSettings.n_predict':
-      'Set how long the generated response should be (in tokens)',
-    'modelSettings.n_probs': 'Show probability scores for alternative words.',
-    'modelSettings.top_k':
-      'Control creativity by limiting word choices to the K most likely options. Lower values make responses more focused',
-    'modelSettings.top_p':
-      'Balance creativity and coherence. Higher values (near 1.0) allow more creative but potentially less focused responses',
-    'modelSettings.min_p':
-      'The minimum probability for a token to be considered. Filter out unlikely words to reduce nonsensical or out-of-context responses',
-    'modelSettings.temperature':
-      'Control creativity vs predictability. Higher values make responses more creative but less focused',
-    'modelSettings.penalty_last_n':
-      'How far back to check for repetition. Larger values help prevent long-term repetition',
-    'modelSettings.penalty_repeat':
-      'Discourage word repetition. Higher values make responses use more diverse language',
-    'modelSettings.penalty_freq':
-      'Penalize overused words. Higher values encourage using a broader vocabulary',
-    'modelSettings.penalty_present':
-      'Reduce repetition of themes and ideas. Higher values encourage more diverse content',
-    'modelSettings.mirostat':
-      'Enable advanced control over response creativity. Set to 1 or 2 (smoother) for smart, real-time adjustments to randomness and coherence.',
-    'modelSettings.mirostat_tau':
-      'Set the target creativity level for Mirostat. Higher values allow for more diverse and imaginative responses, while lower values ensure more focused outputs.',
-    'modelSettings.mirostat_eta':
-      'How quickly Mirostat adjusts creativity. Higher values mean faster adjustments',
-    'modelSettings.dry_multiplier':
-      "Strength of the DRY (Don't Repeat Yourself) feature. Higher values strongly prevent repetition",
-    'modelSettings.dry_base':
-      'Base penalty for repetition in DRY mode. Higher values are more aggressive at preventing repetition',
-    'modelSettings.dry_allowed_length':
-      'How many words can repeat before DRY penalty kicks in',
-    'modelSettings.dry_penalty_last_n':
-      'How far back to look for repetition in DRY mode',
-    'modelSettings.dry_sequence_breakers':
-      'Symbols that reset the repetition checker in DRY mode',
-    'modelSettings.ignore_eos':
-      'Continue generating even if the model wants to stop. Useful for forcing longer responses',
-    'modelSettings.logit_bias':
-      'Influence how likely specific words are to appear in the response',
-    'modelSettings.seed':
-      'Set the random number generator seed. Useful for reproducible results',
-    'modelSettings.xtc_probability':
-      'Set the chance for token removal via XTC sampler. 0 is disabled',
-    'modelSettings.xtc_threshold':
-      'Set a minimum probability threshold for tokens to be removed via XTC sampler. (> 0.5 disables XTC)',
-    'modelSettings.typical_p':
-      'Enable locally typical sampling with parameter p. 1.0 is disabled',
+    common: {
+      cancel: 'Cancel',
+      delete: 'Delete',
+      dismiss: 'Dismiss',
+      rename: 'Rename',
+      reset: 'Reset',
+      save: 'Save',
+      networkError: 'Network error. Please try again.',
+      downloadETA: 'ETA',
+      calculating: 'calculating...',
+      second: 'sec',
+      seconds: 'sec',
+      year: 'year',
+      years: 'years',
+      month: 'month',
+      months: 'months',
+      week: 'week',
+      weeks: 'weeks',
+      day: 'day',
+      days: 'days',
+      hour: 'hour',
+      hours: 'hours',
+      minute: 'min',
+      minutes: 'min',
+      justNow: 'just now',
+    },
+    settings: {
+      // Model Initialization Settings
+      modelInitializationSettings: 'Model Initialization Settings',
+      // Metal Settings
+      metal: 'Metal',
+      metalDescription: "Apple's hardware-accelerated API.",
+      metalRequiresNewerIOS:
+        'Metal acceleration requires iOS 18 or higher. Please upgrade your device to use this feature.',
+      layersOnGPU: 'Layers on GPU: {{gpuLayers}}',
+      // Context Size
+      contextSize: 'Context Size',
+      contextSizePlaceholder: 'Enter context size (min {{minContextSize}})',
+      invalidContextSizeError:
+        'Please enter a valid number (minimum {{minContextSize}})',
+      modelReloadNotice: 'Model reload needed for changes to take effect.',
+      // Advanced Settings
+      advancedSettings: 'Advanced Settings',
+      // Batch Size
+      batchSize: 'Batch Size',
+      batchSizeDescription: 'Batch size: {{batchSize}}{{effectiveBatch}}',
+      effectiveLabel: 'effective',
+      // Physical Batch Size
+      physicalBatchSize: 'Physical Batch Size',
+      physicalBatchSizeDescription:
+        'Physical batch size: {{physicalBatchSize}}{{effectivePhysicalBatch}}',
+      // Thread Count
+      cpuThreads: 'CPU Threads',
+      cpuThreadsDescription:
+        'Using {{threads}} of {{maxThreads}} available threads',
+      // Flash Attention
+      flashAttention: 'Flash Attention',
+      flashAttentionDescription: 'Enable Flash Attention for faster processing',
+      // Cache Type K
+      keyCacheType: 'Key Cache Type',
+      keyCacheTypeDescription: 'Select the cache type for key computation',
+      keyCacheTypeDisabledDescription:
+        'Enable Flash Attention to change cache type',
+      // Cache Type V
+      valueCacheType: 'Value Cache Type',
+      valueCacheTypeDescription: 'Select the cache type for value computation',
+      valueCacheTypeDisabledDescription:
+        'Enable Flash Attention to change cache type',
+      // Model Loading Settings
+      modelLoadingSettings: 'Model Loading Settings',
+      // Auto Offload/Load
+      autoOffloadLoad: 'Auto Offload/Load',
+      autoOffloadLoadDescription: 'Offload model when app is in background.',
+      // Auto Navigate to Chat
+      autoNavigateToChat: 'Auto-Navigate to Chat',
+      autoNavigateToChatDescription: 'Navigate to chat when loading starts.',
+      // App Settings
+      appSettings: 'App Settings',
+      // Language
+      language: 'Language',
+      // Dark Mode
+      darkMode: 'Dark Mode',
+      // Display Memory Usage
+      displayMemoryUsage: 'Display Memory Usage',
+      displayMemoryUsageDescription: 'Display memory usage in the chat page.',
+    },
+    memory: {
+      shortWarning: 'Memory Warning',
+      warning:
+        'Warning: Model size may exceed available memory. This could affect performance and stability of your device.',
+    },
+    storage: {
+      checkFailed: 'Failed to check storage',
+      lowStorage: 'Storage low! Model {{modelSize}} > {{freeSpace}} free',
+    },
+    generation: {
+      modelNotInitialized: 'Model context not initialized',
+      failedToGenerate: 'Failed to generate output',
+    },
+    models: {
+      fileManagement: {
+        fileAlreadyExists: 'File already exists',
+        fileAlreadyExistsMessage:
+          'A file with this name already exists. What would you like to do?',
+        replace: 'Replace',
+        keepBoth: 'Keep Both',
+      },
+      labels: {
+        localModel: 'Local',
+        hfModel: 'HF',
+        unknownGroup: 'Unknown',
+        availableToUse: 'Ready to Use',
+        availableToDownload: 'Available to Download',
+        useAddButtonForMore: 'Use + button to find more models',
+      },
+      buttons: {
+        addFromHuggingFace: 'Add from Hugging Face',
+        addLocalModel: 'Add Local Model',
+        reset: 'Reset',
+      },
+      modelsHeaderRight: {
+        menuTitleHf: 'Hugging Face Models',
+        menuTitleDownloaded: 'Downloaded Models',
+        menuTitleGrouped: 'Group by Model Type',
+        menuTitleReset: 'Reset Models List',
+      },
+      modelsResetDialog: {
+        proceedWithReset: 'Proceed with Reset',
+        confirmReset: 'Confirm Reset',
+      },
+      chatTemplate: {
+        label: 'Base Chat Template:',
+      },
+      details: {
+        title: 'Available GGUF Files',
+      },
+      modelFile: {
+        alerts: {
+          cannotRemoveTitle: 'Cannot Remove',
+          modelPreset: 'The model is preset.',
+          downloadedFirst:
+            'The model is downloaded. Please delete the file first.',
+          removeTitle: 'Remove Model',
+          removeMessage:
+            'Are you sure you want to remove this model from the list?',
+          removeError: 'Failed to remove the model.',
+          alreadyDownloadedTitle: 'Model Already Downloaded',
+          alreadyDownloadedMessage: 'The model is already downloaded.',
+          deleteTitle: 'Delete Model',
+          deleteMessage:
+            'Are you sure you want to delete this downloaded model?',
+        },
+        buttons: {
+          remove: 'Remove',
+        },
+        warnings: {
+          storage: {
+            message: 'Not enough storage space available.',
+            shortMessage: 'Low Storage',
+          },
+          memory: {
+            message:
+              "Model size is close to or exceeds your device's total memory. This may cause unexpected behavior.",
+          },
+          legacy: {
+            message: 'Legacy quantization format - model may not run.',
+            shortMessage: 'Legacy quantization',
+          },
+          multiple: '{count} Warnings',
+        },
+        labels: {
+          downloadSpeed: '{speed}',
+        },
+      },
+      search: {
+        noResults: 'No models found',
+        loadingMore: 'Loading more...',
+        searchPlaceholder: 'Search Hugging Face models',
+        modelUpdatedLong: 'Updated {{time}} ago',
+        modelUpdatedShort: '{{time}} ago',
+        modelUpdatedJustNowLong: 'Updated just now',
+        modelUpdatedJustNowShort: 'just now',
+      },
+      modelCard: {
+        alerts: {
+          deleteTitle: 'Delete Model',
+          deleteMessage:
+            'Are you sure you want to delete this downloaded model?',
+          removeTitle: 'Remove Model',
+          removeMessage:
+            'Are you sure you want to remove this model from the list?',
+        },
+        buttons: {
+          settings: 'Settings',
+          download: 'Download',
+          remove: 'Remove',
+          load: 'Load',
+          offload: 'Offload',
+        },
+        labels: {
+          skills: 'Skills: ',
+        },
+      },
+      modelSettings: {
+        template: {
+          label: 'Template:',
+          editButton: 'Edit',
+          dialogTitle: 'Edit Chat Template',
+          note1:
+            'Note: Changing the template may alter BOS, EOS, and system prompt.',
+          note2: "Uses Nunjucks. Leave empty to use model's template.",
+          placeholder: 'Enter your chat template here...',
+          closeButton: 'Close',
+        },
+        stopWords: {
+          label: 'STOP WORDS',
+          placeholder: 'Add new stop word',
+        },
+        tokenSettings: {
+          bos: 'BOS',
+          eos: 'EOS',
+          addGenerationPrompt: 'Add Generation Prompt',
+          bosTokenPlaceholder: 'BOS Token',
+          eosTokenPlaceholder: 'EOS Token',
+          systemPrompt: 'System Prompt',
+        },
+      },
+      modelDescription: {
+        size: 'Size: ',
+        parameters: 'Parameters: ',
+        separator: ' | ',
+        notAvailable: 'N/A',
+      },
+      modelCapabilities: {
+        questionAnswering: 'Question Answering',
+        summarization: 'Summarization',
+        reasoning: 'Reasoning',
+        roleplay: 'Role-play',
+        instructions: 'Instruction following',
+        code: 'Code generation',
+        math: 'Math solving',
+        multilingual: 'Multilingual',
+        rewriting: 'Rewriting',
+        creativity: 'Creative writing',
+      },
+    },
+    completionParams: {
+      grammar:
+        'Enforce specific grammar rules to ensure the generated text follows a particular structure or format',
+      stop: 'Define specific phrases that will stop text generation',
+      n_predict: 'Set how long the generated response should be (in tokens)',
+      n_probs: 'Show probability scores for alternative words.',
+      top_k:
+        'Control creativity by limiting word choices to the K most likely options. Lower values make responses more focused',
+      top_p:
+        'Balance creativity and coherence. Higher values (near 1.0) allow more creative but potentially less focused responses',
+      min_p:
+        'The minimum probability for a token to be considered. Filter out unlikely words to reduce nonsensical or out-of-context responses',
+      temperature:
+        'Control creativity vs predictability. Higher values make responses more creative but less focused',
+      penalty_last_n:
+        'How far back to check for repetition. Larger values help prevent long-term repetition',
+      penalty_repeat:
+        'Discourage word repetition. Higher values make responses use more diverse language',
+      penalty_freq:
+        'Penalize overused words. Higher values encourage using a broader vocabulary',
+      penalty_present:
+        'Reduce repetition of themes and ideas. Higher values encourage more diverse content',
+      mirostat:
+        'Enable advanced control over response creativity. Set to 1 or 2 (smoother) for smart, real-time adjustments to randomness and coherence.',
+      mirostat_tau:
+        'Set the target creativity level for Mirostat. Higher values allow for more diverse and imaginative responses, while lower values ensure more focused outputs.',
+      mirostat_eta:
+        'How quickly Mirostat adjusts creativity. Higher values mean faster adjustments',
+      dry_multiplier:
+        "Strength of the DRY (Don't Repeat Yourself) feature. Higher values strongly prevent repetition",
+      dry_base:
+        'Base penalty for repetition in DRY mode. Higher values are more aggressive at preventing repetition',
+      dry_allowed_length:
+        'How many words can repeat before DRY penalty kicks in',
+      dry_penalty_last_n: 'How far back to look for repetition in DRY mode',
+      dry_sequence_breakers:
+        'Symbols that reset the repetition checker in DRY mode',
+      ignore_eos:
+        'Continue generating even if the model wants to stop. Useful for forcing longer responses',
+      logit_bias:
+        'Influence how likely specific words are to appear in the response',
+      seed: 'Set the random number generator seed. Useful for reproducible results',
+      xtc_probability:
+        'Set the chance for token removal via XTC sampler. 0 is disabled',
+      xtc_threshold:
+        'Set a minimum probability threshold for tokens to be removed via XTC sampler. (> 0.5 disables XTC)',
+      typical_p:
+        'Enable locally typical sampling with parameter p. 1.0 is disabled',
+    },
     about: {
       screenTitle: 'App Info',
       description:
@@ -189,1459 +350,1740 @@ export const l10n = {
         general: 'Error sending feedback. Please try again.',
       },
     },
+    components: {
+      attachmentButton: {
+        attachmentButtonAccessibilityLabel: 'Send media',
+      },
+      bubble: {
+        timingsString:
+          '{{predictedMs}}ms per token, {{predictedPerSecond}} tokens per second',
+      },
+      chatEmptyPlaceholder: {
+        noModelsTitle: 'No Models Available',
+        noModelsDescription:
+          'Download a model to start chatting with PocketPal',
+        noModelsButton: 'Download Model',
+        activateModelTitle: 'Activate Model To Get Started',
+        activateModelDescription:
+          'Select the model and download it. After downloading, tap Load next to the model and start chatting.',
+        activateModelButton: 'Select Model',
+        loading: 'Loading...',
+      },
+      chatInput: {
+        inputPlaceholder: 'Message',
+      },
+      chatGenerationSettingsSheet: {
+        invalidValues: 'Invalid Values',
+        invalidNumericValuesMessage: 'Must be a valid number',
+        pleaseCorrect: 'Please correct the following:',
+        ok: 'OK',
+        saveChanges: 'Save Changes',
+        saveAsPreset: 'Save as Preset',
+        title_session: 'Chat Generation Settings (Session)',
+        title_preset: 'Chat Generation Settings (Preset)',
+        resetToSystemDefaults: 'Reset to System Defaults',
+        resetToPreset: 'Reset to Preset',
+        applytoPresetAlert: {
+          title: 'Success',
+          message: 'These settings will be applied to all future sessions',
+        },
+      },
+      chatHeaderTitle: {
+        defaultTitle: 'Chat',
+      },
+      fileMessage: {
+        fileButtonAccessibilityLabel: 'File',
+      },
+      chatPalModelPickerSheet: {
+        modelsTab: 'Models',
+        palsTab: 'Pals',
+        noPal: 'No Pal',
+        disablePal: 'Disable active pal',
+        noDescription: 'No description',
+        assistantType: 'Assistant',
+        roleplayType: 'Roleplay',
+        confirmationTitle: 'Confirmation',
+        modelSwitchMessage:
+          "This pal has a different default model ({{modelName}}). Would you like to switch to the pal's default model?",
+        keepButton: 'Keep',
+        switchButton: 'Switch',
+      },
+      headerRight: {
+        deleteChatTitle: 'Delete Chat',
+        deleteChatMessage: 'Are you sure you want to delete this chat?',
+        generationSettings: 'Generation settings',
+        model: 'Model',
+        duplicateChatHistory: 'Duplicate chat history',
+        makeChatTemporary: 'Make chat temporary',
+        exportChatSession: 'Export chat session',
+      },
+      modelSettingsSheet: {
+        modelSettings: 'Model Settings',
+        saveChanges: 'Save Changes',
+      },
+      modelsHeaderRight: {
+        menuTitleHf: 'Hugging Face Models',
+        menuTitleDownloaded: 'Downloaded Models',
+        menuTitleGrouped: 'Group by Model Type',
+        menuTitleReset: 'Reset Models List',
+      },
+      modelsResetDialog: {
+        proceedWithReset: 'Proceed with Reset',
+        confirmReset: 'Confirm Reset',
+      },
+      assistantPalSheet: {
+        title: {
+          create: 'Create Assistant Pal',
+          edit: 'Edit Assistant Pal',
+        },
+        palName: 'Pal Name',
+        palNamePlaceholder: 'Name',
+        defaultModel: 'Default Model',
+        defaultModelPlaceholder: 'Select model',
+        validation: {
+          generatingPromptRequired: 'Generating prompt is required',
+          promptModelRequired: 'Prompt generation model is required',
+        },
+        create: 'Create',
+      },
+      modelNotAvailable: {
+        noModelsDownloaded:
+          'You do not have any models downloaded yet. Please download a model first.',
+        downloadAModel: 'Download a model',
+        defaultModelNotDownloaded:
+          'Default model is not downloaded yet. Please download it first.',
+        cancelDownload: 'Cancel download',
+        download: 'Download',
+      },
+      roleplayPalSheet: {
+        title: {
+          create: 'Create Roleplay Pal',
+          edit: 'Edit Roleplay Pal',
+        },
+        palName: 'Pal Name',
+        palNamePlaceholder: 'Name',
+        defaultModel: 'Default Model',
+        defaultModelPlaceholder: 'Select model',
+        descriptionSection: 'Description',
+        world: 'World',
+        worldPlaceholder: 'Fantasy',
+        location: 'Location',
+        locationPlaceholder: 'Enchanted Forest',
+        locationSublabel: 'Where does the story take place?',
+        aiRole: "AI's Role",
+        aiRolePlaceholder: 'Eldara, a mischievous forest sprite',
+        aiRoleSublabel: 'Set the role for character',
+        userRole: 'User Role',
+        userRolePlaceholder: 'Sir Elandor, a brave knight',
+        userRoleSublabel: 'Who are you?',
+        situation: 'Situation',
+        situationPlaceholder: 'Rescue mission, solving a mystery',
+        toneStyle: 'Tone/Style',
+        toneStylePlaceholder: 'Serious',
+        validation: {
+          promptModelRequired: 'Prompt generation model is required',
+        },
+        create: 'Create',
+      },
+      sendButton: {
+        accessibilityLabel: 'Send',
+      },
+      systemPromptSection: {
+        sectionTitle: 'System Prompt',
+        useAIPrompt: 'Use AI to generate system prompt',
+        modelSelector: {
+          label: 'Select Model for Generation*',
+          sublabel: 'Recommended: Llama 3.2 3B or Qwen2.5 3B.',
+          placeholder: 'Select model',
+        },
+        generatingPrompt: {
+          label: 'Generating Prompt',
+          placeholder: 'Enter prompt for generation',
+        },
+        buttons: {
+          loadingModel: 'Loading model...',
+          stopGenerating: 'Stop Generating',
+          generatePrompt: 'Generate System Prompt',
+        },
+        systemPrompt: {
+          label: 'System Prompt',
+          sublabel:
+            'Feel free to edit and experiment to find the optimal prompt for your scenario',
+          placeholder: 'You are a helpful assistant',
+        },
+        warnings: {
+          promptChanged: 'System prompt has been manually changed',
+        },
+      },
+      sidebarContent: {
+        menuItems: {
+          chat: 'Chat',
+          models: 'Models',
+          pals: 'Pals',
+          benchmark: 'Benchmark',
+          settings: 'Settings',
+          appInfo: 'App Info',
+          testCompletion: 'Test Completion',
+        },
+        deleteChatTitle: 'Delete Chat',
+        deleteChatMessage: 'Are you sure you want to delete this chat?',
+        dateGroups: {
+          today: 'Today',
+          yesterday: 'Yesterday',
+          thisWeek: 'This week',
+          lastWeek: 'Last week',
+          twoWeeksAgo: '2 weeks ago',
+          threeWeeksAgo: '3 weeks ago',
+          fourWeeksAgo: '4 weeks ago',
+          lastMonth: 'Last month',
+          older: 'Older',
+        },
+      },
+      usageStats: {
+        tooltip: {
+          title: 'Memory Usage',
+          used: 'Used: ',
+          total: 'Total: ',
+          usage: 'Usage: ',
+        },
+        byteSizes: ['Bytes', 'KB', 'MB', 'GB'],
+      },
+    },
+    validation: {
+      nameRequired: 'Name is required',
+      systemPromptRequired: 'System prompt is required',
+      worldRequired: 'World is required',
+      locationRequired: 'Location is required',
+      aiRoleRequired: "AI's role is required",
+      userRoleRequired: 'User role is required',
+      situationRequired: 'Situation is required',
+      toneStyleRequired: 'Tone/Style is required',
+    },
+    screenTitles: {
+      chat: 'Chat',
+      models: 'Models',
+      pals: 'Pals (experimental)',
+      benchmark: 'Benchmark',
+      settings: 'Settings',
+      appInfo: 'App Info',
+      testCompletion: 'Test Completion',
+    },
+    chat: {
+      conversationReset: 'Conversation reset!',
+      modelNotLoaded: 'Model not loaded. Please initialize the model.',
+      completionFailed: 'Completion failed: ',
+      loadingModel: 'Loading model ...',
+      typeYourMessage: 'Type your message here',
+      load: 'Load',
+      goToModels: 'Go to Models',
+      readyToChat: 'Ready to chat? Load the last used model.',
+      pleaseLoadModel: 'Load a model to chat.',
+    },
+    benchmark: {
+      title: 'Benchmark',
+      modelSelector: {
+        prompt: 'Select Model',
+      },
+      buttons: {
+        advancedSettings: 'Advanced Settings',
+        startTest: 'Start Test',
+        runningTest: 'Running Test...',
+        clearAll: 'Clear All',
+        done: 'Done',
+        cancel: 'Cancel',
+        delete: 'Delete',
+        share: 'Share',
+        sharing: 'Sharing...',
+        viewRawData: 'View Raw Data',
+        hideRawData: 'Hide Raw Data',
+      },
+      messages: {
+        pleaseSelectModel: 'Please select and initialize a model first',
+        testWarning:
+          'Note: Test could run for up to 2-5 minutes for larger models and cannot be interrupted once started.',
+        keepScreenOpen: 'Please keep this screen open.',
+        initializingModel: 'Initializing model...',
+        modelMaxValue: '(max: {{maxValue}})',
+      },
+      dialogs: {
+        advancedSettings: {
+          title: 'Advanced Settings',
+          testProfile: 'Test Profile',
+          customParameters: 'Custom Parameters',
+          description:
+            'Fine-tune the benchmark parameters for specific testing scenarios.',
+        },
+        deleteResult: {
+          title: 'Delete Result',
+          message: 'Are you sure you want to delete this benchmark result?',
+        },
+        clearAllResults: {
+          title: 'Clear All Results',
+          message: 'Are you sure you want to delete all benchmark results?',
+        },
+        shareResults: {
+          title: 'Share Benchmark Results',
+          sharedDataTitle: 'Shared data includes:',
+          deviceAndModelInfo: '• Device specs & model info',
+          performanceMetrics: '• Performance metrics',
+          dontShowAgain: "Don't show this message again",
+        },
+      },
+      sections: {
+        testResults: 'Test Results',
+      },
+      benchmarkResultCard: {
+        modelMeta: {
+          params: 'params',
+        },
+        config: {
+          title: 'Benchmark Config',
+          format: 'PP: {{pp}} • TG: {{tg}} • PL: {{pl}} • Rep: {{nr}}',
+        },
+        modelSettings: {
+          title: 'Model Settings',
+          context: 'Context: {{context}}',
+          batch: 'Batch: {{batch}}',
+          ubatch: 'UBatch: {{ubatch}}',
+          cpuThreads: 'CPU Threads: {{threads}}',
+          gpuLayers: 'GPU Layers: {{layers}}',
+          flashAttentionEnabled: 'Flash Attention Enabled',
+          flashAttentionDisabled: 'Flash Attention Disabled',
+          cacheTypes: 'Cache Types: {{cacheK}}/{{cacheV}}',
+        },
+        results: {
+          promptProcessing: 'Prompt Processing',
+          tokenGeneration: 'Token Generation',
+          totalTime: 'Total Time',
+          peakMemory: 'Peak Memory',
+          tokensPerSecond: 't/s',
+        },
+        actions: {
+          deleteButton: '',
+          submittedText: '✓ Shared to',
+          leaderboardLink: 'AI Phone Leaderboard ↗',
+          cannotShare: 'Cannot share',
+          cannotShareTooltip: 'Local model results cannot be shared',
+          submitButton: 'Submit to Leaderboard',
+          viewLeaderboard: 'View leaderboard ↗',
+        },
+        errors: {
+          networkRetry: 'Check connection & retry',
+          appCheckRetry: 'Retry submission',
+          serverRetry: 'Try again later',
+          genericRetry: 'Retry',
+          failedToSubmit: 'Failed to submit benchmark',
+        },
+      },
+      deviceInfoCard: {
+        title: 'Device Information',
+        deviceSummary: '{{brand}} {{model}} • {{systemName}} {{systemVersion}}',
+        coreSummary: '{{cores}} cores • {{memory}}',
+        sections: {
+          basicInfo: 'Basic Info',
+          cpuDetails: 'CPU Details',
+          appInfo: 'App Info',
+        },
+        fields: {
+          architecture: 'Architecture',
+          totalMemory: 'Total Memory',
+          deviceId: 'Device ID',
+          cpuCores: 'CPU Cores',
+          cpuModel: 'CPU Model',
+          chipset: 'Chipset',
+          instructions: 'Instructions',
+          version: 'Version',
+        },
+        instructions: {
+          format:
+            'FP16: {{fp16}}, DotProd: {{dotProd}}, SVE: {{sve}}, I8MM: {{i8mm}}',
+          yes: '✓',
+          no: '✗',
+        },
+        versionFormat: '{{version}} ({{buildNumber}})',
+      },
+    },
   },
-  es: {
-    model: 'Modelo',
-    modelSettings: 'Configuración del modelo',
-    chatGenerationSettings: 'Configuración de generación de chat',
-    save: 'Guardar',
-    deleteChatTitle: 'Eliminar chat',
-    deleteChatMessage: '¿Estás seguro de que quieres eliminar este chat?',
-    generationSettings: 'Configuración de generación',
-    duplicateChatHistory: 'Duplicar historial de chat',
-    exportChatSession: 'Exportar sesión de chat',
-    rename: 'Renombrar',
-    makeChatTemporary: 'Hacer chat temporal',
-    attachmentButtonAccessibilityLabel: 'Enviar multimedia',
-    emptyChatPlaceholder: 'Aún no hay mensajes',
-    fileButtonAccessibilityLabel: 'Archivo',
-    inputPlaceholder: 'Mensaje',
-    sendButtonAccessibilityLabel: 'Enviar',
-    modelNotLoaded: 'Modelo no cargado. Por favor, inicialice el modelo.',
-    loadingModel: 'Cargando modelo...',
-    typeYourMessage: 'Escriba su mensaje aquí',
-    conversationReset: '¡Conversación reiniciada!',
-    networkError: 'Error de red. Inténtalo de nuevo.',
-    goToModels: 'Ir a Modelos',
-    readyToChat: '¿Listo para chatear? Cargue el último modelo usado.',
-    pleaseLoadModel: 'Cargue un modelo para chatear.',
-    shortMemoryWarning: 'Advertencia de memoria',
-    memoryWarning:
-      'Advertencia: El tamaño del modelo puede exceder la memoria disponible. Esto podría afectar el rendimiento y la estabilidad de su dispositivo.',
-    load: 'Cargar',
-    cancel: 'Cancelar',
-    download: 'Descargar',
-    offload: 'Liberar',
-    reset: 'Reiniciar',
-    saveChanges: 'Guardar cambios',
-    delete: 'Eliminar',
-    dismiss: 'Descartar',
-    replace: 'Reemplazar',
-    keepBoth: 'Mantener ambos',
-    fileAlreadyExists: 'Archivo ya existe',
-    fileAlreadyExistsMessage:
-      'Un archivo con este nombre ya existe. ¿Qué te gustaría hacer?',
-    addLocalModel: 'Agregar modelo local',
-    localModel: 'Local',
-    hfModel: 'HF',
-    hfFABLabel: 'Buscar en Hugging Face',
-    localFABLabel: 'Agregar Modelo Local',
-    resetFABLabel: 'Restablecer',
-    downloaded: 'Descargado',
-    grouped: 'Agrupado',
-    proceedWithReset: 'Proceder con Reiniciar',
-    confirmReset: 'Confirmar Reiniciar',
-    modelSettingsTitle: 'Configuración del modelo',
-    autoOffloadLoad: 'Auto Offload/Load',
-    autoOffloadLoadDescription:
-      'Descargar modelo cuando la app está en segundo plano.',
-    metal: 'Metal',
-    metalDescription: 'API de hardware acelerada por Apple.',
-    layersOnGPU: 'Capas en GPU: {{gpuLayers}}',
-    contextSize: 'Tamaño del contexto',
-    contextSizePlaceholder:
-      'Ingrese el tamaño del contexto (mínimo {{minContextSize}})',
-    invalidContextSizeError:
-      'Por favor, ingrese un número válido (mínimo {{minContextSize}})',
-    modelReloadNotice:
-      'Se requiere recargar el modelo para que los cambios surtan efecto.',
-    autoNavigateToChat: 'Navegar automáticamente a la conversación',
-    autoNavigateToChatDescription:
-      'Navegar a la conversación cuando comience a cargar.',
-    uiSettingsTitle: 'Configuración de la interfaz de usuario',
-    darkMode: 'Modo oscuro',
-    darkModeDescription: 'Alternar modo oscuro on/off.',
-    displayMemoryUsage: 'Mostrar uso de memoria',
-    displayMemoryUsageDescription:
-      'Mostrar uso de memoria en la página de chat.',
-    tooltipGroupByType: 'Agrupar por tipo de modelo',
-    tooltipDownloaded: 'Mostrar solo descargados',
-    tooltipHf: 'Mostrar modelos de HuggingFace',
-    unknownGroup: 'Desconocido',
-    menuTitleHf: 'Modelos de Hugging Face',
-    menuTitleDownloaded: 'Modelos Descargados',
-    menuTitleGrouped: 'Agrupar por Tipo de Modelo',
-    menuTitleReset: 'Reiniciar Lista de Modelos',
-    iOSBackgroundDownload: 'Descarga en segundo plano',
-    iOSBackgroundDownloadDescription:
-      'Permitir que las descargas continúen en segundo plano (será más lento).',
-    availableToUse: 'Listo para Usar',
-    availableToDownload: 'Disponible para Descargar',
-    useAddButtonForMore: 'Use el botón + para encontrar más modelos',
-    'modelSettings.grammar':
-      'Establecer gramática para el muestreo basado en gramática',
-    'modelSettings.stop':
-      'Especificar cadenas de parada que no se incluirán en la completación',
-    'modelSettings.n_predict':
-      'Número máximo de tokens a predecir al generar texto',
-    'modelSettings.n_probs':
-      'Número de probabilidades de tokens superiores a devolver por token',
-    'modelSettings.top_k':
-      'Limitar la selección de tokens a los K tokens más probables',
-    'modelSettings.top_p':
-      'Limitar la selección de tokens a aquellos con probabilidad acumulada superior al umbral P',
-    'modelSettings.min_p':
-      'Probabilidad mínima para un token en relación al token más probable',
-    'modelSettings.xtc_probability':
-      'Probabilidad de eliminación de tokens mediante el muestreador XTC',
-    'modelSettings.xtc_threshold':
-      'Umbral mínimo de probabilidad para la eliminación de tokens mediante XTC',
-    'modelSettings.typical_p': 'Parámetro para el muestreo localmente típico',
-    'modelSettings.temperature': 'Ajustar la aleatoriedad del texto generado',
-    'modelSettings.penalty_last_n':
-      'Número de tokens a considerar para la penalización por repetición',
-    'modelSettings.penalty_repeat':
-      'Controlar la repetición de secuencias de tokens',
-    'modelSettings.penalty_freq': 'Penalización de frecuencia alfa repetida',
-    'modelSettings.penalty_present': 'Penalización de presencia alfa repetida',
-    'modelSettings.mirostat':
-      'Habilitar muestreo Mirostat para control de perplejidad',
-    'modelSettings.mirostat_tau': 'Entropía objetivo de Mirostat (tau)',
-    'modelSettings.mirostat_eta': 'Tasa de aprendizado de Mirostat (eta)',
-    'modelSettings.dry_multiplier':
-      'Multiplicador de penalización por repetición DRY',
-    'modelSettings.dry_base': 'Valor base de penalización por repetición DRY',
-    'modelSettings.dry_allowed_length':
-      'Longitud máxima permitida antes de penalización exponencial',
-    'modelSettings.dry_penalty_last_n':
-      'Número de tokens a escanear para repeticiones',
-    'modelSettings.dry_sequence_breakers':
-      'Rompedores de secuencia para muestreo DRY',
-    'modelSettings.ignore_eos':
-      'Ignorar token de fin de secuencia y continuar generando',
-    'modelSettings.logit_bias': 'Modificar probabilidad de tokens específicos',
-    'modelSettings.seed': 'Semilla del generador de números aleatorios',
+
+  ja: {
+    common: {
+      cancel: 'キャンセル',
+      delete: '削除',
+      dismiss: '閉じる',
+      rename: '名前変更',
+      reset: 'リセット',
+      save: '保存',
+      networkError: 'ネットワークエラー。もう一度お試しください。',
+      downloadETA: '残り',
+      minutes: '分',
+      second: '秒',
+      seconds: '秒',
+      calculating: '計算中...',
+      year: '年',
+      years: '年',
+      month: 'ヶ月',
+      months: 'ヶ月',
+      week: '週間',
+      weeks: '週間',
+      day: '日',
+      days: '日',
+      hour: '時間',
+      hours: '時間',
+      minute: '分',
+      justNow: '今すぐ',
+    },
+    settings: {
+      // Model Initialization Settings
+      modelInitializationSettings: 'モデル初期化設定',
+      // Metal Settings
+      metal: 'Metal',
+      metalDescription: 'Appleのハードウェア加速API。',
+      metalRequiresNewerIOS:
+        'Metal加速にはiOS 18以上が必要です。この機能を使用するにはデバイスをアップグレードしてください。',
+      layersOnGPU: 'GPUレイヤー：{{gpuLayers}}',
+      // Context Size
+      contextSize: 'コンテキストサイズ',
+      contextSizePlaceholder:
+        'コンテキストサイズを入力（最小{{minContextSize}}）',
+      invalidContextSizeError:
+        '有効な数値を入力してください（最小{{minContextSize}}）',
+      modelReloadNotice: '変更を有効にするにはモデルの再読み込みが必要です。',
+      // Advanced Settings
+      advancedSettings: '詳細設定',
+      // Batch Size
+      batchSize: 'バッチサイズ',
+      batchSizeDescription: 'バッチサイズ: {{batchSize}}{{effectiveBatch}}',
+      effectiveLabel: '有効',
+      // Physical Batch Size
+      physicalBatchSize: '物理バッチサイズ',
+      physicalBatchSizeDescription:
+        '物理バッチサイズ: {{physicalBatchSize}}{{effectivePhysicalBatch}}',
+      // Thread Count
+      cpuThreads: 'CPUスレッド',
+      cpuThreadsDescription:
+        '利用可能な{{maxThreads}}スレッドのうち{{threads}}を使用',
+      // Flash Attention
+      flashAttention: 'Flash Attention',
+      flashAttentionDescription: '高速処理のためのFlash Attentionを有効化',
+      // Cache Type K
+      keyCacheType: 'キーキャッシュタイプ',
+      keyCacheTypeDescription: 'キー計算用のキャッシュタイプを選択',
+      keyCacheTypeDisabledDescription:
+        'キャッシュタイプを変更するにはFlash Attentionを有効にしてください',
+      // Cache Type V
+      valueCacheType: '値キャッシュタイプ',
+      valueCacheTypeDescription: '値計算用のキャッシュタイプを選択',
+      valueCacheTypeDisabledDescription:
+        'キャッシュタイプを変更するにはFlash Attentionを有効にしてください',
+      // Model Loading Settings
+      modelLoadingSettings: 'モデル読み込み設定',
+      // Auto Offload/Load
+      autoOffloadLoad: '自動オフロード/ロード',
+      autoOffloadLoadDescription:
+        'アプリがバックグラウンドにあるときにモデルをオフロードします。',
+      // Auto Navigate to Chat
+      autoNavigateToChat: 'チャットへ自動ナビゲート',
+      autoNavigateToChatDescription:
+        '読み込みが開始されたらチャットへナビゲートします。',
+      // App Settings
+      appSettings: 'アプリ設定',
+      // Language
+      language: '言語',
+      // Dark Mode
+      darkMode: 'ダークモード',
+      // Display Memory Usage
+      displayMemoryUsage: 'メモリ使用量表示',
+      displayMemoryUsageDescription:
+        'チャットページにメモリ使用量を表示します。',
+    },
+    memory: {
+      shortWarning: 'メモリ警告',
+      warning:
+        '警告：モデルサイズが利用可能なメモリを超える可能性があります。これによりデバイスのパフォーマンスと安定性に影響する可能性があります。',
+    },
+    storage: {
+      checkFailed: 'ストレージの確認に失敗しました',
+      lowStorage:
+        'ストレージ不足！モデル {{modelSize}} > 空き容量 {{freeSpace}}',
+    },
+    generation: {
+      modelNotInitialized: 'モデルコンテキストが初期化されていません',
+      failedToGenerate: '出力の生成に失敗しました',
+    },
+    models: {
+      fileManagement: {
+        fileAlreadyExists: 'ファイルは既に存在します',
+        fileAlreadyExistsMessage:
+          'この名前のファイルは既に存在します。どうしますか？',
+        replace: '置き換え',
+        keepBoth: '両方保持',
+      },
+      labels: {
+        localModel: 'ローカル',
+        hfModel: 'HF',
+        unknownGroup: '不明',
+        availableToUse: '使用可能',
+        availableToDownload: 'ダウンロード可能',
+        useAddButtonForMore: '+ ボタンを使用して他のモデルを探す',
+      },
+      buttons: {
+        addFromHuggingFace: 'Hugging Faceから追加',
+        addLocalModel: 'ローカルモデルを追加',
+        reset: 'リセット',
+      },
+      modelsHeaderRight: {
+        menuTitleHf: 'Hugging Faceモデル',
+        menuTitleDownloaded: 'ダウンロード済みモデル',
+        menuTitleGrouped: 'モデルタイプでグループ化',
+        menuTitleReset: 'モデルリストをリセット',
+      },
+      modelsResetDialog: {
+        proceedWithReset: 'リセットを続行',
+        confirmReset: 'リセットを確認',
+      },
+      chatTemplate: {
+        label: '基本チャットテンプレート:',
+      },
+      details: {
+        title: '利用可能な GGUF ファイル',
+      },
+      modelFile: {
+        alerts: {
+          cannotRemoveTitle: '削除できません',
+          modelPreset: 'このモデルはプリセットです。',
+          downloadedFirst:
+            'モデルがダウンロードされています。まずファイルを削除してください。',
+          removeTitle: 'モデルを削除',
+          removeMessage: 'このモデルをリストから削除してもよろしいですか？',
+          removeError: 'モデルの削除に失敗しました。',
+          alreadyDownloadedTitle: 'モデルは既にダウンロード済み',
+          alreadyDownloadedMessage: 'モデルは既にダウンロードされています。',
+          deleteTitle: 'モデルを削除',
+          deleteMessage:
+            'このダウンロード済みモデルを削除してもよろしいですか？',
+        },
+        buttons: {
+          remove: '削除',
+        },
+        warnings: {
+          storage: {
+            message: '十分なストレージ容量がありません。',
+            shortMessage: 'ストレージ不足',
+          },
+          memory: {
+            message:
+              'モデルサイズがデバイスの総メモリに近いか超えています。予期しない動作が発生する可能性があります。',
+          },
+          legacy: {
+            message:
+              'レガシー量子化形式 - モデルが実行できない可能性があります。',
+            shortMessage: 'レガシー量子化',
+          },
+          multiple: '{count}個の警告',
+        },
+        labels: {
+          downloadSpeed: '{speed}',
+        },
+      },
+      search: {
+        noResults: 'モデルが見つかりません',
+        loadingMore: '読み込み中...',
+        searchPlaceholder: 'Hugging Faceモデルを検索',
+        modelUpdatedLong: '{{time}}前に更新',
+        modelUpdatedShort: '{{time}}前',
+        modelUpdatedJustNowLong: 'たった今更新',
+        modelUpdatedJustNowShort: 'たった今',
+      },
+      modelCard: {
+        alerts: {
+          deleteTitle: 'モデルを削除',
+          deleteMessage:
+            'このダウンロード済みモデルを削除してもよろしいですか？',
+          removeTitle: 'モデルを削除',
+          removeMessage: 'このモデルをリストから削除してもよろしいですか？',
+        },
+        buttons: {
+          settings: '設定',
+          download: 'ダウンロード',
+          remove: '削除',
+          load: '読み込み',
+          offload: 'オフロード',
+        },
+        labels: {
+          skills: 'スキル: ',
+        },
+      },
+      modelSettings: {
+        template: {
+          label: 'テンプレート:',
+          editButton: '編集',
+          dialogTitle: 'チャットテンプレートを編集',
+          note1:
+            '注意: テンプレートを変更するとBOS、EOS、システムプロンプトが変わる可能性があります。',
+          note2:
+            'Nunjucksを使用。空白の場合はモデルのテンプレートを使用します。',
+          placeholder: 'チャットテンプレートをここに入力...',
+          closeButton: '閉じる',
+        },
+        stopWords: {
+          label: 'ストップワード',
+          placeholder: '新しいストップワードを追加',
+        },
+        tokenSettings: {
+          bos: 'BOS',
+          eos: 'EOS',
+          addGenerationPrompt: '生成プロンプトを追加',
+          bosTokenPlaceholder: 'BOSトークン',
+          eosTokenPlaceholder: 'EOSトークン',
+          systemPrompt: 'システムプロンプト',
+        },
+      },
+      modelDescription: {
+        size: 'サイズ: ',
+        parameters: 'パラメータ: ',
+        separator: ' | ',
+        notAvailable: '利用不可',
+      },
+      modelCapabilities: {
+        questionAnswering: '質問応答',
+        summarization: '要約',
+        reasoning: '推論',
+        roleplay: 'ロールプレイ',
+        instructions: '指示に従う',
+        code: 'コード生成',
+        math: '数学解決',
+        multilingual: '多言語対応',
+        rewriting: '文章書き換え',
+        creativity: '創造的文章',
+      },
+    },
+    completionParams: {
+      grammar:
+        '生成されたテキストが特定の構造や形式に従うように、特定の文法ルールを適用する',
+      stop: 'テキスト生成を停止する特定のフレーズを定義する',
+      n_predict: '生成される応答の長さを設定する（トークン単位）',
+      n_probs: '代替単語の確率スコアを表示します。',
+      top_k:
+        '最も可能性の高いK個のオプションに単語の選択を制限することで創造性を制御します。値が低いほど応答がより焦点を絞ったものになります',
+      top_p:
+        '創造性と一貫性のバランスを取ります。高い値（1.0に近い）では、より創造的だが焦点が少ない可能性のある応答を許可します',
+      min_p:
+        'トークンが考慮される最小確率。非現実的または文脈外の応答を減らすために可能性の低い単語をフィルタリングします',
+      temperature:
+        '創造性と予測可能性を制御します。値が高いほど応答がより創造的ですが焦点が少なくなります',
+      penalty_last_n:
+        '繰り返しをチェックする範囲。大きな値は長期的な繰り返しを防ぐのに役立ちます',
+      penalty_repeat:
+        '単語の繰り返しを抑制します。値が高いほど応答はより多様な言語を使用します',
+      penalty_freq:
+        '過剰に使用される単語にペナルティを課します。値が高いほどより広い語彙を奨励します',
+      penalty_present:
+        'テーマやアイデアの繰り返しを減らします。値が高いほどより多様なコンテンツを奨励します',
+      mirostat:
+        '応答の創造性に対する高度な制御を有効にします。ランダム性と一貫性のスマートなリアルタイム調整のためには1または2（よりスムーズ）に設定してください。',
+      mirostat_tau:
+        'Mirostatの創造性レベルを設定します。高い値ではより多様で想像力豊かな応答が可能になり、低い値ではより焦点を絞った出力が確保されます。',
+      mirostat_eta:
+        'Mirostatが創造性を調整する速さ。高い値は調整がより速いことを意味します',
+      dry_multiplier:
+        "DRY（Don't Repeat Yourself）機能の強さ。高い値は繰り返しを強く防ぎます",
+      dry_base:
+        'DRYモードでの繰り返しに対する基本ペナルティ。高い値は繰り返しの防止により積極的です',
+      dry_allowed_length: 'DRYペナルティが適用される前に繰り返し可能な単語数',
+      dry_penalty_last_n: 'DRYモードで繰り返しを探す範囲',
+      dry_sequence_breakers:
+        'DRYモードで繰り返しチェッカーをリセットするシンボル',
+      ignore_eos:
+        'モデルが停止しようとしても生成を続けます。より長い応答を強制するのに役立ちます',
+      logit_bias: '特定の単語が応答に現れる可能性を調整します',
+      seed: '乱数生成器のシードを設定します。再現可能な結果に役立ちます',
+      xtc_probability:
+        'XTCサンプラーによるトークン削除の確率を設定します。0は無効',
+      xtc_threshold:
+        'XTCサンプラーによって削除されるトークンの最小確率閾値を設定します。（> 0.5はXTCを無効にします）',
+      typical_p:
+        'パラメータpを使用してローカルに典型的なサンプリングを有効にします。1.0は無効',
+    },
     about: {
-      screenTitle: 'Información de la App',
+      screenTitle: 'アプリ情報',
       description:
-        'Una aplicación que lleva los modelos de lenguaje directamente a tu teléfono. Se apoya en llama.cpp y llama.rn.',
-      supportProject: 'Apoya el Proyecto',
+        '言語モデルを直接あなたのスマートフォンに提供するアプリです。llama.cppとllama.rnを基盤としています。',
+      supportProject: 'プロジェクトをサポート',
       supportProjectDescription:
-        'Si disfrutas usando PocketPal AI, considera apoyar el proyecto de las siguientes formas:',
-      githubButton: 'Estrella en GitHub',
-      orText: 'o',
-      orBy: 'o mediante',
-      sponsorButton: 'Convertirse en Patrocinador',
-      versionCopiedTitle: 'Versión copiada',
+        'PocketPal AIを楽しんでいただけるなら、次の方法でプロジェクトをサポートすることをご検討ください：',
+      githubButton: 'GitHubでスター',
+      orText: 'または',
+      orBy: 'または',
+      sponsorButton: 'スポンサーになる',
+      versionCopiedTitle: 'バージョンをコピーしました',
       versionCopiedDescription:
-        'La información de la versión ha sido copiada al portapapeles',
+        'バージョン情報がクリップボードにコピーされました',
     },
     feedback: {
-      title: 'Enviar Comentarios',
+      title: 'フィードバックを送信',
       description:
-        '¡Tu opinión es importante! Cuéntanos cómo PocketPal AI te está ayudando y qué podemos hacer para que sea aún más útil.',
-      shareThoughtsButton: 'Comparte tus opiniones',
+        'あなたの声は重要です！PocketPal AIがどのように役立っているか、さらに便利にするために何ができるかをお聞かせください。',
+      shareThoughtsButton: '意見を共有する',
       useCase: {
-        label: '¿Para qué estás usando PocketPal AI?',
-        placeholder: 'ej., resúmenes, roleplay, etc.',
+        label: 'PocketPal AIをどのように使用していますか？',
+        placeholder: '例：要約、ロールプレイなど',
       },
       featureRequests: {
-        label: '¿Qué características te gustaría ver en el futuro?',
-        placeholder: 'Comparte tus ideas y sugerencias de características',
+        label: '今後見たい機能は何ですか？',
+        placeholder: 'アイデアや機能の提案を共有してください',
       },
       generalFeedback: {
-        label: '¿Algún otro comentario?',
-        placeholder:
-          'Comparte cualquier otro pensamiento que tengas. Lo que te gusta, lo que no te gusta, etc.',
+        label: '一般的なフィードバック',
+        placeholder: 'その他の考えがあればぜひ共有してください。',
       },
       usageFrequency: {
-        label: '¿Con qué frecuencia usas PocketPal AI? (Opcional)',
+        label: 'PocketPal AIをどのくらいの頻度で使用していますか？（任意）',
         options: {
-          daily: 'Diariamente',
-          weekly: 'Semanalmente',
-          monthly: 'Mensualmente',
-          rarely: 'Rara vez',
+          daily: '毎日',
+          weekly: '毎週',
+          monthly: '毎月',
+          rarely: 'ほとんど使わない',
         },
       },
       email: {
-        label: 'Correo de Contacto (Opcional)',
-        placeholder: 'Tu dirección de correo electrónico',
+        label: '連絡先メール（任意）',
+        placeholder: 'あなたのメールアドレス',
       },
-      submit: 'Enviar Comentarios',
+      submit: 'フィードバックを送信',
       validation: {
-        required: 'Por favor, proporciona al menos algún comentario',
+        required: '少なくともいくつかのフィードバックを提供してください',
       },
-      success: '¡Gracias por tus comentarios!',
-      error: {
-        general: 'Error al enviar comentarios. Por favor, inténtalo de nuevo.',
-      },
-    },
-  },
-  ko: {
-    model: '모델',
-    modelSettings: '모델 설정',
-    chatGenerationSettings: '채팅 생성 설정',
-    save: '저장',
-    generationSettings: '생성 설정',
-    deleteChatTitle: '채팅 삭제',
-    deleteChatMessage: '채팅을 삭제하시겠습니까?',
-    duplicateChatHistory: '채팅 기록 복제',
-    exportChatSession: '채팅 세션 내보내기',
-    rename: '이름 변경',
-    makeChatTemporary: '채팅 임시로 만들기',
-    attachmentButtonAccessibilityLabel: '미디어 보내기',
-    emptyChatPlaceholder: '주고받은 메시지가 없습니다',
-    fileButtonAccessibilityLabel: '파일',
-    inputPlaceholder: '메시지',
-    sendButtonAccessibilityLabel: '보내기',
-    modelNotLoaded: '모델이 로드되지 않았습니다. 모델을 초기화하세요.',
-    loadingModel: '모델을 로드하는 중...',
-    typeYourMessage: '메시지를 입력하세요',
-    conversationReset: '대화가 초기화되었습니다!',
-    networkError: '네트워크 오류가 발생했습니다. 다시 시도해주세요.',
-    goToModels: '모델로 가기',
-    readyToChat: '채팅을 준비하세요. 마지막으로 사용된 모델을 로드하세요.',
-    pleaseLoadModel: '채팅을 위해 모델을 로드하세요.',
-    shortMemoryWarning: '메모리 경고',
-    memoryWarning:
-      '경고: 모델 크기가 사용 가능한 메모리를 초과할 수 있습니다. 이는 장치의 성능과 안정성에 영향을 미칠 수 있습니다.',
-    load: '로드',
-    cancel: '취소',
-    download: '다운로드',
-    offload: '해제',
-    reset: '재설정',
-    delete: '삭제',
-    saveChanges: '변경 저장',
-    dismiss: '무시',
-    replace: '대체',
-    keepBoth: '둘 다 유지',
-    fileAlreadyExists: '파일이 이미 존재합니다',
-    fileAlreadyExistsMessage:
-      '이름이 같은 파일이 이미 존재합니다. 어떻게 하시겠습니까?',
-    addLocalModel: '로컬 모델 추가',
-    localModel: '로컬',
-    hfModel: 'HF',
-    hfFABLabel: 'Hugging Face에서 검색',
-    localFABLabel: '로컬 모델 추가',
-    resetFABLabel: '초기화',
-    downloaded: '다운로드됨',
-    grouped: '그룹화됨',
-    proceedWithReset: '재설정 진행',
-    confirmReset: '재설정 확인',
-    modelSettingsTitle: '모델 설정',
-    autoOffloadLoad: '자동 해제/로드',
-    autoOffloadLoadDescription: '앱이 백그라운드에 있을 때 모델을 해제합니다.',
-    metal: 'Metal',
-    metalDescription: 'Apple의 하드웨어 가속 API.',
-    layersOnGPU: 'GPU의 레이어 수: {{gpuLayers}}',
-    contextSize: '컨텍스트 크기',
-    contextSizePlaceholder: '컨텍스트 크기 입력 (최소 {{minContextSize}})',
-    invalidContextSizeError:
-      '유효한 숫자를 입력하세요 (최소 {{minContextSize}})',
-    modelReloadNotice: '변경 사항이 적용되도록 모델을 다시 로드해야 합니다.',
-    autoNavigateToChat: '자동으로 채팅으로 이동',
-    autoNavigateToChatDescription: '로드가 시작될 때 채팅으로 이동합니다.',
-    uiSettingsTitle: '사용자 인터페이스 설정',
-    darkMode: '어두운 모드',
-    darkModeDescription: '어두운 모드를 켜거나 끕니다.',
-    displayMemoryUsage: '메모리 사용량 표시',
-    displayMemoryUsageDescription:
-      '채팅 페이지에서 메모리 사용량을 표시합니다.',
-    tooltipGroupByType: '모델 유형별 그룹화',
-    tooltipDownloaded: '다운로드된 항목만 표시',
-    tooltipHf: 'Hugging Face 모델 표시',
-    unknownGroup: '알 수 없음',
-    menuTitleHf: 'Hugging Face 모델',
-    menuTitleDownloaded: '다운로드된 모델',
-    menuTitleGrouped: '모델 유형별 그룹화',
-    menuTitleReset: '모델 목록 재설정',
-    iOSBackgroundDownload: '백그라운드 다운로드',
-    iOSBackgroundDownloadDescription:
-      '백그라운드에서 다운로드가 계속되도록 허용합니다 (속도가 느려질 수 있습니다).',
-    availableToUse: '사용 준비 완료',
-    availableToDownload: '다운로드 가능',
-    useAddButtonForMore: '+ 버튼을 사용하여 더 많은 모델 찾기',
-    'modelSettings.grammar': '문법 기반 샘플링을 위한 문법 설정',
-    'modelSettings.stop': '완성에 포함되지 않을 중지 문자열 지정',
-    'modelSettings.n_predict': '텍스트 생성 시 예측할 최대 토큰 수',
-    'modelSettings.n_probs': '토큰당 반환할 상위 토큰 확률 수',
-    'modelSettings.top_k': '가장 확률이 높은 K개의 토큰으로 토큰 선택 제한',
-    'modelSettings.top_p':
-      '누적 확률이 임계값 P보다 높은 토큰들로 토큰 선택 제한',
-    'modelSettings.min_p': '가장 가능성 높은 토큰 대비 토큰의 최소 확률',
-    'modelSettings.xtc_probability': 'XTC 샘플러를 통한 토큰 제거 확률',
-    'modelSettings.xtc_threshold':
-      'XTC 샘플러 토큰 제거를 위한 최소 확률 임계값',
-    'modelSettings.typical_p': '지역적 전형 샘플링을 위한 매개변수',
-    'modelSettings.temperature': '생성된 텍스트의 무작위성 조정',
-    'modelSettings.penalty_last_n': '반복 페널티를 위해 고려할 토큰 수',
-    'modelSettings.penalty_repeat': '토큰 시퀀스의 반복 제어',
-    'modelSettings.penalty_freq': '반복 알파 빈도 페널티',
-    'modelSettings.penalty_present': '반복 알파 존재 페널티',
-    'modelSettings.mirostat': '혼란도 제어를 위한 Mirostat 샘플링 활성화',
-    'modelSettings.mirostat_tau': 'Mirostat 목표 엔트로피 (tau)',
-    'modelSettings.mirostat_eta': 'Mirostat 학습률 (eta)',
-    'modelSettings.dry_multiplier': 'DRY 반복 페널티 승수',
-    'modelSettings.dry_base': 'DRY 반복 페널티 기본값',
-    'modelSettings.dry_allowed_length': '지수 페널티 적용 전 최대 허용 길이',
-    'modelSettings.dry_penalty_last_n': '반복 검사를 위한 토큰 수',
-    'modelSettings.dry_sequence_breakers': 'DRY 샘플링을 위한 시퀀스 중단자',
-    'modelSettings.ignore_eos': '스트림 종료 토큰을 무시하고 생성 계속',
-    'modelSettings.logit_bias': '특정 토큰의 확률 수정',
-    'modelSettings.seed': '난수 생성기 시드',
-    about: {
-      screenTitle: '앱 정보',
-      description:
-        '언어 모델을 직접 휴대폰에서 사용할 수 있게 해주는 앱입니다. llama.cpp와 llama.rn을 기반으로 제작되었습니다.',
-      supportProject: '프로젝트 지원하기',
-      supportProjectDescription:
-        'PocketPal AI가 마음에 드신다면, 다음과 같은 방법으로 프로젝트를 지원해 주세요:',
-      githubButton: 'GitHub에서 스타 주기',
-      orText: '또는',
-      orBy: '또는',
-      sponsorButton: '스폰서 되기',
-      versionCopiedTitle: '버전 복사됨',
-      versionCopiedDescription: '버전 정보가 클립보드에 복사되었습니다',
-    },
-    feedback: {
-      title: '피드백 보내기',
-      description:
-        '여러분의 의견이 중요합니다! PocketPal AI가 어떻게 도움이 되고 있는지, 그리고 어떻게 하면 더 유용하게 만들 수 있을지 알려주세요.',
-      shareThoughtsButton: '의견 공유하기',
-      useCase: {
-        label: 'PocketPal AI를 어떤 용도로 사용하고 계신가요?',
-        placeholder: '예: 요약, 롤플레잉 등',
-      },
-      featureRequests: {
-        label: '앞으로 어떤 기능이 추가되면 좋을까요?',
-        placeholder: '원하는 기능과 제안을 공유해주세요',
-      },
-      generalFeedback: {
-        label: '기타 의견이 있으신가요?',
-        placeholder: '좋았던 점, 아쉬웠던 점 등 자유롭게 의견을 남겨주세요.',
-      },
-      usageFrequency: {
-        label: 'PocketPal AI 사용 빈도는 어떻게 되시나요? (선택사항)',
-        options: {
-          daily: '매일',
-          weekly: '주간',
-          monthly: '월간',
-          rarely: '가끔',
-        },
-      },
-      email: {
-        label: '연락처 이메일 (선택사항)',
-        placeholder: '이메일 주소',
-      },
-      submit: '피드백 보내기',
-      validation: {
-        required: '최소한 하나의 피드백을 작성해주세요',
-      },
-      success: '피드백 감사합니다!',
-      error: {
-        general: '피드백 전송 중 오류가 발생했습니다. 다시 시도해주세요.',
-      },
-    },
-  },
-  pl: {
-    model: 'Model',
-    modelSettings: 'Ustawienia modelu',
-    chatGenerationSettings: 'Ustawienia generowania czatu',
-    save: 'Zapisz',
-    generationSettings: 'Ustawienia generowania',
-    deleteChatTitle: 'Usuń czat',
-    deleteChatMessage: 'Czy na pewno chcesz usunąć ten czat?',
-    duplicateChatHistory: 'Duplikuj historię czatu',
-    exportChatSession: 'Eksportuj sesję czatu',
-    rename: 'Zmieniaj nazwę',
-    makeChatTemporary: 'Ustaw czat jako tymczasowy',
-    attachmentButtonAccessibilityLabel: 'Wyślij multimedia',
-    emptyChatPlaceholder: 'Tu jeszcze nie ma wiadomości',
-    fileButtonAccessibilityLabel: 'Plik',
-    inputPlaceholder: 'Napisz wiadomość',
-    sendButtonAccessibilityLabel: 'Wyślij',
-    modelNotLoaded: 'Model nie załadowany. Proszę załadować model.',
-    loadingModel: 'Ładowanie modelu...',
-    typeYourMessage: 'Napisz swoją wiadomość tutaj',
-    conversationReset: 'Konwersacja została zresetowana!',
-    networkError: 'Błąd sieci. Spróbuj ponownie.',
-    goToModels: 'Przejdź do modeli',
-    readyToChat: 'Czy gotowy do rozmowy? Załaduj ostatnio używany model.',
-    pleaseLoadModel: 'Załaduj model, aby czatować.',
-    shortMemoryWarning: 'Ostrzeżenie o pamięci',
-    memoryWarning:
-      'Ostrzeżenie: Rozmiar modelu może przekraczać dostępną pamięć. Może to wpłynąć na wydajność i stabilność urządzenia.',
-    load: 'Załaduj',
-    cancel: 'Anuluj',
-    download: 'Pobierz',
-    offload: 'Odpowiedz',
-    reset: 'Resetuj',
-    saveChanges: 'Zapisz zmiany',
-    delete: 'Usuń',
-    dismiss: 'Odrzuć',
-    replace: 'Zastąp',
-    keepBoth: 'Zachowaj oba',
-    fileAlreadyExists: 'Plik już istnieje',
-    fileAlreadyExistsMessage:
-      'Plik o tej samej nazwie już istnieje. Co chciałbyś zrobić?',
-    addLocalModel: 'Dodaj model lokalny',
-    localModel: 'Lokalny',
-    hfModel: 'HF',
-    hfFABLabel: 'Szukaj na Hugging Face',
-    localFABLabel: 'Dodaj Model Lokalny',
-    resetFABLabel: 'Resetuj',
-    downloaded: 'Pobrany',
-    grouped: 'Zgrupowany',
-    proceedWithReset: 'Kontynuuj reset',
-    confirmReset: 'Potwierdź Reiniciację',
-    modelSettingsTitle: 'Konfiguracja modelu',
-    autoOffloadLoad: 'Auto Offload/Load',
-    autoOffloadLoadDescription: 'Odpowiedz modelu, gdy aplikacja jest w tle.',
-    metal: 'Metal',
-    metalDescription: 'API sprzętu akcelerowanego przez Apple.',
-    layersOnGPU: 'Warstwy w GPU: {{gpuLayers}}',
-    contextSize: 'Rozmiar kontekstu',
-    contextSizePlaceholder: 'Wpisz rozmiar kontekstu (min {{minContextSize}})',
-    invalidContextSizeError: 'Wpisz poprawny numer (min {{minContextSize}})',
-    modelReloadNotice:
-      'Należy ponownie załadować model, aby zmiany zaczęły obowiązywać.',
-    autoNavigateToChat: 'Automatycznie przejdź do konwersacji',
-    autoNavigateToChatDescription:
-      'Przejdź do konwersacji, gdy rozpocznie się ładowanie.',
-    uiSettingsTitle: 'Ustawienia interfejsu użytkownika',
-    darkMode: 'Ciemny tryb',
-    darkModeDescription: 'Włącz lub wyłącz tryb ciemny.',
-    displayMemoryUsage: 'Pokaż użycie pamięci',
-    displayMemoryUsageDescription: 'Pokaż użycie pamięci na stronie czatu.',
-    tooltipGroupByType: 'Grupuj według typu modelu',
-    tooltipDownloaded: 'Pokaż tylko pobrane',
-    tooltipHf: 'Pokaż modele z HuggingFace',
-    unknownGroup: 'Nieznany',
-    menuTitleHf: 'Modele Hugging Face',
-    menuTitleDownloaded: 'Pobrane Modele',
-    menuTitleGrouped: 'Grupuj według Typu Modelu',
-    menuTitleReset: 'Reset Lista Modeli',
-    iOSBackgroundDownload: 'Pobieranie w tle',
-    iOSBackgroundDownloadDescription:
-      'Zezwól na kontynuowanie pobierania w tle (będzie wolniejsze).',
-    availableToUse: 'Gotowy do Użycia',
-    availableToDownload: 'Dostępny do Pobrania',
-    useAddButtonForMore: 'Użyj przycisku +, aby znaleźć więcej modeli',
-    'modelSettings.grammar':
-      'Ustaw gramatykę dla próbkowania opartego na gramatyce',
-    'modelSettings.stop':
-      'Określ ciągi zatrzymujące, które nie zostaną uwzględnione w uzupełnieniu',
-    'modelSettings.n_predict':
-      'Maksymalna liczba tokenów do przewidzenia podczas generowania tekstu',
-    'modelSettings.n_probs':
-      'Liczba najwyższych prawdopodobieństw tokenów do zwrócenia na token',
-    'modelSettings.top_k':
-      'Ogranicz wybór tokenów do K najbardziej prawdopodobnych tokenów',
-    'modelSettings.top_p':
-      'Ogranicz wybór tokenów do tych o skumulowanym prawdopodobieństwie powyżej progu P',
-    'modelSettings.min_p':
-      'Minimalne prawdopodobieństwo dla tokenu względem najbardziej prawdopodobnego tokenu',
-    'modelSettings.xtc_probability':
-      'Szansa na usunięcie tokenu przez próbkowanie XTC',
-    'modelSettings.xtc_threshold':
-      'Mnimalny próg prawdopodobieństwa dla usuwania tokenów przez XTC',
-    'modelSettings.typical_p': 'Parametr dla lokalnie typowego próbkowania',
-    'modelSettings.temperature': 'Ajustar aleatoriedade do tekstu generowanego',
-    'modelSettings.penalty_last_n':
-      'Liczba tokenów do uwzględnienia przy karze za powtórzenia',
-    'modelSettings.penalty_repeat': 'Kontroluj powtarzanie sekwencji tokenów',
-    'modelSettings.penalty_freq': 'Penalidade de frequência alfa repetida',
-    'modelSettings.penalty_present': 'Penalidade de presença alfa repetida',
-    'modelSettings.mirostat':
-      'Habilitar amostragem Mirostat para controle de perplexidade',
-    'modelSettings.mirostat_tau': 'Entropia alvo do Mirostat (tau)',
-    'modelSettings.mirostat_eta': 'Taxa de aprendizado do Mirostat (eta)',
-    'modelSettings.dry_multiplier':
-      'Multiplicador de penalidade de repetição DRY',
-    'modelSettings.dry_base': 'Valor base de penalidade de repetição DRY',
-    'modelSettings.dry_allowed_length':
-      'Comprimento máximo permitido antes da penalidade exponencial',
-    'modelSettings.dry_penalty_last_n':
-      'Número de tokens a verificar para repetições',
-    'modelSettings.dry_sequence_breakers':
-      'Quebradores de sequência para amostragem DRY',
-    'modelSettings.ignore_eos':
-      'Ignorar token de fim de fluxo e continuar gerando',
-    'modelSettings.logit_bias': 'Modificar probabilidade de tokens específicos',
-    'modelSettings.seed': 'Semente do gerador de números aleatórios',
-    about: {
-      screenTitle: 'Informacje o aplikacji',
-      description:
-        'Aplikacja, która umożliwia korzystanie z modeli językowych bezpośrednio na telefonie. Bazuje na llama.cpp i llama.rn.',
-      supportProject: 'Wesprzyj projekt',
-      supportProjectDescription:
-        'Jeśli podoba Ci się PocketPal AI, rozważ wsparcie projektu w następujący sposób:',
-      githubButton: 'Gwiazdka GitHub',
-      orText: 'lub',
-      orBy: 'lub poprzez',
-      sponsorButton: 'Zostań sponsorem',
-      versionCopiedTitle: 'Wersja skopiowana',
-      versionCopiedDescription:
-        'Informacje o wersji zostały skopiowane do schowka',
-    },
-    feedback: {
-      title: 'Wyślij opinię',
-      description:
-        'Twoja opinia jest ważna! Powiedz nam, jak PocketPal AI Ci pomaga i co możemy zrobić, aby był jeszcze bardziej przydatny.',
-      shareThoughtsButton: 'Podziel się swoimi przemyśleniami',
-      useCase: {
-        label: 'Do czego używasz PocketPal AI?',
-        placeholder: 'np. podsumowania, roleplay, itp.',
-      },
-      featureRequests: {
-        label: 'Jakie funkcje chciałbyś zobaczyć w przyszłości?',
-        placeholder:
-          'Podziel się swoimi pomysłami i sugestiami dotyczącymi funkcji',
-      },
-      generalFeedback: {
-        label: 'Inne uwagi?',
-        placeholder:
-          'Podziel się swoimi przemyśleniami. Co Ci się podoba, co nie, itp.',
-      },
-      usageFrequency: {
-        label: 'Jak często używasz PocketPal AI? (Opcjonalne)',
-        options: {
-          daily: 'Codziennie',
-          weekly: 'Co tydzień',
-          monthly: 'Co miesiąc',
-          rarely: 'Rzadko',
-        },
-      },
-      email: {
-        label: 'Email kontaktowy (Opcjonalny)',
-        placeholder: 'Twój adres email',
-      },
-      submit: 'Wyślij opinię',
-      validation: {
-        required: 'Proszę podać przynajmniej jedną opinię',
-      },
-      success: 'Dziękujemy za opinię!',
-      error: {
-        general: 'Błąd podczas wysyłania opinii. Spróbuj ponownie.',
-      },
-    },
-  },
-  pt: {
-    model: 'Modelo',
-    modelSettings: 'Configuração do Modelo',
-    chatGenerationSettings: 'Configuração de geração de chat',
-    save: 'Salvar',
-    generationSettings: 'Configuração de geração',
-    deleteChatTitle: 'Deletar chat',
-    deleteChatMessage: 'Tem certeza de que deseja deletar este chat?',
-    duplicateChatHistory: 'Duplicar histórico de chat',
-    exportChatSession: 'Exportar sessão de chat',
-    rename: 'Renomear',
-    makeChatTemporary: 'Fazer chat temporário',
-    attachmentButtonAccessibilityLabel: 'Envia mídia',
-    emptyChatPlaceholder: 'Ainda não há mensagens aqui',
-    fileButtonAccessibilityLabel: 'Arquivo',
-    inputPlaceholder: 'Mensagem',
-    sendButtonAccessibilityLabel: 'Enviar',
-    modelNotLoaded: 'Modelo não carregado. Por favor, inicialize o modelo.',
-    loadingModel: 'Carregando modelo...',
-    typeYourMessage: 'Digite sua mensagem aqui',
-    conversationReset: 'Conversa reiniciada!',
-    networkError: 'Erro de rede. Tente novamente.',
-    goToModels: 'Ir para Modelos',
-    readyToChat: 'Pronto para conversar? Carregue o último modelo usado.',
-    pleaseLoadModel: 'Carregue um modelo para conversar.',
-    shortMemoryWarning: 'Advertência de memória',
-    memoryWarning:
-      'Advertência: O tamanho do modelo pode exceder a memória disponível. Isso pode afetar o desempenho e a estabilidade do seu dispositivo.',
-    load: 'Carregar',
-    cancel: 'Cancelar',
-    download: 'Baixar',
-    offload: 'Descarregar',
-    reset: 'Reiniciar',
-    saveChanges: 'Salvar alterações',
-    delete: 'Deletar',
-    dismiss: 'Descartar',
-    replace: 'Substituir',
-    keepBoth: 'Manter ambos',
-    fileAlreadyExists: 'Arquivo já existe',
-    fileAlreadyExistsMessage:
-      'Um arquivo com este nome já existe. O que você gostaria de fazer?',
-    addLocalModel: 'Dodaj model lokalny',
-    localModel: 'Local',
-    hfModel: 'HF',
-    hfFABLabel: 'Pesquisar no Hugging Face',
-    localFABLabel: 'Adicionar Modelo Local',
-    resetFABLabel: 'Redefinir',
-    downloaded: 'Baixado',
-    grouped: 'Agrupado',
-    proceedWithReset: 'Proceder com Reiniciar',
-    confirmReset: 'Confirmar Reiniciar',
-    modelSettingsTitle: 'Configuração do Modelo',
-    autoOffloadLoad: 'Auto Offload/Load',
-    autoOffloadLoadDescription: 'Odpowiedz modelu, gdy aplikacja é w tle.',
-    metal: 'Metal',
-    metalDescription: 'API sprzętu akcelerowanego przez Apple.',
-    layersOnGPU: 'Warstwy w GPU: {{gpuLayers}}',
-    contextSize: 'Rozmiar kontekstu',
-    contextSizePlaceholder: 'Wpisz rozmiar kontekstu (min {{minContextSize}})',
-    invalidContextSizeError: 'Wpisz poprawny numer (min {{minContextSize}})',
-    modelReloadNotice:
-      'Należy ponownie załadować model, aby zmiany zaczęły obowiązywać.',
-    autoNavigateToChat: 'Automatycznie przejdź do konwersacji',
-    autoNavigateToChatDescription:
-      'Przejdź do konwersacji, gdy rozpocznie się ładowanie.',
-    uiSettingsTitle: 'Ustawienia interfejsu użytkownika',
-    darkMode: 'Ciemny tryb',
-    darkModeDescription: 'Włącz lub wyłącz tryb ciemny.',
-    displayMemoryUsage: 'Pokaż użycie pamięci',
-    displayMemoryUsageDescription: 'Pokaż użycie pamięci na stronie czatu.',
-    tooltipGroupByType: 'Agrupar por tipo de modelo',
-    tooltipDownloaded: 'Mostrar apenas baixados',
-    tooltipHf: 'Mostrar modelos provenientes de Hugging Face',
-    unknownGroup: 'Desconhecido',
-    menuTitleHf: 'Modelos Hugging Face',
-    menuTitleDownloaded: 'Modelos Descarregados',
-    menuTitleGrouped: 'Agrupar por Tipo de Modelo',
-    menuTitleReset: 'Reiniciar Lista de Modelos',
-    iOSBackgroundDownload: 'Download em segundo plano',
-    iOSBackgroundDownloadDescription:
-      'Permitir que os downloads continuem em segundo plano (será mais lento).',
-    availableToUse: 'Pronto para Usar',
-    availableToDownload: 'Disponível para Baixar',
-    useAddButtonForMore: 'Use o botão + para encontrar mais modelos',
-    'modelSettings.grammar':
-      'Definir gramática para amostragem baseada em gramática',
-    'modelSettings.stop':
-      'Especificar strings de parada que não serão incluídas na conclusão',
-    'modelSettings.n_predict':
-      'Número máximo de tokens a prever ao gerar texto',
-    'modelSettings.n_probs':
-      'Número de probabilidades de tokens superiores a retornar por token',
-    'modelSettings.top_k':
-      'Limitar a seleção de tokens aos K tokens mais prováveis',
-    'modelSettings.top_p':
-      'Limitar a seleção de tokens àqueles com probabilidade cumulativa acima do limiar P',
-    'modelSettings.min_p':
-      'Probabilidade mínima para um token em relação ao token mais provável',
-    'modelSettings.xtc_probability':
-      'Chance de remoção de token via amostrador XTC',
-    'modelSettings.xtc_threshold':
-      'Limiar mínimo de probabilidade para remoção de tokens via XTC',
-    'modelSettings.typical_p': 'Parâmetro para amostragem localmente típica',
-    'modelSettings.temperature': 'Ajustar aleatoriedade do texto gerado',
-    'modelSettings.penalty_last_n':
-      'Número de tokens a considerar para penalidade de repetição',
-    'modelSettings.penalty_repeat':
-      'Controlar repetição de sequências de tokens',
-    'modelSettings.penalty_freq': 'Penalidade de frequência alfa repetida',
-    'modelSettings.penalty_present': 'Penalidade de presença alfa repetida',
-    'modelSettings.mirostat':
-      'Habilitar amostragem Mirostat para controle de perplexidade',
-    'modelSettings.mirostat_tau': 'Entropia alvo do Mirostat (tau)',
-    'modelSettings.mirostat_eta': 'Taxa de aprendizado do Mirostat (eta)',
-    'modelSettings.dry_multiplier':
-      'Multiplicador de penalidade de repetição DRY',
-    'modelSettings.dry_base': 'Valor base de penalidade de repetição DRY',
-    'modelSettings.dry_allowed_length':
-      'Comprimento máximo permitido antes da penalidade exponencial',
-    'modelSettings.dry_penalty_last_n':
-      'Número de tokens a verificar para repetições',
-    'modelSettings.dry_sequence_breakers':
-      'Quebradores de sequência para amostragem DRY',
-    'modelSettings.ignore_eos':
-      'Ignorar token de fim de fluxo e continuar gerando',
-    'modelSettings.logit_bias': 'Modificar probabilidade de tokens específicos',
-    'modelSettings.seed': 'Semente do gerador de números aleatórios',
-    about: {
-      screenTitle: 'Informações do Aplicativo',
-      description:
-        'Um aplicativo que traz modelos de linguagem diretamente para seu telefone. Baseado em llama.cpp e llama.rn.',
-      supportProject: 'Apoie o Projeto',
-      supportProjectDescription:
-        'Se você gosta de usar o PocketPal AI, considere apoiar o projeto das seguintes formas:',
-      githubButton: 'Favoritar no GitHub',
-      orText: 'ou',
-      orBy: 'ou por',
-      sponsorButton: 'Torne-se um Patrocinador',
-      versionCopiedTitle: 'Versão copiada',
-      versionCopiedDescription:
-        'As informações da versão foram copiadas para a área de transferência',
-    },
-    feedback: {
-      title: 'Enviar Feedback',
-      description:
-        'Sua opinião é importante! Conte-nos como o PocketPal AI está te ajudando e o que podemos fazer para torná-lo ainda mais útil.',
-      shareThoughtsButton: 'Compartilhe suas opiniões',
-      useCase: {
-        label: 'Para que você está usando o PocketPal AI?',
-        placeholder: 'ex: resumos, roleplay, etc.',
-      },
-      featureRequests: {
-        label: 'Quais recursos você gostaria de ver no futuro?',
-        placeholder: 'Compartilhe suas ideias e sugestões de recursos',
-      },
-      generalFeedback: {
-        label: 'Outros comentários?',
-        placeholder:
-          'Compartilhe seus pensamentos. O que você gosta, o que não gosta, etc.',
-      },
-      usageFrequency: {
-        label: 'Com que frequência você usa o PocketPal AI? (Opcional)',
-        options: {
-          daily: 'Diariamente',
-          weekly: 'Semanalmente',
-          monthly: 'Mensalmente',
-          rarely: 'Raramente',
-        },
-      },
-      email: {
-        label: 'Email de Contato (Opcional)',
-        placeholder: 'Seu endereço de email',
-      },
-      submit: 'Enviar Feedback',
-      validation: {
-        required: 'Por favor, forneça pelo menos um feedback',
-      },
-      success: 'Obrigado pelo seu feedback!',
-      error: {
-        general: 'Erro ao enviar feedback. Por favor, tente novamente.',
-      },
-    },
-  },
-  ru: {
-    model: 'Модель',
-    modelSettings: 'Настройки модели',
-    chatGenerationSettings: 'Настройки генерации чата',
-    save: 'Сохранить',
-    generationSettings: 'Настройки генерации',
-    deleteChatTitle: 'Удалить чат',
-    deleteChatMessage: 'Вы уверены, что хотите удалить этот чат?',
-    duplicateChatHistory: 'Дублировать историю чата',
-    exportChatSession: 'Экспортировать сессию чата',
-    rename: 'Переименовать',
-    makeChatTemporary: 'Сделать чат временным',
-    attachmentButtonAccessibilityLabel: 'Отправить медиа',
-    emptyChatPlaceholder: 'Пока что у вас нет сообщений',
-    fileButtonAccessibilityLabel: 'Файл',
-    inputPlaceholder: 'Сообщение',
-    sendButtonAccessibilityLabel: 'Отправить',
-    modelNotLoaded: 'Модель не загружена. Пожалуйста, инициализируйте модель.',
-    loadingModel: 'Загрузка модели...',
-    typeYourMessage: 'Введите ваше сообщение здесь',
-    conversationReset: 'Конверсация была сброшена!',
-    networkError: 'Ошибка сети. Пожалуйста, попробуйте снова.',
-    goToModels: 'Перейти к моделям',
-    readyToChat: 'Готовы к общению? Загрузите последний используемый модель.',
-    pleaseLoadModel: 'Загрузите модель для общения.',
-    shortMemoryWarning: 'Предупреждение о памяти',
-    memoryWarning:
-      'Предупреждение: Размер модели может превышать доступную память. Это может повлиять на производительность и стабильность вашего устройства.',
-    load: 'Загрузить',
-    cancel: 'Отменить',
-    download: 'Скачать',
-    offload: 'Отменить',
-    reset: 'Сбросить',
-    saveChanges: 'Сохранить',
-    delete: 'Удалить',
-    dismiss: 'Отменить',
-    replace: 'Заменить',
-    keepBoth: 'Оставить оба',
-    fileAlreadyExists: 'Файл уже существует',
-    fileAlreadyExistsMessage:
-      'Файл с таким названием уже существует. Что вы хотите сделать?',
-    addLocalModel: 'Добавить локальную модель',
-    localModel: 'Локальная',
-    hfModel: 'HF',
-    hfFABLabel: 'Поиск в Hugging Face',
-    localFABLabel: 'Добавить локальную модель',
-    resetFABLabel: 'Сбросить',
-    downloaded: 'Скачано',
-    grouped: 'Сгруппировано',
-    proceedWithReset: 'Продолжить сброс',
-    confirmReset: 'Подтвердить сброс',
-    modelSettingsTitle: 'Конфигурация модели',
-    autoOffloadLoad: 'Автоматическое выгрузка/загрузка',
-    autoOffloadLoadDescription:
-      'Выгрузить модель, когда приложение находится в фоне.',
-    metal: 'Metal',
-    metalDescription: 'API оборудования, ускоренного Apple.',
-    layersOnGPU: 'Слои в GPU: {{gpuLayers}}',
-    contextSize: 'Размер контекста',
-    contextSizePlaceholder:
-      'Введите размер контекста (минимум {{minContextSize}})',
-    invalidContextSizeError:
-      'Введите правильный номер (минимум {{minContextSize}})',
-    modelReloadNotice:
-      'Необходимо перезагрузить модель, чтобы изменения вступили в силу.',
-    autoNavigateToChat: 'Автоматически перейти к конверсации',
-    autoNavigateToChatDescription:
-      'Перейти к конверсации, когда начнется загрузка.',
-    uiSettingsTitle: 'Настройки пользовательского интерфейса',
-    darkMode: 'Темный режим',
-    darkModeDescription: 'Включить или выключить темный режим.',
-    displayMemoryUsage: 'Показать использование памяти',
-    displayMemoryUsageDescription:
-      'Показать использование памяти на странице чата.',
-    tooltipGroupByType: 'Группировать по типу модели',
-    tooltipDownloaded: 'Показать только загруженные',
-    tooltipHf: 'Показать модели из HuggingFace',
-    unknownGroup: 'Неизвестно',
-    menuTitleHf: 'Модели Hugging Face',
-    menuTitleDownloaded: 'Загруженные модели',
-    menuTitleGrouped: 'Группировать по типу модели',
-    menuTitleReset: 'Сбросить список моделей',
-    iOSBackgroundDownload: 'Фоновая загрузка',
-    iOSBackgroundDownloadDescription:
-      'Разрешить загрузки в фоновом режиме (это будет медленнее).',
-    availableToUse: 'Готов к Использованию',
-    availableToDownload: 'Доступен для Скачивания',
-    useAddButtonForMore: 'Используйте кнопку + для поиска моделей',
-    'modelSettings.grammar':
-      'Установить грамматику для выборки на основе грамматики',
-    'modelSettings.stop':
-      'Вказати стоп-рядки, які не будуть включені в завершення',
-    'modelSettings.n_predict':
-      'Максимальна кількість токенів для передбачення при генерації тексту',
-    'modelSettings.n_probs':
-      'Кількість ймовірностей найкращих токенів для повернення на токен',
-    'modelSettings.top_k':
-      'Обмежити вибір токенів K найбільш ймовірними токенами',
-    'modelSettings.top_p':
-      'Обмежити вибір токенів тими, у яких кумулятивна ймовірність вище порогу P',
-    'modelSettings.min_p':
-      'Мінімальна ймовірність для токена відносно найбільш ймовірного токена',
-    'modelSettings.xtc_probability': 'Шанс видалення токена через семплер XTC',
-    'modelSettings.xtc_threshold':
-      'Мінімальний поріг ймовірності для видалення токенів через XTC',
-    'modelSettings.typical_p': 'Параметр для локально типової вибірки',
-    'modelSettings.temperature': 'Налаштувати випадковість генерованого тексту',
-    'modelSettings.penalty_last_n':
-      'Кількість токенів для врахування при штрафі за повторення',
-    'modelSettings.penalty_repeat':
-      'Контролювати повторення послідовностей токенів',
-    'modelSettings.penalty_freq': 'Штраф за частоту повторення альфа',
-    'modelSettings.penalty_present': 'Штраф за присутність повторення альфа',
-    'modelSettings.mirostat':
-      'Увімкнути вибірку Mirostat для контролю перплексії',
-    'modelSettings.mirostat_tau': 'Цільова ентропія Mirostat (tau)',
-    'modelSettings.mirostat_eta': 'Швидкість навчання Mirostat (eta)',
-    'modelSettings.dry_multiplier': 'Множник штрафу за повторення DRY',
-    'modelSettings.dry_base': 'Базове значення штрафу за повторення DRY',
-    'modelSettings.dry_allowed_length':
-      'Максимальна допустима довжина перед експоненційним штрафом',
-    'modelSettings.dry_penalty_last_n':
-      'Кількість токенів для сканування на повторення',
-    'modelSettings.dry_sequence_breakers':
-      'Переривники послідовності для вибірки DRY',
-    'modelSettings.ignore_eos':
-      'Ігнорувати токен кінця потоку і продовжувати генерацію',
-    'modelSettings.logit_bias': 'Змінити ймовірність певних токенів',
-    'modelSettings.seed': 'Зерно генератора випадкових чисел',
-    about: {
-      screenTitle: 'Информация о приложении',
-      description:
-        'Приложение, которое позволяет использовать языковые модели прямо на вашем телефоне. Основано на llama.cpp и llama.rn.',
-      supportProject: 'Поддержать проект',
-      supportProjectDescription:
-        'Если вам нравится PocketPal AI, рассмотрите возможность поддержки проекта следующими способами:',
-      githubButton: 'Отметить звездой на GitHub',
-      orText: 'или',
-      orBy: 'или через',
-      sponsorButton: 'Стать спонсором',
-      versionCopiedTitle: 'Версия скопирована',
-      versionCopiedDescription:
-        'Информация о версии скопирована в буфер обмена',
-    },
-    feedback: {
-      title: 'Отправить отзыв',
-      description:
-        'Ваше мнение важно! Расскажите нам, как PocketPal AI помогает вам и что мы можем сделать, чтобы он стал еще более полезным.',
-      shareThoughtsButton: 'Поделитесь своими мыслями',
-      useCase: {
-        label: 'Для чего вы используете PocketPal AI?',
-        placeholder: 'например, резюме, ролевые игры и т.д.',
-      },
-      featureRequests: {
-        label: 'Какие функции вы хотели бы видеть в будущем?',
-        placeholder: 'Поделитесь своими идеями и предложениями по функциям',
-      },
-      generalFeedback: {
-        label: 'Другие комментарии?',
-        placeholder:
-          'Поделитесь своими размышлениями. Что вам нравится, что нет, и т.д.',
-      },
-      usageFrequency: {
-        label: 'Как часто вы используете PocketPal AI? (Необязательно)',
-        options: {
-          daily: 'Ежедневно',
-          weekly: 'Еженедельно',
-          monthly: 'Ежемесячно',
-          rarely: 'Редко',
-        },
-      },
-      email: {
-        label: 'Email для связи (Необязательно)',
-        placeholder: 'Ваш адрес электронной почты',
-      },
-      submit: 'Отправить отзыв',
-      validation: {
-        required: 'Пожалуйста, предоставьте хотя бы один отзыв',
-      },
-      success: 'Спасибо за ваш отзыв!',
-      error: {
-        general: 'Ошибка при отправке отзыва. Пожалуйста, попробуйте еще раз.',
-      },
-    },
-  },
-  tr: {
-    model: 'Model',
-    modelSettings: 'Model Ayarları',
-    chatGenerationSettings: 'Chat Oluşturma Ayarları',
-    save: 'Kaydet',
-    generationSettings: 'Oluşturma Ayarları',
-    deleteChatTitle: 'Chati Sil',
-    deleteChatMessage: 'Chati silmek istediğinizden emin misiniz?',
-    duplicateChatHistory: 'Chat Geçmişini Duplica',
-    exportChatSession: 'Chat Oturumu İçeri Aktar',
-    rename: 'Yeniden Adlandır',
-    makeChatTemporary: 'Chati Geçici Olarak Yap',
-    attachmentButtonAccessibilityLabel: 'Medya gönder',
-    emptyChatPlaceholder: 'Henüz mesaj yok',
-    fileButtonAccessibilityLabel: 'Dosya',
-    inputPlaceholder: 'Mesaj yazın',
-    sendButtonAccessibilityLabel: 'Gönder',
-    modelNotLoaded: 'Model yüklenmedi. Modeli başlatın.',
-    loadingModel: 'Model yükleniyor...',
-    typeYourMessage: 'Mesajınızı buraya yazın',
-    conversationReset: 'Konuşma sıfırlandı!',
-    networkError: 'Ağ hatası. Lütfen tekrar deneyin.',
-    goToModels: 'Modellere git',
-    readyToChat: 'Sohbete hazır mısınız? Son kullanılan modeli yükleyin.',
-    pleaseLoadModel: 'Sohbet için model yükleyin.',
-    shortMemoryWarning: 'Hafıza Uyarısı',
-    memoryWarning:
-      'Uyarı: Model boyutu kullanılabilir hafızayı aşabilir. Bu, cihazınızın performansını ve kararlılığını etkileyebilir.',
-    load: 'Yükle',
-    cancel: 'İptal',
-    download: 'İndir',
-    offload: 'Aç',
-    reset: 'Sıfırla',
-    saveChanges: 'Kaydet',
-    delete: 'Sil',
-    dismiss: 'Kapat',
-    replace: 'Değiştir',
-    keepBoth: 'Her ikisini de koru',
-    fileAlreadyExists: 'Dosya zaten var',
-    fileAlreadyExistsMessage:
-      'Bu ada sahip bir dosya zaten var. Ne yapmak istiyorsunuz?',
-    addLocalModel: 'Yerel modeli ekle',
-    localModel: 'Yerel',
-    hfModel: 'HF',
-    hfFABLabel: "HuggingFace'te Ara",
-    localFABLabel: 'Yerel Model Ekle',
-    resetFABLabel: 'Sıfırla',
-    downloaded: 'İndirildi',
-    grouped: 'Gruplanmış',
-    proceedWithReset: 'Sıfırlamaya devam et',
-    confirmReset: 'Sıfırlamayı onayla',
-    modelSettingsTitle: 'Konfiguracja modelu',
-    autoOffloadLoad: 'Auto Offload/Load',
-    autoOffloadLoadDescription: 'Odpowiedz modelu, gdy aplikacja jest w tle.',
-    metal: 'Metal',
-    metalDescription: 'API sprzętu akcelerowanego przez Apple.',
-    layersOnGPU: 'Warstwy w GPU: {{gpuLayers}}',
-    contextSize: 'Rozmiar kontekstu',
-    contextSizePlaceholder: 'Wpisz rozmiar kontekstu (min {{minContextSize}})',
-    invalidContextSizeError: 'Wpisz poprawny numer (min {{minContextSize}})',
-    modelReloadNotice:
-      'Należy ponownie załadować model, aby zmiany zaczęły obowiązywać.',
-    autoNavigateToChat: 'Automatycznie przejdź do konwersacji',
-    autoNavigateToChatDescription:
-      'Przejdź do konwersacji, gdy rozpocznie się ładowanie.',
-    uiSettingsTitle: 'Ustawienia interfejsu użytkownika',
-    darkMode: 'Ciemny tryb',
-    darkModeDescription: 'Włącz lub wyłącz tryb ciemny.',
-    displayMemoryUsage: 'Pokaż użycie pamięci',
-    displayMemoryUsageDescription: 'Pokaż użycie pamięci na stronie czatu.',
-    tooltipGroupByType: 'Model türüne göre gruplandır',
-    tooltipDownloaded: 'Yalnızca indirilenleri göster',
-    tooltipHf: "HuggingFace'teki modelleri göster",
-    unknownGroup: 'Bilinmeyen',
-    menuTitleHf: 'Hugging Face Modelleri',
-    menuTitleDownloaded: 'İndirilen Modeller',
-    menuTitleGrouped: 'Model Türüne Göre Grupla',
-    menuTitleReset: 'Model Listesini Sıfırla',
-    iOSBackgroundDownload: 'Arka Plan İndirmesi',
-    iOSBackgroundDownloadDescription:
-      'İndirmelerin arka planda devam etmesine izin verin (daha yavaş olacaktır).',
-    availableToUse: 'Kullanıma Hazır',
-    availableToDownload: 'İndirilebilir',
-    useAddButtonForMore: 'Daha fazla model bulmak için + düğmesini kullanın',
-    'modelSettings.grammar':
-      'Dilbilgisi tabanlı örnekleme için dilbilgisi ayarla',
-    'modelSettings.stop':
-      'Tamamlamaya dahil edilmeyecek durdurma dizelerini belirt',
-    'modelSettings.n_predict':
-      'Metin oluştururken tahmin edilecek maksimum token sayısı',
-    'modelSettings.n_probs':
-      'Token başına döndürülecek en yüksek token olasılıkları sayısı',
-    'modelSettings.top_k': 'Token seçimini en olası K tokene sınırla',
-    'modelSettings.top_p':
-      'Token seçimini kümülatif olasılığı P eşiğinin üzerinde olan tokenlere sınırla',
-    'modelSettings.min_p':
-      'En olası tokene göre bir token için minimum olasılık',
-    'modelSettings.xtc_probability': 'XTC örnekleyici ile token kaldırma şansı',
-    'modelSettings.xtc_threshold':
-      'XTC token kaldırma için minimum olasılık eşiği',
-    'modelSettings.typical_p': 'Yerel tipik örnekleme için parametre',
-    'modelSettings.temperature': 'Oluşturulan metnin rastgeleliğini ayarla',
-    'modelSettings.penalty_last_n':
-      'Tekrar cezası için dikkate alınacak token sayısı',
-    'modelSettings.penalty_repeat': 'Token dizilerinin tekrarını kontrol et',
-    'modelSettings.penalty_freq': 'Tekrar alfa frekans cezası',
-    'modelSettings.penalty_present': 'Tekrar alfa varlık cezası',
-    'modelSettings.mirostat':
-      'Perpleksite kontrolü için Mirostat örneklemeyi etkinleştir',
-    'modelSettings.mirostat_tau': 'Mirostat hedef entropi (tau)',
-    'modelSettings.mirostat_eta': 'Mirostat öğrenme oranı (eta)',
-    'modelSettings.dry_multiplier': 'DRY tekrar cezası çarpanı',
-    'modelSettings.dry_base': 'DRY tekrar cezası taban değeri',
-    'modelSettings.dry_allowed_length':
-      'Üstel ceza öncesi maksimum izin verilen uzunluk',
-    'modelSettings.dry_penalty_last_n': 'Tekrarlar için taranacak token sayısı',
-    'modelSettings.dry_sequence_breakers': 'DRY örnekleme için dizi kesiciler',
-    'modelSettings.ignore_eos':
-      'Akış sonu tokenini yoksay ve üretmeye devam et',
-    'modelSettings.logit_bias': 'Belirli tokenlerin olasılığını değiştir',
-    'modelSettings.seed': 'Rastgele sayı üreteci tohumu',
-    about: {
-      screenTitle: 'Uygulama Hakkında',
-      description:
-        'Dil modellerini doğrudan telefonunuzda kullanmanızı sağlayan bir uygulama. llama.cpp ve llama.rn tabanlı.',
-      supportProject: 'Projeyi Destekle',
-      supportProjectDescription:
-        "PocketPal AI'yı beğendiyseniz, aşağıdaki yollarla projeyi desteklemeyi düşünebilirsiniz:",
-      githubButton: "GitHub'da Yıldızla",
-      orText: 'veya',
-      orBy: 'ya da',
-      sponsorButton: 'Sponsor Ol',
-      versionCopiedTitle: 'Sürüm kopyalandı',
-      versionCopiedDescription: 'Sürüm bilgileri panoya kopyalandı',
-    },
-    feedback: {
-      title: 'Geri Bildirim Gönder',
-      description:
-        "Görüşleriniz önemli! PocketPal AI'ın size nasıl yardımcı olduğunu ve onu daha faydalı hale getirmek için neler yapabileceğimizi bize anlatın.",
-      shareThoughtsButton: 'Düşüncelerinizi paylaşın',
-      useCase: {
-        label: "PocketPal AI'ı ne için kullanıyorsunuz?",
-        placeholder: 'örn: özetleme, rol yapma, vb.',
-      },
-      featureRequests: {
-        label: 'Gelecekte hangi özellikleri görmek istersiniz?',
-        placeholder: 'Özellik fikirlerinizi ve önerilerinizi paylaşın',
-      },
-      generalFeedback: {
-        label: 'Başka geri bildiriminiz var mı?',
-        placeholder:
-          'Düşüncelerinizi paylaşın. Neleri beğendiğinizi, beğenmediğinizi vb.',
-      },
-      usageFrequency: {
-        label: "PocketPal AI'ı ne sıklıkla kullanıyorsunuz? (İsteğe bağlı)",
-        options: {
-          daily: 'Günlük',
-          weekly: 'Haftalık',
-          monthly: 'Aylık',
-          rarely: 'Nadiren',
-        },
-      },
-      email: {
-        label: 'İletişim E-postası (İsteğe bağlı)',
-        placeholder: 'E-posta adresiniz',
-      },
-      submit: 'Geri Bildirim Gönder',
-      validation: {
-        required: 'Lütfen en az bir geri bildirim sağlayın',
-      },
-      success: 'Geri bildiriminiz için teşekkürler!',
+      success: 'フィードバックありがとうございます！',
       error: {
         general:
-          'Geri bildirim gönderilirken hata oluştu. Lütfen tekrar deneyin.',
+          'フィードバック送信中にエラーが発生しました。もう一度お試しください。',
+      },
+    },
+    components: {
+      attachmentButton: {
+        attachmentButtonAccessibilityLabel: 'メディア送信',
+      },
+      bubble: {
+        timingsString:
+          'トークンあたり{{predictedMs}}ms、1秒あたり{{predictedPerSecond}}トークン',
+      },
+      chatEmptyPlaceholder: {
+        noModelsTitle: '利用可能なモデルがありません',
+        noModelsDescription:
+          'PocketPalとチャットを始めるにはモデルをダウンロードしてください',
+        noModelsButton: 'モデルをダウンロード',
+        activateModelTitle: '開始するにはモデルを有効化してください',
+        activateModelDescription:
+          'モデルを選択してダウンロードしてください。ダウンロード後、モデルの横にある読み込みをタップしてチャットを開始します。',
+        activateModelButton: 'モデルを選択',
+        loading: '読み込み中...',
+      },
+      chatInput: {
+        inputPlaceholder: 'メッセージ',
+      },
+      chatGenerationSettingsSheet: {
+        invalidValues: '無効な値',
+        invalidNumericValuesMessage: '有効な数値を入力してください',
+        pleaseCorrect: '以下を修正してください：',
+        ok: 'OK',
+        saveChanges: '変更を保存',
+        saveAsPreset: 'プリセットとして保存',
+        title_session: 'チャット生成設定 (セッション)',
+        title_preset: 'チャット生成設定 (プリセット)',
+        resetToSystemDefaults: 'システムデフォルトにリセット',
+        resetToPreset: 'プリセットにリセット',
+        applytoPresetAlert: {
+          title: '成功',
+          message: 'これらの設定はすべての将来のセッションに適用されます',
+        },
+      },
+      chatHeaderTitle: {
+        defaultTitle: 'チャット',
+      },
+      fileMessage: {
+        fileButtonAccessibilityLabel: 'ファイル',
+      },
+      chatPalModelPickerSheet: {
+        modelsTab: 'モデル',
+        palsTab: 'アシスタント',
+        noPal: 'アシスタントなし',
+        disablePal: 'アクティブなアシスタントを無効化',
+        noDescription: '説明なし',
+        assistantType: 'アシスタント',
+        roleplayType: 'ロールプレイ',
+        confirmationTitle: '確認',
+        modelSwitchMessage:
+          'このアシスタントには異なるデフォルトモデル({{modelName}})があります。アシスタントのデフォルトモデルに切り替えますか？',
+        keepButton: '保持',
+        switchButton: '切り替え',
+      },
+      headerRight: {
+        deleteChatTitle: 'チャットを削除',
+        deleteChatMessage: 'このチャットを削除してもよろしいですか？',
+        generationSettings: '生成設定',
+        model: 'モデル',
+        duplicateChatHistory: 'チャット履歴を複製',
+        makeChatTemporary: 'チャットを一時的にする',
+        exportChatSession: 'チャットセッションをエクスポート',
+      },
+      modelSettingsSheet: {
+        modelSettings: 'モデル設定',
+        saveChanges: '変更を保存',
+      },
+      modelsHeaderRight: {
+        menuTitleHf: 'Hugging Faceモデル',
+        menuTitleDownloaded: 'ダウンロード済みモデル',
+        menuTitleGrouped: 'モデルタイプでグループ化',
+        menuTitleReset: 'モデルリストをリセット',
+      },
+      modelsResetDialog: {
+        proceedWithReset: 'リセットを続行',
+        confirmReset: 'リセットを確認',
+      },
+      assistantPalSheet: {
+        title: {
+          create: 'アシスタントパルを作成',
+          edit: 'アシスタントパルを編集',
+        },
+        palName: 'パル名',
+        palNamePlaceholder: '名前',
+        defaultModel: 'デフォルトモデル',
+        defaultModelPlaceholder: 'モデルを選択',
+        validation: {
+          generatingPromptRequired: '生成プロンプトが必要です',
+          promptModelRequired: 'プロンプト生成モデルが必要です',
+        },
+        create: '作成',
+      },
+      modelNotAvailable: {
+        noModelsDownloaded:
+          'モデルがまだダウンロードされていません。最初にモデルをダウンロードしてください。',
+        downloadAModel: 'モデルをダウンロード',
+        defaultModelNotDownloaded:
+          'デフォルトモデルがまだダウンロードされていません。最初にダウンロードしてください。',
+        cancelDownload: 'ダウンロードをキャンセル',
+        download: 'ダウンロード',
+      },
+      roleplayPalSheet: {
+        title: {
+          create: 'ロールプレイパルを作成',
+          edit: 'ロールプレイパルを編集',
+        },
+        palName: 'パル名',
+        palNamePlaceholder: '名前',
+        defaultModel: 'デフォルトモデル',
+        defaultModelPlaceholder: 'モデルを選択',
+        descriptionSection: '説明',
+        world: '世界',
+        worldPlaceholder: 'ファンタジー',
+        location: '場所',
+        locationPlaceholder: '魔法の森',
+        locationSublabel: '物語はどこで行われますか？',
+        aiRole: 'AIの役割',
+        aiRolePlaceholder: 'エルダラ、いたずら好きな森の精霊',
+        aiRoleSublabel: 'キャラクターの役割を設定',
+        userRole: 'ユーザーの役割',
+        userRolePlaceholder: 'エランドール卿、勇敢な騎士',
+        userRoleSublabel: 'あなたは誰ですか？',
+        situation: '状況',
+        situationPlaceholder: '救出ミッション、謎解き',
+        toneStyle: 'トーン/スタイル',
+        toneStylePlaceholder: '真面目',
+        validation: {
+          promptModelRequired: 'プロンプト生成モデルが必要です',
+        },
+        create: '作成',
+      },
+      sendButton: {
+        accessibilityLabel: '送信',
+      },
+      systemPromptSection: {
+        sectionTitle: 'システムプロンプト',
+        useAIPrompt: 'AIを使用してシステムプロンプトを生成する',
+        modelSelector: {
+          label: '生成用モデルを選択*',
+          sublabel: '推奨: Llama 3.2 3B または Qwen2.5 3B.',
+          placeholder: 'モデルを選択',
+        },
+        generatingPrompt: {
+          label: '生成プロンプト',
+          placeholder: '生成用のプロンプトを入力',
+        },
+        buttons: {
+          loadingModel: 'モデルを読み込み中...',
+          stopGenerating: '生成を停止',
+          generatePrompt: 'システムプロンプトを生成',
+        },
+        systemPrompt: {
+          label: 'システムプロンプト',
+          sublabel: '自由に編集して最適なプロンプトを見つけてください',
+          placeholder: 'あなたは役立つアシスタントです',
+        },
+        warnings: {
+          promptChanged: 'システムプロンプトが手動で変更されました',
+        },
+      },
+      sidebarContent: {
+        menuItems: {
+          chat: 'チャット',
+          models: 'モデル',
+          pals: 'パル',
+          benchmark: 'ベンチマーク',
+          settings: '設定',
+          appInfo: 'アプリ情報',
+          testCompletion: 'テスト完了',
+        },
+        deleteChatTitle: 'チャットを削除',
+        deleteChatMessage: 'このチャットを削除してもよろしいですか？',
+        dateGroups: {
+          today: '今日',
+          yesterday: '昨日',
+          thisWeek: '今週',
+          lastWeek: '先週',
+          twoWeeksAgo: '2週間前',
+          threeWeeksAgo: '3週間前',
+          fourWeeksAgo: '4週間前',
+          lastMonth: '先月',
+          older: '以前',
+        },
+      },
+      usageStats: {
+        tooltip: {
+          title: 'メモリ使用量',
+          used: '使用中: ',
+          total: '合計: ',
+          usage: '使用率: ',
+        },
+        byteSizes: ['バイト', 'KB', 'MB', 'GB'],
+      },
+    },
+    validation: {
+      nameRequired: '名前が必要です',
+      systemPromptRequired: 'システムプロンプトが必要です',
+      worldRequired: '世界の設定が必要です',
+      locationRequired: '場所が必要です',
+      aiRoleRequired: 'AIの役割が必要です',
+      userRoleRequired: 'ユーザーの役割が必要です',
+      situationRequired: '状況が必要です',
+      toneStyleRequired: 'トーン/スタイルが必要です',
+    },
+    screenTitles: {
+      chat: 'チャット',
+      models: 'モデル',
+      pals: 'パル（実験的）',
+      benchmark: 'ベンチマーク',
+      settings: '設定',
+      appInfo: 'アプリ情報',
+      testCompletion: 'テスト完了',
+    },
+    chat: {
+      conversationReset: '会話がリセットされました！',
+      modelNotLoaded:
+        'モデルが読み込まれていません。モデルを初期化してください。',
+      completionFailed: '生成に失敗しました: ',
+      loadingModel: 'モデルを読み込み中...',
+      typeYourMessage: 'メッセージを入力してください',
+      load: '読み込み',
+      goToModels: 'モデルへ移動',
+      readyToChat:
+        'チャットの準備はできましたか？最後に使用したモデルを読み込みます。',
+      pleaseLoadModel: 'チャットするにはモデルを読み込んでください。',
+    },
+    benchmark: {
+      title: 'ベンチマーク',
+      modelSelector: {
+        prompt: 'モデルを選択',
+      },
+      buttons: {
+        advancedSettings: '詳細設定',
+        startTest: 'テスト開始',
+        runningTest: 'テスト実行中...',
+        clearAll: 'すべて消去',
+        done: '完了',
+        cancel: 'キャンセル',
+        delete: '削除',
+        share: '共有',
+        sharing: '共有中...',
+        viewRawData: '生データを表示',
+        hideRawData: '生データを隠す',
+      },
+      messages: {
+        pleaseSelectModel: '最初にモデルを選択して初期化してください',
+        testWarning:
+          '注意：大きなモデルではテストに最大2～5分かかる場合があり、開始後は中断できません。',
+        keepScreenOpen: 'この画面を開いたままにしてください。',
+        initializingModel: 'モデルを初期化中...',
+        modelMaxValue: '(最大値: {{maxValue}})',
+      },
+      dialogs: {
+        advancedSettings: {
+          title: '詳細設定',
+          testProfile: 'テストプロファイル',
+          customParameters: 'カスタムパラメーター',
+          description:
+            '特定のテストシナリオのベンチマークパラメータを微調整します。',
+        },
+        deleteResult: {
+          title: '結果を削除',
+          message: 'このベンチマーク結果を削除してもよろしいですか？',
+        },
+        clearAllResults: {
+          title: 'すべての結果を消去',
+          message: 'すべてのベンチマーク結果を削除してもよろしいですか？',
+        },
+        shareResults: {
+          title: 'ベンチマーク結果を共有',
+          sharedDataTitle: '共有されるデータ：',
+          deviceAndModelInfo: '• デバイス仕様とモデル情報',
+          performanceMetrics: '• パフォーマンスメトリクス',
+          dontShowAgain: 'このメッセージを再表示しない',
+        },
+      },
+      sections: {
+        testResults: 'テスト結果',
+      },
+      benchmarkResultCard: {
+        modelMeta: {
+          params: 'パラメータ',
+        },
+        config: {
+          title: 'ベンチマーク設定',
+          format: 'PP: {{pp}} • TG: {{tg}} • PL: {{pl}} • Rep: {{nr}}',
+        },
+        modelSettings: {
+          title: 'モデル設定',
+          context: 'コンテキスト: {{context}}',
+          batch: 'バッチ: {{batch}}',
+          ubatch: 'Uバッチ: {{ubatch}}',
+          cpuThreads: 'CPUスレッド: {{threads}}',
+          gpuLayers: 'GPUレイヤー: {{layers}}',
+          flashAttentionEnabled: 'Flash Attention Enabled',
+          flashAttentionDisabled: 'Flash Attention Disabled',
+          cacheTypes: 'キャッシュタイプ: {{cacheK}}/{{cacheV}}',
+        },
+        results: {
+          promptProcessing: 'プロンプト処理',
+          tokenGeneration: 'トークン生成',
+          totalTime: '合計時間',
+          peakMemory: 'ピークメモリ',
+          tokensPerSecond: 'トークン/秒',
+        },
+        actions: {
+          deleteButton: '',
+          submittedText: '✓ 共有先：',
+          leaderboardLink: 'AIフォンリーダーボード ↗',
+          cannotShare: '共有できません',
+          cannotShareTooltip: 'ローカルモデルの結果は共有できません',
+          submitButton: 'リーダーボードに送信',
+          viewLeaderboard: 'リーダーボードを表示 ↗',
+        },
+        errors: {
+          networkRetry: '接続を確認して再試行',
+          appCheckRetry: '送信を再試行',
+          serverRetry: '後でもう一度お試しください',
+          genericRetry: '再試行',
+          failedToSubmit: 'ベンチマークの送信に失敗しました',
+        },
+      },
+      deviceInfoCard: {
+        title: 'デバイス情報',
+        deviceSummary: '{{brand}} {{model}} • {{systemName}} {{systemVersion}}',
+        coreSummary: '{{cores}}コア • {{memory}}',
+        sections: {
+          basicInfo: '基本情報',
+          cpuDetails: 'CPU詳細',
+          appInfo: 'アプリ情報',
+        },
+        fields: {
+          architecture: 'アーキテクチャ',
+          totalMemory: '総メモリ',
+          deviceId: 'デバイスID',
+          cpuCores: 'CPUコア',
+          cpuModel: 'CPUモデル',
+          chipset: 'チップセット',
+          instructions: '命令セット',
+          version: 'バージョン',
+        },
+        instructions: {
+          format:
+            'FP16: {{fp16}}, DotProd: {{dotProd}}, SVE: {{sve}}, I8MM: {{i8mm}}',
+          yes: '✓',
+          no: '✗',
+        },
+        versionFormat: '{{version}} ({{buildNumber}})',
       },
     },
   },
-  uk: {
-    model: 'Модель',
-    modelSettings: 'Настройки модели',
-    chatGenerationSettings: 'Настройки генерации чата',
-    save: 'Зберегти',
-    generationSettings: 'Настройки генерации',
-    deleteChatTitle: 'Видалити чат',
-    deleteChatMessage: 'Ви впевнені, що хочете видалити цей чат?',
-    duplicateChatHistory: 'Дублировать историю чата',
-    exportChatSession: 'Экспортировать сессию чата',
-    rename: 'Переименовать',
-    makeChatTemporary: 'Сделать чат временным',
-    attachmentButtonAccessibilityLabel: 'Надіслати медіа',
-    emptyChatPlaceholder: 'Повідомлень ще немає',
-    fileButtonAccessibilityLabel: 'Файл',
-    inputPlaceholder: 'Повідомлення',
-    sendButtonAccessibilityLabel: 'Надіслати',
-    modelNotLoaded: 'Модель не загружена. Пожалуйста, инициализируйте модель.',
-    loadingModel: 'Загрузка модели...',
-    typeYourMessage: 'Введите ваше сообщение здесь',
-    conversationReset: 'Конверсация была сброшена!',
-    networkError: 'Ошибка сети. Пожалуйста, попробуйте снова.',
-    goToModels: 'Перейти к моделям',
-    readyToChat: 'Готовы к общению? Загрузите последний используемый модель.',
-    pleaseLoadModel: 'Завантажте модель для спілкування.',
-    shortMemoryWarning: 'Предупреждение о памяти',
-    memoryWarning:
-      "Попередження: Розмір моделі може перевищувати доступну пам'ять. Це може вплинути на продуктивність і стабільність вашого пристрою.",
-    load: 'Загрузить',
-    cancel: 'Отменить',
-    download: 'Скачать',
-    offload: 'Отменить',
-    reset: 'Сбросить',
-    saveChanges: 'Сохранить',
-    delete: 'Удалить',
-    dismiss: 'Отменить',
-    replace: 'Заменить',
-    keepBoth: 'Оставить оба',
-    fileAlreadyExists: 'Файл уже существует',
-    fileAlreadyExistsMessage:
-      'Файл с таким названием уже существует. Что вы хотите сделать?',
-    addLocalModel: 'Добавить локальную модель',
-    localModel: 'Локальний',
-    hfModel: 'HF',
-    hfFABLabel: 'Пошук у Hugging Face',
-    localFABLabel: 'Додати локальну модель',
-    resetFABLabel: 'Скинути',
-    downloaded: 'Скачано',
-    grouped: 'Сгруппировано',
-    proceedWithReset: 'Продолжить сброс',
-    confirmReset: 'Подтвердить сброс',
-    modelSettingsTitle: 'Конфигурация модели',
-    autoOffloadLoad: 'Автоматическое выгрузка/загрузка',
-    autoOffloadLoadDescription:
-      'Выгрузить модель, когда приложение находится в фоне.',
-    metal: 'Metal',
-    metalDescription: 'API оборудования, ускоренного Apple.',
-    layersOnGPU: 'Слои в GPU: {{gpuLayers}}',
-    contextSize: 'Размер контекста',
-    contextSizePlaceholder:
-      'Введите размер контекста (минимум {{minContextSize}})',
-    invalidContextSizeError:
-      'Введите правильный номер (минимум {{minContextSize}})',
-    modelReloadNotice:
-      'Необходимо перезагрузить модель, чтобы изменения вступили в силу.',
-    autoNavigateToChat: 'Автоматически перейти к конверсации',
-    autoNavigateToChatDescription:
-      'Перейти к конверсации, когда начнется загрузка.',
-    uiSettingsTitle: 'Настройки пользовательского интерфейса',
-    darkMode: 'Темный режим',
-    darkModeDescription: 'Включить или выключить темный режим.',
-    displayMemoryUsage: 'Показать использование памяти',
-    displayMemoryUsageDescription:
-      'Показать использование памяти на странице чата.',
-    tooltipGroupByType: 'Групувати за типом моделі',
-    tooltipDownloaded: 'Показати лише завантажені',
-    tooltipHf: 'Показати моделі з HuggingFace',
-    unknownGroup: 'Невідомо',
-    menuTitleHf: 'Моделі Hugging Face',
-    menuTitleDownloaded: 'Завантажені моделі',
-    menuTitleGrouped: 'Групувати за типом моделі',
-    menuTitleReset: 'Скинути список моделей',
-    iOSBackgroundDownload: 'Фонове завантаження',
-    iOSBackgroundDownloadDescription:
-      'Дозволити завантаження у фоновому режимі (це буде повільніше).',
-    availableToUse: 'Готовий до Використання',
-    availableToDownload: 'Доступний для Завантаження',
-    useAddButtonForMore: 'Використовуйте кнопку + для пошуку моделей',
-    'modelSettings.grammar':
-      'Встановити граматику для вибірки на основі граматики',
-    'modelSettings.stop':
-      'Вказати стоп-рядки, які не будуть включені в завершення',
-    'modelSettings.n_predict':
-      'Максимальна кількість токенів для передбачення при генерації тексту',
-    'modelSettings.n_probs':
-      'Кількість ймовірностей найкращих токенів для повернення на токен',
-    'modelSettings.top_k':
-      'Обмежити вибір токенів K найбільш ймовірними токенами',
-    'modelSettings.top_p':
-      'Обмежити вибір токенів тими, у яких кумулятивна ймовірність вище порогу P',
-    'modelSettings.min_p':
-      'Мінімальна ймовірність для токена відносно найбільш ймовірного токена',
-    'modelSettings.xtc_probability': 'Шанс видалення токена через семплер XTC',
-    'modelSettings.xtc_threshold':
-      'Мінімальний поріг ймовірності для видалення токенів через XTC',
-    'modelSettings.typical_p': 'Параметр для локально типової вибірки',
-    'modelSettings.temperature': 'Налаштувати випадковість генерованого тексту',
-    'modelSettings.penalty_last_n':
-      'Кількість токенів для врахування при штрафі за повторення',
-    'modelSettings.penalty_repeat':
-      'Контролювати повторення послідовностей токенів',
-    'modelSettings.penalty_freq': 'Штраф за частоту повторення альфа',
-    'modelSettings.penalty_present': 'Штраф за присутність повторення альфа',
-    'modelSettings.mirostat':
-      'Увімкнути вибірку Mirostat для контролю перплексії',
-    'modelSettings.mirostat_tau': 'Цільова ентропія Mirostat (tau)',
-    'modelSettings.mirostat_eta': 'Швидкість навчання Mirostat (eta)',
-    'modelSettings.dry_multiplier': 'Множник штрафу за повторення DRY',
-    'modelSettings.dry_base': 'Базове значення штрафу за повторення DRY',
-    'modelSettings.dry_allowed_length':
-      'Максимальна допустима довжина перед експоненційним штрафом',
-    'modelSettings.dry_penalty_last_n':
-      'Кількість токенів для сканування на повторення',
-    'modelSettings.dry_sequence_breakers':
-      'Переривники послідовності для вибірки DRY',
-    'modelSettings.ignore_eos':
-      'Ігнорувати токен кінця потоку і продовжувати генерацію',
-    'modelSettings.logit_bias': 'Змінити ймовірність певних токенів',
-    'modelSettings.seed': 'Зерно генератора випадкових чисел',
+
+  zh: {
+    common: {
+      cancel: '取消',
+      delete: '删除',
+      dismiss: '关闭',
+      rename: '重命名',
+      reset: '重置',
+      save: '保存',
+      networkError: '网络错误。请重试。',
+      downloadETA: '预计时间',
+      calculating: '计算中...',
+      second: '秒',
+      seconds: '秒',
+      year: '年',
+      years: '年',
+      month: '月',
+      months: '月',
+      week: '周',
+      weeks: '周',
+      day: '天',
+      days: '天',
+      hour: '小时',
+      hours: '小时',
+      minute: '分钟',
+      minutes: '分钟',
+      justNow: '刚刚',
+    },
+    settings: {
+      // Model Initialization Settings
+      modelInitializationSettings: '模型初始化设置',
+      // Metal Settings
+      metal: 'Metal',
+      metalDescription: 'Apple的硬件加速API。',
+      metalRequiresNewerIOS:
+        'Metal加速需要iOS 18或更高版本。请升级设备以使用此功能。',
+      layersOnGPU: 'GPU层数：{{gpuLayers}}',
+      // Context Size
+      contextSize: '上下文大小',
+      contextSizePlaceholder: '输入上下文大小（最小{{minContextSize}}）',
+      invalidContextSizeError: '请输入有效数字（最小{{minContextSize}}）',
+      modelReloadNotice: '更改需要模型重新加载才能生效。',
+      // Advanced Settings
+      advancedSettings: '高级设置',
+      // Batch Size
+      batchSize: '批量大小',
+      batchSizeDescription: '批量大小: {{batchSize}}{{effectiveBatch}}',
+      effectiveLabel: '有效',
+      // Physical Batch Size
+      physicalBatchSize: '物理批量大小',
+      physicalBatchSizeDescription:
+        '物理批量大小: {{physicalBatchSize}}{{effectivePhysicalBatch}}',
+      // Thread Count
+      cpuThreads: 'CPU线程',
+      cpuThreadsDescription: '使用可用{{maxThreads}}线程中的{{threads}}',
+      // Flash Attention
+      flashAttention: 'Flash Attention',
+      flashAttentionDescription: '启用Flash Attention以加快处理速度',
+      // Cache Type K
+      keyCacheType: '键缓存类型',
+      keyCacheTypeDescription: '选择键计算的缓存类型',
+      keyCacheTypeDisabledDescription: '启用Flash Attention以更改缓存类型',
+      // Cache Type V
+      valueCacheType: '值缓存类型',
+      valueCacheTypeDescription: '选择值计算的缓存类型',
+      valueCacheTypeDisabledDescription: '启用Flash Attention以更改缓存类型',
+      // Model Loading Settings
+      modelLoadingSettings: '模型加载设置',
+      // Auto Offload/Load
+      autoOffloadLoad: '自动卸载/加载',
+      autoOffloadLoadDescription: '当应用程序在后台时卸载模型。',
+      // Auto Navigate to Chat
+      autoNavigateToChat: '自动导航到聊天',
+      autoNavigateToChatDescription: '加载开始时导航到聊天。',
+      // App Settings
+      appSettings: '应用程序设置',
+      // Language
+      language: '语言',
+      // Dark Mode
+      darkMode: '暗模式',
+      // Display Memory Usage
+      displayMemoryUsage: '显示内存使用情况',
+      displayMemoryUsageDescription: '在聊天页面中显示内存使用情况。',
+    },
+    memory: {
+      shortWarning: '内存警告',
+      warning:
+        '警告：模型大小可能会超过可用内存。这可能会影响设备的性能和稳定性。',
+    },
+    storage: {
+      checkFailed: '检查存储失败',
+      lowStorage: '存储不足！模型 {{modelSize}} > 可用空间 {{freeSpace}}',
+    },
+    generation: {
+      modelNotInitialized: '模型上下文未初始化',
+      failedToGenerate: '生成输出失败',
+    },
+    models: {
+      fileManagement: {
+        fileAlreadyExists: '文件已存在',
+        fileAlreadyExistsMessage: '此名称的文件已存在。您想做什么？',
+        replace: '替换',
+        keepBoth: '保留两者',
+      },
+      labels: {
+        localModel: '本地',
+        hfModel: 'HF',
+        unknownGroup: '未知',
+        availableToUse: '可使用',
+        availableToDownload: '可下载',
+        useAddButtonForMore: '使用+按钮查找更多模型',
+      },
+      buttons: {
+        addFromHuggingFace: '从Hugging Face添加',
+        addLocalModel: '添加本地模型',
+        reset: '重置',
+      },
+      modelsHeaderRight: {
+        menuTitleHf: 'Hugging Face模型',
+        menuTitleDownloaded: '已下载模型',
+        menuTitleGrouped: '按模型类型分组',
+        menuTitleReset: '重置模型列表',
+      },
+      modelsResetDialog: {
+        proceedWithReset: '继续重置',
+        confirmReset: '确认重置',
+      },
+      chatTemplate: {
+        label: '基本聊天模板:',
+      },
+      details: {
+        title: '可用 GGUF 文件',
+      },
+      modelFile: {
+        alerts: {
+          cannotRemoveTitle: '无法删除',
+          modelPreset: '此模型是预设的。',
+          downloadedFirst: '模型已下载。请先删除文件。',
+          removeTitle: '删除模型',
+          removeMessage: '您确定要从列表中删除此模型吗？',
+          removeError: '无法删除模型。',
+          alreadyDownloadedTitle: '模型已下载',
+          alreadyDownloadedMessage: '模型已下载。',
+          deleteTitle: '删除模型',
+          deleteMessage: '您确定要删除此已下载的模型吗？',
+        },
+        buttons: {
+          remove: '删除',
+        },
+        warnings: {
+          storage: {
+            message: '没有足够的存储空间。',
+            shortMessage: '存储不足',
+          },
+          memory: {
+            message: '模型大小接近或超过设备的总内存。这可能会导致意外行为。',
+          },
+          legacy: {
+            message: '旧版量化格式 - 模型可能无法运行。',
+            shortMessage: '旧版量化',
+          },
+          multiple: '{count}个警告',
+        },
+        labels: {
+          downloadSpeed: '{speed}',
+        },
+      },
+      search: {
+        noResults: '找不到模型',
+        loadingMore: '加载中...',
+        searchPlaceholder: '搜索Hugging Face模型',
+        modelUpdatedLong: '{{time}}前更新',
+        modelUpdatedShort: '{{time}}前',
+        modelUpdatedJustNowLong: '刚刚更新',
+        modelUpdatedJustNowShort: '刚刚',
+      },
+      modelCard: {
+        alerts: {
+          deleteTitle: '删除模型',
+          deleteMessage: '您确定要删除此已下载的模型吗？',
+          removeTitle: '删除模型',
+          removeMessage: '您确定要从列表中删除此模型吗？',
+        },
+        buttons: {
+          settings: '设置',
+          download: '下载',
+          remove: '删除',
+          load: '加载',
+          offload: '卸载',
+        },
+        labels: {
+          skills: '技能: ',
+        },
+      },
+      modelSettings: {
+        template: {
+          label: '模板:',
+          editButton: '编辑',
+          dialogTitle: '编辑聊天模板',
+          note1: '注意: 更改模板可能会更改BOS、EOS和系统提示。',
+          note2: '使用Nunjucks。留空以使用模型的模板。',
+          placeholder: '在此输入聊天模板...',
+          closeButton: '关闭',
+        },
+        stopWords: {
+          label: '停止词',
+          placeholder: '添加新停止词',
+        },
+        tokenSettings: {
+          bos: 'BOS',
+          eos: 'EOS',
+          addGenerationPrompt: '添加生成提示',
+          bosTokenPlaceholder: 'BOS令牌',
+          eosTokenPlaceholder: 'EOS令牌',
+          systemPrompt: '系统提示',
+        },
+      },
+      modelDescription: {
+        size: '大小: ',
+        parameters: '参数: ',
+        separator: ' | ',
+        notAvailable: '不可用',
+      },
+      modelCapabilities: {
+        questionAnswering: '问答',
+        summarization: '摘要',
+        reasoning: '推理',
+        roleplay: '角色扮演',
+        instructions: '遵循指示',
+        code: '代码生成',
+        math: '数学解决',
+        multilingual: '多语言支持',
+        rewriting: '重写文章',
+        creativity: '创造性写作',
+      },
+    },
+    completionParams: {
+      grammar: '应用特定的语法规则，以确保生成的文本遵循特定的结构或格式',
+      stop: '定义将停止文本生成的特定短语',
+      n_predict: '设置生成响应的长度（以令牌为单位）',
+      n_probs: '显示替代词的概率分数。',
+      top_k:
+        '通过限制单词选择到K个最可能的选项来控制创造性。较低的值会使响应更集中',
+      top_p:
+        '平衡创造性和连贯性。较高的值（接近1.0）允许更富有创造性但可能不那么集中的响应',
+      min_p:
+        '考虑令牌的最小概率。过滤掉不太可能的单词以减少不合逻辑或上下文外的响应',
+      temperature:
+        '控制创造性和可预测性。较高的值会使响应更富有创造性但焦点较少',
+      penalty_last_n: '检查重复的范围。较大的值有助于防止长期重复',
+      penalty_repeat: '抑制单词重复。较高的值会使响应使用更多样化的语言',
+      penalty_freq: '惩罚常用词。较高的值鼓励使用更广泛的词汇',
+      penalty_present: '减少主题和想法的重复。较高的值鼓励更多样化的内容',
+      mirostat:
+        '启用对响应创造性的高级控制。为了智能、实时调整随机性和连贯性，请设置为1或2（更平滑）',
+      mirostat_tau:
+        '设置Mirostat的创造性水平。较高的值允许更多样化和富有想象力的响应，而较低的值确保更集中的输出',
+      mirostat_eta: 'Mirostat调整创造性的速度。较高的值意味着调整速度更快',
+      dry_multiplier: 'DRY（不要重复自己）功能的强度。较高的值强烈防止重复',
+      dry_base: 'DRY模式中的重复基本惩罚。较高的值更积极地防止重复',
+      dry_allowed_length: 'DRY惩罚在应用之前可以重复的单词数',
+      dry_penalty_last_n: 'DRY模式中检查重复的范围',
+      dry_sequence_breakers: '重置DRY模式中重复检查器的符号',
+      ignore_eos: '即使模型想要停止也要继续生成。有助于强制更长的响应',
+      logit_bias: '调整特定单词出现在响应中的可能性',
+      seed: '设置随机数生成器的种子。有助于重现结果',
+      xtc_probability: '设置令牌通过XTC采样器删除的可能性。0是禁用',
+      xtc_threshold:
+        '设置令牌通过XTC采样器删除的最小概率阈值。（> 0.5禁用XTC）',
+      typical_p: '使用参数p启用本地典型采样。1.0是禁用',
+    },
     about: {
-      screenTitle: 'Інформація про додаток',
+      screenTitle: '应用程序信息',
       description:
-        'Додаток, який дозволяє використовувати мовні моделі прямо на вашому телефоні. Базується на llama.cpp та llama.rn.',
-      supportProject: 'Підтримати проект',
+        '直接将语言模型带到您的智能手机的应用程序。建立在llama.cpp和llama.rn的基础上。',
+      supportProject: '支持项目',
       supportProjectDescription:
-        'Якщо вам подобається PocketPal AI, розгляньте можливість підтримки проекту наступними способами:',
-      githubButton: 'Зірка на GitHub',
-      orText: 'або',
-      orBy: 'або через',
-      sponsorButton: 'Стати спонсором',
-      versionCopiedTitle: 'Версію скопійовано',
-      versionCopiedDescription:
-        'Інформацію про версію скопійовано в буфер обміну',
+        '如果您喜欢使用PocketPal AI，请考虑通过以下方式支持项目：',
+      githubButton: '在GitHub上星标',
+      orText: '或',
+      orBy: '或通过',
+      sponsorButton: '成为赞助商',
+      versionCopiedTitle: '版本已复制',
+      versionCopiedDescription: '版本信息已复制到剪贴板',
     },
     feedback: {
-      title: 'Надіслати відгук',
+      title: '发送反馈',
       description:
-        'Ваша думка важлива! Розкажіть нам, як PocketPal AI допомагає вам і що ми можемо зробити, щоб зробити його ще кориснішим.',
-      shareThoughtsButton: 'Поділіться своїми думками',
+        '您的声音很重要！告诉我们PocketPal AI如何帮助您以及我们可以做什么来使其更有用。',
+      shareThoughtsButton: '分享您的想法',
       useCase: {
-        label: 'Для чого ви використовуєте PocketPal AI?',
-        placeholder: 'напр: підсумки, рольові ігри тощо',
+        label: '您如何使用PocketPal AI？',
+        placeholder: '例如：摘要、角色扮演等',
       },
       featureRequests: {
-        label: 'Які функції ви хотіли б побачити в майбутньому?',
-        placeholder: 'Поділіться своїми ідеями та пропозиціями щодо функцій',
+        label: '您想在未来看到什么功能？',
+        placeholder: '分享您的想法或功能建议',
       },
       generalFeedback: {
-        label: 'Інші коментарі?',
-        placeholder:
-          'Поділіться своїми думками. Що вам подобається, що не подобається тощо',
+        label: '一般反馈',
+        placeholder: '如果您有其他想法，请随时分享。',
       },
       usageFrequency: {
-        label: "Як часто ви використовуєте PocketPal AI? (Необов'язково)",
+        label: '您多久使用一次PocketPal AI？（可选）',
         options: {
-          daily: 'Щоденно',
-          weekly: 'Щотижня',
-          monthly: 'Щомісяця',
-          rarely: 'Рідко',
+          daily: '每天',
+          weekly: '每周',
+          monthly: '每月',
+          rarely: '几乎不使用',
         },
       },
       email: {
-        label: "Контактна електронна пошта (Необов'язково)",
-        placeholder: 'Ваша електронна адреса',
+        label: '联系电子邮件（可选）',
+        placeholder: '您的电子邮件地址',
       },
-      submit: 'Надіслати відгук',
+      submit: '提交反馈',
       validation: {
-        required: 'Будь ласка, надайте хоча б один відгук',
+        required: '请提供至少一些反馈',
       },
-      success: 'Дякуємо за ваш відгук!',
+      success: '感谢您的反馈！',
       error: {
-        general:
-          'Під час надсилання відгуку сталася помилка. Будь ласка, спробуйте ще раз.',
+        general: '发送反馈时出错。请再试一次。',
       },
     },
-  },
-  ca: {
-    model: 'Model',
-    modelSettings: 'Configuració del model',
-    chatGenerationSettings: 'Configuració de generació de chat',
-    save: 'Guardar',
-    generationSettings: 'Configuració de generació',
-    duplicateChatHistory: 'Duplicar històric de chat',
-    deleteChatTitle: 'Eliminar chat',
-    deleteChatMessage: 'Estàs segur de que vols eliminar aquest chat?',
-    exportChatSession: 'Exportar sessió de chat',
-    rename: 'Renombrar',
-    makeChatTemporary: 'Faire chat temporal',
-    attachmentButtonAccessibilityLabel: 'Enviar multimèdia',
-    emptyChatPlaceholder: 'Encara no hi ha missatges',
-    fileButtonAccessibilityLabel: 'Arxiu',
-    inputPlaceholder: 'Missatge',
-    sendButtonAccessibilityLabel: 'Enviar',
-    modelNotLoaded: 'Model no carregat. Si us plau, inicialitzeu el model.',
-    loadingModel: 'Carregant model...',
-    typeYourMessage: 'Escriviu el vostre missatge aquí',
-    conversationReset: 'Conversa reiniciada!',
-    networkError: 'Error de xarxa. Torneu-ho a intentar.',
-    goToModels: 'Anar a Models',
-    readyToChat: "Preparat per xatejar? Carregueu l'últim model utilitzat.",
-    pleaseLoadModel: 'Carregueu un model per xatejar.',
-    shortMemoryWarning: 'Advertència de memòria',
-    memoryWarning:
-      "Advertència: La mida del model pot excedir la memòria disponible. Això podria afectar el rendiment i l'estabilitat del vostre dispositiu.",
-    load: 'Carregar',
-    cancel: 'Cancel·lar',
-    download: 'Descarregar',
-    offload: 'Alliberar',
-    reset: 'Reiniciar',
-    saveChanges: 'Guardar canvis',
-    delete: 'Eliminar',
-    dismiss: 'Descartar',
-    replace: 'Substituir',
-    keepBoth: 'Mantenir tots dos',
-    fileAlreadyExists: "L'arxiu ja existeix",
-    fileAlreadyExistsMessage:
-      'Ja existeix un arxiu amb aquest nom. Què vols fer?',
-    addLocalModel: 'Afegir model local',
-    localModel: 'Local',
-    hfModel: 'HF',
-    hfFABLabel: 'Cercar a Hugging Face',
-    localFABLabel: 'Afegir Model Local',
-    resetFABLabel: 'Restablir',
-    downloaded: 'Descarregat',
-    grouped: 'Agrupat',
-    proceedWithReset: 'Procedir amb el reinici',
-    confirmReset: 'Confirmar reinici',
-    modelSettingsTitle: 'Configuració del model',
-    autoOffloadLoad: 'Auto Descarregar/Carregar',
-    autoOffloadLoadDescription:
-      "Descarregar el model quan l'aplicació estigui en segon pla.",
-    metal: 'Metal',
-    metalDescription: "API accelerada per maquinari d'Apple.",
-    layersOnGPU: 'Capes a la GPU: {{gpuLayers}}',
-    contextSize: 'Mida del context',
-    contextSizePlaceholder:
-      'Introduïu la mida del context (mínim {{minContextSize}})',
-    invalidContextSizeError:
-      'Si us plau, introduïu un número vàlid (mínim {{minContextSize}})',
-    modelReloadNotice:
-      'Cal recarregar el model perquè els canvis tinguin efecte.',
-    autoNavigateToChat: 'Navegar automàticament a la conversa',
-    autoNavigateToChatDescription:
-      'Navegar a la conversa quan comenci la càrrega.',
-    uiSettingsTitle: "Configuració de la interfície d'usuari",
-    darkMode: 'Mode fosc',
-    darkModeDescription: 'Activa o desactiva el mode fosc.',
-    displayMemoryUsage: 'Mostrar ús de memòria',
-    displayMemoryUsageDescription: 'Mostrar ús de memòria a la pàgina de xat.',
-    tooltipGroupByType: 'Agrupar per tipus de model',
-    tooltipDownloaded: 'Mostrar només descarregats',
-    tooltipHf: 'Mostrar models de HuggingFace',
-    unknownGroup: 'Desconegut',
-    menuTitleHf: 'Models Hugging Face',
-    menuTitleDownloaded: 'Models Descarregats',
-    menuTitleGrouped: 'Agrupar per Tipus de Model',
-    menuTitleReset: 'Reiniciar Llista de Models',
-    iOSBackgroundDownload: 'Descàrrega en segon pla',
-    iOSBackgroundDownloadDescription:
-      'Permet que les descàrregues continuïn en segon pla (serà més lent).',
-    availableToUse: 'Llest per Usar',
-    availableToDownload: 'Disponible per Descarregar',
-    useAddButtonForMore: 'Utilitzeu el botó + per trobar més models',
-    'modelSettings.grammar':
-      'Establecer gramática para el muestreo basado en gramática',
-    'modelSettings.stop':
-      'Especificar cadenas de parada que no se incluirán en la completación',
-    'modelSettings.n_predict':
-      'Número máximo de tokens a predecir al generar texto',
-    'modelSettings.n_probs':
-      'Número de probabilidades de tokens superiores a devolver por token',
-    'modelSettings.top_k':
-      'Limitar la selección de tokens a los K tokens más probables',
-    'modelSettings.top_p':
-      'Limitar la selección de tokens a aquellos con probabilidad acumulada superior al umbral P',
-    'modelSettings.min_p':
-      'Probabilidad mínima para un token en relación al token más probable',
-    'modelSettings.xtc_probability':
-      'Probabilidad de eliminación de tokens mediante el muestreador XTC',
-    'modelSettings.xtc_threshold':
-      'Umbral mínimo de probabilidad para la eliminación de tokens mediante XTC',
-    'modelSettings.typical_p': 'Parámetro para el muestreo localmente típico',
-    'modelSettings.temperature': 'Ajustar la aleatoriedad del texto generado',
-    'modelSettings.penalty_last_n':
-      'Número de tokens a considerar para la penalización por repetición',
-    'modelSettings.penalty_repeat':
-      'Controlar la repetición de secuencias de tokens',
-    'modelSettings.penalty_freq': 'Penalización de frecuencia alfa repetida',
-    'modelSettings.penalty_present': 'Penalización de presencia alfa repetida',
-    'modelSettings.mirostat':
-      'Habilitar muestreo Mirostat para control de perplejidad',
-    'modelSettings.mirostat_tau': 'Entropía objetivo de Mirostat (tau)',
-    'modelSettings.mirostat_eta': 'Tasa de aprendizado de Mirostat (eta)',
-    'modelSettings.dry_multiplier':
-      'Multiplicador de penalización por repetición DRY',
-    'modelSettings.dry_base': 'Valor base de penalización por repetición DRY',
-    'modelSettings.dry_allowed_length':
-      'Longitud máxima permitida antes de penalización exponencial',
-    'modelSettings.dry_penalty_last_n':
-      'Número de tokens a escanear para repeticiones',
-    'modelSettings.dry_sequence_breakers':
-      'Rompedores de secuencia para muestreo DRY',
-    'modelSettings.ignore_eos':
-      'Ignorar token de fin de secuencia y continuar generando',
-    'modelSettings.logit_bias': 'Modificar probabilidad de tokens específicos',
-    'modelSettings.seed': 'Semilla del generador de números aleatorios',
-    about: {
-      screenTitle: "Informació sobre l'aplicació",
-      description:
-        'Una aplicació que porta models de llenguatge directament al teu telèfon. Basat en llama.cpp i llama.rn.',
-      supportProject: 'Dona suport al projecte',
-      supportProjectDescription:
-        "Si t'agrada utilitzar PocketPal AI, considera donar suport al projecte de les següents maneres:",
-      githubButton: 'Estrella a GitHub',
-      orText: 'o',
-      orBy: 'o mitjançant',
-      sponsorButton: 'Fes-te patrocinador',
-      versionCopiedTitle: 'Versió copiada',
-      versionCopiedDescription:
-        "La informació de la versió s'ha copiat al porta-retalls",
-    },
-    feedback: {
-      title: 'Enviar Comentaris',
-      description:
-        "La vostra opinió és important! Explica'ns com PocketPal AI t'està ajudant i què podem fer per fer-lo encara més útil.",
-      shareThoughtsButton: 'Comparteix els teus pensaments',
-      useCase: {
-        label: 'Per a què utilitzes PocketPal AI?',
-        placeholder: 'ex: resums, jocs de rol, etc.',
+    components: {
+      attachmentButton: {
+        attachmentButtonAccessibilityLabel: '发送媒体',
       },
-      featureRequests: {
-        label: "Quines funcionalitats t'agradaria veure en el futur?",
-        placeholder:
-          'Comparteix les teves idees i suggeriments de funcionalitats',
+      bubble: {
+        timingsString:
+          '每个令牌{{predictedMs}}ms，每秒{{predictedPerSecond}}令牌',
       },
-      generalFeedback: {
-        label: 'Altres comentaris?',
-        placeholder:
-          "Comparteix els teus pensaments. Què t'agrada, què no t'agrada, etc.",
+      chatEmptyPlaceholder: {
+        noModelsTitle: '没有可用的模型',
+        noModelsDescription: '要开始与PocketPal聊天，请下载模型',
+        noModelsButton: '下载模型',
+        activateModelTitle: '要开始，请激活模型',
+        activateModelDescription:
+          '选择模型并下载它。下载后，点击模型旁边的加载以开始聊天。',
+        activateModelButton: '选择模型',
+        loading: '加载中...',
       },
-      usageFrequency: {
-        label: 'Amb quina freqüència utilitzes PocketPal AI? (Opcional)',
-        options: {
-          daily: 'Diàriament',
-          weekly: 'Setmanalment',
-          monthly: 'Mensualment',
-          rarely: 'Rarament',
+      chatInput: {
+        inputPlaceholder: '消息',
+      },
+      chatGenerationSettingsSheet: {
+        invalidValues: '无效值',
+        invalidNumericValuesMessage: '必须是有效数字',
+        pleaseCorrect: '请纠正以下内容：',
+        ok: '确定',
+        saveChanges: '保存更改',
+        saveAsPreset: '保存为预设',
+        title_session: '聊天生成设置（会话）',
+        title_preset: '聊天生成设置（预设）',
+        resetToSystemDefaults: '重置为系统默认值',
+        resetToPreset: '重置为预设',
+        applytoPresetAlert: {
+          title: '成功',
+          message: '这些设置将应用于所有未来的会话',
         },
       },
-      email: {
-        label: 'Correu electrònic de contacte (Opcional)',
-        placeholder: 'La teva adreça de correu electrònic',
+      chatHeaderTitle: {
+        defaultTitle: '聊天',
       },
-      submit: 'Enviar Comentaris',
-      validation: {
-        required: 'Si us plau, proporciona almenys un comentari',
+      fileMessage: {
+        fileButtonAccessibilityLabel: '文件',
       },
-      success: 'Gràcies pels teus comentaris!',
-      error: {
-        general:
-          "S'ha produït un error en enviar els comentaris. Si us plau, torna-ho a provar.",
+      chatPalModelPickerSheet: {
+        modelsTab: '模型',
+        palsTab: '助手',
+        noPal: '没有助手',
+        disablePal: '禁用活动助手',
+        noDescription: '没有描述',
+        assistantType: '助手',
+        roleplayType: '角色扮演',
+        confirmationTitle: '确认',
+        modelSwitchMessage:
+          '此助手具有不同的默认模型({{modelName}})。要切换到助手的默认模型吗？',
+        keepButton: '保持',
+        switchButton: '切换',
+      },
+      headerRight: {
+        deleteChatTitle: '删除聊天',
+        deleteChatMessage: '您确定要删除此聊天吗？',
+        generationSettings: '生成设置',
+        model: '模型',
+        duplicateChatHistory: '复制聊天历史',
+        makeChatTemporary: '使聊天临时',
+        exportChatSession: '导出聊天会话',
+      },
+      modelSettingsSheet: {
+        modelSettings: '模型设置',
+        saveChanges: '保存更改',
+      },
+      modelsHeaderRight: {
+        menuTitleHf: 'Hugging Face模型',
+        menuTitleDownloaded: '已下载模型',
+        menuTitleGrouped: '按模型类型分组',
+        menuTitleReset: '重置模型列表',
+      },
+      modelsResetDialog: {
+        proceedWithReset: '继续重置',
+        confirmReset: '确认重置',
+      },
+      assistantPalSheet: {
+        title: {
+          create: '创建助手帕尔',
+          edit: '编辑助手帕尔',
+        },
+        palName: '帕尔名',
+        palNamePlaceholder: '名称',
+        defaultModel: '默认模型',
+        defaultModelPlaceholder: '选择模型',
+        validation: {
+          generatingPromptRequired: '需要生成提示',
+          promptModelRequired: '需要提示生成模型',
+        },
+        create: '创建',
+      },
+      modelNotAvailable: {
+        noModelsDownloaded: '您还没有下载任何模型。请先下载模型。',
+        downloadAModel: '下载模型',
+        defaultModelNotDownloaded: '默认模型还没有下载。请先下载它。',
+        cancelDownload: '取消下载',
+        download: '下载',
+      },
+      roleplayPalSheet: {
+        title: {
+          create: '创建角色扮演帕尔',
+          edit: '编辑角色扮演帕尔',
+        },
+        palName: '帕尔名',
+        palNamePlaceholder: '名称',
+        defaultModel: '默认模型',
+        defaultModelPlaceholder: '选择模型',
+        descriptionSection: '描述',
+        world: '世界',
+        worldPlaceholder: '奇幻',
+        location: '位置',
+        locationPlaceholder: '魔法森林',
+        locationSublabel: '故事发生在哪里？',
+        aiRole: 'AI的角色',
+        aiRolePlaceholder: '埃尔达拉，一个顽皮的森林精灵',
+        aiRoleSublabel: '设置角色',
+        userRole: '用户角色',
+        userRolePlaceholder: '埃拉德爵士，勇敢的骑士',
+        userRoleSublabel: '你是谁？',
+        situation: '情况',
+        situationPlaceholder: '救援任务，解开谜团',
+        toneStyle: '音调/风格',
+        toneStylePlaceholder: '严肃',
+        validation: {
+          promptModelRequired: '需要提示生成模型',
+        },
+        create: '创建',
+      },
+      sendButton: {
+        accessibilityLabel: '发送',
+      },
+      systemPromptSection: {
+        sectionTitle: '系统提示',
+        useAIPrompt: '使用AI生成系统提示',
+        modelSelector: {
+          label: '选择生成用模型*',
+          sublabel: '推荐: Llama 3.2 3B 或 Qwen2.5 3B.',
+          placeholder: '选择模型',
+        },
+        generatingPrompt: {
+          label: '生成提示',
+          placeholder: '输入生成提示',
+        },
+        buttons: {
+          loadingModel: '加载模型中...',
+          stopGenerating: '停止生成',
+          generatePrompt: '生成系统提示',
+        },
+        systemPrompt: {
+          label: '系统提示',
+          sublabel: '自由编辑以找到最佳提示',
+          placeholder: '您是帮助助手',
+        },
+        warnings: {
+          promptChanged: '系统提示已手动更改',
+        },
+      },
+      sidebarContent: {
+        menuItems: {
+          chat: '聊天',
+          models: '模型',
+          pals: '帕尔',
+          benchmark: '基准测试',
+          settings: '设置',
+          appInfo: '应用程序信息',
+          testCompletion: '测试完成',
+        },
+        deleteChatTitle: '删除聊天',
+        deleteChatMessage: '您确定要删除此聊天吗？',
+        dateGroups: {
+          today: '今天',
+          yesterday: '昨天',
+          thisWeek: '这周',
+          lastWeek: '上周',
+          twoWeeksAgo: '2周前',
+          threeWeeksAgo: '3周前',
+          fourWeeksAgo: '4周前',
+          lastMonth: '上个月',
+          older: '以前',
+        },
+      },
+      usageStats: {
+        tooltip: {
+          title: '内存使用情况',
+          used: '使用中: ',
+          total: '总计: ',
+          usage: '使用率: ',
+        },
+        byteSizes: ['字节', 'KB', 'MB', 'GB'],
+      },
+    },
+    validation: {
+      nameRequired: '需要名称',
+      systemPromptRequired: '需要系统提示',
+      worldRequired: '需要世界设置',
+      locationRequired: '需要位置',
+      aiRoleRequired: '需要AI角色',
+      userRoleRequired: '需要用户角色',
+      situationRequired: '需要情况',
+      toneStyleRequired: '需要音调/风格',
+    },
+    screenTitles: {
+      chat: '聊天',
+      models: '模型',
+      pals: '帕尔（实验性）',
+      benchmark: '基准测试',
+      settings: '设置',
+      appInfo: '应用程序信息',
+      testCompletion: '测试完成',
+    },
+    chat: {
+      conversationReset: '对话已重置！',
+      modelNotLoaded: '模型未加载。请初始化模型。',
+      completionFailed: '生成失败: ',
+      loadingModel: '加载模型中...',
+      typeYourMessage: '输入消息',
+      load: '加载',
+      goToModels: '转到模型',
+      readyToChat: '聊天准备好了吗？加载最后使用的模型。',
+      pleaseLoadModel: '要聊天，请加载模型。',
+    },
+    benchmark: {
+      title: '基准测试',
+      modelSelector: {
+        prompt: '选择模型',
+      },
+      buttons: {
+        advancedSettings: '高级设置',
+        startTest: '开始测试',
+        runningTest: '测试运行中...',
+        clearAll: '全部清除',
+        done: '完成',
+        cancel: '取消',
+        delete: '删除',
+        share: '共享',
+        sharing: '共享中...',
+        viewRawData: '查看原始数据',
+        hideRawData: '隐藏原始数据',
+      },
+      messages: {
+        pleaseSelectModel: '请先选择并初始化模型',
+        testWarning:
+          '注意：大模型可能需要2-5分钟进行测试，一旦开始就无法中断。',
+        keepScreenOpen: '请保持此屏幕打开。',
+        initializingModel: '正在初始化模型...',
+        modelMaxValue: '(最大值: {{maxValue}})',
+      },
+      dialogs: {
+        advancedSettings: {
+          title: '高级设置',
+          testProfile: '测试配置文件',
+          customParameters: '自定义参数',
+          description: '微调基准测试参数以适应特定测试场景。',
+        },
+        deleteResult: {
+          title: '删除结果',
+          message: '您确定要删除此基准测试结果吗？',
+        },
+        clearAllResults: {
+          title: '清除所有结果',
+          message: '您确定要删除所有基准测试结果吗？',
+        },
+        shareResults: {
+          title: '共享基准测试结果',
+          sharedDataTitle: '共享数据包括：',
+          deviceAndModelInfo: '• 设备规格和模型信息',
+          performanceMetrics: '• 性能指标',
+          dontShowAgain: '不要再次显示此消息',
+        },
+      },
+      sections: {
+        testResults: '测试结果',
+      },
+      benchmarkResultCard: {
+        modelMeta: {
+          params: '参数',
+        },
+        config: {
+          title: '基准测试设置',
+          format: 'PP: {{pp}} • TG: {{tg}} • PL: {{pl}} • Rep: {{nr}}',
+        },
+        modelSettings: {
+          title: '模型设置',
+          context: '上下文: {{context}}',
+          batch: '批量: {{batch}}',
+          ubatch: 'U批量: {{ubatch}}',
+          cpuThreads: 'CPU线程: {{threads}}',
+          gpuLayers: 'GPU层数: {{layers}}',
+          flashAttentionEnabled: '启用Flash Attention',
+          flashAttentionDisabled: '禁用Flash Attention',
+          cacheTypes: '缓存类型: {{cacheK}}/{{cacheV}}',
+        },
+        results: {
+          promptProcessing: '提示处理',
+          tokenGeneration: '令牌生成',
+          totalTime: '总时间',
+          peakMemory: '峰值内存',
+          tokensPerSecond: '令牌/秒',
+        },
+        actions: {
+          deleteButton: '',
+          submittedText: '✓ 提交到',
+          leaderboardLink: 'AI手机排行榜 ↗',
+          cannotShare: '无法共享',
+          cannotShareTooltip: '本地模型结果无法共享',
+          submitButton: '提交到排行榜',
+          viewLeaderboard: '查看排行榜 ↗',
+        },
+        errors: {
+          networkRetry: '检查连接并重试',
+          appCheckRetry: '重试提交',
+          serverRetry: '稍后再试',
+          genericRetry: '重试',
+          failedToSubmit: '基准测试提交失败',
+        },
+      },
+      deviceInfoCard: {
+        title: '设备信息',
+        deviceSummary: '{{brand}} {{model}} • {{systemName}} {{systemVersion}}',
+        coreSummary: '{{cores}}核心 • {{memory}}',
+        sections: {
+          basicInfo: '基本信息',
+          cpuDetails: 'CPU详细信息',
+          appInfo: '应用程序信息',
+        },
+        fields: {
+          architecture: '架构',
+          totalMemory: '总内存',
+          deviceId: '设备ID',
+          cpuCores: 'CPU核心',
+          cpuModel: 'CPU型号',
+          chipset: '芯片组',
+          instructions: '指令集',
+          version: '版本',
+        },
+        instructions: {
+          format:
+            'FP16: {{fp16}}, DotProd: {{dotProd}}, SVE: {{sve}}, I8MM: {{i8mm}}',
+          yes: '✓',
+          no: '✗',
+        },
+        versionFormat: '{{version}} ({{buildNumber}})',
       },
     },
   },

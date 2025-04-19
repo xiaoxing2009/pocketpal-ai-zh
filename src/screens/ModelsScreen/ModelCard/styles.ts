@@ -97,7 +97,7 @@ export const createStyles = (theme: Theme) =>
       color: theme.colors.onSurfaceVariant,
       flexShrink: 1,
     },
-    descriptionContainer: {
+    skillsContainer: {
       marginTop: 4,
       flexDirection: 'row',
       flexWrap: 'wrap',

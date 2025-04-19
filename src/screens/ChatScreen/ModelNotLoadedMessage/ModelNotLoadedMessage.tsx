@@ -58,11 +58,11 @@ export const ModelNotLoadedMessage: React.FC = () => {
         visible={true}
         onDismiss={onDismiss}
         action={{
-          label: lastUsedModel ? l10n.load : l10n.goToModels,
+          label: lastUsedModel ? l10n.chat.load : l10n.chat.goToModels,
           onPress: lastUsedModel ? loadModelDirectly : navigateToModelsPage,
           labelStyle: {color: theme.colors.inverseSecondary},
         }}>
-        {lastUsedModel ? l10n.readyToChat : l10n.pleaseLoadModel}
+        {lastUsedModel ? l10n.chat.readyToChat : l10n.chat.pleaseLoadModel}
       </Snackbar>
     </View>
   );

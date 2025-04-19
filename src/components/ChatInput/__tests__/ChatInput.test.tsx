@@ -24,9 +24,13 @@ describe('input', () => {
         />
       </UserContext.Provider>,
     );
-    const textInput = getByPlaceholderText(l10n.en.inputPlaceholder);
+    const textInput = getByPlaceholderText(
+      l10n.en.components.chatInput.inputPlaceholder,
+    );
     fireEvent.changeText(textInput, 'text');
-    const button = getByLabelText(l10n.en.sendButtonAccessibilityLabel);
+    const button = getByLabelText(
+      l10n.en.components.sendButton.accessibilityLabel,
+    );
     fireEvent.press(button);
     expect(onSendPress).toHaveBeenCalledWith({text: 'text', type: 'text'});
     expect(textInput.props).toHaveProperty('value', 'text');
@@ -46,9 +50,13 @@ describe('input', () => {
         />
       </UserContext.Provider>,
     );
-    const textInput = getByPlaceholderText(l10n.en.inputPlaceholder);
+    const textInput = getByPlaceholderText(
+      l10n.en.components.chatInput.inputPlaceholder,
+    );
     fireEvent.changeText(textInput, 'text');
-    const button = getByLabelText(l10n.en.sendButtonAccessibilityLabel);
+    const button = getByLabelText(
+      l10n.en.components.sendButton.accessibilityLabel,
+    );
     fireEvent.press(button);
     expect(onSendPress).toHaveBeenCalledWith({text: 'text', type: 'text'});
     expect(textInput.props).toHaveProperty('value', '');
@@ -84,9 +92,13 @@ describe('input', () => {
         />
       </UserContext.Provider>,
     );
-    const textInput = getByPlaceholderText(l10n.en.inputPlaceholder);
+    const textInput = getByPlaceholderText(
+      l10n.en.components.chatInput.inputPlaceholder,
+    );
     fireEvent.changeText(textInput, 'text');
-    const button = getByLabelText(l10n.en.sendButtonAccessibilityLabel);
+    const button = getByLabelText(
+      l10n.en.components.sendButton.accessibilityLabel,
+    );
     fireEvent.press(button);
     expect(onSendPress).toHaveBeenCalledWith({text: 'text', type: 'text'});
     expect(textInput.props).toHaveProperty('value', 'text');
@@ -108,9 +120,13 @@ describe('input', () => {
         />
       </UserContext.Provider>,
     );
-    const textInput = getByPlaceholderText(l10n.en.inputPlaceholder);
+    const textInput = getByPlaceholderText(
+      l10n.en.components.chatInput.inputPlaceholder,
+    );
     fireEvent.changeText(textInput, 'text');
-    const button = getByLabelText(l10n.en.sendButtonAccessibilityLabel);
+    const button = getByLabelText(
+      l10n.en.components.sendButton.accessibilityLabel,
+    );
     fireEvent.press(button);
     expect(onSendPress).toHaveBeenCalledWith({text: 'text', type: 'text'});
     expect(textInput.props).toHaveProperty('value', '');
@@ -132,10 +148,14 @@ describe('input', () => {
         />
       </UserContext.Provider>,
     );
-    const textInput = getByPlaceholderText(l10n.en.inputPlaceholder);
+    const textInput = getByPlaceholderText(
+      l10n.en.components.chatInput.inputPlaceholder,
+    );
     await waitFor(() => fireEvent.changeText(textInput, 'text')); // Wait for the input to update
 
-    const button = getByLabelText(l10n.en.sendButtonAccessibilityLabel);
+    const button = getByLabelText(
+      l10n.en.components.sendButton.accessibilityLabel,
+    );
     await waitFor(() => fireEvent.press(button)); // Wait for the press event to be processed
 
     expect(onSendPress).toHaveBeenCalledWith({text: value, type: 'text'});
@@ -158,8 +178,12 @@ describe('input', () => {
         />
       </UserContext.Provider>,
     );
-    const textInput = getByPlaceholderText(l10n.en.inputPlaceholder);
-    const button = getByLabelText(l10n.en.sendButtonAccessibilityLabel);
+    const textInput = getByPlaceholderText(
+      l10n.en.components.chatInput.inputPlaceholder,
+    );
+    const button = getByLabelText(
+      l10n.en.components.sendButton.accessibilityLabel,
+    );
     fireEvent.press(button);
     expect(onSendPress).toHaveBeenCalledWith({
       text: defaultValue,
@@ -184,7 +208,9 @@ describe('input', () => {
         />
       </UserContext.Provider>,
     );
-    const button = getByLabelText(l10n.en.attachmentButtonAccessibilityLabel);
+    const button = getByLabelText(
+      l10n.en.components.attachmentButton.attachmentButtonAccessibilityLabel,
+    );
     fireEvent.press(button);
     expect(onAttachmentPress).toHaveBeenCalledTimes(1);
   });

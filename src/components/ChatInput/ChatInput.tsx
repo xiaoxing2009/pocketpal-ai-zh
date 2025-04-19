@@ -246,7 +246,7 @@ export const ChatInput = observer(
                   ref={inputRef}
                   multiline
                   key={inputTextColor}
-                  placeholder={l10n.inputPlaceholder}
+                  placeholder={l10n.components.chatInput.inputPlaceholder}
                   placeholderTextColor={inputTextColor}
                   underlineColorAndroid="transparent"
                   {...textInputProps}

@@ -74,10 +74,14 @@ describe('chat', () => {
       />,
       {withNavigation: true},
     );
-    const textInput = getByPlaceholderText(l10n.en.inputPlaceholder);
+    const textInput = getByPlaceholderText(
+      l10n.en.components.chatInput.inputPlaceholder,
+    );
     fireEvent.changeText(textInput, 'text');
 
-    const button = getByLabelText(l10n.en.sendButtonAccessibilityLabel);
+    const button = getByLabelText(
+      l10n.en.components.sendButton.accessibilityLabel,
+    );
     fireEvent.press(button);
     expect(onSendPress).toHaveBeenCalledWith({text: 'text', type: 'text'});
   });
@@ -103,7 +107,9 @@ describe('chat', () => {
       {withNavigation: true},
     );
 
-    const button = getByLabelText(l10n.en.fileButtonAccessibilityLabel);
+    const button = getByLabelText(
+      l10n.en.components.fileMessage.fileButtonAccessibilityLabel,
+    );
     fireEvent.press(button);
     expect(onFilePress).toHaveBeenCalledWith(fileMessage);
   });

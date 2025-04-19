@@ -1,5 +1,5 @@
 import {View, ScrollView} from 'react-native';
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useContext} from 'react';
 
 import {v4 as uuidv4} from 'uuid';
 import {observer} from 'mobx-react';
@@ -13,6 +13,7 @@ import {submitBenchmark} from '../../api/benchmark';
 import {Menu, Dialog, Checkbox} from '../../components';
 
 import {useTheme} from '../../hooks';
+import {L10nContext} from '../../utils';
 
 import {createStyles} from './styles';
 import {DeviceInfoCard} from './DeviceInfoCard';
@@ -86,6 +87,7 @@ export const BenchmarkScreen: React.FC = observer(() => {
 
   const theme = useTheme();
   const styles = createStyles(theme);
+  const l10n = useContext(L10nContext);
 
   const handleSliderChange = (name: string, value: number) => {
     setSelectedConfig(prev => ({
@@ -304,7 +306,7 @@ export const BenchmarkScreen: React.FC = observer(() => {
           )}>
           {selectedModel?.name ||
             modelStore.activeModel?.name ||
-            'Select Model'}
+            l10n.benchmark.modelSelector.prompt}
         </Button>
       }>
       {modelStore.availableModels.map(model => (
@@ -361,7 +363,11 @@ export const BenchmarkScreen: React.FC = observer(() => {
             {metadata.descriptionKey}
             {name === 'pp' && modelStore.activeContextSettings && (
               <Text style={styles.maxValueHint}>
-                {` (max: ${getMaxPPValue()})`}
+                {' '}
+                {l10n.benchmark.messages.modelMaxValue.replace(
+                  '{{maxValue}}',
+                  getMaxPPValue().toString(),
+                )}
               </Text>
             )}
           </Text>
@@ -376,17 +382,17 @@ export const BenchmarkScreen: React.FC = observer(() => {
       testID="advanced-settings-dialog"
       visible={showAdvancedDialog}
       onDismiss={() => setShowAdvancedDialog(false)}
-      title="Advanced Settings"
+      title={l10n.benchmark.dialogs.advancedSettings.title}
       scrollable
       actions={[
         {
-          label: 'Done',
+          label: l10n.benchmark.buttons.done,
           onPress: () => setShowAdvancedDialog(false),
         },
       ]}>
       <View>
         <Text variant="titleMedium" style={styles.sectionTitle}>
-          Test Profile
+          {l10n.benchmark.dialogs.advancedSettings.testProfile}
         </Text>
         <View style={styles.presetContainer}>
           {DEFAULT_CONFIGS.map((config, index) => (
@@ -401,10 +407,10 @@ export const BenchmarkScreen: React.FC = observer(() => {
         </View>
 
         <Text variant="titleMedium" style={styles.sectionTitle}>
-          Custom Parameters
+          {l10n.benchmark.dialogs.advancedSettings.customParameters}
         </Text>
         <Text variant="bodySmall" style={styles.advancedDescription}>
-          Fine-tune the benchmark parameters for specific testing scenarios.
+          {l10n.benchmark.dialogs.advancedSettings.description}
         </Text>
         <View style={styles.slidersContainer}>
           {renderSlider({name: 'pp'})}
@@ -418,8 +424,7 @@ export const BenchmarkScreen: React.FC = observer(() => {
   const renderWarningMessage = () => (
     <View style={styles.warningContainer}>
       <Text variant="bodySmall" style={styles.warningText}>
-        Note: Test could run for up to 2-5 minutes for larger models and cannot
-        be interrupted once started.
+        {l10n.benchmark.messages.testWarning}
       </Text>
     </View>
   );
@@ -432,12 +437,12 @@ export const BenchmarkScreen: React.FC = observer(() => {
         setShowShareDialog(false);
         setPendingShareResult(null);
       }}
-      title="Share Benchmark Results"
+      title={l10n.benchmark.dialogs.shareResults.title}
       scrollable
       actions={[
         {
           testID: 'share-benchmark-dialog-cancel-button',
-          label: 'Cancel',
+          label: l10n.benchmark.buttons.cancel,
           onPress: () => {
             setShowShareDialog(false);
             setPendingShareResult(null);
@@ -447,7 +452,9 @@ export const BenchmarkScreen: React.FC = observer(() => {
         },
         {
           testID: 'share-benchmark-dialog-confirm-button',
-          label: isSubmitting ? 'Sharing...' : 'Share',
+          label: isSubmitting
+            ? l10n.benchmark.buttons.sharing
+            : l10n.benchmark.buttons.share,
           onPress: handleConfirmShare,
           mode: 'contained',
           loading: isSubmitting,
@@ -455,11 +462,15 @@ export const BenchmarkScreen: React.FC = observer(() => {
         },
       ]}>
       <Text variant="bodyMedium" style={styles.dialogSection}>
-        Shared data includes:
+        {l10n.benchmark.dialogs.shareResults.sharedDataTitle}
       </Text>
       <View style={styles.dialogList}>
-        <Text variant="bodyMedium">• Device specs & model info</Text>
-        <Text variant="bodyMedium">• Performance metrics</Text>
+        <Text variant="bodyMedium">
+          {l10n.benchmark.dialogs.shareResults.deviceAndModelInfo}
+        </Text>
+        <Text variant="bodyMedium">
+          {l10n.benchmark.dialogs.shareResults.performanceMetrics}
+        </Text>
       </View>
 
       <Button
@@ -468,7 +479,9 @@ export const BenchmarkScreen: React.FC = observer(() => {
         onPress={() => setShowDetails(!showDetails)}
         icon={showDetails ? 'chevron-up' : 'chevron-down'}
         style={styles.detailsButton}>
-        {showDetails ? 'Hide Raw Data' : 'View Raw Data'}
+        {showDetails
+          ? l10n.benchmark.buttons.hideRawData
+          : l10n.benchmark.buttons.viewRawData}
       </Button>
 
       {showDetails && pendingShareResult && deviceInfo && (
@@ -500,7 +513,7 @@ export const BenchmarkScreen: React.FC = observer(() => {
           variant="bodySmall"
           style={styles.checkboxLabel}
           onPress={() => setDontShowAgain(!dontShowAgain)}>
-          Don't show this message again
+          {l10n.benchmark.dialogs.shareResults.dontShowAgain}
         </Text>
       </View>
     </Dialog>
@@ -520,13 +533,15 @@ export const BenchmarkScreen: React.FC = observer(() => {
                   testID="loading-indicator-model-init"
                   size="large"
                 />
-                <Text style={styles.loadingText}>Initializing model...</Text>
+                <Text style={styles.loadingText}>
+                  {l10n.benchmark.messages.initializingModel}
+                </Text>
               </View>
             ) : (
               <>
                 {!modelStore.context ? (
                   <Text style={styles.warning}>
-                    Please select and initialize a model first
+                    {l10n.benchmark.messages.pleaseSelectModel}
                   </Text>
                 ) : (
                   <>
@@ -536,7 +551,7 @@ export const BenchmarkScreen: React.FC = observer(() => {
                       onPress={() => setShowAdvancedDialog(true)}
                       icon="tune"
                       style={styles.advancedButton}>
-                      Advanced Settings
+                      {l10n.benchmark.buttons.advancedSettings}
                     </Button>
 
                     {!isRunning && renderWarningMessage()}
@@ -547,7 +562,9 @@ export const BenchmarkScreen: React.FC = observer(() => {
                       onPress={runBenchmark}
                       disabled={isRunning}
                       style={styles.button}>
-                      {isRunning ? 'Running Test...' : 'Start Test'}
+                      {isRunning
+                        ? l10n.benchmark.buttons.runningTest
+                        : l10n.benchmark.buttons.startTest}
                     </Button>
 
                     {isRunning && (
@@ -557,7 +574,7 @@ export const BenchmarkScreen: React.FC = observer(() => {
                           size="large"
                         />
                         <Text style={styles.warningText}>
-                          Please keep this screen open.
+                          {l10n.benchmark.messages.keepScreenOpen}
                         </Text>
                       </View>
                     )}
@@ -571,14 +588,16 @@ export const BenchmarkScreen: React.FC = observer(() => {
             {benchmarkStore.results.length > 0 && (
               <View style={styles.resultsCard}>
                 <View style={styles.resultsHeader}>
-                  <Text variant="titleSmall">Test Results</Text>
+                  <Text variant="titleSmall">
+                    {l10n.benchmark.sections.testResults}
+                  </Text>
                   <Button
                     testID="clear-all-button"
                     mode="text"
                     onPress={handleDeleteAll}
                     icon="delete"
                     compact>
-                    Clear All
+                    {l10n.benchmark.buttons.clearAll}
                   </Button>
                 </View>
                 {benchmarkStore.results.map((result, index) => (
@@ -596,42 +615,38 @@ export const BenchmarkScreen: React.FC = observer(() => {
             <Dialog
               visible={deleteConfirmVisible}
               onDismiss={() => setDeleteConfirmVisible(false)}
-              title="Delete Result"
+              title={l10n.benchmark.dialogs.deleteResult.title}
               actions={[
                 {
-                  label: 'Cancel',
+                  label: l10n.benchmark.buttons.cancel,
                   onPress: () => setDeleteConfirmVisible(false),
                 },
                 {
-                  label: 'Delete',
+                  label: l10n.benchmark.buttons.delete,
                   onPress: handleConfirmDelete,
                 },
               ]}>
-              <Text>
-                Are you sure you want to delete this benchmark result?
-              </Text>
+              <Text>{l10n.benchmark.dialogs.deleteResult.message}</Text>
             </Dialog>
 
             <Dialog
               testID="clear-all-dialog"
               visible={deleteAllConfirmVisible}
               onDismiss={() => setDeleteAllConfirmVisible(false)}
-              title="Clear All Results"
+              title={l10n.benchmark.dialogs.clearAllResults.title}
               actions={[
                 {
                   testID: 'clear-all-dialog-cancel-button',
-                  label: 'Cancel',
+                  label: l10n.benchmark.buttons.cancel,
                   onPress: () => setDeleteAllConfirmVisible(false),
                 },
                 {
                   testID: 'clear-all-dialog-confirm-button',
-                  label: 'Clear All',
+                  label: l10n.benchmark.buttons.clearAll,
                   onPress: handleConfirmDeleteAll,
                 },
               ]}>
-              <Text>
-                Are you sure you want to delete all benchmark results?
-              </Text>
+              <Text>{l10n.benchmark.dialogs.clearAllResults.message}</Text>
             </Dialog>
 
             {renderShareDialog()}

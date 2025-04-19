@@ -21,7 +21,7 @@ describe('ChatScreen', () => {
     const {getByPlaceholderText} = render(<ChatScreen />, {
       withNavigation: true,
     });
-    expect(getByPlaceholderText(l10n.en.modelNotLoaded)).toBeTruthy();
+    expect(getByPlaceholderText(l10n.en.chat.modelNotLoaded)).toBeTruthy();
   });
 
   it('renders correctly when model is loading', () => {
@@ -29,7 +29,7 @@ describe('ChatScreen', () => {
     const {getByPlaceholderText} = render(<ChatScreen />, {
       withNavigation: true,
     });
-    expect(getByPlaceholderText(l10n.en.loadingModel)).toBeTruthy();
+    expect(getByPlaceholderText(l10n.en.chat.loadingModel)).toBeTruthy();
   });
 
   it('renders correctly when model is loaded', () => {
@@ -42,7 +42,7 @@ describe('ChatScreen', () => {
     const {getByPlaceholderText} = render(<ChatScreen />, {
       withNavigation: true,
     });
-    expect(getByPlaceholderText(l10n.en.typeYourMessage)).toBeTruthy();
+    expect(getByPlaceholderText(l10n.en.chat.typeYourMessage)).toBeTruthy();
   });
 
   it('handles sending a message', async () => {
@@ -59,7 +59,7 @@ describe('ChatScreen', () => {
     const {getByPlaceholderText, getByTestId} = render(<ChatScreen />, {
       withNavigation: true,
     });
-    const input = getByPlaceholderText(l10n.en.typeYourMessage);
+    const input = getByPlaceholderText(l10n.en.chat.typeYourMessage);
 
     await act(async () => {
       fireEvent.changeText(input, 'Hello, PocketPal AI!');
@@ -97,7 +97,7 @@ describe('ChatScreen', () => {
     const {getByPlaceholderText, getByTestId} = render(<ChatScreen />, {
       withNavigation: true,
     });
-    const input = getByPlaceholderText(l10n.en.typeYourMessage);
+    const input = getByPlaceholderText(l10n.en.chat.typeYourMessage);
 
     await act(async () => {
       fireEvent.changeText(input, 'Hello, PocketPal!');
@@ -172,7 +172,7 @@ describe('ChatScreen', () => {
     const {getByPlaceholderText, getByTestId} = render(<ChatScreen />, {
       withNavigation: true,
     });
-    const input = getByPlaceholderText(l10n.en.typeYourMessage);
+    const input = getByPlaceholderText(l10n.en.chat.typeYourMessage);
 
     await act(async () => {
       fireEvent.changeText(input, 'Hello, AI!');

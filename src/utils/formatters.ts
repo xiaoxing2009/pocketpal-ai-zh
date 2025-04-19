@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {l10n} from './l10n';
 
 /**
  * Formats a byte value into a human-readable string with appropriate units
@@ -101,11 +102,12 @@ export const getVerboseDateTimeRepresentation = (
 };
 
 export function timeAgo(
-  dateString: string,
-  prefix: string = 'Updated ',
-  suffix: string = ' ago',
+  dateValue: string | number | Date,
+  l10nData = l10n.en,
+  format: 'short' | 'long' = 'long',
 ): string {
-  const inputDate = new Date(dateString);
+  const inputDate =
+    typeof dateValue === 'string' ? new Date(dateValue) : new Date(dateValue);
   const now = new Date();
 
   const seconds = Math.floor((now.getTime() - inputDate.getTime()) / 1000);
@@ -116,19 +118,49 @@ export function timeAgo(
   const months = Math.floor(days / 30);
   const years = Math.floor(days / 365);
 
+  // Time value and unit, e.g. "2 days"
+  let timeValue = '';
+
   if (years > 0) {
-    return `${prefix}${years} year${years > 1 ? 's' : ''}${suffix}`;
+    timeValue = `${years} ${
+      years > 1 ? l10nData.common.years : l10nData.common.year
+    }`;
   } else if (months > 0) {
-    return `${prefix}${months} month${months > 1 ? 's' : ''}${suffix}`;
+    timeValue = `${months} ${
+      months > 1 ? l10nData.common.months : l10nData.common.month
+    }`;
   } else if (weeks > 0) {
-    return `${prefix}${weeks} week${weeks > 1 ? 's' : ''}${suffix}`;
+    timeValue = `${weeks} ${
+      weeks > 1 ? l10nData.common.weeks : l10nData.common.week
+    }`;
   } else if (days > 0) {
-    return `${prefix}${days} day${days > 1 ? 's' : ''}${suffix}`;
+    timeValue = `${days} ${
+      days > 1 ? l10nData.common.days : l10nData.common.day
+    }`;
   } else if (hours > 0) {
-    return `${prefix}${hours} hour${hours > 1 ? 's' : ''}${suffix}`;
+    timeValue = `${hours} ${
+      hours > 1 ? l10nData.common.hours : l10nData.common.hour
+    }`;
   } else if (minutes > 0) {
-    return `${prefix}${minutes} minute${minutes > 1 ? 's' : ''}${suffix}`;
+    timeValue = `${minutes} ${
+      minutes > 1 ? l10nData.common.minutes : l10nData.common.minute
+    }`;
   } else {
-    return `${prefix}just now`;
+    // Special case for "just now"
+    return format === 'short'
+      ? l10nData.models.search.modelUpdatedJustNowShort
+      : l10nData.models.search.modelUpdatedJustNowLong;
+  }
+
+  if (format === 'short') {
+    return l10nData.models.search.modelUpdatedShort.replace(
+      '{{time}}',
+      timeValue,
+    );
+  } else {
+    return l10nData.models.search.modelUpdatedLong.replace(
+      '{{time}}',
+      timeValue,
+    );
   }
 }

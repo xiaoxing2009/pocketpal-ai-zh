@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState, useContext} from 'react';
 import {TextInput as RNTextInput} from 'react-native';
 import {View, Keyboard} from 'react-native';
 
@@ -16,6 +16,7 @@ import {ChatTemplatePicker} from '../ChatTemplatePicker';
 
 import {ChatTemplateConfig} from '../../../utils/types';
 import {Sheet} from '../../../components/Sheet';
+import {L10nContext} from '../../../utils';
 
 interface ModelSettingsProps {
   chatTemplate: ChatTemplateConfig;
@@ -30,6 +31,7 @@ export const ModelSettings: React.FC<ModelSettingsProps> = ({
   onChange,
   onStopWordsChange,
 }) => {
+  const l10n = useContext(L10nContext);
   const [isDialogVisible, setDialogVisible] = useState<boolean>(false);
   const [localChatTemplate, setLocalChatTemplate] = useState(
     chatTemplate.chatTemplate,
@@ -113,7 +115,7 @@ export const ModelSettings: React.FC<ModelSettingsProps> = ({
     <View style={styles.settingsSection}>
       <View style={styles.chatTemplateRow}>
         <Text style={styles.chatTemplateLabel} variant="labelLarge">
-          Template:
+          {l10n.models.modelSettings.template.label}
         </Text>
         <MaskedView
           style={styles.chatTemplateContainer}
@@ -136,7 +138,7 @@ export const ModelSettings: React.FC<ModelSettingsProps> = ({
             setLocalChatTemplate(chatTemplate.chatTemplate);
             setDialogVisible(true);
           }}>
-          Edit
+          {l10n.models.modelSettings.template.editButton}
         </Button>
       </View>
     </View>
@@ -146,7 +148,7 @@ export const ModelSettings: React.FC<ModelSettingsProps> = ({
     <View style={styles.settingItem}>
       <View style={styles.stopLabel}>
         <Text variant="labelSmall" style={styles.settingLabel}>
-          STOP WORDS
+          {l10n.models.modelSettings.stopWords.label}
         </Text>
       </View>
 
@@ -170,7 +172,7 @@ export const ModelSettings: React.FC<ModelSettingsProps> = ({
       {/* Input for new stop words */}
       <TextInput
         value={newStopWord}
-        placeholder="Add new stop word"
+        placeholder={l10n.models.modelSettings.stopWords.placeholder}
         onChangeText={setNewStopWord}
         onSubmitEditing={() => {
           if (newStopWord.trim()) {
@@ -194,7 +196,7 @@ export const ModelSettings: React.FC<ModelSettingsProps> = ({
       <View style={styles.settingsSection}>
         {renderTokenSetting(
           'BOS',
-          'BOS',
+          l10n.models.modelSettings.tokenSettings.bos,
           chatTemplate.addBosToken ?? false,
           chatTemplate.bosToken,
           'addBosToken',
@@ -205,7 +207,7 @@ export const ModelSettings: React.FC<ModelSettingsProps> = ({
 
         {renderTokenSetting(
           'EOS',
-          'EOS',
+          l10n.models.modelSettings.tokenSettings.eos,
           chatTemplate.addEosToken ?? false,
           chatTemplate.eosToken,
           'addEosToken',
@@ -216,7 +218,7 @@ export const ModelSettings: React.FC<ModelSettingsProps> = ({
 
         {renderTokenSetting(
           'add-generation-prompt',
-          'Add Generation Prompt',
+          l10n.models.modelSettings.tokenSettings.addGenerationPrompt,
           chatTemplate.addGenerationPrompt ?? false,
           undefined,
           'addGenerationPrompt',
@@ -235,7 +237,7 @@ export const ModelSettings: React.FC<ModelSettingsProps> = ({
             multiline
             numberOfLines={3}
             style={styles.textArea}
-            label={'System Prompt'}
+            label={l10n.models.modelSettings.tokenSettings.systemPrompt}
           />
         </View>
 
@@ -250,7 +252,7 @@ export const ModelSettings: React.FC<ModelSettingsProps> = ({
       <Sheet
         isVisible={isDialogVisible}
         onClose={onCloseSheet}
-        title="Edit Chat Template"
+        title={l10n.models.modelSettings.template.dialogTitle}
         enableContentPanningGesture={false}
         displayFullHeight>
         <Sheet.ScrollView
@@ -262,15 +264,15 @@ export const ModelSettings: React.FC<ModelSettingsProps> = ({
               handleChatTemplateNameChange={handleChatTemplateNameChange}
             />
             <Text variant="labelSmall" style={styles.templateNote}>
-              Note: Changing the template may alter BOS, EOS, and system prompt.
+              {l10n.models.modelSettings.template.note1}
             </Text>
             <Text variant="labelSmall" style={styles.templateNote}>
-              Uses Nunjucks. Leave empty to use model's template.
+              {l10n.models.modelSettings.template.note2}
             </Text>
           </View>
           <TextInput
             ref={textInputRef}
-            placeholder="Enter your chat template here..."
+            placeholder={l10n.models.modelSettings.template.placeholder}
             defaultValue={localChatTemplate}
             onChangeText={text => setLocalChatTemplate(text)}
             multiline
@@ -283,7 +285,7 @@ export const ModelSettings: React.FC<ModelSettingsProps> = ({
             testID="template-close-button"
             mode="contained"
             onPress={handleSave}>
-            Close
+            {l10n.models.modelSettings.template.closeButton}
           </Button>
         </Sheet.Actions>
       </Sheet>

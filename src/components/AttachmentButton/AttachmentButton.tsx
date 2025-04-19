@@ -34,7 +34,9 @@ export const AttachmentButton = ({
 
   return (
     <TouchableOpacity
-      accessibilityLabel={l10n.attachmentButtonAccessibilityLabel}
+      accessibilityLabel={
+        l10n.components.attachmentButton.attachmentButtonAccessibilityLabel
+      }
       accessibilityRole="button"
       testID="attachment-button"
       {...touchableOpacityProps}

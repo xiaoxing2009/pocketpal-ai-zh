@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {Image, View} from 'react-native';
 import {Button, Text} from 'react-native-paper';
 import {observer} from 'mobx-react';
@@ -8,6 +8,7 @@ import {createStyles} from './styles';
 import {modelStore} from '../../store';
 import {useNavigation} from '@react-navigation/native';
 import {NavigationProp} from '@react-navigation/native';
+import {L10nContext} from '../../utils';
 
 interface ChatEmptyPlaceholderProps {
   onSelectModel: () => void;
@@ -18,6 +19,7 @@ export const ChatEmptyPlaceholder = observer(
   ({onSelectModel, bottomComponentHeight}: ChatEmptyPlaceholderProps) => {
     const theme = useTheme();
     const navigation = useNavigation<NavigationProp<any>>();
+    const l10n = useContext(L10nContext);
     const styles = createStyles({theme});
 
     const hasAvailableModels = modelStore.availableModels.length > 0;
@@ -26,9 +28,9 @@ export const ChatEmptyPlaceholder = observer(
     const getContent = () => {
       if (!hasAvailableModels) {
         return {
-          title: 'No Models Available',
-          description: 'Download a model to start chatting with PocketPal',
-          buttonText: 'Download Model',
+          title: l10n.components.chatEmptyPlaceholder.noModelsTitle,
+          description: l10n.components.chatEmptyPlaceholder.noModelsDescription,
+          buttonText: l10n.components.chatEmptyPlaceholder.noModelsButton,
           onPress: () => {
             navigation.navigate('Models');
           },
@@ -36,10 +38,10 @@ export const ChatEmptyPlaceholder = observer(
       }
 
       return {
-        title: 'Activate Model To Get Started',
+        title: l10n.components.chatEmptyPlaceholder.activateModelTitle,
         description:
-          'Select the model and download it. After downloading, tap Load next to the model and start chatting.',
-        buttonText: 'Select Model',
+          l10n.components.chatEmptyPlaceholder.activateModelDescription,
+        buttonText: l10n.components.chatEmptyPlaceholder.activateModelButton,
         onPress: onSelectModel,
       };
     };
@@ -67,7 +69,9 @@ export const ChatEmptyPlaceholder = observer(
           style={styles.button}
           loading={modelStore.isContextLoading}
           disabled={hasActiveModel}>
-          {modelStore.isContextLoading ? 'Loading...' : buttonText}
+          {modelStore.isContextLoading
+            ? l10n.components?.chatEmptyPlaceholder?.loading
+            : buttonText}
         </Button>
       </View>
     );

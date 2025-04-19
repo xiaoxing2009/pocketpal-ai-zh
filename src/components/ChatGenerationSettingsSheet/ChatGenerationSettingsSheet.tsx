@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Sheet} from '../Sheet/Sheet';
-import {CompletionSettings} from '../../screens/ModelsScreen/CompletionSettings';
+import {CompletionSettings} from '..';
 import {CompletionParams} from '@pocketpalai/llama.rn';
 import {chatSessionStore, defaultCompletionSettings} from '../../store';
 import {styles} from './styles';
@@ -13,7 +13,6 @@ import {Button} from 'react-native-paper';
 import {L10nContext} from '../../utils';
 import {ChevronDownIcon} from '../../assets/icons';
 import {Menu} from '../Menu';
-
 interface ResetButtonProps {
   session: any;
   resetMenuVisible: boolean;
@@ -34,6 +33,8 @@ const ResetButton = ({
   handleResetToDefault,
   handleResetToPreset,
 }: ResetButtonProps) => {
+  const l10n = useContext(L10nContext);
+
   if (!session) {
     // Simple button for preset settings
     return (
@@ -41,7 +42,7 @@ const ResetButton = ({
         mode="text"
         onPress={handleResetToDefault}
         style={styles.resetButton}>
-        Reset to System Defaults
+        {l10n.components.chatGenerationSettingsSheet.resetToSystemDefaults}
       </Button>
     );
   }
@@ -59,14 +60,19 @@ const ResetButton = ({
             style={styles.resetButton}
             contentStyle={styles.resetButtonContent}
             icon={ChevronDownButtonIcon}>
-            Reset
+            {l10n.common.reset}
           </Button>
         </View>
       }>
-      <Menu.Item onPress={handleResetToPreset} label="Reset to Preset" />
+      <Menu.Item
+        onPress={handleResetToPreset}
+        label={l10n.components.chatGenerationSettingsSheet.resetToPreset}
+      />
       <Menu.Item
         onPress={handleResetToDefault}
-        label="Reset to System Defaults"
+        label={
+          l10n.components.chatGenerationSettingsSheet.resetToSystemDefaults
+        }
       />
     </Menu>
   );
@@ -79,6 +85,7 @@ export const ChatGenerationSettingsSheet = ({
   isVisible: boolean;
   onClose: () => void;
 }) => {
+  const l10n = useContext(L10nContext);
   const session = chatSessionStore.sessions.find(
     item => item.id === chatSessionStore.activeSessionId,
   );
@@ -122,12 +129,14 @@ export const ChatGenerationSettingsSheet = ({
             numValue = value;
           } else {
             // If it's neither string nor number, treat as invalid. Most probably won't happen.
-            acc.errors[key] = 'Must be a valid number';
+            acc.errors[key] =
+              l10n.components.chatGenerationSettingsSheet.invalidNumericValuesMessage;
             return acc;
           }
 
           if (Number.isNaN(numValue)) {
-            acc.errors[key] = 'Must be a valid number';
+            acc.errors[key] =
+              l10n.components.chatGenerationSettingsSheet.invalidNumericValuesMessage;
           } else {
             acc.settings[key] = numValue;
           }
@@ -154,12 +163,13 @@ export const ChatGenerationSettingsSheet = ({
 
     if (Object.keys(allErrors).length > 0) {
       Alert.alert(
-        'Invalid Values',
-        'Please correct the following:\n' +
+        l10n.components.chatGenerationSettingsSheet.invalidValues,
+        l10n.components.chatGenerationSettingsSheet.pleaseCorrect +
+          '\n' +
           Object.entries(allErrors)
             .map(([key, msg]) => `• ${key}: ${msg}`)
             .join('\n'),
-        [{text: 'OK'}],
+        [{text: l10n.components.chatGenerationSettingsSheet.ok}],
       );
       return;
     }
@@ -180,9 +190,9 @@ export const ChatGenerationSettingsSheet = ({
       handleSaveSettings(); // First save the current UI settings to the session
       chatSessionStore.applySessionSettingsToGlobal();
       Alert.alert(
-        'Success',
-        'These settings will be applied to all future sessions',
-        [{text: 'OK'}],
+        l10n.components.chatGenerationSettingsSheet.applytoPresetAlert.title,
+        l10n.components.chatGenerationSettingsSheet.applytoPresetAlert.message,
+        [{text: l10n.components.chatGenerationSettingsSheet.ok}],
       );
     }
   };
@@ -201,12 +211,12 @@ export const ChatGenerationSettingsSheet = ({
     setResetMenuVisible(false);
   };
 
-  const i10n = useContext(L10nContext);
-
   return (
     <Sheet
       title={
-        i10n.chatGenerationSettings + (session ? ' (Session)' : ' (Preset)')
+        session
+          ? l10n.components.chatGenerationSettingsSheet.title_session
+          : l10n.components.chatGenerationSettingsSheet.title_preset
       }
       isVisible={isVisible}
       onClose={onCloseSheet}>
@@ -226,12 +236,17 @@ export const ChatGenerationSettingsSheet = ({
           />
           <View style={styles.rightButtons}>
             {!isEditingPresetSettings && (
-              <Button mode="contained-tonal" onPress={handleApplyToPreset}>
-                Save as Preset
+              <Button
+                mode="contained-tonal"
+                onPress={handleApplyToPreset}
+                style={styles.button}>
+                {l10n.components.chatGenerationSettingsSheet.saveAsPreset}
               </Button>
             )}
             <Button mode="contained" onPress={handleSaveSettings}>
-              {session ? 'Save' : i10n.saveChanges}
+              {session
+                ? l10n.common.save
+                : l10n.components.chatGenerationSettingsSheet.saveChanges}
             </Button>
           </View>
         </View>

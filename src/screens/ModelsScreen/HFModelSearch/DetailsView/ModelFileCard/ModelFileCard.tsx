@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useState, useContext} from 'react';
 import {Alert, View, StyleSheet, Pressable} from 'react-native';
 import {computed} from 'mobx';
 import {observer} from 'mobx-react';
@@ -8,7 +8,7 @@ import {IconButton, Text, Tooltip, Snackbar, Portal} from 'react-native-paper';
 import {useTheme, useMemoryCheck} from '../../../../../hooks';
 import {createStyles} from './styles';
 import {modelStore} from '../../../../../store';
-import {formatBytes, hfAsModel} from '../../../../../utils';
+import {formatBytes, hfAsModel, L10nContext} from '../../../../../utils';
 import {isLegacyQuantization} from '../../../../../utils/modelSettings';
 import {
   HuggingFaceModel,
@@ -33,6 +33,7 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
   ({modelFile, hfModel}) => {
     const [showWarning, setShowWarning] = useState(false);
     const theme = useTheme();
+    const l10n = useContext(L10nContext);
     const styles = createStyles(theme);
     const HF_YELLOW = '#FFD21E';
 
@@ -67,21 +68,20 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
       !modelFile.canFitInStorage && {
         type: 'storage',
         icon: 'zip-disk',
-        message: 'Not enough storage space available.',
-        shortMessage: 'Low Storage',
+        message: l10n.models.modelFile.warnings.storage.message,
+        shortMessage: l10n.models.modelFile.warnings.storage.shortMessage,
       },
       shortMemoryWarning && {
         type: 'memory',
         icon: 'memory',
-        message:
-          "Model size is close to or exceeds your device's total memory. This may cause unexpected behavior.",
+        message: l10n.models.modelFile.warnings.memory.message,
         shortMessage: shortMemoryWarning,
       },
       isLegacyQuantization(modelFile.rfilename) && {
         type: 'legacy',
         icon: 'alert-circle-outline',
-        message: 'Legacy quantization format - model may not run.',
-        shortMessage: 'Legacy quantization',
+        message: l10n.models.modelFile.warnings.legacy.message,
+        shortMessage: l10n.models.modelFile.warnings.legacy.shortMessage,
       },
     ].filter((w): w is Warning => Boolean(w));
 
@@ -97,24 +97,30 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
           (m: Model) => m.hfModelFile?.oid === modelFile.oid,
         );
         if (model?.origin === ModelOrigin.PRESET) {
-          Alert.alert('Cannot Remove', 'The model is preset.');
+          Alert.alert(
+            l10n.models.modelFile.alerts.cannotRemoveTitle,
+            l10n.models.modelFile.alerts.modelPreset,
+          );
         } else if (model?.isDownloaded) {
           Alert.alert(
-            'Cannot Remove',
-            'The model is downloaded. Please delete the file first.',
+            l10n.models.modelFile.alerts.cannotRemoveTitle,
+            l10n.models.modelFile.alerts.downloadedFirst,
           );
         } else if (model) {
           Alert.alert(
-            'Remove Model',
-            'Are you sure you want to remove this model from the list?',
+            l10n.models.modelFile.alerts.removeTitle,
+            l10n.models.modelFile.alerts.removeMessage,
             [
-              {text: 'Cancel', style: 'cancel'},
+              {text: l10n.common.cancel, style: 'cancel'},
               {
-                text: 'Remove',
+                text: l10n.models.modelFile.buttons.remove,
                 onPress: () => {
                   const removed = modelStore.removeModelFromList(model);
                   if (!removed) {
-                    Alert.alert('Error', 'Failed to remove the model.');
+                    Alert.alert(
+                      'Error',
+                      l10n.models.modelFile.alerts.removeError,
+                    );
                   }
                 },
               },
@@ -135,8 +141,8 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
     const handleDownload = () => {
       if (isDownloaded) {
         Alert.alert(
-          'Model Already Downloaded',
-          'The model is already downloaded.',
+          l10n.models.modelFile.alerts.alreadyDownloadedTitle,
+          l10n.models.modelFile.alerts.alreadyDownloadedMessage,
         );
       } else {
         modelStore.downloadHFModel(hfModel, modelFile);
@@ -155,12 +161,12 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
       );
       if (model?.isDownloaded) {
         Alert.alert(
-          'Delete Model',
-          'Are you sure you want to delete this downloaded model?',
+          l10n.models.modelFile.alerts.deleteTitle,
+          l10n.models.modelFile.alerts.deleteMessage,
           [
-            {text: 'Cancel', style: 'cancel'},
+            {text: l10n.common.cancel, style: 'cancel'},
             {
-              text: 'Delete',
+              text: l10n.common.delete,
               onPress: async () => {
                 await modelStore.deleteModel(model);
               },
@@ -224,7 +230,10 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
                       />
                       <Text style={styles.warningText}>
                         {warnings.length > 1
-                          ? `${warnings.length} Warnings`
+                          ? l10n.models.modelFile.warnings.multiple.replace(
+                              '{count}',
+                              warnings.length.toString(),
+                            )
                           : warnings[0].shortMessage}
                       </Text>
                     </View>
@@ -235,7 +244,10 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
               {/* Download Speed */}
               {isDownloading && downloadSpeed && (
                 <Text variant="bodySmall" style={styles.downloadSpeed}>
-                  {downloadSpeed}
+                  {l10n.models.modelFile.labels.downloadSpeed.replace(
+                    '{speed}',
+                    downloadSpeed,
+                  )}
                 </Text>
               )}
             </View>
@@ -260,7 +272,7 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
                   enterTouchDelay={50}
                   title={
                     isModelInfoReady && !modelFile.canFitInStorage
-                      ? 'Not enough storage space available'
+                      ? l10n.models.modelFile.warnings.storage.message
                       : ''
                   }>
                   <View>
@@ -294,7 +306,7 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
             duration={1000 + 2000 * warnings.length}
             style={styles.snackbarContainer}
             action={{
-              label: 'Dismiss',
+              label: l10n.common.dismiss,
               onPress: handleDismissWarning,
               labelStyle: {color: theme.colors.inverseSecondary},
             }}>

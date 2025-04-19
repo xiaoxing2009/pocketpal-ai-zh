@@ -1,11 +1,18 @@
 import {View, TouchableWithoutFeedback, Text} from 'react-native';
-import React, {useState, useEffect, useCallback, useMemo} from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useContext,
+} from 'react';
 
 import {Surface, Portal} from 'react-native-paper';
 import DeviceInfo from 'react-native-device-info';
 import {Svg, Path, Rect, Line} from 'react-native-svg';
 
 import {useTheme} from '../../hooks';
+import {L10nContext} from '../../utils';
 
 import {createStyles} from './styles';
 
@@ -32,6 +39,7 @@ export const UsageStats: React.FC<UsageStatsProps> = ({
     percentage: 0,
   });
   const theme = useTheme();
+  const l10n = useContext(L10nContext);
 
   const styles = useMemo(() => createStyles(theme), [theme]);
 
@@ -67,15 +75,18 @@ export const UsageStats: React.FC<UsageStatsProps> = ({
     return `M${points.join(' L')}`;
   }, [memoryHistory, width, height]);
 
-  const formatBytes = useCallback((bytes: number) => {
-    if (bytes === 0) {
-      return '0 Bytes';
-    }
-    const k = 1000;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  }, []);
+  const formatBytes = useCallback(
+    (bytes: number) => {
+      if (bytes === 0) {
+        return '0 Bytes';
+      }
+      const k = 1000;
+      const sizes = l10n.components.usageStats.byteSizes;
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    },
+    [l10n.components.usageStats.byteSizes],
+  );
 
   const [menuPosition, setMenuPosition] = useState({x: 0, y: 0});
 
@@ -91,20 +102,32 @@ export const UsageStats: React.FC<UsageStatsProps> = ({
               left: menuPosition.x - 10,
             },
           ]}>
-          <Text style={styles.tooltipTitle}>Memory Usage</Text>
-          <Text style={styles.tooltipText}>
-            Used: {formatBytes(memoryStats.usedMemory)}
+          <Text style={styles.tooltipTitle}>
+            {l10n.components.usageStats.tooltip.title}
           </Text>
           <Text style={styles.tooltipText}>
-            Total: {formatBytes(memoryStats.totalMemory)}
+            {l10n.components.usageStats.tooltip.used}
+            {formatBytes(memoryStats.usedMemory)}
           </Text>
           <Text style={styles.tooltipText}>
-            Usage: {memoryStats.percentage.toFixed(1)}%
+            {l10n.components.usageStats.tooltip.total}
+            {formatBytes(memoryStats.totalMemory)}
+          </Text>
+          <Text style={styles.tooltipText}>
+            {l10n.components.usageStats.tooltip.usage}
+            {memoryStats.percentage.toFixed(1)}%
           </Text>
         </Surface>
       </Portal>
     ),
-    [memoryStats, formatBytes, styles, menuPosition, height],
+    [
+      memoryStats,
+      formatBytes,
+      styles,
+      menuPosition,
+      height,
+      l10n.components.usageStats.tooltip,
+    ],
   );
 
   const handlePress = useCallback(

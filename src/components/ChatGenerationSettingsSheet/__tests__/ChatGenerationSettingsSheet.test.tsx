@@ -19,7 +19,7 @@ jest.mock('../../../utils/modelSettings', () => ({
 jest.spyOn(Alert, 'alert');
 
 // Mock the CompletionSettings component
-jest.mock('../../../screens/ModelsScreen/CompletionSettings', () => {
+jest.mock('../../CompletionSettings', () => {
   const {View, TouchableOpacity} = require('react-native');
   return {
     CompletionSettings: ({onChange}) => (

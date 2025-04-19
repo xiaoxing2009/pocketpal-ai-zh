@@ -1,4 +1,3 @@
-export * from './AppleStyleSwipeableRow';
 export * from './AttachmentButton';
 export * from './Avatar';
 export * from './BottomSheetSearchbar';
@@ -8,6 +7,7 @@ export * from './ChatInput';
 export * from './ChatView';
 export * from './Checkbox';
 export * from './CircularActivityIndicator';
+export * from './CompletionSettings';
 export * from './Dialog';
 export * from './Divider';
 export * from './FileMessage';

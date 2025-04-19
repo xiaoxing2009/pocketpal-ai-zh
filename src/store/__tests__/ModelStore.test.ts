@@ -506,35 +506,6 @@ describe('ModelStore', () => {
     });
   });
 
-  // Add tests for chat title
-  describe('chatTitle', () => {
-    it('should return loading message when context is loading', () => {
-      modelStore.isContextLoading = true;
-
-      expect(modelStore.chatTitle).toBe('Loading model ...');
-    });
-
-    it('should return model name from context metadata', () => {
-      modelStore.isContextLoading = false;
-      modelStore.context = {
-        model: {
-          metadata: {
-            'general.name': 'Test Model Name',
-          },
-        },
-      } as any;
-
-      expect(modelStore.chatTitle).toBe('Test Model Name');
-    });
-
-    it('should return default title when no context or name', () => {
-      modelStore.isContextLoading = false;
-      modelStore.context = undefined;
-
-      expect(modelStore.chatTitle).toBe('Chat Page');
-    });
-  });
-
   // Add tests for isModelAvailable
   describe('isModelAvailable', () => {
     beforeEach(() => {

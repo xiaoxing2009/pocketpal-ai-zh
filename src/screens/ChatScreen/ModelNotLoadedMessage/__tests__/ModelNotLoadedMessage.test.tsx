@@ -44,21 +44,21 @@ describe('ModelNotLoadedMessage', () => {
 
   it('renders correctly when no last used model exists', () => {
     const {getByText} = customRender(<ModelNotLoadedMessage />);
-    expect(getByText(l10n.en.pleaseLoadModel)).toBeTruthy();
+    expect(getByText(l10n.en.chat.pleaseLoadModel)).toBeTruthy();
   });
 
   it('renders correctly when last used model exists', () => {
     modelStore.lastUsedModelId = modelStore.models[0].id;
     const {getByText} = customRender(<ModelNotLoadedMessage />);
 
-    expect(getByText(l10n.en.readyToChat)).toBeTruthy();
-    expect(getByText(l10n.en.load)).toBeTruthy();
+    expect(getByText(l10n.en.chat.readyToChat)).toBeTruthy();
+    expect(getByText(l10n.en.chat.load)).toBeTruthy();
   });
 
   it('navigates to Models page when no last model exists', () => {
     const {getByText} = customRender(<ModelNotLoadedMessage />);
 
-    fireEvent.press(getByText(l10n.en.goToModels));
+    fireEvent.press(getByText(l10n.en.chat.goToModels));
 
     expect(mockNavigate).toHaveBeenCalledWith('Models');
   });
@@ -70,7 +70,7 @@ describe('ModelNotLoadedMessage', () => {
     const {getByText} = customRender(<ModelNotLoadedMessage />);
 
     await act(async () => {
-      fireEvent.press(getByText(l10n.en.load));
+      fireEvent.press(getByText(l10n.en.chat.load));
     });
 
     expect(modelStore.initContext).toHaveBeenCalledWith(basicModel);
@@ -88,7 +88,7 @@ describe('ModelNotLoadedMessage', () => {
     const {getByText} = customRender(<ModelNotLoadedMessage />);
 
     await act(async () => {
-      fireEvent.press(getByText(l10n.en.load));
+      fireEvent.press(getByText(l10n.en.chat.load));
     });
 
     expect(modelStore.initContext).toHaveBeenCalledWith(basicModel);
@@ -106,6 +106,6 @@ describe('ModelNotLoadedMessage', () => {
       await new Promise(resolve => setTimeout(resolve, 0));
     });
 
-    expect(getByText(l10n.en.readyToChat)).toBeTruthy();
+    expect(getByText(l10n.en.chat.readyToChat)).toBeTruthy();
   });
 });

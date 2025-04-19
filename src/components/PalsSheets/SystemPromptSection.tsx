@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {View} from 'react-native';
 import {Button, Text} from 'react-native-paper';
 import {observer} from 'mobx-react-lite';
@@ -15,6 +15,7 @@ import {useStructuredOutput} from '../../hooks/useStructuredOutput';
 import {modelStore} from '../../store';
 import {getPromptForModelGeneration} from './utils';
 import {ModelNotAvailable} from './ModelNotAvailable';
+import {L10nContext} from '../../utils';
 
 interface SystemPromptSectionProps {
   hideGeneratingPrompt?: boolean;
@@ -30,6 +31,7 @@ export const SystemPromptSection = observer(
   }: SystemPromptSectionProps) => {
     const theme = useTheme();
     const styles = createStyles(theme);
+    const l10n = useContext(L10nContext);
 
     const {watch, control, getValues, setValue, clearErrors} =
       useFormContext<PalFormData>();
@@ -132,7 +134,9 @@ export const SystemPromptSection = observer(
 
     return (
       <>
-        <SectionDivider label="System Prompt" />
+        <SectionDivider
+          label={l10n.components.systemPromptSection.sectionTitle}
+        />
         <View style={styles.field}>
           <Controller
             control={control}
@@ -146,7 +150,7 @@ export const SystemPromptSection = observer(
                     clearErrors('systemPrompt');
                   }}
                   disabled={isSystemPromptEdited}>
-                  <Text>Use AI to generate system prompt</Text>
+                  <Text>{l10n.components.systemPromptSection.useAIPrompt}</Text>
                 </Checkbox>
               </View>
             )}
@@ -165,9 +169,16 @@ export const SystemPromptSection = observer(
                     onChange(selected);
                     clearErrors('promptGenerationModel');
                   }}
-                  label="Select Model for Generation*"
-                  sublabel="Recommended: Llama 3.2 3B or Qwen2.5 3B."
-                  placeholder="Select model"
+                  label={
+                    l10n.components.systemPromptSection.modelSelector.label
+                  }
+                  sublabel={
+                    l10n.components.systemPromptSection.modelSelector.sublabel
+                  }
+                  placeholder={
+                    l10n.components.systemPromptSection.modelSelector
+                      .placeholder
+                  }
                   error={!!error}
                   helperText={error?.message}
                   disabled={isSystemPromptEdited}
@@ -181,8 +192,13 @@ export const SystemPromptSection = observer(
             {!hideGeneratingPrompt && (
               <FormField
                 name="generatingPrompt"
-                label="Generating Prompt"
-                placeholder="Enter prompt for generation"
+                label={
+                  l10n.components.systemPromptSection.generatingPrompt.label
+                }
+                placeholder={
+                  l10n.components.systemPromptSection.generatingPrompt
+                    .placeholder
+                }
                 multiline
                 required
                 disabled={isSystemPromptEdited}
@@ -197,10 +213,10 @@ export const SystemPromptSection = observer(
               disabled={isLoadingModel || isSystemPromptEdited}
               testID="generate-button">
               {isLoadingModel
-                ? 'Loading model...'
+                ? l10n.components.systemPromptSection.buttons.loadingModel
                 : isGenerating
-                ? 'Stop Generating'
-                : 'Generate System Prompt'}
+                ? l10n.components.systemPromptSection.buttons.stopGenerating
+                : l10n.components.systemPromptSection.buttons.generatePrompt}
             </Button>
           </>
         )}
@@ -208,9 +224,11 @@ export const SystemPromptSection = observer(
         <>
           <FormField
             name="systemPrompt"
-            label="System Prompt"
-            sublabel="Feel free to edit and experiment to find the optimal prompt for your scenario"
-            placeholder="You are a helpful assistant"
+            label={l10n.components.systemPromptSection.systemPrompt.label}
+            sublabel={l10n.components.systemPromptSection.systemPrompt.sublabel}
+            placeholder={
+              l10n.components.systemPromptSection.systemPrompt.placeholder
+            }
             multiline
             required
             disabled={useAIPrompt && isGenerating}
@@ -221,13 +239,13 @@ export const SystemPromptSection = observer(
           {isSystemPromptEdited && (
             <View style={styles.warningContainer}>
               <Text style={[theme.fonts.bodyMedium, styles.warningText]}>
-                System prompt has been manually changed
+                {l10n.components.systemPromptSection.warnings.promptChanged}
               </Text>
               <Button
                 mode="text"
                 onPress={handleReset}
                 style={styles.resetButton}>
-                Reset
+                {l10n.common.reset}
               </Button>
             </View>
           )}

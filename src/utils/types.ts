@@ -295,7 +295,7 @@ export interface Model {
   author: string;
   name: string;
   type?: string;
-  description: string;
+  capabilities?: string[]; // Array of capability keys for localization
   size: number; // Size in bytes
   params: number;
   isDownloaded: boolean;

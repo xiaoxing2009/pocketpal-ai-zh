@@ -16,8 +16,6 @@ import {l10n} from '../../utils/l10n';
 import {assistant} from '../../utils/chat';
 import {ChatMessage} from '../../utils/types';
 
-const mockL10n = l10n.en;
-
 const mockAssistant = {
   id: 'h3o3lc5xj',
 };
@@ -70,7 +68,7 @@ describe('useChatSession', () => {
       author: assistant,
       createdAt: expect.any(Number),
       id: expect.any(String),
-      text: mockL10n.modelNotLoaded,
+      text: l10n.en.chat.modelNotLoaded,
       type: 'text',
       metadata: {system: true},
     });
@@ -164,7 +162,7 @@ describe('useChatSession', () => {
 
     expect(chatSessionStore.addMessageToCurrentSession).toHaveBeenCalledWith(
       expect.objectContaining({
-        text: mockL10n.conversationReset,
+        text: l10n.en.chat.conversationReset,
         author: assistant,
       }),
     );

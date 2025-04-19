@@ -7,13 +7,6 @@ import {ModelSettings} from '../ModelSettings';
 
 jest.useFakeTimers(); // Mock all timers
 
-jest.mock('../../CompletionSettings', () => {
-  const {Text} = require('react-native');
-  return {
-    CompletionSettings: () => <Text>CompletionSettings</Text>,
-  };
-});
-
 // Mock Sheet component
 jest.mock('../../../../components/Sheet', () => {
   const {View, TextInput, Button} = require('react-native');

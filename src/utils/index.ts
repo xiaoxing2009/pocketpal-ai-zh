@@ -72,14 +72,17 @@ export const hashCode = (text = '') => {
 export const initLocale = (locale?: keyof typeof l10n) => {
   const locales: {[key in keyof typeof l10n]: unknown} = {
     en: require('dayjs/locale/en'),
-    es: require('dayjs/locale/es'),
-    ko: require('dayjs/locale/ko'),
-    pl: require('dayjs/locale/pl'),
-    pt: require('dayjs/locale/pt'),
-    ru: require('dayjs/locale/ru'),
-    tr: require('dayjs/locale/tr'),
-    uk: require('dayjs/locale/uk'),
-    ca: require('dayjs/locale/ca'),
+    // es: require('dayjs/locale/es'),
+    // ko: require('dayjs/locale/ko'),
+    // pl: require('dayjs/locale/pl'),
+    // pt: require('dayjs/locale/pt'),
+    // ru: require('dayjs/locale/ru'),
+    // tr: require('dayjs/locale/tr'),
+    // uk: require('dayjs/locale/uk'),
+    // ca: require('dayjs/locale/ca'),
+    // de: require('dayjs/locale/de'),
+    ja: require('dayjs/locale/ja'),
+    zh: require('dayjs/locale/zh'),
   };
 
   locale ? locales[locale] : locales.en;
@@ -243,6 +246,7 @@ export const getModelDescription = (
   model: Model,
   isActiveModel: boolean,
   modelStore: any,
+  l10nData = l10n.en,
 ): string => {
   // Get size and params from context if the model is active.
   // This is relevant only for local models (when we don't know size/params upfront),
@@ -258,11 +262,12 @@ export const getModelDescription = (
           params: model.params,
         };
 
-  const sizeString = size > 0 ? formatBytes(size) : 'N/A';
+  const notAvailable = l10nData.models.modelDescription.notAvailable;
+  const sizeString = size > 0 ? formatBytes(size) : notAvailable;
   const paramsString =
-    params > 0 ? formatNumber(params, 2, true, false) : 'N/A';
+    params > 0 ? formatNumber(params, 2, true, false) : notAvailable;
 
-  return `Size: ${sizeString} | Parameters: ${paramsString}`;
+  return `${l10nData.models.modelDescription.size}${sizeString}${l10nData.models.modelDescription.separator}${l10nData.models.modelDescription.parameters}${paramsString}`;
 };
 
 export async function hasEnoughSpace(model: Model): Promise<boolean> {
@@ -342,7 +347,6 @@ export function hfAsModel(
     type: extractHFModelType(hfModel.id),
     author: hfModel.author,
     name: extractHFModelTitle(modelFile.rfilename),
-    description: '',
     size: modelFile.size ?? 0,
     params: hfModel.specs?.gguf?.total ?? 0,
     isDownloaded: false,
@@ -493,6 +497,31 @@ export const safeParseJSON = (json: string) => {
     console.error('Error parsing JSON:', error);
     return {prompt: '', error: error};
   }
+};
+
+/**
+ * Returns a localized string of model capabilities based on capability keys
+ * @param model - The model object containing capabilities array
+ * @param l10nData - The localization data to use
+ * @returns A comma-separated string of localized capabilities
+ */
+export const getLocalizedModelCapabilities = (
+  model: Model,
+  l10nData = l10n.en,
+): string => {
+  if (!model.capabilities?.length) {
+    return '';
+  }
+
+  return model.capabilities
+    .map(
+      capability =>
+        l10nData.models.modelCapabilities[
+          capability as keyof typeof l10nData.models.modelCapabilities
+        ],
+    )
+    .filter(Boolean)
+    .join(', ');
 };
 
 export * from './formatters';

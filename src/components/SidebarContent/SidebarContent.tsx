@@ -23,6 +23,7 @@ import {
   TrashIcon,
 } from '../../assets/icons';
 import {L10nContext} from '../../utils';
+import {ROUTES} from '../../utils/navigationConstants';
 
 // Check if app is in debug mode
 const isDebugMode = __DEV__;
@@ -34,13 +35,18 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
     const [sessionToRename, setSessionToRename] =
       useState<SessionMetaData | null>(null);
 
-    useEffect(() => {
-      chatSessionStore.loadSessionList();
-    }, []);
-
     const theme = useTheme();
     const styles = createStyles(theme);
-    const i10n = useContext(L10nContext);
+    const l10n = useContext(L10nContext);
+
+    useEffect(() => {
+      chatSessionStore.loadSessionList();
+
+      // Set localized date group names whenever the component mounts
+      chatSessionStore.setDateGroupNames(
+        l10n.components.sidebarContent.dateGroups,
+      );
+    }, [l10n.components.sidebarContent.dateGroups]);
 
     const openMenu = (sessionId: string, event: any) => {
       const {nativeEvent} = event;
@@ -52,21 +58,25 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
 
     const onPressDelete = (sessionId: string) => {
       if (sessionId) {
-        Alert.alert(i10n.deleteChatTitle, i10n.deleteChatMessage, [
-          {
-            text: i10n.cancel,
-            style: 'cancel',
-          },
-          {
-            text: i10n.delete,
-            style: 'destructive',
-            onPress: () => {
-              chatSessionStore.resetActiveSession();
-              chatSessionStore.deleteSession(sessionId);
-              closeMenu();
+        Alert.alert(
+          l10n.components.sidebarContent.deleteChatTitle,
+          l10n.components.sidebarContent.deleteChatMessage,
+          [
+            {
+              text: l10n.common.cancel,
+              style: 'cancel',
             },
-          },
-        ]);
+            {
+              text: l10n.common.delete,
+              style: 'destructive',
+              onPress: () => {
+                chatSessionStore.resetActiveSession();
+                chatSessionStore.deleteSession(sessionId);
+                closeMenu();
+              },
+            },
+          ],
+        );
       }
       closeMenu();
     };
@@ -77,31 +87,31 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
           <DrawerContentScrollView {...props}>
             <Drawer.Section showDivider={false}>
               <Drawer.Item
-                label={'Chat'}
+                label={l10n.components.sidebarContent.menuItems.chat}
                 icon={() => <ChatIcon stroke={theme.colors.primary} />}
-                onPress={() => props.navigation.navigate('Chat')}
+                onPress={() => props.navigation.navigate(ROUTES.CHAT)}
                 style={styles.menuDrawerItem}
               />
               <Drawer.Item
-                label={'Models'}
+                label={l10n.components.sidebarContent.menuItems.models}
                 icon={() => <ModelIcon stroke={theme.colors.primary} />}
-                onPress={() => props.navigation.navigate('Models')}
+                onPress={() => props.navigation.navigate(ROUTES.MODELS)}
                 style={styles.menuDrawerItem}
               />
               <Drawer.Item
-                label={'Pals'}
+                label={l10n.components.sidebarContent.menuItems.pals}
                 icon={() => <PalIcon stroke={theme.colors.primary} />}
-                onPress={() => props.navigation.navigate('Pals (experimental)')}
+                onPress={() => props.navigation.navigate(ROUTES.PALS)}
                 style={styles.menuDrawerItem}
               />
               <Drawer.Item
-                label={'Benchmark'}
+                label={l10n.components.sidebarContent.menuItems.benchmark}
                 icon={() => <BenchmarkIcon stroke={theme.colors.primary} />}
-                onPress={() => props.navigation.navigate('Benchmark')}
+                onPress={() => props.navigation.navigate(ROUTES.BENCHMARK)}
                 style={styles.menuDrawerItem}
               />
               <Drawer.Item
-                label={'Settings'}
+                label={l10n.components.sidebarContent.menuItems.settings}
                 icon={() => (
                   <SettingsIcon
                     width={24}
@@ -109,12 +119,12 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
                     stroke={theme.colors.primary}
                   />
                 )}
-                onPress={() => props.navigation.navigate('Settings')}
+                onPress={() => props.navigation.navigate(ROUTES.SETTINGS)}
                 style={styles.menuDrawerItem}
               />
 
               <Drawer.Item
-                label={'App Info'}
+                label={l10n.components.sidebarContent.menuItems.appInfo}
                 icon={() => (
                   <PlaceholderIcon
                     width={24}
@@ -122,14 +132,16 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
                     stroke={theme.colors.primary}
                   />
                 )}
-                onPress={() => props.navigation.navigate('App Info')}
+                onPress={() => props.navigation.navigate(ROUTES.APP_INFO)}
                 style={styles.menuDrawerItem}
               />
 
               {/* Only show Test Completion in debug mode */}
               {isDebugMode && (
                 <Drawer.Item
-                  label={'Test Completion'}
+                  label={
+                    l10n.components.sidebarContent.menuItems.testCompletion
+                  }
                   icon={() => (
                     <SettingsIcon
                       width={24}
@@ -137,7 +149,9 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
                       stroke={theme.colors.primary}
                     />
                   )}
-                  onPress={() => props.navigation.navigate('Test Completion')}
+                  onPress={() =>
+                    props.navigation.navigate(ROUTES.TEST_COMPLETION)
+                  }
                   style={styles.menuDrawerItem}
                 />
               )}
@@ -158,7 +172,7 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
                         <TouchableOpacity
                           onPress={() => {
                             chatSessionStore.setActiveSession(session.id);
-                            props.navigation.navigate('Chat');
+                            props.navigation.navigate(ROUTES.CHAT);
                           }}
                           onLongPress={event => openMenu(session.id, event)}
                           style={styles.sessionTouchable}>
@@ -182,14 +196,14 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
                               setSessionToRename(session);
                               closeMenu();
                             }}
-                            label={i10n.rename}
+                            label={l10n.common.rename}
                             leadingIcon={() => (
                               <EditIcon stroke={theme.colors.primary} />
                             )}
                           />
                           <Menu.Item
                             onPress={() => onPressDelete(session.id)}
-                            label={i10n.delete}
+                            label={l10n.common.delete}
                             labelStyle={{color: theme.colors.error}}
                             leadingIcon={() => (
                               <TrashIcon stroke={theme.colors.error} />

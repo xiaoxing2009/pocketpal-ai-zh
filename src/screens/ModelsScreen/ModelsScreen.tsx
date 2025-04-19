@@ -81,19 +81,19 @@ export const ModelsScreen: React.FC = observer(() => {
             const choice = await new Promise<'replace' | 'keep' | 'cancel'>(
               resolve => {
                 Alert.alert(
-                  l10n.fileAlreadyExists,
-                  l10n.fileAlreadyExistsMessage,
+                  l10n.models.fileManagement.fileAlreadyExists,
+                  l10n.models.fileManagement.fileAlreadyExistsMessage,
                   [
                     {
-                      text: l10n.replace,
+                      text: l10n.models.fileManagement.replace,
                       onPress: () => resolve('replace'),
                     },
                     {
-                      text: l10n.keepBoth,
+                      text: l10n.models.fileManagement.keepBoth,
                       onPress: () => resolve('keep'),
                     },
                     {
-                      text: l10n.cancel,
+                      text: l10n.common.cancel,
                       onPress: () => resolve('cancel'),
                       style: 'cancel',
                     },
@@ -158,9 +158,9 @@ export const ModelsScreen: React.FC = observer(() => {
   const getGroupDisplayName = (key: string) => {
     switch (key) {
       case UIStore.GROUP_KEYS.READY_TO_USE:
-        return l10n.availableToUse;
+        return l10n.models.labels.availableToUse;
       case UIStore.GROUP_KEYS.AVAILABLE_TO_DOWNLOAD:
-        return l10n.availableToDownload;
+        return l10n.models.labels.availableToDownload;
       default:
         return key;
     }
@@ -180,8 +180,8 @@ export const ModelsScreen: React.FC = observer(() => {
     return filteredAndSortedModels.reduce((acc, item) => {
       const groupKey =
         item.origin === ModelOrigin.LOCAL || item.isLocal
-          ? l10n.localModel
-          : item.type || l10n.unknownGroup;
+          ? l10n.models.labels.localModel
+          : item.type || l10n.models.labels.unknownGroup;
 
       if (!acc[groupKey]) {
         acc[groupKey] = [];
@@ -189,7 +189,12 @@ export const ModelsScreen: React.FC = observer(() => {
       acc[groupKey].push(item);
       return acc;
     }, {} as Record<string, Model[]>);
-  }, [filteredAndSortedModels, filters, l10n.localModel, l10n.unknownGroup]);
+  }, [
+    filteredAndSortedModels,
+    filters,
+    l10n.models.labels.localModel,
+    l10n.models.labels.unknownGroup,
+  ]);
 
   const toggleGroup = (type: string) => {
     const currentExpandedGroups =
@@ -211,7 +216,7 @@ export const ModelsScreen: React.FC = observer(() => {
     const description =
       !filters.includes('grouped') &&
       group.type === UIStore.GROUP_KEYS.AVAILABLE_TO_DOWNLOAD
-        ? l10n.useAddButtonForMore
+        ? l10n.models.labels.useAddButtonForMore
         : undefined;
     return (
       <ModelAccordion

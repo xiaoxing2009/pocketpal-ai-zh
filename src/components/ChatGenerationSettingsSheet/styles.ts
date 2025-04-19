@@ -28,5 +28,9 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 8,
     alignItems: 'center',
+    maxWidth: '70%',
+  },
+  button: {
+    flex: 1,
   },
 });

@@ -78,7 +78,7 @@ export const ModelSettingsSheet: React.FC<ModelSettingsSheetProps> = memo(
       <Sheet
         isVisible={isVisible}
         onClose={handleCancelSettings}
-        title={i10n.modelSettings}
+        title={i10n.components.modelSettingsSheet.modelSettings}
         displayFullHeight>
         <Sheet.ScrollView
           bottomOffset={16}
@@ -93,14 +93,14 @@ export const ModelSettingsSheet: React.FC<ModelSettingsSheetProps> = memo(
         <Sheet.Actions>
           <View style={styles.secondaryButtons}>
             <Button mode="text" onPress={handleReset}>
-              {i10n.reset}
+              {i10n.common.reset}
             </Button>
             <Button mode="text" onPress={handleCancelSettings}>
-              {i10n.cancel}
+              {i10n.common.cancel}
             </Button>
           </View>
           <Button mode="contained" onPress={handleSaveSettings}>
-            {i10n.saveChanges}
+            {i10n.components.modelSettingsSheet.saveChanges}
           </Button>
         </Sheet.Actions>
       </Sheet>

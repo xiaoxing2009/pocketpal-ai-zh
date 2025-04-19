@@ -108,7 +108,9 @@ class ModelStore {
         if (model) {
           runInAction(() => {
             model.progress = progress.progress;
-            model.downloadSpeed = `${progress.speed} ETA: ${progress.eta}`;
+            model.downloadSpeed = `${progress.speed} ${
+              this.getL10n().common.downloadETA
+            }: ${progress.eta}`;
           });
         }
       },
@@ -732,7 +734,6 @@ class ModelStore {
       author: '',
       name: filename,
       size: 0, // Placeholder for UI to ignore
-      description: '',
       params: 0, // Placeholder for UI to ignore
       isDownloaded: true,
       downloadUrl: '',
@@ -861,15 +862,6 @@ class ModelStore {
       this.useAutoRelease = useAutoRelease;
     });
   };
-
-  get chatTitle() {
-    if (this.isContextLoading) {
-      return 'Loading model ...';
-    }
-    return (
-      (this.context?.model as any)?.metadata?.['general.name'] ?? 'Chat Page'
-    );
-  }
 
   /**
    * Updates stop tokens for a model based on its context and chat template
@@ -1012,6 +1004,17 @@ class ModelStore {
     }
     return this.availableModels.some(m => m.id === modelId);
   };
+
+  /**
+   * Gets localized strings based on the current language from uiStore
+   */
+  getL10n() {
+    const language = uiStore.language;
+    // Import the l10n object from utils
+    const {l10n} = require('../utils/l10n');
+    // Return the localized strings for the current language
+    return l10n[language];
+  }
 }
 
 export const modelStore = new ModelStore();

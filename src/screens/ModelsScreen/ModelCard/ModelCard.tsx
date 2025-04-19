@@ -30,6 +30,7 @@ import {
   getModelDescription,
   L10nContext,
   checkModelFileIntegrity,
+  getLocalizedModelCapabilities,
 } from '../../../utils';
 
 type ChatScreenNavigationProp = DrawerNavigationProp<RootDrawerParamList>;
@@ -77,12 +78,12 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
     const handleDelete = useCallback(() => {
       if (model.isDownloaded) {
         Alert.alert(
-          'Delete Model',
-          'Are you sure you want to delete this downloaded model?',
+          l10n.models.modelCard.alerts.deleteTitle,
+          l10n.models.modelCard.alerts.deleteMessage,
           [
-            {text: 'Cancel', style: 'cancel'},
+            {text: l10n.common.cancel, style: 'cancel'},
             {
-              text: 'Delete',
+              text: l10n.common.delete,
               onPress: async () => {
                 await modelStore.deleteModel(model);
               },
@@ -90,7 +91,7 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
           ],
         );
       }
-    }, [model]);
+    }, [model, l10n]);
 
     const openHuggingFaceUrl = useCallback(() => {
       if (model.hfUrl) {
@@ -103,18 +104,18 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
 
     const handleRemove = useCallback(() => {
       Alert.alert(
-        'Remove Model',
-        'Are you sure you want to remove this model from the list?',
+        l10n.models.modelCard.alerts.removeTitle,
+        l10n.models.modelCard.alerts.removeMessage,
         [
-          {text: 'Cancel', style: 'cancel'},
+          {text: l10n.common.cancel, style: 'cancel'},
           {
-            text: 'Remove',
+            text: l10n.models.modelCard.buttons.remove,
             style: 'destructive',
             onPress: () => modelStore.removeModelFromList(model),
           },
         ],
       );
-    }, [model]);
+    }, [model, l10n]);
 
     const handleWarningPress = () => {
       setSnackbarVisible(true);
@@ -141,7 +142,7 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
               textColor={theme.colors.error}
               onPress={handleRemove}
               style={styles.removeButton}>
-              Remove
+              {l10n.models.modelCard.buttons.remove}
             </Button>
           )}
           {storageOk && (
@@ -153,7 +154,7 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
               disabled={!storageOk}
               textColor={theme.colors.secondary}
               style={styles.downloadButton}>
-              Download
+              {l10n.models.modelCard.buttons.download}
             </Button>
           )}
         </View>
@@ -199,7 +200,9 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
           onPress={handlePress}
           // disabled={!!integrityError} // for now integrity check is experimental. So won't disable the button
           style={styles.actionButton}>
-          {isActiveModel ? l10n.offload : l10n.load}
+          {isActiveModel
+            ? l10n.models.modelCard.buttons.offload
+            : l10n.models.modelCard.buttons.load}
         </Button>
       );
     };
@@ -233,12 +236,21 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
                     )}
                   </View>
                   <Text style={styles.modelDescription}>
-                    {getModelDescription(model, isActiveModel, modelStore)}
+                    {getModelDescription(
+                      model,
+                      isActiveModel,
+                      modelStore,
+                      l10n,
+                    )}
                   </Text>
-                  {model.description && (
-                    <View style={styles.descriptionContainer}>
-                      <Text style={styles.skillsLabel}>Skills: </Text>
-                      <Text style={styles.skillsText}>{model.description}</Text>
+                  {model.capabilities && (
+                    <View style={styles.skillsContainer}>
+                      <Text style={styles.skillsLabel}>
+                        {l10n.models.modelCard.labels.skills}
+                      </Text>
+                      <Text style={styles.skillsText}>
+                        {getLocalizedModelCapabilities(model, l10n)}
+                      </Text>
                     </View>
                   )}
                 </View>
@@ -309,7 +321,7 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
                   textColor={theme.colors.error}
                   onPress={() => handleDelete()}
                   style={styles.actionButton}>
-                  {l10n.delete}
+                  {l10n.common.delete}
                 </Button>
                 <View style={styles.settingsContainer}>
                   <Button
@@ -318,7 +330,7 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
                     mode="text"
                     compact
                     onPress={onOpenSettings}>
-                    Settings
+                    {l10n.models.modelCard.buttons.settings}
                   </Button>
                   <IconButton
                     icon="chevron-down"
@@ -337,7 +349,7 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
                     mode="text"
                     textColor={theme.colors.error}
                     onPress={() => modelStore.cancelDownload(model.id)}>
-                    {l10n.cancel}
+                    {l10n.common.cancel}
                   </Button>
                 </View>
               </Card.Actions>
@@ -353,7 +365,7 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
           onDismiss={() => setSnackbarVisible(false)}
           duration={Snackbar.DURATION_MEDIUM}
           action={{
-            label: l10n.dismiss,
+            label: l10n.common.dismiss,
             onPress: () => {
               setSnackbarVisible(false);
             },

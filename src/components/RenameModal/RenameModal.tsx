@@ -20,7 +20,7 @@ export const RenameModal: React.FC<RenameModalProps> = ({
   const [newTitle, setNewTitle] = React.useState(session?.title || '');
   const theme = useTheme();
   const styles = createStyles(theme);
-  const i10n = useContext(L10nContext);
+  const l10n = useContext(L10nContext);
 
   useEffect(() => {
     setNewTitle(session?.title || '');
@@ -45,7 +45,7 @@ export const RenameModal: React.FC<RenameModalProps> = ({
       animationType="fade">
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>{i10n.rename}</Text>
+          <Text style={styles.modalTitle}>{l10n.common.rename}</Text>
           <TextInput
             style={styles.textInput}
             placeholder="New Title"
@@ -59,7 +59,7 @@ export const RenameModal: React.FC<RenameModalProps> = ({
           />
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.cancelButton} onPress={handleClose}>
-              <Text style={styles.cancelText}>{i10n.cancel}</Text>
+              <Text style={styles.cancelText}>{l10n.common.cancel}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -68,7 +68,7 @@ export const RenameModal: React.FC<RenameModalProps> = ({
               ]}
               onPress={handleRename}
               disabled={!newTitle.trim()}>
-              <Text style={styles.confirmText}>{i10n.save}</Text>
+              <Text style={styles.confirmText}>{l10n.common.save}</Text>
             </TouchableOpacity>
           </View>
         </View>

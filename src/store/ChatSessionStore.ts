@@ -23,6 +23,19 @@ interface SessionGroup {
   [key: string]: SessionMetaData[];
 }
 
+// Default group names in English as fallback
+const DEFAULT_GROUP_NAMES = {
+  today: 'Today',
+  yesterday: 'Yesterday',
+  thisWeek: 'This week',
+  lastWeek: 'Last week',
+  twoWeeksAgo: '2 weeks ago',
+  threeWeeksAgo: '3 weeks ago',
+  fourWeeksAgo: '4 weeks ago',
+  lastMonth: 'Last month',
+  older: 'Older',
+};
+
 export const defaultCompletionSettings = {...defaultCompletionParams};
 delete defaultCompletionSettings.prompt;
 delete defaultCompletionSettings.stop;
@@ -35,11 +48,18 @@ class ChatSessionStore {
   isGenerating: boolean = false;
   newChatCompletionSettings: CompletionParams = defaultCompletionSettings;
   newChatPalId: string | undefined = undefined;
+  // Store localized date group names
+  dateGroupNames: typeof DEFAULT_GROUP_NAMES = DEFAULT_GROUP_NAMES;
 
   constructor() {
     makeAutoObservable(this);
     this.loadSessionList();
     this.loadGlobalSettings();
+  }
+
+  // Method to set localized date group names from React components
+  setDateGroupNames(l10nDateGroups: typeof DEFAULT_GROUP_NAMES) {
+    this.dateGroupNames = l10nDateGroups;
   }
 
   get shouldShowHeaderDivider(): boolean {
@@ -356,23 +376,23 @@ class ChatSessionStore {
         );
 
         if (isToday(date)) {
-          dateKey = 'Today';
+          dateKey = this.dateGroupNames.today;
         } else if (isYesterday(date)) {
-          dateKey = 'Yesterday';
+          dateKey = this.dateGroupNames.yesterday;
         } else if (daysAgo <= 6) {
-          dateKey = 'This week';
+          dateKey = this.dateGroupNames.thisWeek;
         } else if (daysAgo <= 13) {
-          dateKey = 'Last week';
+          dateKey = this.dateGroupNames.lastWeek;
         } else if (daysAgo <= 20) {
-          dateKey = '2 weeks ago';
+          dateKey = this.dateGroupNames.twoWeeksAgo;
         } else if (daysAgo <= 27) {
-          dateKey = '3 weeks ago';
+          dateKey = this.dateGroupNames.threeWeeksAgo;
         } else if (daysAgo <= 34) {
-          dateKey = '4 weeks ago';
+          dateKey = this.dateGroupNames.fourWeeksAgo;
         } else if (daysAgo <= 60) {
-          dateKey = 'Last month';
+          dateKey = this.dateGroupNames.lastMonth;
         } else {
-          dateKey = 'Older';
+          dateKey = this.dateGroupNames.older;
         }
 
         if (!acc[dateKey]) {
@@ -384,17 +404,17 @@ class ChatSessionStore {
       {},
     );
 
-    // Define the order of keys
+    // Define the order of keys using the localized group names
     const orderedKeys = [
-      'Today',
-      'Yesterday',
-      'This week',
-      'Last week',
-      '2 weeks ago',
-      '3 weeks ago',
-      '4 weeks ago',
-      'Last month',
-      'Older',
+      this.dateGroupNames.today,
+      this.dateGroupNames.yesterday,
+      this.dateGroupNames.thisWeek,
+      this.dateGroupNames.lastWeek,
+      this.dateGroupNames.twoWeeksAgo,
+      this.dateGroupNames.threeWeeksAgo,
+      this.dateGroupNames.fourWeeksAgo,
+      this.dateGroupNames.lastMonth,
+      this.dateGroupNames.older,
     ];
 
     // Create a new object with keys in the desired order

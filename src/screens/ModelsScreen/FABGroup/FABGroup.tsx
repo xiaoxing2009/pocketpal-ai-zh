@@ -33,7 +33,7 @@ export const FABGroup: React.FC<FABGroupProps> = ({
       {
         testID: 'hf-fab',
         icon: HFIcon,
-        label: l10n.hfFABLabel,
+        label: l10n.models.buttons.addFromHuggingFace,
         onPress: () => {
           onAddHFModel();
         },
@@ -41,7 +41,7 @@ export const FABGroup: React.FC<FABGroupProps> = ({
       {
         testID: 'local-fab',
         icon: 'folder-plus',
-        label: l10n.localFABLabel,
+        label: l10n.models.buttons.addLocalModel,
         onPress: () => {
           onAddLocalModel();
         },

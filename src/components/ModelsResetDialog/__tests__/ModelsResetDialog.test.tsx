@@ -28,7 +28,9 @@ describe('ModelsResetDialog', () => {
     expect(getByTestId('reset-dialog')).toBeTruthy();
 
     // Check if title is rendered
-    expect(getByText(l10n.en.confirmReset)).toBeTruthy();
+    expect(
+      getByText(l10n.en.components.modelsResetDialog.confirmReset),
+    ).toBeTruthy();
 
     // Check if buttons are rendered
     expect(getByTestId('cancel-reset-button')).toBeTruthy();

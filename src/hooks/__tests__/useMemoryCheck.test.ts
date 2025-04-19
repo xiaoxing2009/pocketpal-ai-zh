@@ -45,8 +45,8 @@ describe('useMemoryCheck', () => {
     }
 
     expect(result.current).toEqual({
-      memoryWarning: l10n.en.memoryWarning,
-      shortMemoryWarning: l10n.en.shortMemoryWarning,
+      memoryWarning: l10n.en.memory.warning,
+      shortMemoryWarning: l10n.en.memory.shortWarning,
     });
   });
 

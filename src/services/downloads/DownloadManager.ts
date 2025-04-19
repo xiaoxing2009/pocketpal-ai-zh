@@ -69,10 +69,11 @@ export class DownloadManager {
         const remainingBytes = event.totalBytes - event.bytesWritten;
         const etaSeconds = speedBps > 0 ? remainingBytes / speedBps : 0;
         const etaMinutes = Math.ceil(etaSeconds / 60);
+        const l10nData = this.getL10n();
         const etaText =
           etaSeconds >= 60
-            ? `${etaMinutes} min`
-            : `${Math.ceil(etaSeconds)} sec`;
+            ? `${etaMinutes} ${l10nData.common.minutes}`
+            : `${Math.ceil(etaSeconds)} ${l10nData.common.seconds}`;
 
         const progress: DownloadProgress = {
           bytesDownloaded: event.bytesWritten,
@@ -160,8 +161,9 @@ export class DownloadManager {
     totalBytes: number,
     speedBps: number,
   ): string {
+    const l10nData = this.getL10n();
     if (speedBps <= 0) {
-      return 'calculating...';
+      return l10nData.common.calculating;
     }
 
     const remainingBytes = totalBytes - bytesDownloaded;
@@ -169,13 +171,23 @@ export class DownloadManager {
     const etaMinutes = Math.ceil(etaSeconds / 60);
 
     const eta =
-      etaSeconds >= 60 ? `${etaMinutes} min` : `${Math.ceil(etaSeconds)} sec`;
+      etaSeconds >= 60
+        ? `${etaMinutes} ${l10nData.common.minutes}`
+        : `${Math.ceil(etaSeconds)} ${l10nData.common.seconds}`;
     console.log(`${TAG}: Calculated ETA:`, {
       remainingBytes,
       speedBps,
       eta,
     });
     return eta;
+  }
+
+  /**
+   * Gets localized strings based on the current language from uiStore
+   */
+  private getL10n() {
+    const {l10n} = require('../../utils/l10n');
+    return l10n[uiStore.language];
   }
 
   setCallbacks(callbacks: DownloadEventCallbacks) {
@@ -281,7 +293,7 @@ export class DownloadManager {
             bytesTotal: res.contentLength,
             progress: 0,
             speed: '0 B/s',
-            eta: 'calculating...',
+            eta: this.getL10n().common.calculating,
             rawSpeed: 0,
             rawEta: 0,
           };
@@ -304,10 +316,11 @@ export class DownloadManager {
           const remainingBytes = res.contentLength - res.bytesWritten;
           const etaSeconds = speedBps > 0 ? remainingBytes / speedBps : 0;
           const etaMinutes = Math.ceil(etaSeconds / 60);
+          const l10nData = this.getL10n();
           const etaText =
             etaSeconds >= 60
-              ? `${etaMinutes} min`
-              : `${Math.ceil(etaSeconds)} sec`;
+              ? `${etaMinutes} ${l10nData.common.minutes}`
+              : `${Math.ceil(etaSeconds)} ${l10nData.common.seconds}`;
 
           const progress: DownloadProgress = {
             bytesDownloaded: res.bytesWritten,
@@ -561,7 +574,7 @@ export class DownloadManager {
               bytesTotal: totalBytes,
               progress: progress,
               speed: '0 B/s',
-              eta: 'calculating...',
+              eta: this.getL10n().common.calculating,
               rawSpeed: 0,
               rawEta: 0,
             },

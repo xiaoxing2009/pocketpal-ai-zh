@@ -83,13 +83,13 @@ export const ModelsHeaderRight = observer(() => {
             />
           )}
           onPress={() => toggleFilter('hf')}
-          label={l10n.menuTitleHf}
+          label={l10n.components.modelsHeaderRight.menuTitleHf}
           selected={filters.includes('hf')}
         />
         <Menu.Item
           icon={filters.includes('downloaded') ? 'download-circle' : 'download'}
           onPress={() => toggleFilter('downloaded')}
-          label={l10n.menuTitleDownloaded}
+          label={l10n.components.modelsHeaderRight.menuTitleDownloaded}
           selected={filters.includes('downloaded')}
         />
 
@@ -98,7 +98,7 @@ export const ModelsHeaderRight = observer(() => {
         <Menu.Item
           icon={filters.includes('grouped') ? 'layers' : 'layers-outline'}
           onPress={() => toggleFilter('grouped')}
-          label={l10n.menuTitleGrouped}
+          label={l10n.components.modelsHeaderRight.menuTitleGrouped}
           selected={filters.includes('grouped')}
         />
 
@@ -110,7 +110,7 @@ export const ModelsHeaderRight = observer(() => {
             setMenuVisible(false);
             showResetDialog();
           }}
-          label={l10n.menuTitleReset}
+          label={l10n.components.modelsHeaderRight.menuTitleReset}
         />
       </Menu>
     </View>

@@ -20,7 +20,9 @@ export const ModelsResetDialog: React.FC<ModelsResetDialogProps> = observer(
     return (
       <Portal>
         <Dialog testID={testID} visible={visible} onDismiss={onDismiss}>
-          <Dialog.Title>{l10n.confirmReset}</Dialog.Title>
+          <Dialog.Title>
+            {l10n.components.modelsResetDialog.confirmReset}
+          </Dialog.Title>
           <Dialog.Content>
             <Paragraph style={styles.paragraph}>
               This will reset model settings (
@@ -45,10 +47,10 @@ export const ModelsResetDialog: React.FC<ModelsResetDialogProps> = observer(
           </Dialog.Content>
           <Dialog.Actions>
             <Button testID="cancel-reset-button" onPress={onDismiss}>
-              {l10n.cancel}
+              {l10n.common.cancel}
             </Button>
             <Button testID="proceed-reset-button" onPress={onReset}>
-              {l10n.proceedWithReset}
+              {l10n.components.modelsResetDialog.proceedWithReset}
             </Button>
           </Dialog.Actions>
         </Dialog>

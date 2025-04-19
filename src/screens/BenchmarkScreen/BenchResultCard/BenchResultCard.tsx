@@ -1,9 +1,10 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {View, Linking} from 'react-native';
 
 import {Card, Text, Button, Tooltip} from 'react-native-paper';
 
 import {useTheme} from '../../../hooks';
+import {L10nContext} from '../../../utils';
 
 import {createStyles} from './styles';
 
@@ -22,6 +23,7 @@ type ErrorType = 'network' | 'appCheck' | 'server' | 'generic' | null;
 export const BenchResultCard = ({result, onDelete, onShare}: Props) => {
   const theme = useTheme();
   const styles = createStyles(theme);
+  const l10n = useContext(L10nContext);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [errorType, setErrorType] = useState<ErrorType>(null);
@@ -46,7 +48,9 @@ export const BenchResultCard = ({result, onDelete, onShare}: Props) => {
       } else {
         setErrorType('generic');
         setSubmitError(
-          error instanceof Error ? error.message : 'Failed to submit benchmark',
+          error instanceof Error
+            ? error.message
+            : l10n.benchmark.benchmarkResultCard.errors.failedToSubmit,
         );
       }
     } finally {
@@ -89,13 +93,13 @@ export const BenchResultCard = ({result, onDelete, onShare}: Props) => {
   const getRetryText = () => {
     switch (errorType) {
       case 'network':
-        return 'Check connection & retry';
+        return l10n.benchmark.benchmarkResultCard.errors.networkRetry;
       case 'appCheck':
-        return 'Retry submission';
+        return l10n.benchmark.benchmarkResultCard.errors.appCheckRetry;
       case 'server':
-        return 'Try again later';
+        return l10n.benchmark.benchmarkResultCard.errors.serverRetry;
       default:
-        return 'Retry';
+        return l10n.benchmark.benchmarkResultCard.errors.genericRetry;
     }
   };
 
@@ -119,7 +123,8 @@ export const BenchResultCard = ({result, onDelete, onShare}: Props) => {
             </Text>
             <Text style={styles.modelMeta}>
               {formatBytes(result.modelSize)} •{' '}
-              {formatNumber(result.modelNParams, 2, true, false)} params
+              {formatNumber(result.modelNParams, 2, true, false)}{' '}
+              {l10n.benchmark.benchmarkResultCard.modelMeta.params}
             </Text>
           </View>
           <Button
@@ -129,41 +134,80 @@ export const BenchResultCard = ({result, onDelete, onShare}: Props) => {
             icon="delete"
             compact
             style={styles.deleteButton}>
-            {''}
+            {l10n.benchmark.benchmarkResultCard.actions.deleteButton}
           </Button>
         </View>
 
         <View style={styles.configContainer}>
           <View style={styles.configBar}>
-            <Text variant="labelSmall">Benchmark Config</Text>
+            <Text variant="labelSmall">
+              {l10n.benchmark.benchmarkResultCard.config.title}
+            </Text>
             <Text style={styles.configText}>
-              PP: {result.config.pp} • TG: {result.config.tg} • PL:{' '}
-              {result.config.pl} • Rep: {result.config.nr}
+              {l10n.benchmark.benchmarkResultCard.config.format
+                .replace('{{pp}}', result.config.pp.toString())
+                .replace('{{tg}}', result.config.tg.toString())
+                .replace('{{pl}}', result.config.pl.toString())
+                .replace('{{nr}}', result.config.nr.toString())}
             </Text>
           </View>
 
           {result.initSettings && (
             <View style={styles.configBar}>
-              <Text variant="labelSmall">Model Settings</Text>
+              <Text variant="labelSmall">
+                {l10n.benchmark.benchmarkResultCard.modelSettings.title}
+              </Text>
               <View style={styles.configTextContainer}>
                 <Text style={styles.configText}>
-                  Context: {result.initSettings.n_context} • Batch:{' '}
-                  {result.initSettings.n_batch} • UBatch:{' '}
-                  {result.initSettings.n_ubatch}
+                  {l10n.benchmark.benchmarkResultCard.modelSettings.context.replace(
+                    '{{context}}',
+                    result.initSettings.n_context.toString(),
+                  )}{' '}
+                  •{' '}
+                  {l10n.benchmark.benchmarkResultCard.modelSettings.batch.replace(
+                    '{{batch}}',
+                    result.initSettings.n_batch.toString(),
+                  )}{' '}
+                  •{' '}
+                  {l10n.benchmark.benchmarkResultCard.modelSettings.ubatch.replace(
+                    '{{ubatch}}',
+                    result.initSettings.n_ubatch.toString(),
+                  )}
                 </Text>
                 <Text style={styles.configText}>
-                  CPU Threads: {result.initSettings.n_threads} • GPU Layers:{' '}
-                  {result.initSettings.n_gpu_layers}
+                  {l10n.benchmark.benchmarkResultCard.modelSettings.cpuThreads.replace(
+                    '{{threads}}',
+                    result.initSettings.n_threads.toString(),
+                  )}{' '}
+                  •{' '}
+                  {l10n.benchmark.benchmarkResultCard.modelSettings.gpuLayers.replace(
+                    '{{layers}}',
+                    result.initSettings.n_gpu_layers.toString(),
+                  )}
                 </Text>
                 {result.initSettings.flash_attn ? (
                   <Text style={styles.configText}>
-                    Flash Attention Enabled • Cache Types:{' '}
-                    {result.initSettings.cache_type_k}/
-                    {result.initSettings.cache_type_v}
+                    {
+                      l10n.benchmark.benchmarkResultCard.modelSettings
+                        .flashAttentionEnabled
+                    }{' '}
+                    •{' '}
+                    {l10n.benchmark.benchmarkResultCard.modelSettings.cacheTypes
+                      .replace(
+                        '{{cacheK}}',
+                        result.initSettings.cache_type_k.toString(),
+                      )
+                      .replace(
+                        '{{cacheV}}',
+                        result.initSettings.cache_type_v.toString(),
+                      )}
                   </Text>
                 ) : (
                   <Text style={styles.configText}>
-                    Flash Attention Disabled
+                    {
+                      l10n.benchmark.benchmarkResultCard.modelSettings
+                        .flashAttentionDisabled
+                    }
                   </Text>
                 )}
               </View>
@@ -176,17 +220,27 @@ export const BenchResultCard = ({result, onDelete, onShare}: Props) => {
             <View style={styles.resultItem}>
               <Text style={styles.resultValue}>
                 {result.ppAvg.toFixed(2)}
-                <Text style={styles.resultUnit}> t/s</Text>
+                <Text style={styles.resultUnit}>
+                  {' '}
+                  {l10n.benchmark.benchmarkResultCard.results.tokensPerSecond}
+                </Text>
               </Text>
-              <Text style={styles.resultLabel}>Prompt Processing</Text>
+              <Text style={styles.resultLabel}>
+                {l10n.benchmark.benchmarkResultCard.results.promptProcessing}
+              </Text>
               <Text style={styles.resultStd}>±{result.ppStd.toFixed(2)}</Text>
             </View>
             <View style={styles.resultItem}>
               <Text style={styles.resultValue}>
                 {result.tgAvg.toFixed(2)}
-                <Text style={styles.resultUnit}> t/s</Text>
+                <Text style={styles.resultUnit}>
+                  {' '}
+                  {l10n.benchmark.benchmarkResultCard.results.tokensPerSecond}
+                </Text>
               </Text>
-              <Text style={styles.resultLabel}>Token Generation</Text>
+              <Text style={styles.resultLabel}>
+                {l10n.benchmark.benchmarkResultCard.results.tokenGeneration}
+              </Text>
               <Text style={styles.resultStd}>±{result.tgStd.toFixed(2)}</Text>
             </View>
           </View>
@@ -198,7 +252,9 @@ export const BenchResultCard = ({result, onDelete, onShare}: Props) => {
                   <Text style={styles.resultValue}>
                     {formatDuration(result.wallTimeMs)}
                   </Text>
-                  <Text style={styles.resultLabel}>Total Time</Text>
+                  <Text style={styles.resultLabel}>
+                    {l10n.benchmark.benchmarkResultCard.results.totalTime}
+                  </Text>
                 </View>
               )}
               {result.peakMemoryUsage && (
@@ -206,7 +262,9 @@ export const BenchResultCard = ({result, onDelete, onShare}: Props) => {
                   <Text style={styles.resultValue}>
                     {result.peakMemoryUsage.percentage.toFixed(1)}%
                   </Text>
-                  <Text style={styles.resultLabel}>Peak Memory</Text>
+                  <Text style={styles.resultLabel}>
+                    {l10n.benchmark.benchmarkResultCard.results.peakMemory}
+                  </Text>
                   <Text style={styles.resultStd}>
                     {formatBytes(result.peakMemoryUsage.used, 0)} /{' '}
                     {formatBytes(result.peakMemoryUsage.total, 0)}
@@ -224,17 +282,20 @@ export const BenchResultCard = ({result, onDelete, onShare}: Props) => {
           {result.submitted ? (
             <View style={styles.shareContainer}>
               <Text variant="bodySmall" style={styles.submittedText}>
-                ✓ Shared to{' '}
+                {l10n.benchmark.benchmarkResultCard.actions.submittedText}{' '}
                 <Text onPress={openLeaderboard} style={styles.leaderboardLink}>
-                  AI Phone Leaderboard ↗
+                  {l10n.benchmark.benchmarkResultCard.actions.leaderboardLink}
                 </Text>
               </Text>
             </View>
           ) : !result.oid ? (
-            <Tooltip title="Local model results cannot be shared">
+            <Tooltip
+              title={
+                l10n.benchmark.benchmarkResultCard.actions.cannotShareTooltip
+              }>
               <View style={styles.tooltipContainer}>
                 <Text variant="bodySmall" style={styles.disabledText}>
-                  Cannot share
+                  {l10n.benchmark.benchmarkResultCard.actions.cannotShare}
                 </Text>
                 <Text style={styles.infoIcon}>ⓘ</Text>
               </View>
@@ -250,13 +311,13 @@ export const BenchResultCard = ({result, onDelete, onShare}: Props) => {
                 icon="share"
                 compact
                 style={styles.submitButton}>
-                Submit to Leaderboard
+                {l10n.benchmark.benchmarkResultCard.actions.submitButton}
               </Button>
               <Text
                 variant="bodySmall"
                 onPress={openLeaderboard}
                 style={styles.leaderboardLink}>
-                View leaderboard ↗
+                {l10n.benchmark.benchmarkResultCard.actions.viewLeaderboard}
               </Text>
             </View>
           )}

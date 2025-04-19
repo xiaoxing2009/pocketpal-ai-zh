@@ -61,9 +61,9 @@ export const ChatScreen: React.FC = observer(() => {
         editable: !!modelStore.context,
         placeholder: !modelStore.context
           ? modelStore.isContextLoading
-            ? l10n.loadingModel
-            : l10n.modelNotLoaded
-          : l10n.typeYourMessage,
+            ? l10n.chat.loadingModel
+            : l10n.chat.modelNotLoaded
+          : l10n.chat.typeYourMessage,
       }}
     />
   );

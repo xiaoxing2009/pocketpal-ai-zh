@@ -67,21 +67,21 @@ describe('ModelCard', () => {
 
     // If the model is downloaded and the device is low on memory, the warning should be displayed.
     await waitFor(() => {
-      expect(getByText(l10n.en.shortMemoryWarning)).toBeTruthy();
+      expect(getByText(l10n.en.memory.shortWarning)).toBeTruthy();
       expect(queryByTestId('memory-warning-snackbar')).toBeNull();
     });
 
     // Snackbar
     fireEvent.press(getByTestId('memory-warning-button'));
     await waitFor(() => {
-      expect(getByText(l10n.en.dismiss)).toBeTruthy();
+      expect(getByText(l10n.en.common.dismiss)).toBeTruthy();
       expect(queryByTestId('memory-warning-snackbar')).toBeTruthy();
     });
     act(() => {
-      fireEvent.press(getByText(l10n.en.dismiss));
+      fireEvent.press(getByText(l10n.en.common.dismiss));
     });
     await waitFor(() => {
-      expect(queryByText(l10n.en.dismiss)).toBeNull();
+      expect(queryByText(l10n.en.common.dismiss)).toBeNull();
       expect(queryByTestId('memory-warning-snackbar')).toBeNull();
     });
   }, 10000);

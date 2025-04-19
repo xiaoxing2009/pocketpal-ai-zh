@@ -1,13 +1,15 @@
-import {useCallback, useRef, useState} from 'react';
+import {useCallback, useRef, useState, useContext} from 'react';
 
 import {toJS} from 'mobx';
 
 import {modelStore} from '../store';
 import {safeParseJSON} from '../utils';
+import {L10nContext} from '../utils';
 
 export const useStructuredOutput = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const l10n = useContext(L10nContext);
 
   const stopRef = useRef<(() => void) | null>(null);
 
@@ -31,7 +33,7 @@ export const useStructuredOutput = () => {
       },
     ) => {
       if (!modelStore.context) {
-        throw new Error('Model context not initialized');
+        throw new Error(l10n.generation.modelNotInitialized);
       }
 
       setIsGenerating(true);
@@ -64,7 +66,7 @@ export const useStructuredOutput = () => {
         return safeParseJSON(result.text);
       } catch (err) {
         const errorMessage =
-          err instanceof Error ? err.message : 'Failed to generate output';
+          err instanceof Error ? err.message : l10n.generation.failedToGenerate;
         setError(errorMessage);
         throw err;
       } finally {
@@ -72,7 +74,7 @@ export const useStructuredOutput = () => {
         stopRef.current = null;
       }
     },
-    [],
+    [l10n.generation],
   );
 
   return {

@@ -1,7 +1,7 @@
 import React from 'react';
 import {render, fireEvent} from '@testing-library/react-native';
 import {CompletionSettings} from '../CompletionSettings';
-import {mockCompletionParams} from '../../../../../jest/fixtures/models';
+import {mockCompletionParams} from '../../../../jest/fixtures/models';
 
 jest.useFakeTimers();
 

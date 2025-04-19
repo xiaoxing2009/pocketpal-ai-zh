@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import {View, TouchableOpacity} from 'react-native';
 import {Platform, NativeModules} from 'react-native';
 
@@ -8,6 +8,7 @@ import RNDeviceInfo from 'react-native-device-info';
 import {Divider} from '../../../components';
 
 import {useTheme} from '../../../hooks';
+import {L10nContext} from '../../../utils';
 
 import {createStyles} from './styles';
 
@@ -73,6 +74,8 @@ type Props = {
 export const DeviceInfoCard = ({onDeviceInfo, testId}: Props) => {
   const theme = useTheme();
   const styles = createStyles(theme);
+  const l10n = useContext(L10nContext);
+
   const [deviceInfo, setDeviceInfo] = useState({
     model: RNDeviceInfo.getModel(),
     systemName: Platform.OS === 'ios' ? 'iOS' : 'Android',
@@ -164,14 +167,20 @@ export const DeviceInfoCard = ({onDeviceInfo, testId}: Props) => {
       <TouchableOpacity onPress={() => setExpanded(!expanded)}>
         <View style={styles.headerRow}>
           <View style={styles.headerContent}>
-            <Text variant="titleSmall">Device Information</Text>
-            <Text variant="bodySmall" style={styles.headerSummary}>
-              {deviceInfo.brand} {deviceInfo.model} • {deviceInfo.systemName}{' '}
-              {deviceInfo.systemVersion}
+            <Text variant="titleSmall">
+              {l10n.benchmark.deviceInfoCard.title}
             </Text>
             <Text variant="bodySmall" style={styles.headerSummary}>
-              {deviceInfo.cpuDetails.cores} cores •{' '}
-              {formatBytes(deviceInfo.totalMemory)}
+              {l10n.benchmark.deviceInfoCard.deviceSummary
+                .replace('{{brand}}', deviceInfo.brand)
+                .replace('{{model}}', deviceInfo.model)
+                .replace('{{systemName}}', deviceInfo.systemName)
+                .replace('{{systemVersion}}', deviceInfo.systemVersion)}
+            </Text>
+            <Text variant="bodySmall" style={styles.headerSummary}>
+              {l10n.benchmark.deviceInfoCard.coreSummary
+                .replace('{{cores}}', deviceInfo.cpuDetails.cores.toString())
+                .replace('{{memory}}', formatBytes(deviceInfo.totalMemory))}
             </Text>
           </View>
           <Icon
@@ -188,11 +197,11 @@ export const DeviceInfoCard = ({onDeviceInfo, testId}: Props) => {
           <Card.Content>
             <View style={styles.section}>
               <Text variant="labelSmall" style={styles.sectionTitle}>
-                Basic Info
+                {l10n.benchmark.deviceInfoCard.sections.basicInfo}
               </Text>
               <View style={styles.deviceInfoRow}>
                 <Text variant="labelSmall" style={styles.deviceInfoLabel}>
-                  Architecture
+                  {l10n.benchmark.deviceInfoCard.fields.architecture}
                 </Text>
                 <Text variant="bodySmall" style={styles.deviceInfoValue}>
                   {Array.isArray(deviceInfo.cpuArch)
@@ -202,7 +211,7 @@ export const DeviceInfoCard = ({onDeviceInfo, testId}: Props) => {
               </View>
               <View style={styles.deviceInfoRow}>
                 <Text variant="labelSmall" style={styles.deviceInfoLabel}>
-                  Total Memory
+                  {l10n.benchmark.deviceInfoCard.fields.totalMemory}
                 </Text>
                 <Text variant="bodySmall" style={styles.deviceInfoValue}>
                   {formatBytes(deviceInfo.totalMemory)}
@@ -210,7 +219,7 @@ export const DeviceInfoCard = ({onDeviceInfo, testId}: Props) => {
               </View>
               <View style={styles.deviceInfoRow}>
                 <Text variant="labelSmall" style={styles.deviceInfoLabel}>
-                  Device ID
+                  {l10n.benchmark.deviceInfoCard.fields.deviceId}
                 </Text>
                 <Text variant="bodySmall" style={styles.deviceInfoValue}>
                   {Platform.OS === 'ios'
@@ -222,11 +231,11 @@ export const DeviceInfoCard = ({onDeviceInfo, testId}: Props) => {
 
             <View style={styles.section}>
               <Text variant="labelSmall" style={styles.sectionTitle}>
-                CPU Details
+                {l10n.benchmark.deviceInfoCard.sections.cpuDetails}
               </Text>
               <View style={styles.deviceInfoRow}>
                 <Text variant="labelSmall" style={styles.deviceInfoLabel}>
-                  CPU Cores
+                  {l10n.benchmark.deviceInfoCard.fields.cpuCores}
                 </Text>
                 <Text variant="bodySmall" style={styles.deviceInfoValue}>
                   {deviceInfo.cpuDetails.cores}
@@ -235,7 +244,7 @@ export const DeviceInfoCard = ({onDeviceInfo, testId}: Props) => {
               {deviceInfo.cpuDetails.processors[0]?.['model name'] && (
                 <View style={styles.deviceInfoRow}>
                   <Text variant="labelSmall" style={styles.deviceInfoLabel}>
-                    CPU Model
+                    {l10n.benchmark.deviceInfoCard.fields.cpuModel}
                   </Text>
                   <Text variant="bodySmall" style={styles.deviceInfoValue}>
                     {deviceInfo.cpuDetails.processors[0]['model name']}
@@ -245,7 +254,7 @@ export const DeviceInfoCard = ({onDeviceInfo, testId}: Props) => {
               {Platform.OS === 'android' && deviceInfo.chipset && (
                 <View style={styles.deviceInfoRow}>
                   <Text variant="labelSmall" style={styles.deviceInfoLabel}>
-                    Chipset
+                    {l10n.benchmark.deviceInfoCard.fields.chipset}
                   </Text>
                   <Text variant="bodySmall" style={styles.deviceInfoValue}>
                     {deviceInfo.chipset}
@@ -255,13 +264,34 @@ export const DeviceInfoCard = ({onDeviceInfo, testId}: Props) => {
               {Platform.OS === 'android' && (
                 <View style={styles.deviceInfoRow}>
                   <Text variant="labelSmall" style={styles.deviceInfoLabel}>
-                    Instructions
+                    {l10n.benchmark.deviceInfoCard.fields.instructions}
                   </Text>
                   <Text variant="bodySmall" style={styles.deviceInfoValue}>
-                    FP16: {deviceInfo.cpuDetails.hasFp16 ? '✓' : '✗'}, DotProd:{' '}
-                    {deviceInfo.cpuDetails.hasDotProd ? '✓' : '✗'}, SVE:{' '}
-                    {deviceInfo.cpuDetails.hasSve ? '✓' : '✗'}, I8MM:{' '}
-                    {deviceInfo.cpuDetails.hasI8mm ? '✓' : '✗'}
+                    {l10n.benchmark.deviceInfoCard.instructions.format
+                      .replace(
+                        '{{fp16}}',
+                        deviceInfo.cpuDetails.hasFp16
+                          ? l10n.benchmark.deviceInfoCard.instructions.yes
+                          : l10n.benchmark.deviceInfoCard.instructions.no,
+                      )
+                      .replace(
+                        '{{dotProd}}',
+                        deviceInfo.cpuDetails.hasDotProd
+                          ? l10n.benchmark.deviceInfoCard.instructions.yes
+                          : l10n.benchmark.deviceInfoCard.instructions.no,
+                      )
+                      .replace(
+                        '{{sve}}',
+                        deviceInfo.cpuDetails.hasSve
+                          ? l10n.benchmark.deviceInfoCard.instructions.yes
+                          : l10n.benchmark.deviceInfoCard.instructions.no,
+                      )
+                      .replace(
+                        '{{i8mm}}',
+                        deviceInfo.cpuDetails.hasI8mm
+                          ? l10n.benchmark.deviceInfoCard.instructions.yes
+                          : l10n.benchmark.deviceInfoCard.instructions.no,
+                      )}
                   </Text>
                 </View>
               )}
@@ -269,11 +299,11 @@ export const DeviceInfoCard = ({onDeviceInfo, testId}: Props) => {
 
             <View style={styles.section}>
               <Text variant="labelSmall" style={styles.sectionTitle}>
-                App Info
+                {l10n.benchmark.deviceInfoCard.sections.appInfo}
               </Text>
               <View style={styles.deviceInfoRow}>
                 <Text variant="labelSmall" style={styles.deviceInfoLabel}>
-                  Version
+                  {l10n.benchmark.deviceInfoCard.fields.version}
                 </Text>
                 <Text variant="bodySmall" style={styles.deviceInfoValue}>
                   {deviceInfo.version} ({deviceInfo.buildNumber})

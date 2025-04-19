@@ -9,6 +9,10 @@ import {Model} from '../../src/utils/types';
 class MockModelStore {
   models = modelsList;
   n_context = 1024;
+  n_batch = 512;
+  n_ubatch = 512;
+  n_threads = 4;
+  max_threads = 4;
   MIN_CONTEXT_SIZE = 200;
   useAutoRelease = true;
   useMetal = false;

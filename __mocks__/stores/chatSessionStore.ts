@@ -26,6 +26,18 @@ export const mockChatSessionStore = {
   setIsGenerating: jest.fn(),
   duplicateSession: jest.fn().mockResolvedValue(undefined),
   setNewChatCompletionSettings: jest.fn(),
+  dateGroupNames: {
+    today: 'Today',
+    yesterday: 'Yesterday',
+    thisWeek: 'This week',
+    lastWeek: 'Last week',
+    twoWeeksAgo: '2 weeks ago',
+    threeWeeksAgo: '3 weeks ago',
+    fourWeeksAgo: '4 weeks ago',
+    lastMonth: 'Last month',
+    older: 'Older',
+  },
+  setDateGroupNames: jest.fn(),
 };
 
 Object.defineProperty(mockChatSessionStore, 'currentSessionMessages', {
