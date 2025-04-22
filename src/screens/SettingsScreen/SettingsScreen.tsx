@@ -15,13 +15,13 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {Switch, Text, Card, Button, Icon, List} from 'react-native-paper';
 
 import {GlobeIcon, MoonIcon, CpuChipIcon} from '../../assets/icons';
-import {TextInput, Menu, Divider} from '../../components';
+import {TextInput, Menu, Divider, HFTokenSheet} from '../../components';
 
 import {useTheme} from '../../hooks';
 
 import {createStyles} from './styles';
 
-import {modelStore, uiStore} from '../../store';
+import {modelStore, uiStore, hfStore} from '../../store';
 import {AvailableLanguage} from '../../store/UIStore';
 
 import {L10nContext} from '../../utils';
@@ -57,6 +57,7 @@ export const SettingsScreen: React.FC = observer(() => {
   const [showKeyCacheMenu, setShowKeyCacheMenu] = useState(false);
   const [showValueCacheMenu, setShowValueCacheMenu] = useState(false);
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
+  const [showHfTokenDialog, setShowHfTokenDialog] = useState(false);
   const [keyCacheAnchor, setKeyCacheAnchor] = useState<{x: number; y: number}>({
     x: 0,
     y: 0,
@@ -652,8 +653,62 @@ export const SettingsScreen: React.FC = observer(() => {
               </View>
             </Card.Content>
           </Card>
+
+          {/* API Settings */}
+          <Card elevation={0} style={styles.card}>
+            <Card.Title title={l10n.settings.apiSettingsTitle} />
+            <Card.Content>
+              <View style={styles.settingItemContainer}>
+                {/* Hugging Face Token */}
+                <View style={styles.switchContainer}>
+                  <View style={styles.textContainer}>
+                    <Text variant="titleMedium" style={styles.textLabel}>
+                      {l10n.settings.huggingFaceTokenLabel}
+                    </Text>
+                    <Text variant="labelSmall" style={styles.textDescription}>
+                      {hfStore.isTokenPresent
+                        ? l10n.settings.tokenIsSetDescription
+                        : l10n.settings.setTokenDescription}
+                    </Text>
+                  </View>
+                  <Button
+                    mode="outlined"
+                    onPress={() => setShowHfTokenDialog(true)}
+                    style={styles.menuButton}>
+                    {hfStore.isTokenPresent
+                      ? l10n.common.update
+                      : l10n.settings.setTokenButton}
+                  </Button>
+                </View>
+
+                {/* Use HF Token Switch */}
+                <Divider style={styles.divider} />
+                <View style={styles.switchContainer}>
+                  <View style={styles.textContainer}>
+                    <Text variant="titleMedium" style={styles.textLabel}>
+                      {l10n.settings.useHfTokenLabel}
+                    </Text>
+                    <Text variant="labelSmall" style={styles.textDescription}>
+                      {l10n.settings.useHfTokenDescription}
+                    </Text>
+                  </View>
+                  <Switch
+                    testID="use-hf-token-switch"
+                    value={hfStore.useHfToken}
+                    disabled={!hfStore.isTokenPresent}
+                    onValueChange={value => hfStore.setUseHfToken(value)}
+                  />
+                </View>
+              </View>
+            </Card.Content>
+          </Card>
         </ScrollView>
       </TouchableWithoutFeedback>
+      <HFTokenSheet
+        isVisible={showHfTokenDialog}
+        onDismiss={() => setShowHfTokenDialog(false)}
+        onSave={() => setShowHfTokenDialog(false)}
+      />
     </SafeAreaView>
   );
 });

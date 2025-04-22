@@ -48,6 +48,9 @@ export const createStyles = (theme: Theme) =>
       color: theme.colors.onSurfaceVariant,
       //marginTop: 4,
     },
+    divider: {
+      marginVertical: 12,
+    },
     slider: {
       //marginVertical: 8,
       //height: 40,

@@ -38,6 +38,8 @@ const DEBOUNCE_DELAY = 500;
 export const HFModelSearch: React.FC<HFModelSearchProps> = observer(
   ({visible, onDismiss}) => {
     const l10n = useContext(L10nContext);
+    const theme = useTheme();
+    const styles = createStyles(theme);
 
     const [detailsVisible, setDetailsVisible] = useState(false);
     const [selectedModel, setSelectedModel] = useState<HuggingFaceModel | null>(
@@ -72,8 +74,10 @@ export const HFModelSearch: React.FC<HFModelSearchProps> = observer(
     );
 
     useEffect(() => {
-      handleSearchChange(hfStore.searchQuery);
-    }, [handleSearchChange]);
+      if (visible) {
+        handleSearchChange(hfStore.searchQuery);
+      }
+    }, [handleSearchChange, visible]);
 
     useEffect(() => {
       if (visible) {
@@ -110,8 +114,12 @@ export const HFModelSearch: React.FC<HFModelSearchProps> = observer(
       [],
     );
 
-    const theme = useTheme();
-    const styles = createStyles(theme);
+    const handleSheetDismiss = () => {
+      console.log('Search sheet dismissed, clearing error state');
+      // Clear error state when the sheet is closed
+      hfStore.clearError();
+      onDismiss();
+    };
 
     return (
       <Portal>
@@ -121,7 +129,7 @@ export const HFModelSearch: React.FC<HFModelSearchProps> = observer(
             index={0}
             snapPoints={['92%']}
             enableDynamicSizing={false}
-            onDismiss={onDismiss}
+            onDismiss={handleSheetDismiss}
             enablePanDownToClose
             enableContentPanningGesture={false}
             handleIndicatorStyle={styles.bottomSheetHandle}

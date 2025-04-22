@@ -19,6 +19,9 @@ jest.mock('react-native', () => ({
   Platform: {
     OS: 'android',
   },
+  Appearance: {
+    getColorScheme: jest.fn(() => 'light'),
+  },
 }));
 
 describe('DownloadManager', () => {
@@ -157,9 +160,9 @@ describe('DownloadManager', () => {
     await downloadManager.syncWithActiveDownloads([basicModel]);
 
     expect(NativeModules.DownloadModule.getActiveDownloads).toHaveBeenCalled();
-    expect(callbacks.onStart).toHaveBeenCalledWith('model-1');
     expect(downloadManager.isDownloading('model-1')).toBe(true);
     expect(downloadManager.getDownloadProgress('model-1')).toBe(50);
+    expect(callbacks.onStart).toHaveBeenCalledWith('model-1');
   });
 
   it('handles download progress events', async () => {

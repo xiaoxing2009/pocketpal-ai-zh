@@ -8,6 +8,7 @@ export const l10n = {
       rename: 'Rename',
       reset: 'Reset',
       save: 'Save',
+      update: 'Update',
       networkError: 'Network error. Please try again.',
       downloadETA: 'ETA',
       calculating: 'calculating...',
@@ -86,6 +87,18 @@ export const l10n = {
       // Display Memory Usage
       displayMemoryUsage: 'Display Memory Usage',
       displayMemoryUsageDescription: 'Display memory usage in the chat page.',
+      // API Settings
+      apiSettingsTitle: 'API Settings',
+      // Hugging Face Token
+      huggingFaceTokenLabel: 'Hugging Face Token',
+      tokenIsSetDescription:
+        'Token is set. Required for accessing gated models.',
+      setTokenDescription:
+        'Set a token to access gated models from Hugging Face.',
+      setTokenButton: 'Set Token',
+      useHfTokenLabel: 'Use HF Token',
+      useHfTokenDescription:
+        'Enable to use token for API requests. Disable if token is causing authentication issues.',
     },
     memory: {
       shortWarning: 'Memory Warning',
@@ -183,6 +196,7 @@ export const l10n = {
         modelUpdatedShort: '{{time}} ago',
         modelUpdatedJustNowLong: 'Updated just now',
         modelUpdatedJustNowShort: 'just now',
+        errorOccurred: 'Unable to load models. Please try again.',
       },
       modelCard: {
         alerts: {
@@ -408,6 +422,37 @@ export const l10n = {
         keepButton: 'Keep',
         switchButton: 'Switch',
       },
+      downloadErrorDialog: {
+        downloadFailedTitle: 'Download Failed',
+        downloadFailedMessage: 'Failed to download model: {message}',
+        unauthorizedTitle: 'Authentication Failed',
+        unauthorizedMessage:
+          'Your Hugging Face token appears to be invalid or expired. Please update your token in the settings.',
+        forbiddenTitle: 'Access Denied',
+        forbiddenMessage:
+          'You do not have permission to access this model. Please ensure:',
+        forbiddenSteps: [
+          'Your token has "read" permission',
+          'You requested and were granted access to this model',
+          'The model owner approved your access request',
+        ],
+        getTokenTitle: 'Get Hugging Face Token',
+        getTokenMessage:
+          'This model requires a Hugging Face token to download.',
+        getTokenSteps: [
+          'Go to huggingface.co and sign in',
+          'Navigate to Settings > Access Tokens',
+          'Create a new token with "read" access',
+          'Copy the token and paste it in the token field',
+        ],
+        tokenDisabledTitle: 'Token is Disabled',
+        tokenDisabledMessage:
+          'You have a Hugging Face token set, but it is currently disabled. This model requires a token to download. Enable your token to continue.',
+        enableAndRetry: 'Enable and Retry',
+        goToSettings: 'Go to Settings',
+        tryAgain: 'Try Again',
+        viewOnHuggingFace: 'View Model on HF ↗',
+      },
       headerRight: {
         deleteChatTitle: 'Delete Chat',
         deleteChatMessage: 'Are you sure you want to delete this chat?',
@@ -416,6 +461,35 @@ export const l10n = {
         duplicateChatHistory: 'Duplicate chat history',
         makeChatTemporary: 'Make chat temporary',
         exportChatSession: 'Export chat session',
+      },
+      hfTokenSheet: {
+        title: 'Hugging Face Token',
+        description: 'Required to access gated models',
+        inputLabel: 'Personal Access Token',
+        inputPlaceholder: 'Paste your token here',
+        save: 'Save Token',
+        saved: 'Token saved successfully',
+        reset: 'Reset Token',
+        resetSuccess: 'Token removed successfully',
+        instructions: 'How to get a token:',
+        instructionsSteps: [
+          'Go to huggingface.co and sign in',
+          'Navigate to Settings > Access Tokens',
+          'Create a new token with "read" access',
+          'Copy the token and paste it below',
+        ],
+        getTokenLink: 'Get a token from huggingface.co ↗',
+        error: {
+          saving: 'Error saving token',
+          missing: 'Hugging Face token required',
+          invalid: 'Invalid or expired token',
+          gatedModelAccess: 'Access to this gated model was denied',
+        },
+        gatedModelIndicator: 'Requires Token',
+        tokenRequired: 'This model requires a Hugging Face access token',
+        searchErrorHint:
+          'Your Hugging Face API token is invalid or expired. To continue searching, please either remove the token or disable token authentication in Settings.',
+        disableAndRetry: 'Disable Token & Retry',
       },
       modelSettingsSheet: {
         modelSettings: 'Model Settings',
@@ -703,6 +777,28 @@ export const l10n = {
         versionFormat: '{{version}} ({{buildNumber}})',
       },
     },
+    errors: {
+      unexpectedError: 'An unexpected error occurred',
+      hfAuthenticationError:
+        'Hugging Face authentication error: Token is missing or invalid',
+      hfAuthenticationErrorSearch:
+        'Hugging Face authentication error: Invalid token',
+      authenticationError: 'Authentication error: Token is missing or invalid',
+      hfAuthorizationError:
+        'Hugging Face authorization error: No permission to access this resource',
+      authorizationError:
+        'Authorization error: No permission to access this resource',
+      hfServerError: 'Hugging Face server error: API server issue',
+      serverError: 'Server error: API server issue',
+      hfNetworkTimeout:
+        'Network timeout: Request to Hugging Face took too long to complete',
+      networkTimeout: 'Network timeout: Request took too long to complete',
+      hfNetworkError: 'Network error: Unable to connect to Hugging Face API',
+      networkError: 'Network error: Unable to connect to API',
+      downloadSetupFailedTitle: 'Download Setup Failed',
+      downloadSetupFailedMessage:
+        'Failed to prepare model for download: {message}',
+    },
   },
 
   ja: {
@@ -713,6 +809,7 @@ export const l10n = {
       rename: '名前変更',
       reset: 'リセット',
       save: '保存',
+      update: '更新',
       networkError: 'ネットワークエラー。もう一度お試しください。',
       downloadETA: '残り',
       minutes: '分',
@@ -795,6 +892,18 @@ export const l10n = {
       displayMemoryUsage: 'メモリ使用量表示',
       displayMemoryUsageDescription:
         'チャットページにメモリ使用量を表示します。',
+      // API Settings
+      apiSettingsTitle: 'API設定',
+      // Hugging Face Token
+      huggingFaceTokenLabel: 'Hugging Faceトークン',
+      tokenIsSetDescription:
+        'トークンが設定されています。制限付きモデルへのアクセスに必要です。',
+      setTokenDescription:
+        'Hugging Faceから制限付きモデルにアクセスするためのトークンを設定します。',
+      setTokenButton: 'トークンを設定',
+      useHfTokenLabel: 'HFトークンを使用',
+      useHfTokenDescription:
+        'HFトークンを使用して制限付きモデルにアクセスします。',
     },
     memory: {
       shortWarning: 'メモリ警告',
@@ -893,6 +1002,8 @@ export const l10n = {
         modelUpdatedShort: '{{time}}前',
         modelUpdatedJustNowLong: 'たった今更新',
         modelUpdatedJustNowShort: 'たった今',
+        errorOccurred:
+          'An error occurred. Please check the error message above.',
       },
       modelCard: {
         alerts: {
@@ -1117,6 +1228,37 @@ export const l10n = {
         keepButton: '保持',
         switchButton: '切り替え',
       },
+      downloadErrorDialog: {
+        downloadFailedTitle: 'ダウンロード失敗',
+        downloadFailedMessage: 'モデルのダウンロードに失敗しました: {message}',
+        unauthorizedTitle: '認証失敗',
+        unauthorizedMessage:
+          'Hugging Faceトークンが無効または期限切れのようです。設定でトークンを更新してください。',
+        forbiddenTitle: 'アクセス拒否',
+        forbiddenMessage:
+          'このモデルにアクセスする権限がありません。以下を確認してください:',
+        forbiddenSteps: [
+          'トークンに「読み取り」権限があること',
+          'このモデルへのアクセスをリクエストし、許可されていること',
+          'モデル所有者があなたのアクセスリクエストを承認していること',
+        ],
+        getTokenTitle: 'Hugging Faceトークンを取得',
+        getTokenMessage:
+          'このモデルをダウンロードするにはHugging Faceトークンが必要です。',
+        getTokenSteps: [
+          'huggingface.coにアクセスしてサインインする',
+          '設定 > アクセストークンに移動',
+          '「読み取り」アクセス権を持つ新しいトークンを作成',
+          'トークンをコピーしてトークンフィールドに貼り付ける',
+        ],
+        tokenDisabledTitle: 'トークンが無効',
+        tokenDisabledMessage:
+          'Hugging Faceトークンが設定されていますが、現在無効になっています。このモデルをダウンロードするにはトークンが必要です。続行するにはトークンを有効にしてください。',
+        enableAndRetry: 'トークンを有効にして再試行',
+        goToSettings: '設定へ移動',
+        tryAgain: '再試行',
+        viewOnHuggingFace: 'HFでモデルを表示 ↗',
+      },
       headerRight: {
         deleteChatTitle: 'チャットを削除',
         deleteChatMessage: 'このチャットを削除してもよろしいですか？',
@@ -1125,6 +1267,35 @@ export const l10n = {
         duplicateChatHistory: 'チャット履歴を複製',
         makeChatTemporary: 'チャットを一時的にする',
         exportChatSession: 'チャットセッションをエクスポート',
+      },
+      hfTokenSheet: {
+        title: 'Hugging Face トークン',
+        description: '制限付きモデルへのアクセスに必要',
+        inputLabel: '個人アクセストークン',
+        inputPlaceholder: 'トークンをここに貼り付けてください',
+        save: 'トークンを保存',
+        saved: 'トークンが正常に保存されました',
+        reset: 'トークンをリセット',
+        resetSuccess: 'トークンが正常に削除されました',
+        instructions: 'トークンの取得方法：',
+        instructionsSteps: [
+          'huggingface.coにサインインします',
+          '設定 > アクセストークンに移動',
+          '「read」権限で新しいトークンを作成',
+          'トークンをコピーして下に貼り付け',
+        ],
+        getTokenLink: 'huggingface.coでトークンを取得 ↗',
+        error: {
+          saving: 'トークンの保存エラー',
+          missing: 'Hugging Faceトークンが必要です',
+          invalid: '無効または期限切れのトークン',
+          gatedModelAccess: 'このゲートモデルへのアクセスが拒否されました',
+        },
+        gatedModelIndicator: 'トークンが必要',
+        tokenRequired: 'このモデルはHugging Faceアクセストークンが必要です',
+        searchErrorHint:
+          'Hugging Face APIトークンが無効または期限切れです。検索を続けるには、設定でトークンを削除するか、トークン認証を無効にしてください。',
+        disableAndRetry: 'トークンを無効にして再試行',
       },
       modelSettingsSheet: {
         modelSettings: 'モデル設定',
@@ -1413,6 +1584,29 @@ export const l10n = {
         versionFormat: '{{version}} ({{buildNumber}})',
       },
     },
+    errors: {
+      unexpectedError: '予期しないエラーが発生しました',
+      hfAuthenticationError:
+        'Hugging Face認証エラー: トークンが見つからないか無効です',
+      hfAuthenticationErrorSearch:
+        'Hugging Face認証エラー: トークンが見つからないか無効です',
+      authenticationError: '認証エラー: トークンが見つからないか無効です',
+      hfAuthorizationError:
+        'Hugging Face認可エラー: このリソースにアクセスする権限がありません',
+      authorizationError:
+        '認可エラー: このリソースにアクセスする権限がありません',
+      hfServerError: 'Hugging Faceサーバーエラー: APIサーバーの問題',
+      serverError: 'サーバーエラー: APIサーバーの問題',
+      hfNetworkTimeout:
+        'ネットワークタイムアウト: Hugging Faceへのリクエストが完了するのに時間がかかりすぎました',
+      networkTimeout:
+        'ネットワークタイムアウト: リクエストが完了するのに時間がかかりすぎました',
+      hfNetworkError: 'ネットワークエラー: Hugging Face APIに接続できません',
+      networkError: 'ネットワークエラー: APIに接続できません',
+      downloadSetupFailedTitle: 'ダウンロード設定失敗',
+      downloadSetupFailedMessage:
+        'モデルのダウンロード準備に失敗しました: {message}',
+    },
   },
 
   zh: {
@@ -1423,6 +1617,7 @@ export const l10n = {
       rename: '重命名',
       reset: '重置',
       save: '保存',
+      update: '更新',
       networkError: '网络错误。请重试。',
       downloadETA: '预计时间',
       calculating: '计算中...',
@@ -1497,6 +1692,15 @@ export const l10n = {
       // Display Memory Usage
       displayMemoryUsage: '显示内存使用情况',
       displayMemoryUsageDescription: '在聊天页面中显示内存使用情况。',
+      // API Settings
+      apiSettingsTitle: 'API设置',
+      // Hugging Face Token
+      huggingFaceTokenLabel: 'Hugging Face令牌',
+      tokenIsSetDescription: '令牌已设置。访问受限模型时需要。',
+      setTokenDescription: '设置令牌以从Hugging Face访问受限模型。',
+      setTokenButton: '设置令牌',
+      useHfTokenLabel: '使用HF令牌',
+      useHfTokenDescription: '使用HF令牌访问受限模型。',
     },
     memory: {
       shortWarning: '内存警告',
@@ -1589,6 +1793,8 @@ export const l10n = {
         modelUpdatedShort: '{{time}}前',
         modelUpdatedJustNowLong: '刚刚更新',
         modelUpdatedJustNowShort: '刚刚',
+        errorOccurred:
+          'An error occurred. Please check the error message above.',
       },
       modelCard: {
         alerts: {
@@ -1795,6 +2001,35 @@ export const l10n = {
         keepButton: '保持',
         switchButton: '切换',
       },
+      downloadErrorDialog: {
+        downloadFailedTitle: '下载失败',
+        downloadFailedMessage: '模型下载失败: {message}',
+        unauthorizedTitle: '认证失败',
+        unauthorizedMessage:
+          '您的Hugging Face令牌似乎无效或已过期。请在设置中更新您的令牌。',
+        forbiddenTitle: '访问被拒绝',
+        forbiddenMessage: '您没有权限访问此模型。请确保:',
+        forbiddenSteps: [
+          '您的令牌具有"读取"权限',
+          '您已请求并获得了此模型的访问权限',
+          '模型所有者已批准您的访问请求',
+        ],
+        getTokenTitle: '获取Hugging Face令牌',
+        getTokenMessage: '下载此模型需要Hugging Face令牌。',
+        getTokenSteps: [
+          '访问huggingface.co并登录',
+          '导航至设置 > 访问令牌',
+          '创建具有"读取"权限的新令牌',
+          '复制令牌并粘贴到令牌字段中',
+        ],
+        tokenDisabledTitle: '令牌已禁用',
+        tokenDisabledMessage:
+          '您有一个Hugging Face令牌设置，但目前它已禁用。此模型需要令牌才能下载。请启用您的令牌以继续。',
+        enableAndRetry: '启用并重试',
+        goToSettings: '前往设置',
+        tryAgain: '重试',
+        viewOnHuggingFace: '在HF上查看模型 ↗',
+      },
       headerRight: {
         deleteChatTitle: '删除聊天',
         deleteChatMessage: '您确定要删除此聊天吗？',
@@ -1803,6 +2038,35 @@ export const l10n = {
         duplicateChatHistory: '复制聊天历史',
         makeChatTemporary: '使聊天临时',
         exportChatSession: '导出聊天会话',
+      },
+      hfTokenSheet: {
+        title: 'Hugging Face 令牌',
+        description: '访问受限模型所需',
+        inputLabel: '个人访问令牌',
+        inputPlaceholder: '在此粘贴您的令牌',
+        save: '保存令牌',
+        saved: '令牌已成功保存',
+        reset: '重置令牌',
+        resetSuccess: '令牌已成功删除',
+        instructions: '如何获取令牌：',
+        instructionsSteps: [
+          '登录 huggingface.co',
+          '导航至设置 > 访问令牌',
+          '创建具有"read"权限的新令牌',
+          '复制令牌并粘贴在下方',
+        ],
+        getTokenLink: '从 huggingface.co 获取令牌 ↗',
+        error: {
+          saving: '保存令牌时出错',
+          missing: '需要 Hugging Face 令牌',
+          invalid: '无效或过期的令牌',
+          gatedModelAccess: '对此受限模型的访问被拒绝',
+        },
+        gatedModelIndicator: '需要令牌',
+        tokenRequired: '此模型需要 Hugging Face 访问令牌',
+        searchErrorHint:
+          '您的 Hugging Face API 令牌无效或已过期。要继续搜索，请在设置中删除令牌或禁用令牌验证。',
+        disableAndRetry: '禁用令牌并重试',
       },
       modelSettingsSheet: {
         modelSettings: '模型设置',
@@ -2085,6 +2349,22 @@ export const l10n = {
         },
         versionFormat: '{{version}} ({{buildNumber}})',
       },
+    },
+    errors: {
+      unexpectedError: '发生意外错误',
+      hfAuthenticationError: 'Hugging Face认证错误：令牌缺失或无效',
+      hfAuthenticationErrorSearch: 'Hugging Face认证错误：令牌缺失或无效',
+      authenticationError: '认证错误：令牌缺失或无效',
+      hfAuthorizationError: 'Hugging Face授权错误：没有访问此资源的权限',
+      authorizationError: '授权错误：没有访问此资源的权限',
+      hfServerError: 'Hugging Face服务器错误：API服务器问题',
+      serverError: '服务器错误：API服务器问题',
+      hfNetworkTimeout: '网络超时：对Hugging Face的请求花费时间过长',
+      networkTimeout: '网络超时：请求花费时间过长',
+      hfNetworkError: '网络错误：无法连接到Hugging Face API',
+      networkError: '网络错误：无法连接到API',
+      downloadSetupFailedTitle: '下载设置失败',
+      downloadSetupFailedMessage: '无法准备模型下载: {message}',
     },
   },
 };

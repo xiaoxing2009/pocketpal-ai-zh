@@ -66,6 +66,7 @@ const FormField = forwardRef<RNTextInput, FormFieldProps>(
           name={name}
           render={({field: {onChange, value}}) => (
             <TextInput
+              testID={`form-field-${name}`}
               ref={ref}
               value={value || ''}
               onChangeText={onChange}

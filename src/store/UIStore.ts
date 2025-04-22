@@ -98,6 +98,10 @@ export class UIStore {
     return this._language in l10n ? this._language : 'en';
   }
 
+  get l10n() {
+    return l10n[this.language];
+  }
+
   setAutoNavigateToChat(value: boolean) {
     runInAction(() => {
       this.autoNavigatetoChat = value;

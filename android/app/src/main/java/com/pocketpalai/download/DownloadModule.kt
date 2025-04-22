@@ -67,6 +67,12 @@ class DownloadModule(reactContext: ReactApplicationContext) : ReactContextBaseJa
                     ?: throw IllegalArgumentException("Destination path is required")
                 Log.d(TAG, "Destination path: $destination")
 
+                // Extract authorization token if provided
+                val authToken = if (config.hasKey("authToken")) config.getString("authToken") else null
+                if (authToken != null) {
+                    Log.d(TAG, "Authorization token provided for download")
+                }
+
                 val networkType = when (config.getString("networkType")) {
                     "WIFI" -> NetworkType.WIFI
                     else -> NetworkType.ANY
@@ -86,7 +92,8 @@ class DownloadModule(reactContext: ReactApplicationContext) : ReactContextBaseJa
                     status = DownloadStatus.QUEUED,
                     priority = config.getInt("priority") ?: 0,
                     networkType = networkType,
-                    createdAt = System.currentTimeMillis()
+                    createdAt = System.currentTimeMillis(),
+                    authToken = authToken
                 )
 
                 withContext(Dispatchers.IO) {

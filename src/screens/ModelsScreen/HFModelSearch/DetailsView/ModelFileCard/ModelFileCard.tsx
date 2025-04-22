@@ -239,6 +239,19 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
                     </View>
                   </Pressable>
                 )}
+                {Boolean(hfModel.gated) && (
+                  <View style={styles.warningChip}>
+                    <IconButton
+                      icon="lock"
+                      iconColor={theme.colors.primary}
+                      size={12}
+                      style={styles.warningIcon}
+                    />
+                    <Text style={styles.gatedText}>
+                      {l10n.components.hfTokenSheet.gatedModelIndicator}
+                    </Text>
+                  </View>
+                )}
               </View>
 
               {/* Download Speed */}

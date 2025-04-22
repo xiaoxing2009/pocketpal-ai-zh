@@ -1,5 +1,4 @@
 import {makeAutoObservable} from 'mobx';
-import {v4 as uuidv4} from 'uuid';
 import {
   AssistantFormData,
   RoleplayFormData,
@@ -15,7 +14,7 @@ class MockPalStore {
 
   addPal = jest.fn((data: AssistantFormData | RoleplayFormData) => {
     const newPal = {
-      id: uuidv4(),
+      id: 'mock-uuid-12345' + Math.random(),
       ...data,
     } as Pal;
     this.pals.push(newPal);

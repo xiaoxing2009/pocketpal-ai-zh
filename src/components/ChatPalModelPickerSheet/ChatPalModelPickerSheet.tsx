@@ -11,9 +11,7 @@ import BottomSheet, {
 
 import {useTheme} from '../../hooks';
 import {createStyles} from './styles';
-import {modelStore} from '../../store/ModelStore';
-import {palStore} from '../../store/PalStore';
-import {chatSessionStore} from '../../store/ChatSessionStore';
+import {modelStore, palStore, chatSessionStore} from '../../store';
 import {CustomBackdrop} from '../Sheet/CustomBackdrop';
 import {getLocalizedModelCapabilities, L10nContext} from '../../utils';
 //import {useSafeAreaInsets} from 'react-native-safe-area-context';

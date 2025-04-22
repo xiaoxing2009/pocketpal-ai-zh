@@ -1,6 +1,7 @@
 export {default as AlertIcon} from './alert.svg';
 export {default as BenchmarkIcon} from './benchmark.svg';
 export {default as ChatIcon} from './chat.svg';
+export {default as CheckCircleIcon} from './check-circle.svg';
 export {default as ChevronDownIcon} from './chevron-down.svg';
 export {default as ChevronRightIcon} from './chevron-right.svg';
 export {default as ChevronUpIcon} from './chevron-up.svg';
@@ -12,6 +13,8 @@ export {default as DotsVerticalIcon} from './dots-vertical.svg';
 export {default as DuplicateIcon} from './duplicate.svg';
 export {default as EditBoxIcon} from './edit-box.svg';
 export {default as EditIcon} from './edit.svg';
+export {default as EyeIcon} from './eye.svg';
+export {default as EyeOffIcon} from './eye-off.svg';
 export {default as GithubIcon} from './github-outline.svg';
 export {default as GlobeIcon} from './globe.svg';
 export {default as GridIcon} from './grid.svg';

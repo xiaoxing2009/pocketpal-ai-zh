@@ -34,6 +34,7 @@ export async function fetchModels({
   full,
   config,
   nextPageUrl,
+  authToken,
 }: {
   search?: string;
   author?: string;
@@ -44,8 +45,15 @@ export async function fetchModels({
   full?: boolean;
   config?: boolean;
   nextPageUrl?: string;
+  authToken?: string | null;
 }): Promise<HuggingFaceModelsResponse> {
   try {
+    const headers: Record<string, string> = {};
+
+    if (authToken) {
+      headers.Authorization = `Bearer ${authToken}`;
+    }
+
     const response = await axios.get(nextPageUrl || urls.modelsList(), {
       params: {
         search,
@@ -57,6 +65,7 @@ export async function fetchModels({
         full,
         config,
       },
+      headers,
     });
 
     const linkHeader = response.headers.link;
@@ -82,15 +91,22 @@ export async function fetchModels({
 /**
  * Fetches the details of the model's files. Mainly the size is used.
  * @param modelId - The ID of the model.
+ * @param authToken - Optional authentication token for accessing private models
  * @returns An array of ModelFileDetails.
  */
 export const fetchModelFilesDetails = async (
   modelId: string,
+  authToken?: string | null,
 ): Promise<ModelFileDetails[]> => {
   const url = `${urls.modelTree(modelId)}?recursive=true`;
 
   try {
-    const response = await fetch(url);
+    const headers: Record<string, string> = {};
+    if (authToken) {
+      headers.Authorization = `Bearer ${authToken}`;
+    }
+
+    const response = await fetch(url, {headers});
 
     if (!response.ok) {
       throw new Error(`Error fetching model files: ${response.statusText}`);
@@ -107,13 +123,22 @@ export const fetchModelFilesDetails = async (
 /**
  * Fetches the specs of the GGUF for a specific model.
  * @param modelId - The ID of the model.
+ * @param authToken - Optional authentication token for accessing private models
  * @returns The GGUF specs.
  */
-export const fetchGGUFSpecs = async (modelId: string): Promise<GGUFSpecs> => {
+export const fetchGGUFSpecs = async (
+  modelId: string,
+  authToken?: string | null,
+): Promise<GGUFSpecs> => {
   const url = `${urls.modelSpecs(modelId)}?expand[]=gguf`;
 
   try {
-    const response = await fetch(url);
+    const headers: Record<string, string> = {};
+    if (authToken) {
+      headers.Authorization = `Bearer ${authToken}`;
+    }
+
+    const response = await fetch(url, {headers});
 
     if (!response.ok) {
       throw new Error(`Error fetching GGUF specs: ${response.statusText}`);

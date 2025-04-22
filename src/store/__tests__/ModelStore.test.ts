@@ -1,6 +1,7 @@
 jest.unmock('../../store');
 import {runInAction} from 'mobx';
 import {LlamaContext} from '@pocketpalai/llama.rn';
+import {Alert} from 'react-native';
 
 import {defaultModels} from '../defaultModels';
 
@@ -390,7 +391,7 @@ describe('ModelStore', () => {
       expect(mockCheckSpaceAndDownload).toHaveBeenCalledWith('test-model-id');
     });
 
-    it('should catch and throw errors when downloading HF model fails', async () => {
+    it('should handle errors when downloading HF model fails', async () => {
       const hfModel = {
         id: 'test/hf-model',
         siblings: [{rfilename: 'model.gguf'}],
@@ -404,9 +405,30 @@ describe('ModelStore', () => {
         new Error('Mock error'),
       );
 
-      await expect(
-        modelStore.downloadHFModel(hfModel as any, modelFile as any),
-      ).rejects.toThrow('Mock error');
+      // Mock console.error and Alert.alert
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+      const alertSpy = jest.spyOn(Alert, 'alert').mockImplementation();
+
+      await modelStore.downloadHFModel(hfModel as any, modelFile as any);
+
+      // Check that error is logged
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        'Failed to set up HF model download:',
+        expect.any(Error),
+      );
+
+      // Check that Alert.alert is called with the error message
+      expect(alertSpy).toHaveBeenCalledWith(
+        uiStore.l10n.errors.downloadSetupFailedTitle,
+        uiStore.l10n.errors.downloadSetupFailedMessage.replace(
+          '{message}',
+          'Mock error',
+        ),
+      );
+
+      // Clean up mocks
+      consoleErrorSpy.mockRestore();
+      alertSpy.mockRestore();
     });
   });
 

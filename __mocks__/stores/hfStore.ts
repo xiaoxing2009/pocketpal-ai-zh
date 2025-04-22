@@ -9,6 +9,19 @@ export const mockHFStore = {
   queryFilter: 'gguf',
   queryFull: true,
   queryConfig: true,
+  hfToken: '',
+  useHfToken: true,
+
+  get isTokenPresent(): boolean {
+    return !!this.hfToken && this.hfToken.trim().length > 0;
+  },
+  get shouldUseToken(): boolean {
+    return this.isTokenPresent && this.useHfToken;
+  },
+
+  setUseHfToken: jest.fn(),
+  setToken: jest.fn().mockResolvedValue(Promise.resolve(true)),
+  clearToken: jest.fn().mockResolvedValue(Promise.resolve(true)),
 
   // Methods
   setSearchQuery: jest.fn(),

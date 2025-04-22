@@ -11,7 +11,7 @@ import {observer} from 'mobx-react-lite';
 import {useForm, FormProvider, Controller} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 
-import {Sheet} from '../Sheet/Sheet';
+import {Sheet} from '..';
 import {useTheme} from '../../hooks';
 import {createStyles} from './styles';
 import {L10nContext} from '../../utils';
@@ -138,6 +138,7 @@ export const RoleplayPalSheet: React.FC<RoleplayPalSheetProps> = observer(
             contentContainerStyle={styles.scrollviewContainer}>
             <View style={styles.form}>
               <View
+                testID="inner-form"
                 style={styles.innerForm}
                 // @ts-ignore
                 onBlur={updateSystemPromptOnFormChange}>

@@ -22,7 +22,7 @@ describe('HFStore', () => {
     // Reset store to initial state
     hfStore.models = [];
     hfStore.isLoading = false;
-    hfStore.error = '';
+    hfStore.error = null;
     hfStore.nextPageLink = null;
     hfStore.searchQuery = '';
   });
@@ -42,7 +42,7 @@ describe('HFStore', () => {
         'https://huggingface.co/owner/hf-model-name-1',
       );
       expect(hfStore.nextPageLink).toBe('next-page-url');
-      expect(hfStore.error).toBe('');
+      expect(hfStore.error).toBe(null);
       expect(hfStore.isLoading).toBe(false);
     });
 
@@ -54,7 +54,14 @@ describe('HFStore', () => {
       await hfStore.fetchModels();
 
       expect(hfStore.models).toHaveLength(0);
-      expect(hfStore.error).toBe('Failed to load models');
+      expect(hfStore.error).toEqual(
+        expect.objectContaining({
+          context: 'search',
+          message: 'Network error',
+          recoverable: true,
+          service: 'huggingface',
+        }),
+      );
       expect(hfStore.isLoading).toBe(false);
     });
   });
@@ -97,8 +104,8 @@ describe('HFStore', () => {
 
       await hfStore.fetchModelData(modelId);
 
-      expect(fetchGGUFSpecs).toHaveBeenCalledWith(modelId);
-      expect(fetchModelFilesDetails).toHaveBeenCalledWith(modelId);
+      expect(fetchGGUFSpecs).toHaveBeenCalledWith(modelId, null);
+      expect(fetchModelFilesDetails).toHaveBeenCalledWith(modelId, null);
     });
   });
 

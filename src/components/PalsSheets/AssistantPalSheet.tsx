@@ -11,7 +11,7 @@ import {observer} from 'mobx-react-lite';
 import {useForm, FormProvider, Controller} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 
-import {Sheet} from '../Sheet/Sheet';
+import {Sheet} from '..';
 import {useTheme} from '../../hooks';
 import {createStyles} from './styles';
 import {L10nContext} from '../../utils';

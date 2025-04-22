@@ -83,3 +83,7 @@ jest.mock('../src/hooks/useTheme', () => {
 jest.mock('../src/services/downloads', () => ({
   downloadManager: require('../__mocks__/services/downloads').downloadManager,
 }));
+
+jest.mock('uuid', () => ({
+  v4: () => 'mock-uuid-12345' + Math.random(),
+}));

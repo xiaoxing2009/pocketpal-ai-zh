@@ -82,6 +82,12 @@ class DownloadWorker(
                         Log.d(TAG, "Resuming download from byte ${file.length()}")
                         addHeader("Range", range)
                     }
+                    
+                    // Add authorization header if token is available
+                    download.authToken?.let { token ->
+                        Log.d(TAG, "Adding Authorization header for authenticated download")
+                        addHeader("Authorization", "Bearer $token")
+                    }
                 }
                 .build()
 

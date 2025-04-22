@@ -349,7 +349,7 @@ export interface HuggingFaceModel {
   _id: string;
   id: string;
   author: string;
-  gated: boolean;
+  gated: boolean | string;
   inference: string;
   lastModified: string;
   likes: number;

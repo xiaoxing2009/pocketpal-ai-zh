@@ -113,4 +113,8 @@ export const createStyles = (theme: Theme) =>
       width: '90%',
       alignSelf: 'center',
     },
+    gatedText: {
+      color: theme.colors.primary,
+      fontSize: 10,
+    },
   });

@@ -39,12 +39,6 @@ export const createStyles = (theme: Theme, bottomInset: number) =>
       fontSize: 12,
       color: theme.colors.onSurfaceVariant,
     },
-    loadingText: {
-      textAlign: 'center',
-      marginTop: 20,
-      fontSize: 16,
-      color: theme.colors.onSurfaceVariant,
-    },
     noResultsText: {
       textAlign: 'center',
       marginTop: 20,
@@ -62,5 +56,37 @@ export const createStyles = (theme: Theme, bottomInset: number) =>
       padding: 16,
       fontSize: 14,
       color: theme.colors.onSurfaceVariant,
+    },
+    gatedChipText: {
+      fontSize: 10,
+    },
+    emptyStateContainer: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginTop: 20,
+      marginBottom: 20,
+      padding: 16,
+      borderWidth: 1,
+      borderColor: theme.colors.outline,
+      borderRadius: 8,
+      backgroundColor: theme.colors.surfaceVariant,
+      width: '90%',
+      alignSelf: 'center',
+    },
+    errorText: {
+      color: theme.colors.error,
+      marginTop: 8,
+    },
+    errorHintText: {
+      color: theme.colors.onSurfaceVariant,
+      marginTop: 8,
+      textAlign: 'center',
+      fontSize: 14,
+      fontStyle: 'italic',
+      paddingHorizontal: 20,
+    },
+    disableTokenButton: {
+      marginTop: 10,
+      alignSelf: 'center',
     },
   });
