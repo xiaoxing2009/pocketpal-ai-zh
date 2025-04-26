@@ -810,7 +810,8 @@ export const l10n = {
       reset: 'リセット',
       save: '保存',
       update: '更新',
-      networkError: 'ネットワークエラー。もう一度お試しください。',
+      networkError:
+        'ネットワークエラーが発生しました。もう一度お試しください。',
       downloadETA: '残り',
       minutes: '分',
       second: '秒',
@@ -827,16 +828,16 @@ export const l10n = {
       hour: '時間',
       hours: '時間',
       minute: '分',
-      justNow: '今すぐ',
+      justNow: 'たった今',
     },
     settings: {
       // Model Initialization Settings
       modelInitializationSettings: 'モデル初期化設定',
       // Metal Settings
       metal: 'Metal',
-      metalDescription: 'Appleのハードウェア加速API。',
+      metalDescription: 'Appleのハードウェア加速API',
       metalRequiresNewerIOS:
-        'Metal加速にはiOS 18以上が必要です。この機能を使用するにはデバイスをアップグレードしてください。',
+        'Metal加速機能にはiOS 18以上が必要です。この機能を利用するにはデバイスを更新してください。',
       layersOnGPU: 'GPUレイヤー：{{gpuLayers}}',
       // Context Size
       contextSize: 'コンテキストサイズ',
@@ -844,7 +845,7 @@ export const l10n = {
         'コンテキストサイズを入力（最小{{minContextSize}}）',
       invalidContextSizeError:
         '有効な数値を入力してください（最小{{minContextSize}}）',
-      modelReloadNotice: '変更を有効にするにはモデルの再読み込みが必要です。',
+      modelReloadNotice: '変更を適用にするにはモデルの再読み込みが必要です。',
       // Advanced Settings
       advancedSettings: '詳細設定',
       // Batch Size
@@ -879,9 +880,9 @@ export const l10n = {
       autoOffloadLoadDescription:
         'アプリがバックグラウンドにあるときにモデルをオフロードします。',
       // Auto Navigate to Chat
-      autoNavigateToChat: 'チャットへ自動ナビゲート',
+      autoNavigateToChat: 'チャットへ自動移動',
       autoNavigateToChatDescription:
-        '読み込みが開始されたらチャットへナビゲートします。',
+        '読み込みが開始されたらチャット画面へ移動します。',
       // App Settings
       appSettings: 'アプリ設定',
       // Language
@@ -889,9 +890,8 @@ export const l10n = {
       // Dark Mode
       darkMode: 'ダークモード',
       // Display Memory Usage
-      displayMemoryUsage: 'メモリ使用量表示',
-      displayMemoryUsageDescription:
-        'チャットページにメモリ使用量を表示します。',
+      displayMemoryUsage: 'メモリ使用量を表示',
+      displayMemoryUsageDescription: 'チャット画面にメモリ使用量を表示します。',
       // API Settings
       apiSettingsTitle: 'API設定',
       // Hugging Face Token
@@ -908,12 +908,12 @@ export const l10n = {
     memory: {
       shortWarning: 'メモリ警告',
       warning:
-        '警告：モデルサイズが利用可能なメモリを超える可能性があります。これによりデバイスのパフォーマンスと安定性に影響する可能性があります。',
+        '警告：モデルサイズが利用可能なメモリを超える可能性があります。デバイスのパフォーマンスと安定性に影響する可能性があります。',
     },
     storage: {
       checkFailed: 'ストレージの確認に失敗しました',
       lowStorage:
-        'ストレージ不足！モデル {{modelSize}} > 空き容量 {{freeSpace}}',
+        'ストレージ容量不足！モデル {{modelSize}} > 空き容量 {{freeSpace}}',
     },
     generation: {
       modelNotInitialized: 'モデルコンテキストが初期化されていません',
@@ -921,11 +921,11 @@ export const l10n = {
     },
     models: {
       fileManagement: {
-        fileAlreadyExists: 'ファイルは既に存在します',
+        fileAlreadyExists: 'ファイルが既に存在します',
         fileAlreadyExistsMessage:
           'この名前のファイルは既に存在します。どうしますか？',
         replace: '置き換え',
-        keepBoth: '両方保持',
+        keepBoth: '両方保持する',
       },
       labels: {
         localModel: 'ローカル',
@@ -933,7 +933,7 @@ export const l10n = {
         unknownGroup: '不明',
         availableToUse: '使用可能',
         availableToDownload: 'ダウンロード可能',
-        useAddButtonForMore: '+ ボタンを使用して他のモデルを探す',
+        useAddButtonForMore: '+ ボタンを他のモデルを探す',
       },
       buttons: {
         addFromHuggingFace: 'Hugging Faceから追加',
@@ -948,7 +948,7 @@ export const l10n = {
       },
       modelsResetDialog: {
         proceedWithReset: 'リセットを続行',
-        confirmReset: 'リセットを確認',
+        confirmReset: 'リセットの確認',
       },
       chatTemplate: {
         label: '基本チャットテンプレート:',
@@ -961,12 +961,13 @@ export const l10n = {
           cannotRemoveTitle: '削除できません',
           modelPreset: 'このモデルはプリセットです。',
           downloadedFirst:
-            'モデルがダウンロードされています。まずファイルを削除してください。',
+            'モデルがダウンロード済みです。先にファイルを削除してください。',
           removeTitle: 'モデルを削除',
           removeMessage: 'このモデルをリストから削除してもよろしいですか？',
           removeError: 'モデルの削除に失敗しました。',
-          alreadyDownloadedTitle: 'モデルは既にダウンロード済み',
-          alreadyDownloadedMessage: 'モデルは既にダウンロードされています。',
+          alreadyDownloadedTitle: '既にダウンロード済み',
+          alreadyDownloadedMessage:
+            'このモデルは既にダウンロードされています。',
           deleteTitle: 'モデルを削除',
           deleteMessage:
             'このダウンロード済みモデルを削除してもよろしいですか？',
@@ -977,7 +978,7 @@ export const l10n = {
         warnings: {
           storage: {
             message: '十分なストレージ容量がありません。',
-            shortMessage: 'ストレージ不足',
+            shortMessage: 'ストレージ容量不足',
           },
           memory: {
             message:
@@ -985,10 +986,10 @@ export const l10n = {
           },
           legacy: {
             message:
-              'レガシー量子化形式 - モデルが実行できない可能性があります。',
-            shortMessage: 'レガシー量子化',
+              '旧式の量子化形式です - モデルが実行できない可能性があります。',
+            shortMessage: '旧式の量子化',
           },
-          multiple: '{count}個の警告',
+          multiple: '{count}件の警告',
         },
         labels: {
           downloadSpeed: '{speed}',
@@ -1002,8 +1003,7 @@ export const l10n = {
         modelUpdatedShort: '{{time}}前',
         modelUpdatedJustNowLong: 'たった今更新',
         modelUpdatedJustNowShort: 'たった今',
-        errorOccurred:
-          'An error occurred. Please check the error message above.',
+        errorOccurred: 'モデルを読み込めませんでした。もう一度お試しください。',
       },
       modelCard: {
         alerts: {
@@ -1030,9 +1030,9 @@ export const l10n = {
           editButton: '編集',
           dialogTitle: 'チャットテンプレートを編集',
           note1:
-            '注意: テンプレートを変更するとBOS、EOS、システムプロンプトが変わる可能性があります。',
+            '注意: テンプレートを変更すると開始トークン、終了トークン、システムプロンプトが変更される可能性があります。',
           note2:
-            'Nunjucksを使用。空白の場合はモデルのテンプレートを使用します。',
+            'Nunjucksを使用します。空白の場合はモデルのデフォルトテンプレートを使用します。',
           placeholder: 'チャットテンプレートをここに入力...',
           closeButton: '閉じる',
         },
@@ -1041,11 +1041,11 @@ export const l10n = {
           placeholder: '新しいストップワードを追加',
         },
         tokenSettings: {
-          bos: 'BOS',
-          eos: 'EOS',
+          bos: '開始',
+          eos: '終了',
           addGenerationPrompt: '生成プロンプトを追加',
-          bosTokenPlaceholder: 'BOSトークン',
-          eosTokenPlaceholder: 'EOSトークン',
+          bosTokenPlaceholder: '開始トークン',
+          eosTokenPlaceholder: '終了トークン',
           systemPrompt: 'システムプロンプト',
         },
       },
@@ -1053,76 +1053,77 @@ export const l10n = {
         size: 'サイズ: ',
         parameters: 'パラメータ: ',
         separator: ' | ',
-        notAvailable: '利用不可',
+        notAvailable: '不明',
       },
       modelCapabilities: {
         questionAnswering: '質問応答',
         summarization: '要約',
         reasoning: '推論',
         roleplay: 'ロールプレイ',
-        instructions: '指示に従う',
+        instructions: '指示への対応',
         code: 'コード生成',
-        math: '数学解決',
+        math: '数学問題の解決',
         multilingual: '多言語対応',
-        rewriting: '文章書き換え',
-        creativity: '創造的文章',
+        rewriting: '文章の書き換え',
+        creativity: '創作文章',
       },
     },
     completionParams: {
       grammar:
-        '生成されたテキストが特定の構造や形式に従うように、特定の文法ルールを適用する',
-      stop: 'テキスト生成を停止する特定のフレーズを定義する',
-      n_predict: '生成される応答の長さを設定する（トークン単位）',
+        '生成テキストが特定の構造や形式に従うよう、文法ルールを適用します',
+      stop: 'テキスト生成を停止する特定のフレーズを設定します',
+      n_predict: '生成する応答の長さをトークン単位で設定します',
       n_probs: '代替単語の確率スコアを表示します。',
       top_k:
-        '最も可能性の高いK個のオプションに単語の選択を制限することで創造性を制御します。値が低いほど応答がより焦点を絞ったものになります',
+        '最も可能性の高いK個の選択肢に単語の選択を限定することで創造性を制御します。値が低いほど応答がより焦点を絞ったものになります',
       top_p:
-        '創造性と一貫性のバランスを取ります。高い値（1.0に近い）では、より創造的だが焦点が少ない可能性のある応答を許可します',
+        '創造性と一貫性のバランスを調整します。高い値（1.0に近い）ではより創造的ですが、焦点が少ない応答が生成される可能性があります',
       min_p:
-        'トークンが考慮される最小確率。非現実的または文脈外の応答を減らすために可能性の低い単語をフィルタリングします',
+        'トークンが考慮される最小確率です。確率の低い単語を除外して、不自然または文脈にそぐわない応答を減らします',
       temperature:
         '創造性と予測可能性を制御します。値が高いほど応答がより創造的ですが焦点が少なくなります',
       penalty_last_n:
-        '繰り返しをチェックする範囲。大きな値は長期的な繰り返しを防ぐのに役立ちます',
+        '繰り返しをチェックする範囲です。大きな値は長期的な繰り返しを防ぎます',
       penalty_repeat:
-        '単語の繰り返しを抑制します。値が高いほど応答はより多様な言語を使用します',
+        '単語の繰り返しを抑制します。値が高いほど応答はより多様な表現を使用します',
       penalty_freq:
-        '過剰に使用される単語にペナルティを課します。値が高いほどより広い語彙を奨励します',
+        '頻出用語にペナルティを与えます。値が高いほど幅広い語彙の使用を促します',
       penalty_present:
-        'テーマやアイデアの繰り返しを減らします。値が高いほどより多様なコンテンツを奨励します',
+        'テーマやアイデアの繰り返しを減らします。値が高いほどより多様なコンテンツを生成します',
       mirostat:
-        '応答の創造性に対する高度な制御を有効にします。ランダム性と一貫性のスマートなリアルタイム調整のためには1または2（よりスムーズ）に設定してください。',
+        '応答の創造性を高度に制御します。1か2（よりスムーズ）に設定して、ランダム性と一貫性をリアルタイムに調整します',
       mirostat_tau:
-        'Mirostatの創造性レベルを設定します。高い値ではより多様で想像力豊かな応答が可能になり、低い値ではより焦点を絞った出力が確保されます。',
+        'Mirostatの創造性レベルを設定します。高い値ではより多様で想像力豊かな応答が、低い値ではより焦点を絞った出力が得られます',
       mirostat_eta:
-        'Mirostatが創造性を調整する速さ。高い値は調整がより速いことを意味します',
+        'Mirostatが創造性を調整する速さです。値が高いほど調整が速くなります',
       dry_multiplier:
-        "DRY（Don't Repeat Yourself）機能の強さ。高い値は繰り返しを強く防ぎます",
+        "DRY（Don't Repeat Yourself）機能の強さです。値が高いほど繰り返しを強く防ぎます",
       dry_base:
-        'DRYモードでの繰り返しに対する基本ペナルティ。高い値は繰り返しの防止により積極的です',
-      dry_allowed_length: 'DRYペナルティが適用される前に繰り返し可能な単語数',
-      dry_penalty_last_n: 'DRYモードで繰り返しを探す範囲',
+        'DRYモードでの繰り返しに対する基本ペナルティです。高い値は繰り返しをより防ぎます',
+      dry_allowed_length:
+        'DRYペナルティが適用される前に繰り返し可能な単語数です',
+      dry_penalty_last_n: 'DRYモードで繰り返しをチェックする範囲です',
       dry_sequence_breakers:
-        'DRYモードで繰り返しチェッカーをリセットするシンボル',
+        'DRYモードで繰り返しチェックをリセットする記号です',
       ignore_eos:
         'モデルが停止しようとしても生成を続けます。より長い応答を強制するのに役立ちます',
-      logit_bias: '特定の単語が応答に現れる可能性を調整します',
-      seed: '乱数生成器のシードを設定します。再現可能な結果に役立ちます',
+      logit_bias: '特定の単語が応答に現れる確率を調整します',
+      seed: '乱数生成のシードを設定します。再現可能な結果に役立ちます',
       xtc_probability:
-        'XTCサンプラーによるトークン削除の確率を設定します。0は無効',
+        'XTCサンプラーによるトークン削除の確率を設定します。0は無効です',
       xtc_threshold:
-        'XTCサンプラーによって削除されるトークンの最小確率閾値を設定します。（> 0.5はXTCを無効にします）',
+        'XTCサンプラーによって削除されるトークンの最小確率閾値を設定します。0.5以上でXTCは無効になります',
       typical_p:
-        'パラメータpを使用してローカルに典型的なサンプリングを有効にします。1.0は無効',
+        'パラメータpを使用してローカルに典型的なサンプリングを有効にします。1.0は無効です',
     },
     about: {
       screenTitle: 'アプリ情報',
       description:
-        '言語モデルを直接あなたのスマートフォンに提供するアプリです。llama.cppとllama.rnを基盤としています。',
-      supportProject: 'プロジェクトをサポート',
+        '言語モデルをスマートフォンで直接利用できるアプリです。llama.cppとllama.rnをベースに開発されています。',
+      supportProject: 'プロジェクトを応援する',
       supportProjectDescription:
-        'PocketPal AIを楽しんでいただけるなら、次の方法でプロジェクトをサポートすることをご検討ください：',
-      githubButton: 'GitHubでスター',
+        'PocketPal AIをご利用いただき楽しんでいただけているなら、以下の方法でプロジェクトを応援いただけると幸いです：',
+      githubButton: 'GitHubでスターをつける',
       orText: 'または',
       orBy: 'または',
       sponsorButton: 'スポンサーになる',
@@ -1133,46 +1134,46 @@ export const l10n = {
     feedback: {
       title: 'フィードバックを送信',
       description:
-        'あなたの声は重要です！PocketPal AIがどのように役立っているか、さらに便利にするために何ができるかをお聞かせください。',
-      shareThoughtsButton: '意見を共有する',
+        'ご意見をお聞かせください！PocketPal AIの使い心地やより便利にするためのアイデアをお寄せください。',
+      shareThoughtsButton: 'ご意見を共有する',
       useCase: {
-        label: 'PocketPal AIをどのように使用していますか？',
+        label: 'PocketPal AIをどのように使っていますか？',
         placeholder: '例：要約、ロールプレイなど',
       },
       featureRequests: {
-        label: '今後見たい機能は何ですか？',
-        placeholder: 'アイデアや機能の提案を共有してください',
+        label: '希望する機能',
+        placeholder: '追加してほしい機能をお知らせください',
       },
       generalFeedback: {
-        label: '一般的なフィードバック',
-        placeholder: 'その他の考えがあればぜひ共有してください。',
+        label: '一般的なご意見',
+        placeholder: 'その他のご感想やアイデアをぜひお聞かせください',
       },
       usageFrequency: {
-        label: 'PocketPal AIをどのくらいの頻度で使用していますか？（任意）',
+        label: 'どのくらいの頻度で利用されていますか？（任意）',
         options: {
           daily: '毎日',
-          weekly: '毎週',
-          monthly: '毎月',
+          weekly: '週に1回以上',
+          monthly: '月に1回以上',
           rarely: 'ほとんど使わない',
         },
       },
       email: {
         label: '連絡先メール（任意）',
-        placeholder: 'あなたのメールアドレス',
+        placeholder: 'メールアドレス',
       },
       submit: 'フィードバックを送信',
       validation: {
-        required: '少なくともいくつかのフィードバックを提供してください',
+        required: 'フィードバック内容を入力してください',
       },
-      success: 'フィードバックありがとうございます！',
+      success: 'フィードバックをありがとうございます！',
       error: {
         general:
-          'フィードバック送信中にエラーが発生しました。もう一度お試しください。',
+          'フィードバックの送信中にエラーが発生しました。もう一度お試しください。',
       },
     },
     components: {
       attachmentButton: {
-        attachmentButtonAccessibilityLabel: 'メディア送信',
+        attachmentButtonAccessibilityLabel: 'メディアを送信',
       },
       bubble: {
         timingsString:
@@ -1190,7 +1191,7 @@ export const l10n = {
         loading: '読み込み中...',
       },
       chatInput: {
-        inputPlaceholder: 'メッセージ',
+        inputPlaceholder: 'メッセージを入力',
       },
       chatGenerationSettingsSheet: {
         invalidValues: '無効な値',
@@ -1201,11 +1202,11 @@ export const l10n = {
         saveAsPreset: 'プリセットとして保存',
         title_session: 'チャット生成設定 (セッション)',
         title_preset: 'チャット生成設定 (プリセット)',
-        resetToSystemDefaults: 'システムデフォルトにリセット',
-        resetToPreset: 'プリセットにリセット',
+        resetToSystemDefaults: 'デフォルト設定に戻す',
+        resetToPreset: 'プリセットに戻す',
         applytoPresetAlert: {
-          title: '成功',
-          message: 'これらの設定はすべての将来のセッションに適用されます',
+          title: '保存完了',
+          message: 'これらの設定は今後すべてのセッションに適用されます',
         },
       },
       chatHeaderTitle: {
@@ -1218,15 +1219,15 @@ export const l10n = {
         modelsTab: 'モデル',
         palsTab: 'アシスタント',
         noPal: 'アシスタントなし',
-        disablePal: 'アクティブなアシスタントを無効化',
+        disablePal: '現在のアシスタントを無効化',
         noDescription: '説明なし',
         assistantType: 'アシスタント',
         roleplayType: 'ロールプレイ',
         confirmationTitle: '確認',
         modelSwitchMessage:
-          'このアシスタントには異なるデフォルトモデル({{modelName}})があります。アシスタントのデフォルトモデルに切り替えますか？',
-        keepButton: '保持',
-        switchButton: '切り替え',
+          'このアシスタントには別のデフォルトモデル({{modelName}})があります。アシスタントのデフォルトモデルに切り替えますか？',
+        keepButton: '現在のモデルを使用',
+        switchButton: '切り替える',
       },
       downloadErrorDialog: {
         downloadFailedTitle: 'ダウンロード失敗',
@@ -1265,8 +1266,8 @@ export const l10n = {
         generationSettings: '生成設定',
         model: 'モデル',
         duplicateChatHistory: 'チャット履歴を複製',
-        makeChatTemporary: 'チャットを一時的にする',
-        exportChatSession: 'チャットセッションをエクスポート',
+        makeChatTemporary: '一時的なチャットにする',
+        exportChatSession: 'チャットをエクスポート',
       },
       hfTokenSheet: {
         title: 'Hugging Face トークン',
@@ -1308,15 +1309,15 @@ export const l10n = {
         menuTitleReset: 'モデルリストをリセット',
       },
       modelsResetDialog: {
-        proceedWithReset: 'リセットを続行',
-        confirmReset: 'リセットを確認',
+        proceedWithReset: 'リセットする',
+        confirmReset: 'リセットの確認',
       },
       assistantPalSheet: {
         title: {
-          create: 'アシスタントパルを作成',
-          edit: 'アシスタントパルを編集',
+          create: 'アシスタントを作成',
+          edit: 'アシスタントを編集',
         },
-        palName: 'パル名',
+        palName: 'アシスタント名',
         palNamePlaceholder: '名前',
         defaultModel: 'デフォルトモデル',
         defaultModelPlaceholder: 'モデルを選択',
@@ -1324,46 +1325,46 @@ export const l10n = {
           generatingPromptRequired: '生成プロンプトが必要です',
           promptModelRequired: 'プロンプト生成モデルが必要です',
         },
-        create: '作成',
+        create: '作成する',
       },
       modelNotAvailable: {
         noModelsDownloaded:
-          'モデルがまだダウンロードされていません。最初にモデルをダウンロードしてください。',
+          'モデルがダウンロードされていません。先にモデルをダウンロードしてください。',
         downloadAModel: 'モデルをダウンロード',
         defaultModelNotDownloaded:
-          'デフォルトモデルがまだダウンロードされていません。最初にダウンロードしてください。',
-        cancelDownload: 'ダウンロードをキャンセル',
+          'デフォルトモデルがダウンロードされていません。先にダウンロードしてください。',
+        cancelDownload: 'キャンセル',
         download: 'ダウンロード',
       },
       roleplayPalSheet: {
         title: {
-          create: 'ロールプレイパルを作成',
-          edit: 'ロールプレイパルを編集',
+          create: 'ロールプレイを作成',
+          edit: 'ロールプレイを編集',
         },
-        palName: 'パル名',
+        palName: '名前',
         palNamePlaceholder: '名前',
         defaultModel: 'デフォルトモデル',
         defaultModelPlaceholder: 'モデルを選択',
         descriptionSection: '説明',
-        world: '世界',
+        world: '世界観',
         worldPlaceholder: 'ファンタジー',
         location: '場所',
         locationPlaceholder: '魔法の森',
-        locationSublabel: '物語はどこで行われますか？',
+        locationSublabel: '物語の舞台はどこですか？',
         aiRole: 'AIの役割',
         aiRolePlaceholder: 'エルダラ、いたずら好きな森の精霊',
-        aiRoleSublabel: 'キャラクターの役割を設定',
+        aiRoleSublabel: 'キャラクター設定',
         userRole: 'ユーザーの役割',
         userRolePlaceholder: 'エランドール卿、勇敢な騎士',
-        userRoleSublabel: 'あなたは誰ですか？',
+        userRoleSublabel: 'あなたは誰を演じますか？',
         situation: '状況',
         situationPlaceholder: '救出ミッション、謎解き',
-        toneStyle: 'トーン/スタイル',
+        toneStyle: '雰囲気/スタイル',
         toneStylePlaceholder: '真面目',
         validation: {
           promptModelRequired: 'プロンプト生成モデルが必要です',
         },
-        create: '作成',
+        create: '作成する',
       },
       sendButton: {
         accessibilityLabel: '送信',
@@ -1387,18 +1388,18 @@ export const l10n = {
         },
         systemPrompt: {
           label: 'システムプロンプト',
-          sublabel: '自由に編集して最適なプロンプトを見つけてください',
+          sublabel: '最適な結果が得られるよう、自由に編集してください',
           placeholder: 'あなたは役立つアシスタントです',
         },
         warnings: {
-          promptChanged: 'システムプロンプトが手動で変更されました',
+          promptChanged: 'システムプロンプトが変更されました',
         },
       },
       sidebarContent: {
         menuItems: {
           chat: 'チャット',
           models: 'モデル',
-          pals: 'パル',
+          pals: 'アシスタント',
           benchmark: 'ベンチマーク',
           settings: '設定',
           appInfo: 'アプリ情報',
@@ -1415,7 +1416,7 @@ export const l10n = {
           threeWeeksAgo: '3週間前',
           fourWeeksAgo: '4週間前',
           lastMonth: '先月',
-          older: '以前',
+          older: 'それ以前',
         },
       },
       usageStats: {
@@ -1425,40 +1426,39 @@ export const l10n = {
           total: '合計: ',
           usage: '使用率: ',
         },
-        byteSizes: ['バイト', 'KB', 'MB', 'GB'],
+        byteSizes: ['B', 'KB', 'MB', 'GB'],
       },
     },
     validation: {
-      nameRequired: '名前が必要です',
-      systemPromptRequired: 'システムプロンプトが必要です',
-      worldRequired: '世界の設定が必要です',
-      locationRequired: '場所が必要です',
-      aiRoleRequired: 'AIの役割が必要です',
-      userRoleRequired: 'ユーザーの役割が必要です',
-      situationRequired: '状況が必要です',
-      toneStyleRequired: 'トーン/スタイルが必要です',
+      nameRequired: '名前を入力してください',
+      systemPromptRequired: 'システムプロンプトを入力してください',
+      worldRequired: '世界観を入力してください',
+      locationRequired: '場所を入力してください',
+      aiRoleRequired: 'AIの役割を入力してください',
+      userRoleRequired: 'ユーザーの役割を入力してください',
+      situationRequired: '状況を入力してください',
+      toneStyleRequired: '雰囲気/スタイルを入力してください',
     },
     screenTitles: {
       chat: 'チャット',
       models: 'モデル',
-      pals: 'パル（実験的）',
+      pals: 'アシスタント（実験的）',
       benchmark: 'ベンチマーク',
       settings: '設定',
       appInfo: 'アプリ情報',
       testCompletion: 'テスト完了',
     },
     chat: {
-      conversationReset: '会話がリセットされました！',
+      conversationReset: '会話をリセットしました',
       modelNotLoaded:
         'モデルが読み込まれていません。モデルを初期化してください。',
       completionFailed: '生成に失敗しました: ',
       loadingModel: 'モデルを読み込み中...',
-      typeYourMessage: 'メッセージを入力してください',
-      load: '読み込み',
+      typeYourMessage: 'メッセージを入力',
+      load: '読み込む',
       goToModels: 'モデルへ移動',
-      readyToChat:
-        'チャットの準備はできましたか？最後に使用したモデルを読み込みます。',
-      pleaseLoadModel: 'チャットするにはモデルを読み込んでください。',
+      readyToChat: 'チャットを始めましょう。前回使用したモデルを読み込みます。',
+      pleaseLoadModel: 'チャットを開始するにはモデルを読み込んでください。',
     },
     benchmark: {
       title: 'ベンチマーク',
@@ -1479,12 +1479,12 @@ export const l10n = {
         hideRawData: '生データを隠す',
       },
       messages: {
-        pleaseSelectModel: '最初にモデルを選択して初期化してください',
+        pleaseSelectModel: 'モデルを選択して初期化してください',
         testWarning:
-          '注意：大きなモデルではテストに最大2～5分かかる場合があり、開始後は中断できません。',
-        keepScreenOpen: 'この画面を開いたままにしてください。',
+          '注意：大きなモデルでは最大2～5分かかる場合があり、開始後は中断できません。',
+        keepScreenOpen: '画面を開いたままにしておいてください。',
         initializingModel: 'モデルを初期化中...',
-        modelMaxValue: '(最大値: {{maxValue}})',
+        modelMaxValue: '(最大: {{maxValue}})',
       },
       dialogs: {
         advancedSettings: {
@@ -1492,7 +1492,7 @@ export const l10n = {
           testProfile: 'テストプロファイル',
           customParameters: 'カスタムパラメーター',
           description:
-            '特定のテストシナリオのベンチマークパラメータを微調整します。',
+            '特定のテストシナリオに合わせてベンチマーク設定を調整できます。',
         },
         deleteResult: {
           title: '結果を削除',
@@ -1506,8 +1506,8 @@ export const l10n = {
           title: 'ベンチマーク結果を共有',
           sharedDataTitle: '共有されるデータ：',
           deviceAndModelInfo: '• デバイス仕様とモデル情報',
-          performanceMetrics: '• パフォーマンスメトリクス',
-          dontShowAgain: 'このメッセージを再表示しない',
+          performanceMetrics: '• パフォーマンス指標',
+          dontShowAgain: '次回から表示しない',
         },
       },
       sections: {
@@ -1528,21 +1528,21 @@ export const l10n = {
           ubatch: 'Uバッチ: {{ubatch}}',
           cpuThreads: 'CPUスレッド: {{threads}}',
           gpuLayers: 'GPUレイヤー: {{layers}}',
-          flashAttentionEnabled: 'Flash Attention Enabled',
-          flashAttentionDisabled: 'Flash Attention Disabled',
+          flashAttentionEnabled: 'Flash Attention 有効',
+          flashAttentionDisabled: 'Flash Attention 無効',
           cacheTypes: 'キャッシュタイプ: {{cacheK}}/{{cacheV}}',
         },
         results: {
           promptProcessing: 'プロンプト処理',
           tokenGeneration: 'トークン生成',
           totalTime: '合計時間',
-          peakMemory: 'ピークメモリ',
+          peakMemory: '最大メモリ使用量',
           tokensPerSecond: 'トークン/秒',
         },
         actions: {
           deleteButton: '',
           submittedText: '✓ 共有先：',
-          leaderboardLink: 'AIフォンリーダーボード ↗',
+          leaderboardLink: 'AIスマホリーダーボード ↗',
           cannotShare: '共有できません',
           cannotShareTooltip: 'ローカルモデルの結果は共有できません',
           submitButton: 'リーダーボードに送信',
@@ -1550,10 +1550,10 @@ export const l10n = {
         },
         errors: {
           networkRetry: '接続を確認して再試行',
-          appCheckRetry: '送信を再試行',
+          appCheckRetry: '送信をやり直す',
           serverRetry: '後でもう一度お試しください',
           genericRetry: '再試行',
-          failedToSubmit: 'ベンチマークの送信に失敗しました',
+          failedToSubmit: 'ベンチマーク結果の送信に失敗しました',
         },
       },
       deviceInfoCard: {
@@ -1569,7 +1569,7 @@ export const l10n = {
           architecture: 'アーキテクチャ',
           totalMemory: '総メモリ',
           deviceId: 'デバイスID',
-          cpuCores: 'CPUコア',
+          cpuCores: 'CPUコア数',
           cpuModel: 'CPUモデル',
           chipset: 'チップセット',
           instructions: '命令セット',
@@ -1793,8 +1793,7 @@ export const l10n = {
         modelUpdatedShort: '{{time}}前',
         modelUpdatedJustNowLong: '刚刚更新',
         modelUpdatedJustNowShort: '刚刚',
-        errorOccurred:
-          'An error occurred. Please check the error message above.',
+        errorOccurred: '无法加载模型。请重试。',
       },
       modelCard: {
         alerts: {
