@@ -2188,10 +2188,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@pocketpalai/llama.rn@^0.5.8":
-  version "0.5.8"
-  resolved "https://registry.yarnpkg.com/@pocketpalai/llama.rn/-/llama.rn-0.5.8.tgz#7302b0fcfad6bdb88caccf36b42337513f8e96f8"
-  integrity sha512-Lgrz7GzceNdajlHID+zS9vl0TcRhuVzQG2t6weMrVd27rbsPwjutQa6K0dVV3EagvqRIkTrZsY2pBh8U+oH0ew==
+"@pocketpalai/llama.rn@0.5.8-1":
+  version "0.5.8-1"
+  resolved "https://registry.yarnpkg.com/@pocketpalai/llama.rn/-/llama.rn-0.5.8-1.tgz#247bf66e1ad0293663a850a40f25a408916e97e4"
+  integrity sha512-bQWe18RPNjjpjjfTfOUEEAUYu54HfnkShzeAqcMD1Vts6JBLCyfQrGmLY2igacLBjXktt9LAKKoC0y051iUo0A==
 
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
