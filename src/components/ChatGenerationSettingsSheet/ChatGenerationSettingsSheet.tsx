@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Sheet} from '../Sheet/Sheet';
 import {CompletionSettings} from '..';
-import {CompletionParams} from '@pocketpalai/llama.rn';
+import {CompletionParams} from '../../utils/completionTypes';
 import {chatSessionStore, defaultCompletionSettings} from '../../store';
 import {styles} from './styles';
 import {
@@ -115,7 +115,7 @@ export const ChatGenerationSettingsSheet = ({
     onClose();
   };
 
-  const handleSaveSettings = () => {
+  const handleSaveSettings = async () => {
     // Convert string values to numbers where needed
     const processedSettings = Object.entries(settings).reduce(
       (acc, [key, value]) => {
@@ -175,20 +175,22 @@ export const ChatGenerationSettingsSheet = ({
     }
 
     if (session) {
-      chatSessionStore.updateSessionCompletionSettings(
+      await chatSessionStore.updateSessionCompletionSettings(
         processedSettings.settings,
       );
     } else {
-      chatSessionStore.setNewChatCompletionSettings(processedSettings.settings);
+      await chatSessionStore.setNewChatCompletionSettings(
+        processedSettings.settings,
+      );
     }
     onCloseSheet();
   };
 
-  const handleApplyToPreset = () => {
+  const handleApplyToPreset = async () => {
     if (session) {
       // Apply current session settings to preset settings
-      handleSaveSettings(); // First save the current UI settings to the session
-      chatSessionStore.applySessionSettingsToGlobal();
+      await handleSaveSettings(); // First save the current UI settings to the session
+      await chatSessionStore.applySessionSettingsToGlobal();
       Alert.alert(
         l10n.components.chatGenerationSettingsSheet.applytoPresetAlert.title,
         l10n.components.chatGenerationSettingsSheet.applytoPresetAlert.message,

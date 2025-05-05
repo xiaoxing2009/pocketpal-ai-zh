@@ -1,4 +1,4 @@
-import {CompletionParams, NativeLlamaContext} from '@pocketpalai/llama.rn';
+import {NativeLlamaContext} from '@pocketpalai/llama.rn';
 
 import {deviceInfo} from './device-info';
 
@@ -9,6 +9,7 @@ import {
   ModelFile,
   ModelOrigin,
 } from '../../src/utils/types';
+import {CompletionParams} from '../../src/utils/completionTypes';
 
 export const mockContextModel: NativeLlamaContext['model'] = {
   desc: '',

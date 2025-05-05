@@ -21,6 +21,8 @@ const config = {
         inlineRequires: true,
       },
     }),
+    // Make sure decorators are properly transformed
+    enableBabelRuntime: true,
   },
   //watchFolders: [...localPackagePaths],
 };

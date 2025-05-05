@@ -1,4 +1,4 @@
-import {View, Text} from 'react-native';
+import {View} from 'react-native';
 import React, {useMemo} from 'react';
 
 import {marked} from 'marked';
@@ -9,8 +9,9 @@ import RenderHtml, {
 } from 'react-native-render-html';
 
 import {useTheme} from '../../hooks';
+import {ThinkingBubble} from '../ThinkingBubble';
 
-import {createTagsStyles, createStyles} from './styles';
+import {createTagsStyles} from './styles';
 
 marked.use({
   langPrefix: 'language-',
@@ -25,14 +26,13 @@ interface MarkdownViewProps {
   selectable?: boolean;
 }
 
-const ThinkRenderer = ({TDefaultRenderer, ...props}, styles) => (
-  <View style={styles.thinkContainer}>
-    <View style={styles.thinkTextContainer}>
-      <Text style={styles.thinkText}>💭 Thinking...</Text>
-    </View>
-    <TDefaultRenderer {...props} />
-  </View>
-);
+const ThinkingRenderer = ({TDefaultRenderer, ...props}: any) => {
+  return (
+    <ThinkingBubble>
+      <TDefaultRenderer {...props} />
+    </ThinkingBubble>
+  );
+};
 
 export const MarkdownView: React.FC<MarkdownViewProps> = React.memo(
   ({markdownText, maxMessageWidth, selectable = false}) => {
@@ -40,7 +40,6 @@ export const MarkdownView: React.FC<MarkdownViewProps> = React.memo(
 
     const theme = useTheme();
     const tagsStyles = useMemo(() => createTagsStyles(theme), [theme]);
-    const styles = createStyles(theme);
 
     const customHTMLElementModels = useMemo(
       () => ({
@@ -62,11 +61,11 @@ export const MarkdownView: React.FC<MarkdownViewProps> = React.memo(
 
     const renderers = useMemo(
       () => ({
-        think: props => ThinkRenderer(props, styles),
-        thought: props => ThinkRenderer(props, styles),
-        thinking: props => ThinkRenderer(props, styles),
+        think: (props: any) => ThinkingRenderer(props),
+        thought: (props: any) => ThinkingRenderer(props),
+        thinking: (props: any) => ThinkingRenderer(props),
       }),
-      [styles],
+      [],
     );
 
     const defaultTextProps = useMemo(

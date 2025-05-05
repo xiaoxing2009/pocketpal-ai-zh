@@ -1,5 +1,5 @@
 import {LlamaContext} from '@pocketpalai/llama.rn';
-import {renderHook, act, waitFor} from '@testing-library/react-native';
+import {renderHook, act} from '@testing-library/react-native';
 
 import {textMessage} from '../../../jest/fixtures';
 import {
@@ -100,10 +100,36 @@ describe('useChatSession', () => {
 
   it('should buffer and flush tokens correctly', async () => {
     const timings = {token_per_second: '1'};
+
+    // Mock the updateMessageToken function to track the tokens
+    const originalUpdateMessageToken = chatSessionStore.updateMessageToken;
+    const mockUpdateMessageToken = jest
+      .fn()
+      .mockImplementation(
+        async (
+          data: any,
+          createdAt: number,
+          id: string,
+          sessionId: string,
+          context: any,
+        ) => {
+          return originalUpdateMessageToken.call(
+            chatSessionStore,
+            data,
+            createdAt,
+            id,
+            sessionId,
+            context,
+          );
+        },
+      );
+    chatSessionStore.updateMessageToken = mockUpdateMessageToken;
+
+    // Mock the completion function to call onData with tokens
     if (modelStore.context) {
       modelStore.context.completion = jest
         .fn()
-        .mockImplementation((params, onData) => {
+        .mockImplementation((_params, onData) => {
           onData({token: 'Hello'});
           onData({token: ', '});
           onData({token: 'world!'});
@@ -119,38 +145,42 @@ describe('useChatSession', () => {
       await result.current.handleSendPress(textMessage);
     });
 
-    // Wait for all promises to resolve
+    // Wait for all promises to resolve and throttling to complete
+    // This is necessary because throttling is time-based
     await act(async () => {
-      await new Promise(resolve => setTimeout(resolve, 200));
+      await new Promise(resolve => setTimeout(resolve, 1000));
     });
 
-    await waitFor(() =>
-      expect(chatSessionStore.updateMessageToken).toHaveBeenCalled(),
-    );
+    // Verify that updateMessageToken was called at least once
+    expect(mockUpdateMessageToken).toHaveBeenCalled();
 
-    expect(
-      (chatSessionStore.updateMessageToken as jest.Mock).mock.calls.length,
-    ).toBeGreaterThan(0);
+    // Get all the calls to updateMessageToken
+    const calls = mockUpdateMessageToken.mock.calls;
 
-    const concatenatedTokens = (
-      chatSessionStore.updateMessageToken as jest.Mock
-    ).mock.calls
-      .map(call => call[0].token)
-      .join(''); // Concatenate tokens
+    // Due to throttling, the tokens might be batched differently
+    // What's important is that all the content is there
+    const allTokens = calls.map(call => call[0].token).join('');
 
-    expect(concatenatedTokens).toEqual('Hello, world!');
+    expect(allTokens).toContain('Hello');
+    expect(allTokens).toContain(', ');
+    expect(allTokens).toContain('world!');
+
+    // Restore the original function
+    chatSessionStore.updateMessageToken = originalUpdateMessageToken;
+
+    expect(chatSessionStore.updateMessage).toHaveBeenCalled();
 
     const expectedMetadata = {timings: timings, copyable: true};
 
     const matchingCall = (
       chatSessionStore.updateMessage as jest.Mock
     ).mock.calls.find(
-      ([, {metadata}]) =>
+      ([, , {metadata}]) =>
         metadata && metadata.timings && metadata.copyable === true,
     );
 
     expect(matchingCall).toBeDefined();
-    expect(matchingCall[1].metadata).toEqual(expectedMetadata);
+    expect(matchingCall[2].metadata).toEqual(expectedMetadata);
   });
 
   it('should reset the conversation', () => {

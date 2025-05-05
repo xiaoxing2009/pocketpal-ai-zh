@@ -2,7 +2,6 @@ import {View} from 'react-native';
 import React, {useState, useEffect} from 'react';
 
 import Slider from '@react-native-community/slider';
-import {CompletionParams} from '@pocketpalai/llama.rn';
 import {Text, Switch, SegmentedButtons} from 'react-native-paper';
 
 import {TextInput} from '..';
@@ -16,6 +15,7 @@ import {
   COMPLETION_PARAMS_METADATA,
   validateNumericField,
 } from '../../utils/modelSettings';
+import {CompletionParams} from '../../utils/completionTypes';
 
 interface Props {
   settings: CompletionParams;
@@ -33,7 +33,7 @@ export const CompletionSettings: React.FC<Props> = ({settings, onChange}) => {
     setLocalSliderValues({});
   }, [settings]);
 
-  const handleOnChange = (name, value) => {
+  const handleOnChange = (name: string, value: any) => {
     onChange(name, value);
   };
 
@@ -80,37 +80,43 @@ export const CompletionSettings: React.FC<Props> = ({settings, onChange}) => {
     return (
       <View style={styles.settingItem}>
         <Text variant="labelSmall" style={styles.settingLabel}>
-          {name.toUpperCase().replace('_', ' ')}
+          {String(name).toUpperCase().replace('_', ' ')}
         </Text>
-        <Text style={styles.description}>{l10n.completionParams[name]}</Text>
+        <Text style={styles.description}>
+          {l10n.completionParams[String(name)]}
+        </Text>
         <TextInput
           value={value}
-          onChangeText={_value => onChange(name, _value)}
+          onChangeText={_value => onChange(String(name), _value)}
           keyboardType="numeric"
           error={!validation.isValid}
           helperText={validation.errorMessage}
-          testID={`${name}-input`}
+          testID={`${String(name)}-input`}
         />
       </View>
     );
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const renderSwitch = (name: string) => (
-    <View style={[styles.settingItem, styles.row]}>
-      <View>
-        <Text variant="labelSmall" style={styles.settingLabel}>
-          {name.toUpperCase().replace('_', ' ')}
-        </Text>
+  const renderSwitch = (name: string) => {
+    // Convert snake_case to UPPER CASE with spaces for display
+    const displayName = name.toUpperCase().replace(/_/g, ' ');
+
+    return (
+      <View style={styles.settingItem}>
+        <View style={styles.switchHeader}>
+          <Text variant="labelSmall" style={styles.settingLabel}>
+            {displayName}
+          </Text>
+          <Switch
+            value={settings[name]}
+            onValueChange={value => onChange(name, value)}
+            testID={`${name}-switch`}
+          />
+        </View>
         <Text style={styles.description}>{l10n.completionParams[name]}</Text>
       </View>
-      <Switch
-        value={settings[name]}
-        onValueChange={value => onChange(name, value)}
-        testID={`${name}-switch`}
-      />
-    </View>
-  );
+    );
+  };
 
   const renderMirostatSelector = () => {
     const description = l10n.completionParams.mirostat;
@@ -146,6 +152,7 @@ export const CompletionSettings: React.FC<Props> = ({settings, onChange}) => {
   return (
     <View style={styles.container}>
       {renderIntegerInput({name: 'n_predict'})}
+      {renderSwitch('include_thinking_in_context')}
       {renderSlider({name: 'temperature'})}
       {renderSlider({name: 'top_k', step: 1})}
       {renderSlider({name: 'top_p'})}

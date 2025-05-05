@@ -1,14 +1,16 @@
-import {CompletionParams, LlamaContext} from '@pocketpalai/llama.rn';
-import * as RNFS from '@dr.pogodin/react-native-fs';
+import {LlamaContext} from '@pocketpalai/llama.rn';
 import {makeAutoObservable, runInAction} from 'mobx';
 import {format, isToday, isYesterday} from 'date-fns';
+import * as RNFS from '@dr.pogodin/react-native-fs';
 
-import {assistant, defaultCompletionParams} from '../utils/chat';
+import {assistant} from '../utils/chat';
 import {MessageType} from '../utils/types';
+import {CompletionParams} from '../utils/completionTypes';
+import {chatSessionRepository} from '../repositories/ChatSessionRepository';
+import {defaultCompletionParams} from '../utils/completionSettingsVersions';
 
 const NEW_SESSION_TITLE = 'New Session';
 const TITLE_LIMIT = 40;
-const GLOBAL_SETTINGS_FILE = 'global-completion-settings.json';
 
 export interface SessionMetaData {
   id: string;
@@ -50,11 +52,65 @@ class ChatSessionStore {
   newChatPalId: string | undefined = undefined;
   // Store localized date group names
   dateGroupNames: typeof DEFAULT_GROUP_NAMES = DEFAULT_GROUP_NAMES;
+  // Migration status
+  isMigrating: boolean = false;
+  migrationComplete: boolean = false;
 
   constructor() {
     makeAutoObservable(this);
-    this.loadSessionList();
-    this.loadGlobalSettings();
+    this.initialize();
+  }
+
+  async initialize() {
+    try {
+      // First check if migration is needed without setting isMigrating flag
+      // This is a quick check that just looks for the flag file
+      const migrationNeeded = await this.isMigrationNeeded();
+
+      if (migrationNeeded) {
+        // Only set isMigrating to true if migration is actually needed
+        runInAction(() => {
+          this.isMigrating = true;
+        });
+
+        // Perform the actual migration
+        await chatSessionRepository.checkAndMigrateFromJSON();
+
+        runInAction(() => {
+          this.isMigrating = false;
+          this.migrationComplete = true;
+        });
+      } else {
+        // Migration not needed, just mark as complete
+        runInAction(() => {
+          this.migrationComplete = true;
+        });
+      }
+
+      // Load data from database (whether migration happened or not)
+      await this.loadSessionList();
+      await this.loadGlobalSettings();
+    } catch (error) {
+      console.error('Failed to initialize ChatSessionStore:', error);
+      runInAction(() => {
+        this.isMigrating = false;
+        this.migrationComplete = false;
+      });
+    }
+  }
+
+  // Helper method to check if migration is needed without setting isMigrating flag
+  private async isMigrationNeeded(): Promise<boolean> {
+    try {
+      // Check if migration flag file exists
+      const migrationFlagPath = `${RNFS.DocumentDirectoryPath}/db-migration-complete.flag`;
+      const migrationComplete = await RNFS.exists(migrationFlagPath);
+
+      return !migrationComplete;
+    } catch (error) {
+      console.error('Error checking migration status:', error);
+      return false; // Assume no migration needed if we can't check
+    }
   }
 
   // Method to set localized date group names from React components
@@ -76,11 +132,44 @@ class ChatSessionStore {
   }
 
   async loadSessionList(): Promise<void> {
-    const path = `${RNFS.DocumentDirectoryPath}/session-metadata.json`;
     try {
-      const data = await RNFS.readFile(path);
+      const sessions = await chatSessionRepository.getAllSessions();
+
+      // Convert to SessionMetaData format
+      const sessionMetadata: SessionMetaData[] = [];
+
+      for (const session of sessions) {
+        const sessionData = await chatSessionRepository.getSessionById(
+          session.id,
+        );
+        if (!sessionData) {
+          continue;
+        }
+
+        const messages = sessionData.messages.map(msg => msg.toMessageObject());
+
+        // Handle case where completionSettings might be null
+        let completionSettings = defaultCompletionSettings;
+        if (sessionData.completionSettings) {
+          completionSettings = sessionData.completionSettings.getSettings();
+        } else {
+          console.warn(
+            `No completion settings found for session ${session.id}, using defaults`,
+          );
+        }
+
+        sessionMetadata.push({
+          id: session.id,
+          title: session.title,
+          date: session.date,
+          messages,
+          completionSettings,
+          activePalId: session.activePalId,
+        });
+      }
+
       runInAction(() => {
-        this.sessions = JSON.parse(data);
+        this.sessions = sessionMetadata;
       });
     } catch (error) {
       console.error('Failed to load session list:', error);
@@ -88,41 +177,21 @@ class ChatSessionStore {
   }
 
   async loadGlobalSettings(): Promise<void> {
-    const path = `${RNFS.DocumentDirectoryPath}/${GLOBAL_SETTINGS_FILE}`;
     try {
-      const exists = await RNFS.exists(path);
-      if (exists) {
-        const data = await RNFS.readFile(path);
-        runInAction(() => {
-          this.newChatCompletionSettings = JSON.parse(data);
-        });
-      } else {
-        // If file doesn't exist, persist default settings
-        await this.saveGlobalSettings();
-      }
+      const settings =
+        await chatSessionRepository.getGlobalCompletionSettings();
+
+      runInAction(() => {
+        this.newChatCompletionSettings = settings;
+      });
     } catch (error) {
       console.error('Failed to load global settings:', error);
     }
   }
 
-  async saveGlobalSettings(): Promise<void> {
-    try {
-      await RNFS.writeFile(
-        `${RNFS.DocumentDirectoryPath}/${GLOBAL_SETTINGS_FILE}`,
-        JSON.stringify(this.newChatCompletionSettings),
-      );
-    } catch (error) {
-      console.error('Failed to save global settings:', error);
-    }
-  }
-
   async deleteSession(id: string): Promise<void> {
     try {
-      const sessionFile = `${RNFS.DocumentDirectoryPath}/${id}.llama-session.bin`;
-      const fileExists = await RNFS.exists(sessionFile);
-      if (fileExists) {
-        await RNFS.unlink(sessionFile);
-      }
+      await chatSessionRepository.deleteSession(id);
 
       if (id === this.activeSessionId) {
         this.resetActiveSession();
@@ -131,11 +200,6 @@ class ChatSessionStore {
       runInAction(() => {
         this.sessions = this.sessions.filter(session => session.id !== id);
       });
-
-      await RNFS.writeFile(
-        `${RNFS.DocumentDirectoryPath}/session-metadata.json`,
-        JSON.stringify(this.sessions),
-      );
     } catch (error) {
       console.error('Failed to delete session:', error);
     }
@@ -172,17 +236,25 @@ class ChatSessionStore {
   }
 
   // Update session title by session ID
-  updateSessionTitleBySessionId(sessionId: string, newTitle: string): void {
-    const session = this.sessions.find(s => s.id === sessionId);
-    if (session) {
-      runInAction(() => {
-        session.title = newTitle;
-      });
-      this.saveSessionsMetadata();
+  async updateSessionTitleBySessionId(
+    sessionId: string,
+    newTitle: string,
+  ): Promise<void> {
+    try {
+      await chatSessionRepository.updateSessionTitle(sessionId, newTitle);
+
+      const session = this.sessions.find(s => s.id === sessionId);
+      if (session) {
+        runInAction(() => {
+          session.title = newTitle;
+        });
+      }
+    } catch (error) {
+      console.error('Failed to update session title:', error);
     }
   }
 
-  updateSessionTitle(session: SessionMetaData) {
+  async updateSessionTitle(session: SessionMetaData) {
     if (session.messages.length > 0) {
       const message = session.messages[session.messages.length - 1];
       if (session.title === NEW_SESSION_TITLE && message.type === 'text') {
@@ -192,22 +264,37 @@ class ChatSessionStore {
               ? `${message.text.substring(0, TITLE_LIMIT)}...`
               : message.text;
         });
+
+        // Update in database - await the async call
+        await chatSessionRepository.updateSessionTitle(
+          session.id,
+          session.title,
+        );
       }
     }
   }
 
-  addMessageToCurrentSession(message: MessageType.Any): void {
+  async addMessageToCurrentSession(message: MessageType.Any): Promise<void> {
     if (this.activeSessionId) {
       const session = this.sessions.find(s => s.id === this.activeSessionId);
       if (session) {
-        session.messages.unshift(message);
-        this.updateSessionTitle(session);
-        this.saveSessionsMetadata();
+        // Add to database
+        const newMessage = await chatSessionRepository.addMessageToSession(
+          this.activeSessionId,
+          message,
+        );
+        message.id = newMessage.id;
+
+        // Update local state
+        await this.updateSessionTitle(session);
+        runInAction(() => {
+          session.messages.unshift(message);
+        });
       }
     } else {
       // Always use the global settings for new sessions
       const settings = {...this.newChatCompletionSettings};
-      this.createNewSession(NEW_SESSION_TITLE, [message], settings);
+      await this.createNewSession(NEW_SESSION_TITLE, [message], settings);
     }
   }
 
@@ -229,25 +316,16 @@ class ChatSessionStore {
     return [];
   }
 
-  async saveSessionsMetadata(): Promise<void> {
-    try {
-      await RNFS.writeFile(
-        `${RNFS.DocumentDirectoryPath}/session-metadata.json`,
-        JSON.stringify(this.sessions),
-      );
-    } catch (error) {
-      console.error('Failed to save sessions metadata:', error);
-    }
-  }
-
-  setNewChatCompletionSettings(settings: CompletionParams) {
+  async setNewChatCompletionSettings(settings: CompletionParams) {
     this.newChatCompletionSettings = settings;
-    this.saveGlobalSettings();
+    await chatSessionRepository.saveGlobalCompletionSettings(settings);
   }
 
-  resetNewChatCompletionSettings() {
+  async resetNewChatCompletionSettings() {
     this.newChatCompletionSettings = {...defaultCompletionSettings};
-    this.saveGlobalSettings();
+    await chatSessionRepository.saveGlobalCompletionSettings(
+      this.newChatCompletionSettings,
+    );
   }
 
   async createNewSession(
@@ -255,91 +333,155 @@ class ChatSessionStore {
     initialMessages: MessageType.Any[] = [],
     completionSettings: CompletionParams = defaultCompletionSettings,
   ): Promise<void> {
-    const id = new Date().toISOString();
-    const metaData: SessionMetaData = {
-      id,
-      title,
-      date: id,
-      messages: initialMessages,
-      completionSettings: {...completionSettings}, // Make a copy of the settings
-    };
+    try {
+      // Create in database
+      const newSession = await chatSessionRepository.createSession(
+        title,
+        initialMessages,
+        completionSettings,
+        this.newChatPalId,
+      );
 
-    if (this.newChatPalId) {
-      metaData.activePalId = this.newChatPalId;
-      this.newChatPalId = undefined;
+      // Get the full session data
+      const sessionData = await chatSessionRepository.getSessionById(
+        newSession.id,
+      );
+      if (!sessionData) {
+        return;
+      }
+
+      const messages = sessionData.messages.map(msg => msg.toMessageObject());
+
+      // Handle case where completionSettings might be null
+      let settings = completionSettings; // Use the settings passed to createNewSession as fallback
+      if (sessionData.completionSettings) {
+        settings = sessionData.completionSettings.getSettings();
+      } else {
+        console.warn(
+          `No completion settings found for new session ${newSession.id}, using provided settings`,
+        );
+      }
+
+      // Create metadata object
+      const metaData: SessionMetaData = {
+        id: newSession.id,
+        title,
+        date: newSession.date,
+        messages,
+        completionSettings: settings,
+      };
+
+      if (this.newChatPalId) {
+        metaData.activePalId = this.newChatPalId;
+        this.newChatPalId = undefined;
+      }
+
+      await this.updateSessionTitle(metaData);
+
+      runInAction(() => {
+        this.sessions.push(metaData);
+        this.activeSessionId = newSession.id;
+      });
+    } catch (error) {
+      console.error('Failed to create new session:', error);
     }
-
-    this.updateSessionTitle(metaData);
-    this.sessions.push(metaData);
-    console.log('this.sessions', this.sessions);
-    this.activeSessionId = id;
-    await RNFS.writeFile(
-      `${RNFS.DocumentDirectoryPath}/session-metadata.json`,
-      JSON.stringify(this.sessions),
-    );
   }
 
-  updateMessage(id: string, update: Partial<MessageType.Text>): void {
+  async updateMessage(
+    id: string,
+    sessionId: string,
+    update: Partial<MessageType.Text>,
+  ): Promise<void> {
+    try {
+      // Update in database
+      await chatSessionRepository.updateMessage(id, update);
+
+      // Determine which session to update
+      const targetSessionId = sessionId || this.activeSessionId;
+      if (targetSessionId) {
+        const session = this.sessions.find(s => s.id === targetSessionId);
+        if (session) {
+          const index = session.messages.findIndex(msg => msg.id === id);
+          if (index >= 0 && session.messages[index].type === 'text') {
+            // Update local state - only update the specific message
+            runInAction(() => {
+              session.messages[index] = {
+                ...session.messages[index],
+                ...update,
+              } as MessageType.Text;
+            });
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Failed to update message:', error);
+    }
+  }
+
+  async updateSessionCompletionSettings(settings: CompletionParams) {
     if (this.activeSessionId) {
       const session = this.sessions.find(s => s.id === this.activeSessionId);
       if (session) {
-        const index = session.messages.findIndex(msg => msg.id === id);
-        if (index >= 0 && session.messages[index].type === 'text') {
-          session.messages[index] = {
-            ...session.messages[index],
-            ...update,
-          } as MessageType.Text;
-          this.saveSessionsMetadata();
+        try {
+          // Update in database
+          await chatSessionRepository.updateSessionCompletionSettings(
+            this.activeSessionId,
+            settings,
+          );
+
+          // Update local state directly - no need to reload from database
+          runInAction(() => {
+            session.completionSettings = settings;
+          });
+        } catch (error) {
+          console.error('Failed to update session completion settings:', error);
         }
       }
     }
   }
 
-  updateSessionCompletionSettings(settings: CompletionParams) {
-    if (this.activeSessionId) {
-      const session = this.sessions.find(s => s.id === this.activeSessionId);
-      if (session) {
-        session.completionSettings = settings;
-        this.saveSessionsMetadata();
-      }
-    }
-  }
-
   // Apply current session settings to global settings
-  applySessionSettingsToGlobal() {
+  async applySessionSettingsToGlobal() {
     if (this.activeSessionId) {
       const session = this.sessions.find(s => s.id === this.activeSessionId);
       if (session) {
-        this.newChatCompletionSettings = {...session.completionSettings};
-        this.saveGlobalSettings();
+        await this.setNewChatCompletionSettings({
+          ...session.completionSettings,
+        });
       }
     }
   }
 
   // Reset current session settings to match global settings
-  resetSessionSettingsToGlobal() {
+  async resetSessionSettingsToGlobal() {
     if (this.activeSessionId) {
       const session = this.sessions.find(s => s.id === this.activeSessionId);
       if (session) {
-        session.completionSettings = {...this.newChatCompletionSettings};
-        this.saveSessionsMetadata();
+        await this.updateSessionCompletionSettings({
+          ...this.newChatCompletionSettings,
+        });
       }
     }
   }
 
-  updateMessageToken(
+  async updateMessageToken(
     data: any,
     createdAt: number,
     id: string,
+    sessionId: string | undefined,
     context: LlamaContext,
-  ): void {
+  ): Promise<void> {
     const {token} = data;
-    runInAction(() => {
-      if (this.activeSessionId) {
-        const session = this.sessions.find(s => s.id === this.activeSessionId);
-        if (session) {
-          const index = session.messages.findIndex(msg => msg.id === id);
-          if (index >= 0) {
+
+    if (this.activeSessionId) {
+      const session = sessionId
+        ? this.sessions.find(s => s.id === sessionId)
+        : this.sessions.find(s => s.id === this.activeSessionId);
+      if (session) {
+        const index = session.messages.findIndex(msg => msg.id === id);
+        if (index >= 0) {
+          // Update existing message
+          runInAction(() => {
             session.messages = session.messages.map((msg, i) => {
               if (msg.type === 'text' && i === index) {
                 return {
@@ -349,20 +491,49 @@ class ChatSessionStore {
               }
               return msg;
             });
-          } else {
-            session.messages.unshift({
-              author: assistant,
-              createdAt,
-              id,
-              text: token,
-              type: 'text',
-              metadata: {contextId: context?.id, copyable: true},
-            });
+          });
+
+          // Update the database with each token to ensure it's saved
+          // Since we throttle the calls, this shouldn't be too much of a performance hit
+          try {
+            const updatedMessage = session.messages[index];
+            if (updatedMessage.type === 'text') {
+              // Use the repository to update the message
+              await chatSessionRepository.updateMessage(id, {
+                text: updatedMessage.text,
+              });
+            }
+          } catch (error) {
+            console.error('Failed to update message in database:', error);
           }
-          this.saveSessionsMetadata();
+        } else {
+          // Create new message
+          const newMessage = {
+            author: assistant,
+            createdAt,
+            id,
+            text: token,
+            type: 'text',
+            metadata: {contextId: context?.id, copyable: true},
+          } as MessageType.Text;
+
+          // we can simply update the message in the database,
+          // since we create an empty message before calling update
+          try {
+            await chatSessionRepository.updateMessage(id, {
+              text: newMessage.text,
+            });
+
+            // Then update UI
+            runInAction(() => {
+              session.messages.unshift(newMessage);
+            });
+          } catch (error) {
+            console.error('Failed to add message to session:', error);
+          }
         }
       }
-    });
+    }
   }
 
   get groupedSessions(): SessionGroup {
@@ -472,22 +643,14 @@ class ChatSessionStore {
   /**
    * Commits the edit by actually removing messages after the edited message
    */
-  commitEdit(): void {
-    if (this.activeSessionId && this.editingMessageId) {
-      const session = this.sessions.find(s => s.id === this.activeSessionId);
-      if (session) {
-        const messageIndex = session.messages.findIndex(
-          msg => msg.id === this.editingMessageId,
-        );
-        if (messageIndex >= 0) {
-          runInAction(() => {
-            session.messages = session.messages.slice(messageIndex + 1);
-            this.isEditMode = false;
-            this.editingMessageId = null;
-            this.saveSessionsMetadata();
-          });
-        }
-      }
+  async commitEdit(): Promise<void> {
+    if (this.editingMessageId) {
+      // Remove messages after the edited message including the edited message as well.
+      await this.removeMessagesFromId(this.editingMessageId, true);
+      runInAction(() => {
+        this.isEditMode = false;
+        this.editingMessageId = null;
+      });
     }
   }
 
@@ -498,10 +661,10 @@ class ChatSessionStore {
    * @param messageId - The ID of the message to start removal from.
    * @param includeMessage - Whether to include the message with the given ID in the removal.
    */
-  removeMessagesFromId(
+  async removeMessagesFromId(
     messageId: string,
     includeMessage: boolean = true,
-  ): void {
+  ): Promise<void> {
     if (this.activeSessionId) {
       const session = this.sessions.find(s => s.id === this.activeSessionId);
       if (session) {
@@ -509,11 +672,24 @@ class ChatSessionStore {
           msg => msg.id === messageId,
         );
         if (messageIndex >= 0) {
+          // Get messages to remove
+          const endIndex = includeMessage ? messageIndex + 1 : messageIndex;
+          // Slice from the start to the end index, since messages are in reverse order, ie 0 is the latest.
+          const messagesToRemove = session.messages.slice(0, endIndex);
+
+          // Remove from database
+          for (const msg of messagesToRemove) {
+            await chatSessionRepository.deleteMessage(msg.id);
+          }
+
+          const updatedSession = await chatSessionRepository.getSessionById(
+            this.activeSessionId,
+          );
+
+          // Update local state
           runInAction(() => {
-            session.messages = session.messages.slice(
-              includeMessage ? messageIndex + 1 : messageIndex,
-            );
-            this.saveSessionsMetadata();
+            session.messages =
+              updatedSession?.messages?.map(msg => msg.toMessageObject()) || [];
           });
         }
       }
@@ -528,13 +704,19 @@ class ChatSessionStore {
     return this.newChatPalId;
   }
 
-  setActivePal(palId: string | undefined): void {
+  async setActivePal(palId: string | undefined): Promise<void> {
     if (this.activeSessionId) {
       const session = this.sessions.find(s => s.id === this.activeSessionId);
       if (session) {
+        // Update in database
+        await chatSessionRepository.setSessionActivePal(
+          this.activeSessionId,
+          palId,
+        );
+
+        // Update local state
         runInAction(() => {
           session.activePalId = palId;
-          this.saveSessionsMetadata();
         });
       }
     } else {

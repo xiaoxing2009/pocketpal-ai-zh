@@ -20,7 +20,7 @@ export const createStyles = (theme: Theme) =>
       paddingVertical: 0,
       backgroundColor: theme.colors.menuBackground,
       borderRadius: 12,
-      overflow: 'hidden',
+      // overflow: 'hidden', This removes shadow
       marginRight: 10,
     },
     contentWithSubmenu: {

@@ -105,8 +105,8 @@ export const ChatPalModelPickerSheet = observer(
     );
 
     const handlePalSelect = React.useCallback(
-      (pal: (typeof palStore.pals)[0] | undefined) => {
-        chatSessionStore.setActivePal(pal?.id);
+      async (pal: (typeof palStore.pals)[0] | undefined) => {
+        await chatSessionStore.setActivePal(pal?.id);
         if (
           pal?.defaultModel &&
           modelStore.activeModel &&

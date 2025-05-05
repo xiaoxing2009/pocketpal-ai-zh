@@ -48,7 +48,7 @@ export const useMessageActions = ({
       if (message.author.id === user.id) {
         // Remove all messages from this point (inclusive)
         const messageText = message.text;
-        chatSessionStore.removeMessagesFromId(message.id, true);
+        await chatSessionStore.removeMessagesFromId(message.id, true);
         await handleSendPress({text: messageText, type: 'text'});
       } else {
         // If it's the assistant's message, find and resubmit the last user message
@@ -61,7 +61,7 @@ export const useMessageActions = ({
 
         if (previousMessage && previousMessage.text) {
           const messageText = previousMessage.text;
-          chatSessionStore.removeMessagesFromId(previousMessage.id, true);
+          await chatSessionStore.removeMessagesFromId(previousMessage.id, true);
           await handleSendPress({text: messageText, type: 'text'});
         }
       }

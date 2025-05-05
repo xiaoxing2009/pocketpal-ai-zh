@@ -1,9 +1,7 @@
 import {applyTemplate, Templates} from 'chat-formatter';
-import {
-  CompletionParams,
-  JinjaFormattedChatResult,
-  LlamaContext,
-} from '@pocketpalai/llama.rn';
+import {JinjaFormattedChatResult, LlamaContext} from '@pocketpalai/llama.rn';
+import {CompletionParams} from './completionTypes';
+import {defaultCompletionParams} from './completionSettingsVersions';
 
 import {
   ChatMessage,
@@ -216,28 +214,7 @@ export function getHFDefaultSettings(hfModel: HuggingFaceModel): {
   };
 }
 
-export const defaultCompletionParams: CompletionParams = {
-  prompt: '',
-  n_predict: 1024, // The maximum number of tokens to predict when generating text.
-  temperature: 0.7, // The randomness of the generated text.
-  top_k: 40, // Limit the next token selection to the K most probable tokens.
-  top_p: 0.95, // Limit the next token selection to a subset of tokens with a cumulative probability above a threshold P.
-  min_p: 0.05, //The minimum probability for a token to be considered, relative to the probability of the most likely token.
-  xtc_threshold: 0.1, // Sets a minimum probability threshold for tokens to be removed.
-  xtc_probability: 0.0, // Sets the chance for token removal (checked once on sampler start)
-  typical_p: 1.0, // Enable locally typical sampling with parameter p. Default: `1.0`, which is disabled.
-  penalty_last_n: 64, // Last n tokens to consider for penalizing repetition. Default: `64`, where `0` is disabled and `-1` is ctx-size.
-  penalty_repeat: 1.0, // Control the repetition of token sequences in the generated text.
-  penalty_freq: 0.0, // Repeat alpha frequency penalty. Default: `0.0`, which is disabled.
-  penalty_present: 0.0, // Repeat alpha presence penalty. Default: `0.0`, which is disabled.
-  mirostat: 0, //Enable Mirostat sampling, controlling perplexity during text generation. Default: `0`, where `0` is disabled, `1` is Mirostat, and `2` is Mirostat 2.0.
-  mirostat_tau: 5, // Set the Mirostat target entropy, parameter tau. Default: `5.0`
-  mirostat_eta: 0.1, // Set the Mirostat learning rate, parameter eta.  Default: `0.1`
-  seed: -1,
-  n_probs: 0, // If greater than 0, the response also contains the probabilities of top N tokens for each generated token given the sampling settings.
-  stop: ['</s>'],
-  // emit_partial_completion: true, // This is not used in the current version of llama.rn
-};
+// Default completion parameters are now defined in settingsVersions.ts
 
 export const stops = [
   '</s>',
@@ -251,3 +228,37 @@ export const stops = [
   '<end_of_turn>',
   '<|endoftext|>',
 ];
+
+/**
+ * Removes thinking parts from text content.
+ * This function removes content between <think>, <thought>, or <thinking> tags and their closing tags.
+ *
+ * @param text - The text to process
+ * @returns The text with thinking parts removed
+ */
+export function removeThinkingParts(text: string): string {
+  // Check if the text contains any thinking tags
+  const hasThinkingTags =
+    text.includes('<think>') ||
+    text.includes('<thought>') ||
+    text.includes('<thinking>');
+
+  // If no thinking tags are found, return the original text
+  if (!hasThinkingTags) {
+    return text;
+  }
+
+  // Remove content between <think> and </think> tags
+  let result = text.replace(/<think>[\s\S]*?<\/think>/g, '');
+
+  // Remove content between <thought> and </thought> tags
+  result = result.replace(/<thought>[\s\S]*?<\/thought>/g, '');
+
+  // Remove content between <thinking> and </thinking> tags
+  result = result.replace(/<thinking>[\s\S]*?<\/thinking>/g, '');
+
+  // Log for debugging
+  console.log('Removed thinking parts from context');
+
+  return result;
+}

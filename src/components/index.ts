@@ -38,3 +38,4 @@ export * from './UsageStats';
 export * from './ChatHeader';
 export * from './ChatPalModelPickerSheet';
 export * from './ChatEmptyPlaceholder';
+export * from './DatabaseMigration';

@@ -1,5 +1,5 @@
-import {CompletionParams} from '@pocketpalai/llama.rn';
-import {defaultCompletionParams} from './chat';
+import {CompletionParams} from './completionTypes';
+import {defaultCompletionParams} from './completionSettingsVersions';
 
 export const LEGACY_QUANTIZATION_WARNINGS = [
   'Q4_0_4_8',
@@ -108,6 +108,10 @@ export const COMPLETION_PARAMS_METADATA: Partial<
     validation: {type: 'array', required: false},
     defaultValue: defaultCompletionParams.stop,
   },
+  include_thinking_in_context: {
+    validation: {type: 'boolean', required: false},
+    defaultValue: defaultCompletionParams.include_thinking_in_context,
+  },
 };
 
 // Validation helpers
@@ -162,6 +166,7 @@ export const validateCompletionSettings = (
   Object.entries(COMPLETION_PARAMS_METADATA).forEach(([key, metadata]) => {
     if (
       key in settings &&
+      metadata &&
       !validateNumericField(settings[key], metadata.validation)
     ) {
       const rule = metadata.validation;

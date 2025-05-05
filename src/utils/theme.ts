@@ -163,6 +163,20 @@ const createSemanticColors = (
   searchBarBackground: isDark
     ? 'rgba(28, 28, 30, 0.92)'
     : 'rgba(118, 118, 128, 0.12)',
+
+  // Thinking bubble specific
+  thinkingBubbleBackground: isDark ? '#142e4d' : '#f0f5fa',
+  thinkingBubbleText: isDark ? '#6abaff' : '#0a5999',
+  thinkingBubbleBorder: isDark
+    ? 'rgba(74, 140, 199, 0.6)'
+    : 'rgba(10, 89, 153, 0.4)',
+  thinkingBubbleShadow: isDark ? '#4a9fff' : '#0a5999',
+  thinkingBubbleChevronBackground: isDark
+    ? 'rgba(74, 140, 199, 0.15)'
+    : 'rgba(10, 89, 153, 0.1)',
+  thinkingBubbleChevronBorder: isDark
+    ? 'rgba(74, 140, 199, 0.3)'
+    : 'rgba(10, 89, 153, 0.2)',
 });
 
 export const fontStyles = {

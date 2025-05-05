@@ -1,10 +1,10 @@
+import {defaultCompletionParams} from '../completionSettingsVersions';
 import {
   isLegacyQuantization,
   validateNumericField,
   validateCompletionSettings,
   COMPLETION_PARAMS_METADATA,
 } from '../modelSettings';
-import {defaultCompletionParams} from '../chat';
 
 describe('modelSettings', () => {
   describe('isLegacyQuantization', () => {

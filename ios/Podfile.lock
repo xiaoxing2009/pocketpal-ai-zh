@@ -1771,7 +1771,7 @@ PODS:
     - Yoga
   - RNCPicker (2.10.2):
     - React-Core
-  - RNDeviceInfo (13.2.0):
+  - RNDeviceInfo (14.0.4):
     - React-Core
   - RNFBApp (21.6.1):
     - Firebase/CoreOnly (= 11.5.0)
@@ -1952,6 +1952,27 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - RNShare (12.0.9):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - RNSVG (15.11.1):
     - React-Core
   - RNVectorIcons (10.2.0):
@@ -1975,7 +1996,11 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - simdjson (3.9.4)
   - SocketRocket (0.7.1)
+  - WatermelonDB (0.28.0):
+    - React
+    - simdjson
   - Yoga (0.0.0)
 
 DEPENDENCIES:
@@ -2070,8 +2095,11 @@ DEPENDENCIES:
   - RNReactNativeHapticFeedback (from `../node_modules/react-native-haptic-feedback`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNShare (from `../node_modules/react-native-share`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
+  - "simdjson (from `../node_modules/@nozbe/simdjson`)"
+  - "WatermelonDB (from `../node_modules/@nozbe/watermelondb`)"
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -2262,10 +2290,16 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNShare:
+    :path: "../node_modules/react-native-share"
   RNSVG:
     :path: "../node_modules/react-native-svg"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
+  simdjson:
+    :path: "../node_modules/@nozbe/simdjson"
+  WatermelonDB:
+    :path: "../node_modules/@nozbe/watermelondb"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -2359,7 +2393,7 @@ SPEC CHECKSUMS:
   RNCClipboard: dbcf25b8f666b4685c02eeb65be981d30198e505
   RNCMaskedView: e2e87cbd6366581943892b44176e7976ff988dfd
   RNCPicker: d8662eb6615e3401acb590c44b97b2af3beb1e53
-  RNDeviceInfo: ae26ae45db3f9937f038a284bcd0a1db8d70db96
+  RNDeviceInfo: d863506092aef7e7af3a1c350c913d867d795047
   RNFBApp: 72b96921c64702d51eca9f3ed579c1777efd0d7e
   RNFBAppCheck: 9e3bbada601e8c37fd066c04e46afdef5e4a3fed
   RNGestureHandler: 5b24d10761754ad271b714e536c457fd89b17c54
@@ -2367,11 +2401,14 @@ SPEC CHECKSUMS:
   RNReactNativeHapticFeedback: 00ba111b82aa266bb3ee1aa576831c2ea9a9dfad
   RNReanimated: 929c26a706dfe1af8feee9f2cf78004394e4dd04
   RNScreens: 4376940e34de0d1cbf2d845ba735b1e0318b7724
+  RNShare: 381ed02f6c0dc42b8c24bb5a1e5df0ee5fd91354
   RNSVG: 86fecdfc637614ba9def63f7f3f2e7795e018356
   RNVectorIcons: 182892e7d1a2f27b52d3c627eca5d2665a22ee28
+  simdjson: 7bb9e33d87737cec966e7b427773c67baa4458fe
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
+  WatermelonDB: 75e467adbaf2cb2809780fb3eda7ce4964e11778
   Yoga: 3deb2471faa9916c8a82dda2a22d3fba2620ad37
 
-PODFILE CHECKSUM: 3a849f0fd1fa4567c5aecd29d88c9ab4cc38b8d2
+PODFILE CHECKSUM: 56f5bbe18333330ab58953fe07fd403ecd50a941
 
 COCOAPODS: 1.16.2

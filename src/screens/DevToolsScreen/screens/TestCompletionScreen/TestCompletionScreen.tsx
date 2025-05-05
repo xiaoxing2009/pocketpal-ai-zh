@@ -1,11 +1,10 @@
+/* eslint-disable no-useless-escape */
 import React, {useState} from 'react';
 import {View, ScrollView} from 'react-native';
 
 import {observer} from 'mobx-react';
-import {
-  CompletionParams,
-  JinjaFormattedChatResult,
-} from '@pocketpalai/llama.rn';
+import {JinjaFormattedChatResult} from '@pocketpalai/llama.rn';
+import {CompletionParams} from '../../../../utils/completionTypes';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
@@ -18,15 +17,15 @@ import {
   SegmentedButtons,
 } from 'react-native-paper';
 
-import {Menu} from '../../components';
+import {Menu} from '../../../../components';
 
-import {useTheme} from '../../hooks';
+import {useTheme} from '../../../../hooks';
 
 import {createStyles} from './styles';
 
-import {modelStore} from '../../store';
+import {modelStore} from '../../../../store';
 
-import {Model, ChatMessage} from '../../utils/types';
+import {Model, ChatMessage} from '../../../../utils/types';
 
 // JSON Schema to GBNF example
 const JSON_SCHEMA_EXAMPLE = `

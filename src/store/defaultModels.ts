@@ -1,5 +1,6 @@
 import {Model, ModelOrigin} from '../utils/types';
-import {chatTemplates, defaultCompletionParams} from '../utils/chat';
+import {chatTemplates} from '../utils/chat';
+import {defaultCompletionParams} from '../utils/completionSettingsVersions';
 import {Platform} from 'react-native';
 
 export const MODEL_LIST_VERSION = 11;

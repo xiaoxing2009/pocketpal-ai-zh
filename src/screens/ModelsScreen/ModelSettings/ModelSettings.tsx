@@ -2,7 +2,6 @@ import React, {useEffect, useRef, useState, useContext} from 'react';
 import {TextInput as RNTextInput} from 'react-native';
 import {View, Keyboard} from 'react-native';
 
-import {CompletionParams} from '@pocketpalai/llama.rn';
 import {Button, Text, Switch, Chip} from 'react-native-paper';
 import LinearGradient from 'react-native-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
@@ -17,6 +16,7 @@ import {ChatTemplatePicker} from '../ChatTemplatePicker';
 import {ChatTemplateConfig} from '../../../utils/types';
 import {Sheet} from '../../../components/Sheet';
 import {L10nContext} from '../../../utils';
+import {CompletionParams} from '../../../utils/completionTypes';
 
 interface ModelSettingsProps {
   chatTemplate: ChatTemplateConfig;

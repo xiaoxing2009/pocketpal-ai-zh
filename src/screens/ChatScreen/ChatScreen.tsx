@@ -32,9 +32,11 @@ const renderBubble = ({
 );
 
 export const ChatScreen: React.FC = observer(() => {
-  const currentMessageInfo = useRef<{createdAt: number; id: string} | null>(
-    null,
-  );
+  const currentMessageInfo = useRef<{
+    createdAt: number;
+    id: string;
+    sessionId: string;
+  } | null>(null);
   const l10n = React.useContext(L10nContext);
 
   const {handleSendPress, handleStopPress} = useChatSession(

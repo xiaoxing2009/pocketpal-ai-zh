@@ -3,7 +3,7 @@ import {fireEvent, render, act} from '../../../../jest/test-utils';
 import {ModelSettingsSheet} from '../ModelSettingsSheet';
 import {modelStore} from '../../../store';
 import {Model, ModelOrigin} from '../../../utils/types';
-import {defaultCompletionParams} from '../../../utils/chat';
+import {defaultCompletionParams} from '../../../utils/completionSettingsVersions';
 
 // Mock the ModelSettings component
 jest.mock('../../../screens/ModelsScreen/ModelSettings', () => {

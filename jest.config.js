@@ -11,6 +11,7 @@ module.exports = {
     '!**/ImageView.ios.ts',
     '!**/ImageView.tsx',
   ],
+  coveragePathIgnorePatterns: ['/src/screens/DevToolsScreen/'],
   coverageThreshold: {
     global: {
       branches: 60,
@@ -48,5 +49,23 @@ module.exports = {
     '\\.svg': '<rootDir>/__mocks__/external/react-native-svg.js',
     'react-native-keychain':
       '<rootDir>/__mocks__/external/react-native-keychain.js',
+    '@nozbe/watermelondb':
+      '<rootDir>/__mocks__/external/@nozbe/watermelondb.js',
+    '@nozbe/watermelondb/adapters/sqlite':
+      '<rootDir>/__mocks__/external/@nozbe/watermelondb/adapters/sqlite.js',
+    '@nozbe/watermelondb/decorators':
+      '<rootDir>/__mocks__/external/@nozbe/watermelondb/decorators.js',
+    '@nozbe/watermelondb/Schema':
+      '<rootDir>/__mocks__/external/@nozbe/watermelondb/Schema/index.js',
+    '@nozbe/watermelondb/Schema/migrations':
+      '<rootDir>/__mocks__/external/@nozbe/watermelondb/Schema/migrations.js',
+    '@nozbe/watermelondb/QueryDescription':
+      '<rootDir>/__mocks__/external/@nozbe/watermelondb/QueryDescription.js',
+    '@nozbe/watermelondb/Model':
+      '<rootDir>/__mocks__/external/@nozbe/watermelondb/Model.js',
+    '@nozbe/simdjson': '<rootDir>/__mocks__/external/@nozbe/simdjson.js',
+    '@nozbe/sqlite': '<rootDir>/__mocks__/external/@nozbe/sqlite.js',
+    '../database': '<rootDir>/__mocks__/database.js',
+    'mobx-persist-store': '<rootDir>/__mocks__/external/mobx-persist-store.js',
   },
 };

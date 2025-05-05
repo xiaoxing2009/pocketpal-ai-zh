@@ -18,6 +18,7 @@ describe('SettingsScreen', () => {
   it('renders settings screen correctly', async () => {
     const {getByText, getByDisplayValue} = render(<SettingsScreen />, {
       withSafeArea: true,
+      withNavigation: true,
     });
 
     expect(getByText('Model Initialization Settings')).toBeTruthy();
@@ -30,6 +31,7 @@ describe('SettingsScreen', () => {
     jest.useFakeTimers();
     const {getByDisplayValue} = render(<SettingsScreen />, {
       withSafeArea: true,
+      withNavigation: true,
     });
     const contextSizeInput = getByDisplayValue('1024');
 
@@ -51,6 +53,7 @@ describe('SettingsScreen', () => {
   it('displays error for invalid context size input', async () => {
     const {getByDisplayValue, getByText} = render(<SettingsScreen />, {
       withSafeArea: true,
+      withNavigation: true,
     });
     const contextSizeInput = getByDisplayValue('1024');
 
@@ -64,6 +67,7 @@ describe('SettingsScreen', () => {
   it('handles outside press correctly and resets input', async () => {
     const {getByDisplayValue, getByText} = render(<SettingsScreen />, {
       withSafeArea: true,
+      withNavigation: true,
     });
     const contextSizeInput = getByDisplayValue('1024');
 
@@ -77,7 +81,10 @@ describe('SettingsScreen', () => {
   });
 
   it('toggles Auto Offload/Load switch', async () => {
-    const {getByTestId} = render(<SettingsScreen />, {withSafeArea: true});
+    const {getByTestId} = render(<SettingsScreen />, {
+      withSafeArea: true,
+      withNavigation: true,
+    });
     const autoOffloadSwitch = getByTestId('auto-offload-load-switch');
 
     await act(async () => {
@@ -88,7 +95,10 @@ describe('SettingsScreen', () => {
   });
 
   it('toggles Auto-Navigate to Chat switch', async () => {
-    const {getByTestId} = render(<SettingsScreen />, {withSafeArea: true});
+    const {getByTestId} = render(<SettingsScreen />, {
+      withSafeArea: true,
+      withNavigation: true,
+    });
     const autoNavigateSwitch = getByTestId('auto-navigate-to-chat-switch');
 
     await act(async () => {
@@ -99,7 +109,10 @@ describe('SettingsScreen', () => {
   });
 
   it('toggles Dark Mode switch', async () => {
-    const {getByTestId} = render(<SettingsScreen />, {withSafeArea: true});
+    const {getByTestId} = render(<SettingsScreen />, {
+      withSafeArea: true,
+      withNavigation: true,
+    });
     const darkModeSwitch = getByTestId('dark-mode-switch');
 
     await act(async () => {
@@ -112,7 +125,10 @@ describe('SettingsScreen', () => {
   it('toggles Metal switch on iOS and adjusts GPU layers', async () => {
     Platform.OS = 'ios';
 
-    const {getByTestId} = render(<SettingsScreen />, {withSafeArea: true});
+    const {getByTestId} = render(<SettingsScreen />, {
+      withSafeArea: true,
+      withNavigation: true,
+    });
     const metalSwitch = getByTestId('metal-switch');
 
     await act(async () => {
@@ -131,7 +147,10 @@ describe('SettingsScreen', () => {
   });
 
   it('toggles Display Memory Usage switch', async () => {
-    const {getByTestId} = render(<SettingsScreen />, {withSafeArea: true});
+    const {getByTestId} = render(<SettingsScreen />, {
+      withSafeArea: true,
+      withNavigation: true,
+    });
     const memoryUsageSwitch = getByTestId('display-memory-usage-switch');
 
     await act(async () => {

@@ -26,9 +26,12 @@ export const RenameModal: React.FC<RenameModalProps> = ({
     setNewTitle(session?.title || '');
   }, [session, visible]);
 
-  const handleRename = () => {
+  const handleRename = async () => {
     if (session?.id && newTitle.trim()) {
-      chatSessionStore.updateSessionTitleBySessionId(session?.id, newTitle);
+      await chatSessionStore.updateSessionTitleBySessionId(
+        session?.id,
+        newTitle,
+      );
       onClose();
     }
   };

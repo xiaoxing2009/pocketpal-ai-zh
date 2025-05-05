@@ -69,9 +69,9 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
             {
               text: l10n.common.delete,
               style: 'destructive',
-              onPress: () => {
+              onPress: async () => {
                 chatSessionStore.resetActiveSession();
-                chatSessionStore.deleteSession(sessionId);
+                await chatSessionStore.deleteSession(sessionId);
                 closeMenu();
               },
             },
@@ -136,12 +136,10 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
                 style={styles.menuDrawerItem}
               />
 
-              {/* Only show Test Completion in debug mode */}
+              {/* Only show Dev Tools in debug mode */}
               {isDebugMode && (
                 <Drawer.Item
-                  label={
-                    l10n.components.sidebarContent.menuItems.testCompletion
-                  }
+                  label="Dev Tools"
                   icon={() => (
                     <SettingsIcon
                       width={24}
@@ -149,9 +147,7 @@ export const SidebarContent: React.FC<DrawerContentComponentProps> = observer(
                       stroke={theme.colors.primary}
                     />
                   )}
-                  onPress={() =>
-                    props.navigation.navigate(ROUTES.TEST_COMPLETION)
-                  }
+                  onPress={() => props.navigation.navigate(ROUTES.DEV_TOOLS)}
                   style={styles.menuDrawerItem}
                 />
               )}

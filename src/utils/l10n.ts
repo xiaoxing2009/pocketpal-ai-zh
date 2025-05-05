@@ -87,6 +87,19 @@ export const l10n = {
       // Display Memory Usage
       displayMemoryUsage: 'Display Memory Usage',
       displayMemoryUsageDescription: 'Display memory usage in the chat page.',
+      // Export/Import Options
+      exportOptions: 'Export Options',
+      exportLegacyChats: 'Export Legacy Chats',
+      exportLegacyChatsDescription:
+        'Use this if migration failed or you need to recover old chat sessions.',
+      exportButton: 'Export',
+      importChats: 'Import Chat Sessions',
+      importChatsDescription:
+        'Import chat sessions from am (exported) JSON file.',
+      importButton: 'Import',
+      importSuccess: 'Successfully imported {{count}} chat session(s).',
+      importError:
+        'Failed to import chat sessions. Please check the file format.',
       // API Settings
       apiSettingsTitle: 'API Settings',
       // Hugging Face Token
@@ -262,6 +275,8 @@ export const l10n = {
       },
     },
     completionParams: {
+      include_thinking_in_context:
+        'Include AI thinking/reasoning parts in the context sent to the model. Disabling this can save context space. It might impact performance.',
       grammar:
         'Enforce specific grammar rules to ensure the generated text follows a particular structure or format',
       stop: 'Define specific phrases that will stop text generation',
@@ -372,6 +387,35 @@ export const l10n = {
         timingsString:
           '{{predictedMs}}ms per token, {{predictedPerSecond}} tokens per second',
       },
+      exportUtils: {
+        fileSaved: 'File Saved',
+        fileSavedMessage:
+          'The file has been saved to your Downloads folder as {{filename}}',
+        share: 'Share',
+        ok: 'OK',
+        shareError: 'Share Error',
+        shareErrorMessage: 'Could not share the file. Please try again.',
+        saveError: 'Error saving to Downloads',
+        saveOptions: 'Save Options',
+        saveOptionsMessage:
+          'Unable to save directly to Downloads. Would you like to share the file instead?',
+        cancel: 'Cancel',
+        shareContentErrorMessage:
+          'Could not share the content. Please try again.',
+        exportError: 'Export Error',
+        exportErrorMessage:
+          'There was an error exporting the file. Please try again.',
+        permissionRequired: 'Storage Permission Required',
+        permissionMessage:
+          'We need permission to save your export into the Download folder.',
+        permissionDenied: 'Permission Denied',
+        permissionDeniedMessage:
+          'Without storage permission, the export feature will be disabled.',
+        continue: 'Continue',
+      },
+      thinkingBubble: {
+        reasoning: 'Reasoning',
+      },
       chatEmptyPlaceholder: {
         noModelsTitle: 'No Models Available',
         noModelsDescription:
@@ -460,7 +504,11 @@ export const l10n = {
         model: 'Model',
         duplicateChatHistory: 'Duplicate chat history',
         makeChatTemporary: 'Make chat temporary',
+        export: 'Export/Import',
+        exportCurrentSession: 'Export current session',
+        exportAllSessions: 'Export all sessions',
         exportChatSession: 'Export chat session',
+        importSessions: 'Import sessions',
       },
       hfTokenSheet: {
         title: 'Hugging Face Token',
@@ -892,6 +940,19 @@ export const l10n = {
       // Display Memory Usage
       displayMemoryUsage: 'メモリ使用量を表示',
       displayMemoryUsageDescription: 'チャット画面にメモリ使用量を表示します。',
+      // Export/Import Options
+      exportOptions: 'エクスポートオプション',
+      exportLegacyChats: '旧チャットセッションをエクスポート',
+      exportLegacyChatsDescription:
+        '移行に失敗した場合や古いチャットセッションを復元する必要がある場合に使用します。',
+      exportButton: 'エクスポート',
+      importChats: 'チャットセッションをインポート',
+      importChatsDescription:
+        'JSONファイルからチャットセッションをインポートします。',
+      importButton: 'インポート',
+      importSuccess: '{{count}}個のチャットセッションをインポートしました。',
+      importError:
+        'チャットセッションのインポートに失敗しました。ファイル形式を確認してください。',
       // API Settings
       apiSettingsTitle: 'API設定',
       // Hugging Face Token
@@ -1069,6 +1130,8 @@ export const l10n = {
       },
     },
     completionParams: {
+      include_thinking_in_context:
+        'AIの思考/推論部分をモデルに送信するコンテキストに含めます。無効にするとコンテキスト容量を節約できますが、パフォーマンスに影響する可能性があります。',
       grammar:
         '生成テキストが特定の構造や形式に従うよう、文法ルールを適用します',
       stop: 'テキスト生成を停止する特定のフレーズを設定します',
@@ -1179,6 +1242,36 @@ export const l10n = {
         timingsString:
           'トークンあたり{{predictedMs}}ms、1秒あたり{{predictedPerSecond}}トークン',
       },
+      exportUtils: {
+        fileSaved: 'ファイル保存完了',
+        fileSavedMessage:
+          'ファイルはダウンロードフォルダに{{filename}}として保存されました',
+        share: '共有',
+        ok: 'OK',
+        shareError: '共有エラー',
+        shareErrorMessage:
+          'ファイルを共有できませんでした。もう一度お試しください。',
+        saveError: 'ダウンロードフォルダへの保存エラー',
+        saveOptions: '保存オプション',
+        saveOptionsMessage:
+          'ダウンロードフォルダに直接保存できません。代わりにファイルを共有しますか？',
+        cancel: 'キャンセル',
+        shareContentErrorMessage:
+          'コンテンツを共有できませんでした。もう一度お試しください。',
+        exportError: 'エクスポートエラー',
+        exportErrorMessage:
+          'ファイルのエクスポート中にエラーが発生しました。もう一度お試しください。',
+        permissionRequired: 'ストレージへのアクセス許可が必要です',
+        permissionMessage:
+          'ダウンロードフォルダにファイルを保存するには許可が必要です',
+        permissionDenied: 'アクセス許可が拒否されました',
+        permissionDeniedMessage:
+          'ストレージへのアクセス許可がないため、エクスポート機能は利用できません',
+        continue: '続ける',
+      },
+      thinkingBubble: {
+        reasoning: '考える',
+      },
       chatEmptyPlaceholder: {
         noModelsTitle: '利用可能なモデルがありません',
         noModelsDescription:
@@ -1267,7 +1360,11 @@ export const l10n = {
         model: 'モデル',
         duplicateChatHistory: 'チャット履歴を複製',
         makeChatTemporary: '一時的なチャットにする',
+        export: 'エクスポート/インポート',
+        exportCurrentSession: '現在のセッションをエクスポート',
+        exportAllSessions: 'すべてのセッションをエクスポート',
         exportChatSession: 'チャットをエクスポート',
+        importSessions: 'セッションをインポート',
       },
       hfTokenSheet: {
         title: 'Hugging Face トークン',
@@ -1692,6 +1789,17 @@ export const l10n = {
       // Display Memory Usage
       displayMemoryUsage: '显示内存使用情况',
       displayMemoryUsageDescription: '在聊天页面中显示内存使用情况。',
+      // Export/Import Options
+      exportOptions: '导出选项',
+      exportLegacyChats: '导出旧版聊天会话',
+      exportLegacyChatsDescription:
+        '如果迁移失败或需要恢复旧聊天会话，请使用此选项。',
+      exportButton: '导出',
+      importChats: '导入聊天会话',
+      importChatsDescription: '从JSON文件导入聊天会话。',
+      importButton: '导入',
+      importSuccess: '成功导入{{count}}个聊天会话。',
+      importError: '导入聊天会话失败。请检查文件格式。',
       // API Settings
       apiSettingsTitle: 'API设置',
       // Hugging Face Token
@@ -1856,6 +1964,8 @@ export const l10n = {
       },
     },
     completionParams: {
+      include_thinking_in_context:
+        '在发送给模型的上下文中包含AI的思考/推理部分。禁用此选项可以节省上下文空间，但可能会影响性能。',
       grammar: '应用特定的语法规则，以确保生成的文本遵循特定的结构或格式',
       stop: '定义将停止文本生成的特定短语',
       n_predict: '设置生成响应的长度（以令牌为单位）',
@@ -1951,6 +2061,29 @@ export const l10n = {
         timingsString:
           '每个令牌{{predictedMs}}ms，每秒{{predictedPerSecond}}令牌',
       },
+      exportUtils: {
+        fileSaved: '文件已保存',
+        fileSavedMessage: '文件已保存到您的下载文件夹，文件名为{{filename}}',
+        share: '分享',
+        ok: '确定',
+        shareError: '分享错误',
+        shareErrorMessage: '无法分享文件。请重试。',
+        saveError: '保存到下载文件夹时出错',
+        saveOptions: '保存选项',
+        saveOptionsMessage: '无法直接保存到下载文件夹。您想分享文件吗？',
+        cancel: '取消',
+        shareContentErrorMessage: '无法分享内容。请重试。',
+        exportError: '导出错误',
+        exportErrorMessage: '导出文件时出错。请重试。',
+        permissionRequired: '需要存储权限',
+        permissionMessage: '需要权限才能将文件保存到下载文件夹',
+        permissionDenied: '权限被拒绝',
+        permissionDeniedMessage: '没有存储权限，导出功能将被禁用',
+        continue: '继续',
+      },
+      thinkingBubble: {
+        reasoning: '思考',
+      },
       chatEmptyPlaceholder: {
         noModelsTitle: '没有可用的模型',
         noModelsDescription: '要开始与PocketPal聊天，请下载模型',
@@ -2036,7 +2169,11 @@ export const l10n = {
         model: '模型',
         duplicateChatHistory: '复制聊天历史',
         makeChatTemporary: '使聊天临时',
+        export: '导出/导入',
+        exportCurrentSession: '导出当前会话',
+        exportAllSessions: '导出所有会话',
         exportChatSession: '导出聊天会话',
+        importSessions: '导入会话',
       },
       hfTokenSheet: {
         title: 'Hugging Face 令牌',

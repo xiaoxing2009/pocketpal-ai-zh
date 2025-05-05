@@ -14,6 +14,12 @@ export const createStyles = (theme: Theme) =>
       alignItems: 'center',
       justifyContent: 'space-between',
     },
+    switchHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: 4,
+    },
     stopLabel: {
       flexDirection: 'row',
       alignItems: 'center',

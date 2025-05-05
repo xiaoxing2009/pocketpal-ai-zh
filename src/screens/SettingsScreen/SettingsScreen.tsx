@@ -6,6 +6,7 @@ import {
   Keyboard,
   ScrollView,
   TextInput as RNTextInput,
+  Alert,
 } from 'react-native';
 
 import {debounce} from 'lodash';
@@ -14,7 +15,7 @@ import Slider from '@react-native-community/slider';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Switch, Text, Card, Button, Icon, List} from 'react-native-paper';
 
-import {GlobeIcon, MoonIcon, CpuChipIcon} from '../../assets/icons';
+import {GlobeIcon, MoonIcon, CpuChipIcon, ShareIcon} from '../../assets/icons';
 import {TextInput, Menu, Divider, HFTokenSheet} from '../../components';
 
 import {useTheme} from '../../hooks';
@@ -26,6 +27,7 @@ import {AvailableLanguage} from '../../store/UIStore';
 
 import {L10nContext} from '../../utils';
 import {CacheType} from '../../utils/types';
+import {exportLegacyChatSessions} from '../../utils/exportUtils';
 
 // Language display names in their native form
 const languageNames: Record<AvailableLanguage, string> = {
@@ -698,6 +700,49 @@ export const SettingsScreen: React.FC = observer(() => {
                     disabled={!hfStore.isTokenPresent}
                     onValueChange={value => hfStore.setUseHfToken(value)}
                   />
+                </View>
+              </View>
+            </Card.Content>
+          </Card>
+
+          {/* Export Options */}
+          <Card elevation={0} style={styles.card}>
+            <Card.Title title={l10n.settings.exportOptions} />
+            <Card.Content>
+              <View style={styles.settingItemContainer}>
+                {/* Legacy Export */}
+                <View style={styles.switchContainer}>
+                  <View style={styles.textContainer}>
+                    <View style={styles.labelWithIconContainer}>
+                      <ShareIcon
+                        width={20}
+                        height={20}
+                        style={styles.settingIcon}
+                        stroke={theme.colors.onSurface}
+                      />
+                      <Text variant="titleMedium" style={styles.textLabel}>
+                        {l10n.settings.exportLegacyChats}
+                      </Text>
+                    </View>
+                    <Text variant="labelSmall" style={styles.textDescription}>
+                      {l10n.settings.exportLegacyChatsDescription}
+                    </Text>
+                  </View>
+                  <Button
+                    mode="outlined"
+                    onPress={async () => {
+                      try {
+                        await exportLegacyChatSessions();
+                      } catch (error) {
+                        Alert.alert(
+                          'Export Error',
+                          'Failed to export legacy chat sessions. The file may not exist.',
+                        );
+                      }
+                    }}
+                    style={styles.menuButton}>
+                    {l10n.settings.exportButton}
+                  </Button>
                 </View>
               </View>
             </Card.Content>
