@@ -26,7 +26,20 @@ interface MarkdownViewProps {
   selectable?: boolean;
 }
 
+// Helper function to check if content is empty
+const isEmptyContent = (content: string): boolean => {
+  console.log('isEmptyContent: ', content);
+  return !content || content.trim() === '';
+};
+
 const ThinkingRenderer = ({TDefaultRenderer, ...props}: any) => {
+  // Check if the content is empty
+  const content = props.tnode?.domNode?.children?.[0]?.data || '';
+  // If content is empty, don't render the ThinkingBubble
+  if (isEmptyContent(content)) {
+    return null;
+  }
+
   return (
     <ThinkingBubble>
       <TDefaultRenderer {...props} />
