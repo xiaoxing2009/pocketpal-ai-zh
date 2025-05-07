@@ -37,14 +37,14 @@ export class DownloadManager {
       this.eventEmitter = new NativeEventEmitter(DownloadModule);
 
       this.eventEmitter.addListener('onDownloadProgress', event => {
-        console.log(
-          `${TAG}: Progress event received for ID ${event.downloadId}:`,
-          {
-            bytesWritten: event.bytesWritten,
-            totalBytes: event.totalBytes,
-            progress: event.progress,
-          },
-        );
+        // console.log(
+        //   `${TAG}: Progress event received for ID ${event.downloadId}:`,
+        //   {
+        //     bytesWritten: event.bytesWritten,
+        //     totalBytes: event.totalBytes,
+        //     progress: event.progress,
+        //   },
+        // );
 
         // Find the job by download ID
         const job = Array.from(this.downloadJobs.values()).find(
@@ -85,10 +85,10 @@ export class DownloadManager {
           rawEta: etaSeconds,
         };
 
-        console.log(
-          `${TAG}: Updating progress for model ${job.model.id}:`,
-          progress,
-        );
+        // console.log(
+        //   `${TAG}: Updating progress for model ${job.model.id}:`,
+        //   progress,
+        // );
 
         // Update job state
         job.state.progress = progress;

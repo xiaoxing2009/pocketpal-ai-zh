@@ -1,7 +1,6 @@
 import React, {useRef, useCallback} from 'react';
 
 import {toJS} from 'mobx';
-import throttle from 'lodash.throttle';
 
 import {chatSessionRepository} from '../repositories/ChatSessionRepository';
 
@@ -33,45 +32,109 @@ export const useChatSession = (
   const l10n = React.useContext(L10nContext);
   const conversationIdRef = useRef<string>(randId());
 
-  // We needed this to avoid excessive ui updates. Unsure if this is the best way to do it.
-  const tokenBufferRef = useRef<string>(''); // Token buffer to accumulate tokens
-  const updateInterval = 150; // Interval for flushing token buffer (in ms)
+  // Time-based batch processing
+  // Token queue for accumulating tokens
+  const tokenQueue = useRef<
+    Array<{token: string; createdAt: number; id: string; sessionId: string}>
+  >([]);
+  const isProcessingTokens = useRef(false);
+  const isMounted = useRef(true); // we use Drawer.Navigator, so the screen won't unmount. Not sure how useful this is.
+  const batchTimer = useRef<NodeJS.Timeout | null>(null);
+  const batchTimeout = 100; // Process batch every 100ms
 
-  // Function to flush the token buffer and update the chat message
-  const flushTokenBuffer = useCallback(
-    async (createdAt: number, id: string, sessionId: string) => {
+  // Process all accumulated tokens in a batch
+  const processTokenBatch = useCallback(async () => {
+    if (isProcessingTokens.current || tokenQueue.current.length === 0) {
+      return;
+    }
+
+    isProcessingTokens.current = true;
+    batchTimer.current = null;
+
+    try {
+      // Take all accumulated tokens
+      const tokensToProcess = [...tokenQueue.current];
+      tokenQueue.current = [];
       const context = modelStore.context;
-      if (tokenBufferRef.current.length > 0 && context) {
-        try {
-          await chatSessionStore.updateMessageToken(
-            {token: tokenBufferRef.current},
-            createdAt,
-            id,
-            sessionId,
-            context,
-          );
-          tokenBufferRef.current = ''; // Reset the token buffer
-        } catch (error) {
-          console.error('Error updating message token:', error);
-          // Still reset the buffer to avoid getting stuck
-          tokenBufferRef.current = '';
+
+      if (context && tokensToProcess.length > 0) {
+        // Group tokens by message ID
+        const messageUpdates: Record<string, string> = {};
+
+        tokensToProcess.forEach(({token, id}) => {
+          messageUpdates[id] = (messageUpdates[id] || '') + token;
+        });
+
+        // Update each message in a single operation
+        for (const [id, combinedToken] of Object.entries(messageUpdates)) {
+          try {
+            await chatSessionStore.updateMessageToken(
+              {token: combinedToken},
+              tokensToProcess[0].createdAt, // Use first token's timestamp
+              id,
+              tokensToProcess[0].sessionId, // Use first token's session
+              context,
+            );
+          } catch (error) {
+            console.error('Error updating message token batch:', error);
+          }
         }
       }
+    } finally {
+      isProcessingTokens.current = false;
+
+      // Schedule next batch if there are new tokens
+      if (tokenQueue.current.length > 0) {
+        if (isMounted.current) {
+          // Normal case - component is mounted, schedule next batch
+          if (!batchTimer.current) {
+            batchTimer.current = setTimeout(processTokenBatch, batchTimeout);
+          }
+        } else {
+          // Component is unmounted but we still have tokens - process immediately
+          // This ensures all tokens are saved even after navigation
+          processTokenBatch();
+        }
+      }
+    }
+  }, [batchTimeout]);
+
+  // Add token to queue and schedule processing
+  const queueToken = useCallback(
+    (token: string, createdAt: number, id: string, sessionId: string) => {
+      // Add token to queue
+      tokenQueue.current.push({token, createdAt, id, sessionId});
+
+      // Schedule processing if not already scheduled
+      if (!batchTimer.current && isMounted.current) {
+        batchTimer.current = setTimeout(processTokenBatch, batchTimeout);
+      }
     },
-    [],
+    [processTokenBatch, batchTimeout],
   );
 
-  // Throttled version of flushTokenBuffer to prevent excessive updates
-  const throttledFlushTokenBuffer = throttle(
-    (createdAt: number, id: string, sessionId: string) => {
-      // We don't await this call because throttle doesn't support async functions
-      // The function will still execute asynchronously
-      flushTokenBuffer(createdAt, id, sessionId).catch(error => {
-        console.error('Error in throttled flush token buffer:', error);
-      });
-    },
-    updateInterval,
-  );
+  // Cleanup on unmount
+  // In Drawer.Navigator, the screen won't unmount. Not sure how useful this is.
+  React.useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      // Process any remaining tokens immediately instead of waiting for the timer
+      if (tokenQueue.current.length > 0 && !isProcessingTokens.current) {
+        // Force process the remaining tokens
+        processTokenBatch();
+      }
+
+      // After a short delay to allow processing to complete, clean up
+      setTimeout(() => {
+        isMounted.current = false;
+        // Clear any pending timer
+        if (batchTimer.current) {
+          clearTimeout(batchTimer.current);
+          batchTimer.current = null;
+        }
+      }, 500); // Give 500ms for processing to complete
+    };
+  }, [processTokenBatch]);
 
   const addMessage = async (message: MessageType.Any) => {
     await chatSessionStore.addMessageToCurrentSession(message);
@@ -229,8 +292,10 @@ export const useChatSession = (
           if (!modelStore.isStreaming) {
             modelStore.setIsStreaming(true);
           }
-          tokenBufferRef.current += data.token;
-          throttledFlushTokenBuffer(
+
+          // Queue each token individually for processing
+          queueToken(
+            data.token,
             currentMessageInfo.current.createdAt,
             currentMessageInfo.current.id,
             currentMessageInfo.current.sessionId,
@@ -238,20 +303,10 @@ export const useChatSession = (
         }
       });
 
-      // Flush any remaining tokens after completion
-      if (
-        currentMessageInfo.current?.createdAt &&
-        currentMessageInfo.current?.id
-      ) {
-        try {
-          await flushTokenBuffer(
-            currentMessageInfo.current.createdAt,
-            currentMessageInfo.current.id,
-            currentMessageInfo.current.sessionId,
-          );
-        } catch (error) {
-          console.error('Error flushing token buffer after completion:', error);
-        }
+      // No need to flush remaining tokens as each token is processed individually
+      // Just wait for the queue to finish processing
+      while (tokenQueue.current.length > 0 || isProcessingTokens.current) {
+        await new Promise(resolve => setTimeout(resolve, 50));
       }
 
       // Update only the metadata in the database
@@ -297,17 +352,13 @@ export const useChatSession = (
     if (modelStore.inferencing && context) {
       context.stopCompletion();
     }
-    if (
-      currentMessageInfo.current?.createdAt &&
-      currentMessageInfo.current?.id
-    ) {
+    // Wait for any queued tokens to finish processing
+    if (tokenQueue.current.length > 0 || isProcessingTokens.current) {
       try {
-        // Flush any remaining tokens
-        await flushTokenBuffer(
-          currentMessageInfo.current.createdAt,
-          currentMessageInfo.current.id,
-          currentMessageInfo.current.sessionId,
-        );
+        // Wait for the queue to finish processing
+        while (tokenQueue.current.length > 0 || isProcessingTokens.current) {
+          await new Promise(resolve => setTimeout(resolve, 50));
+        }
       } catch (error) {
         console.error('Error when stopping completion:', error);
       }
