@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <include domain="sharedpref" path="." requireFlags="clientSideEncryption" />
+    <include domain="database" path="." requireFlags="clientSideEncryption"/>
+    <include domain="file" path="profileInstalled" requireFlags="clientSideEncryption"/>
+    <include domain="file" path="db-migration-complete.flag" requireFlags="clientSideEncryption"/>
+    <include domain="root" path="pocketpalai.db" requireFlags="clientSideEncryption"/>
+    <include domain="root" path="pocketpalai.db-wal" requireFlags="clientSideEncryption"/>
+    <include domain="root" path="pocketpalai.db-shm" requireFlags="clientSideEncryption"/>
+</full-backup-content>
