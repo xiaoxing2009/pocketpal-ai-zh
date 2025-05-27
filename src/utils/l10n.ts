@@ -2775,8 +2775,7 @@ export const l10n = {
         '平衡創意和連貫性，較高的值（接近 1.0）允許更富創意但可能不那麼集中的回應',
       min_p:
         '考慮 token 的最小機率，過濾掉不太可能的單詞以減少不合邏輯或上下文外的回應',
-      temperature:
-        '控制創意和可預測性，較高的值會使回應更富創意但焦點較少',
+      temperature: '控制創意和可預測性，較高的值會使回應更富創意但焦點較少',
       penalty_last_n: '檢查重複的範圍，較大的值有助於防止長期重複',
       penalty_repeat: '抑制單詞重複，較高的值會使回應使用更多樣化的語言',
       penalty_freq: '懲罰常用詞，較高的值鼓勵使用更廣泛的詞彙',
@@ -2862,16 +2861,14 @@ export const l10n = {
       },
       exportUtils: {
         fileSaved: '檔案已儲存',
-        fileSavedMessage:
-          '檔案已儲存到你的下載資料夾，檔案名稱為{{filename}}',
+        fileSavedMessage: '檔案已儲存到你的下載資料夾，檔案名稱為{{filename}}',
         share: '分享',
         ok: '確定',
         shareError: '分享錯誤',
         shareErrorMessage: '無法分享檔案，請重試',
         saveError: '儲存到下載資料夾時出錯',
         saveOptions: '儲存選項',
-        saveOptionsMessage:
-          '無法直接儲存到下載資料夾，你是否想分享檔案？',
+        saveOptionsMessage: '無法直接儲存到下載資料夾，你是否想分享檔案？',
         cancel: '取消',
         shareContentErrorMessage: '無法分享內容，請重試',
         exportError: '導出錯誤',
@@ -2940,8 +2937,7 @@ export const l10n = {
         unauthorizedMessage:
           '你的 Hugging Face 令牌似乎無效或已過期，請在設定中更新你的令牌',
         forbiddenTitle: '訪問被拒絕',
-        forbiddenMessage:
-          '你沒有權限訪問此模型，請確保：',
+        forbiddenMessage: '你沒有權限訪問此模型，請確保：',
         forbiddenSteps: [
           '你的令牌具有"讀取"權限',
           '你已請求並獲得了此模型的訪問權限',
