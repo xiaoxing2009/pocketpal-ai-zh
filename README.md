@@ -1,6 +1,6 @@
 # 下载
-本仓库不提供构建版本，请前往以下仓库下载
-- [点击下载](https://github.com/a-ghorbani/pocketpal-ai/releases)
+本仓库不提供构建版本，请前往以下仓库下载（内容是一样的）
+- [点击前往a-ghorbani/pocketpal-ai下载](https://github.com/a-ghorbani/pocketpal-ai/releases)
 
 # PocketPal AI 📱🚀
 
