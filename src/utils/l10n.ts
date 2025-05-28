@@ -615,7 +615,7 @@ export const l10n = {
         useAIPrompt: 'Use AI to generate system prompt',
         modelSelector: {
           label: 'Select Model for Generation*',
-          sublabel: 'Recommended: Llama 3.2 3B or Qwen2.5 3B.',
+          sublabel: 'Recommended: Llama 3.2 3B or Qwen3 4B.',
           placeholder: 'Select model',
         },
         generatingPrompt: {
@@ -1471,7 +1471,7 @@ export const l10n = {
         useAIPrompt: 'AIを使用してシステムプロンプトを生成する',
         modelSelector: {
           label: '生成用モデルを選択*',
-          sublabel: '推奨: Llama 3.2 3B または Qwen2.5 3B.',
+          sublabel: '推奨: Llama 3.2 3B または Qwen3 4B.',
           placeholder: 'モデルを選択',
         },
         generatingPrompt: {
