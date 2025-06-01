@@ -25,6 +25,9 @@ describe('HFStore', () => {
     hfStore.error = null;
     hfStore.nextPageLink = null;
     hfStore.searchQuery = '';
+    // Clear the token to ensure tests start with no authentication
+    hfStore.hfToken = null;
+    hfStore.useHfToken = true;
   });
 
   describe('fetchModels', () => {

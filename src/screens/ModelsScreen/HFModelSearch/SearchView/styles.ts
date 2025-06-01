@@ -19,11 +19,16 @@ export const createStyles = (theme: Theme, bottomInset: number) =>
       color: theme.colors.onSurfaceVariant,
       marginBottom: 2,
     },
+    modelNameContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 4,
+      flexWrap: 'wrap',
+    },
     modelName: {
       fontSize: 16,
       fontWeight: '500',
       color: theme.colors.onSurface,
-      marginBottom: 4,
     },
     statsContainer: {
       flexDirection: 'row',

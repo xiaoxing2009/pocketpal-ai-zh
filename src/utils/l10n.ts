@@ -27,6 +27,10 @@ export const l10n = {
       minute: 'min',
       minutes: 'min',
       justNow: 'just now',
+      ok: 'OK',
+      close: 'Close',
+      clear: 'Clear All',
+      gallery: 'Gallery',
     },
     settings: {
       // Model Initialization Settings
@@ -117,6 +121,21 @@ export const l10n = {
       shortWarning: 'Memory Warning',
       warning:
         'Warning: Model size may exceed available memory. This could affect performance and stability of your device.',
+      multimodalWarning:
+        'This device may not have sufficient resources for multimodal models.',
+      alerts: {
+        memoryWarningTitle: 'Memory Warning',
+        memoryWarningMessage:
+          'This model may exceed available memory, which could cause instability. Continue loading?',
+        multimodalWarningTitle: 'Device Performance Warning',
+        multimodalWarningMessage:
+          'This device may not have sufficient resources for multimodal models. Loading may cause instability. Continue anyway?',
+        combinedWarningTitle: 'Performance Warning',
+        combinedWarningMessage:
+          'This model may exceed available memory and this device may not have sufficient resources for multimodal models. Loading may cause instability. Continue anyway?',
+        cancel: 'Cancel',
+        continue: 'Continue',
+      },
     },
     storage: {
       checkFailed: 'Failed to check storage',
@@ -141,6 +160,31 @@ export const l10n = {
         availableToUse: 'Ready to Use',
         availableToDownload: 'Available to Download',
         useAddButtonForMore: 'Use + button to find more models',
+      },
+      vision: 'Vision',
+      mmproj: 'Projector',
+      multimodal: {
+        settings: 'Multimodal Settings',
+        projectionModels: 'Projection Models',
+        noCompatibleModels: 'No compatible projection models found',
+        selected: 'Selected',
+        select: 'Select',
+        download: 'Download',
+        projectionNeededTitle: 'Projection Model Needed',
+        projectionNeededMessage:
+          'This model requires a projection model for multimodal capabilities.',
+        reloadModelTitle: 'Reload Model',
+        reloadModelMessage:
+          'The model needs to be reloaded to apply the new projection model. Do you want to reload now?',
+        reload: 'Reload',
+        deleteProjectionTitle: 'Delete Projection Model',
+        deleteProjectionMessage:
+          'Are you sure you want to delete this projection model?',
+        cannotDeleteTitle: 'Cannot Delete',
+        cannotDeleteActive: 'This projection model is currently active.',
+        cannotDeleteInUse:
+          'This projection model is used by downloaded LLM models:',
+        dependentModels: 'Dependent models:',
       },
       buttons: {
         addFromHuggingFace: 'Add from Hugging Face',
@@ -272,6 +316,7 @@ export const l10n = {
         multilingual: 'Multilingual',
         rewriting: 'Rewriting',
         creativity: 'Creative writing',
+        vision: 'Vision',
       },
     },
     completionParams: {
@@ -460,6 +505,7 @@ export const l10n = {
         noDescription: 'No description',
         assistantType: 'Assistant',
         roleplayType: 'Roleplay',
+        videoType: 'Video',
         confirmationTitle: 'Confirmation',
         modelSwitchMessage:
           "This pal has a different default model ({{modelName}}). Would you like to switch to the pal's default model?",
@@ -607,6 +653,21 @@ export const l10n = {
         },
         create: 'Create',
       },
+      lookiePalSheet: {
+        title: {
+          create: 'Create Lookie Pal',
+          edit: 'Edit Lookie Pal',
+        },
+        palName: 'Pal Name',
+        palNamePlaceholder: 'Enter a name for your Lookie Pal',
+        visionModel: 'Vision Model',
+        visionModelPlaceholder: 'Select a vision model',
+        requiredModelsSection: 'Required Models',
+        captureInterval: 'Capture Interval',
+        captureIntervalHelper:
+          'Time between automatic captures in milliseconds',
+        create: 'Create',
+      },
       sendButton: {
         accessibilityLabel: 'Send',
       },
@@ -671,6 +732,27 @@ export const l10n = {
         byteSizes: ['Bytes', 'KB', 'MB', 'GB'],
       },
     },
+    palsScreen: {
+      systemPrompt: 'System Prompt',
+      videoAnalysis: 'Video Analysis',
+      videoAnalysisDescription:
+        "This is a video-based AI assistant that provides real-time commentary on video streams from your device's camera.",
+      captureInterval: 'Capture Interval',
+      captureIntervalUnit: 'ms',
+      world: 'World',
+      toneStyle: 'Tone/Style',
+      aiRole: "AI's Role",
+      userRole: 'My Role',
+      prompt: 'Prompt',
+      assistant: 'Assistant',
+      roleplay: 'Roleplay',
+      video: 'Video',
+      deletePal: 'Delete Pal',
+      deletePalMessage: 'Are you sure you want to delete this pal?',
+      missingModel: 'Missing Model',
+      missingModelMessage:
+        'The default model "{{modelName}}" for this pal is not available. Please download it in the edit sheet or select a different model.',
+    },
     validation: {
       nameRequired: 'Name is required',
       systemPromptRequired: 'System prompt is required',
@@ -680,6 +762,47 @@ export const l10n = {
       userRoleRequired: 'User role is required',
       situationRequired: 'Situation is required',
       toneStyleRequired: 'Tone/Style is required',
+    },
+    camera: {
+      permissionTitle: 'Camera Permission Required',
+      permissionMessage: 'PocketPal needs camera access to analyze images',
+      requestingPermission: 'Requesting camera permission...',
+      noDevice: 'No camera device found',
+      errorTitle: 'Camera Error',
+      errorMessage: 'An error occurred while taking the photo',
+      flip: 'Flip',
+      analyzing: 'Analyzing image...',
+      startCamera: 'Start Camera',
+      stopCamera: 'Stop Camera',
+      promptPlaceholder: 'What do you want to know about this image?',
+      takePhoto: 'Camera',
+    },
+    video: {
+      permissionTitle: 'Camera Permission Required',
+      permissionMessage: 'PocketPal needs camera access for video analysis',
+      requestingPermission: 'Requesting camera permission...',
+      noDevice: 'No camera device found',
+      errorTitle: 'Camera Error',
+      errorMessage: 'An error occurred with the camera',
+      flip: 'Flip',
+      analyzing: 'Analyzing video...',
+      startCamera: 'Start Camera',
+      stopCamera: 'Stop Camera',
+      promptPlaceholder: 'What do you want to know about this video?',
+      captureInterval: 'Capture Interval',
+      captureIntervalUnit: 'ms',
+      liveCommentary: 'Live Commentary',
+      emptyPlaceholder: {
+        title: 'Welcome to Lookie',
+        subtitle: 'Private On-Device Real-time Video Analysis',
+        experimentalNotice:
+          'This is an experimental feature. Accuracy depends on the selected model, speed depends on your device specs, and some models might fail.',
+        howToUse: 'How to use:',
+        step1: '• Edit the prompt (optional) to guide the analysis',
+        step2: '• Tap the camera button to start live video analysis',
+        step3: '• Adjust snapshot frequency while camera is active',
+        step4: '• Switch to another pal for normal text chat',
+      },
     },
     screenTitles: {
       chat: 'Chat',
@@ -700,6 +823,8 @@ export const l10n = {
       goToModels: 'Go to Models',
       readyToChat: 'Ready to chat? Load the last used model.',
       pleaseLoadModel: 'Load a model to chat.',
+      multimodalNotEnabled:
+        'Multimodal is not enabled for this model. Images will be displayed but not processed by the AI.',
     },
     benchmark: {
       title: 'Benchmark',
@@ -846,6 +971,14 @@ export const l10n = {
       downloadSetupFailedTitle: 'Download Setup Failed',
       downloadSetupFailedMessage:
         'Failed to prepare model for download: {message}',
+      cameraErrorTitle: 'Camera Error',
+      cameraErrorMessage: 'Failed to take photo',
+      galleryErrorTitle: 'Gallery Error',
+      galleryErrorMessage: 'Failed to select images',
+    },
+    simulator: {
+      cameraNotAvailable:
+        'Camera not available in simulator. Please use a physical device.',
     },
   },
 
@@ -877,6 +1010,10 @@ export const l10n = {
       hours: '時間',
       minute: '分',
       justNow: 'たった今',
+      ok: 'OK',
+      close: '閉じる',
+      clear: 'すべてクリア',
+      gallery: 'ギャラリー',
     },
     settings: {
       // Model Initialization Settings
@@ -970,6 +1107,21 @@ export const l10n = {
       shortWarning: 'メモリ警告',
       warning:
         '警告：モデルサイズが利用可能なメモリを超える可能性があります。デバイスのパフォーマンスと安定性に影響する可能性があります。',
+      multimodalWarning:
+        'このデバイスはマルチモーダルモデルに十分なリソースがない可能性があります。',
+      alerts: {
+        memoryWarningTitle: 'メモリ警告',
+        memoryWarningMessage:
+          'このモデルは利用可能なメモリを超える可能性があり、不安定になる可能性があります。読み込みを続行しますか？',
+        multimodalWarningTitle: 'デバイス性能警告',
+        multimodalWarningMessage:
+          'このデバイスはマルチモーダルモデルに十分なリソースがない可能性があります。読み込みにより不安定になる可能性があります。続行しますか？',
+        combinedWarningTitle: '性能警告',
+        combinedWarningMessage:
+          'このモデルは利用可能なメモリを超える可能性があり、このデバイスはマルチモーダルモデルに十分なリソースがない可能性があります。読み込みにより不安定になる可能性があります。続行しますか？',
+        cancel: 'キャンセル',
+        continue: '続行',
+      },
     },
     storage: {
       checkFailed: 'ストレージの確認に失敗しました',
@@ -995,6 +1147,30 @@ export const l10n = {
         availableToUse: '使用可能',
         availableToDownload: 'ダウンロード可能',
         useAddButtonForMore: '+ ボタンを他のモデルを探す',
+      },
+      vision: 'ビジョン',
+      mmproj: 'プロジェクター',
+      multimodal: {
+        settings: 'マルチモーダル設定',
+        projectionModels: '投影モデル',
+        noCompatibleModels: '互換性のある投影モデルが見つかりません',
+        selected: '選択済み',
+        select: '選択',
+        download: 'ダウンロード',
+        projectionNeededTitle: '投影モデルが必要です',
+        projectionNeededMessage:
+          'このモデルはマルチモーダル機能のために投影モデルが必要です。',
+        reloadModelTitle: 'モデルを再読み込み',
+        reloadModelMessage:
+          '新しい投影モデルを適用するにはモデルを再読み込みする必要があります。今すぐ再読み込みしますか？',
+        reload: '再読み込み',
+        deleteProjectionTitle: '投影モデルを削除',
+        deleteProjectionMessage: 'この投影モデルを削除してもよろしいですか？',
+        cannotDeleteTitle: '削除できません',
+        cannotDeleteActive: 'この投影モデルは現在アクティブです。',
+        cannotDeleteInUse:
+          'この投影モデルはダウンロード済みのLLMモデルで使用されています：',
+        dependentModels: '依存モデル：',
       },
       buttons: {
         addFromHuggingFace: 'Hugging Faceから追加',
@@ -1127,6 +1303,7 @@ export const l10n = {
         multilingual: '多言語対応',
         rewriting: '文章の書き換え',
         creativity: '創作文章',
+        vision: 'ビジョン',
       },
     },
     completionParams: {
@@ -1316,6 +1493,7 @@ export const l10n = {
         noDescription: '説明なし',
         assistantType: 'アシスタント',
         roleplayType: 'ロールプレイ',
+        videoType: 'ビデオ',
         confirmationTitle: '確認',
         modelSwitchMessage:
           'このアシスタントには別のデフォルトモデル({{modelName}})があります。アシスタントのデフォルトモデルに切り替えますか？',
@@ -1463,6 +1641,20 @@ export const l10n = {
         },
         create: '作成する',
       },
+      lookiePalSheet: {
+        title: {
+          create: 'Lookieアシスタントを作成',
+          edit: 'Lookieアシスタントを編集',
+        },
+        palName: 'アシスタント名',
+        palNamePlaceholder: 'Lookieアシスタントの名前を入力',
+        visionModel: 'ビジョンモデル',
+        visionModelPlaceholder: 'ビジョンモデルを選択',
+        requiredModelsSection: '必要なモデル',
+        captureInterval: 'キャプチャ間隔',
+        captureIntervalHelper: '自動キャプチャ間の時間（ミリ秒）',
+        create: '作成する',
+      },
       sendButton: {
         accessibilityLabel: '送信',
       },
@@ -1526,6 +1718,27 @@ export const l10n = {
         byteSizes: ['B', 'KB', 'MB', 'GB'],
       },
     },
+    palsScreen: {
+      systemPrompt: 'システムプロンプト',
+      videoAnalysis: '動画解析',
+      videoAnalysisDescription:
+        'デバイスのカメラからの動画ストリームにリアルタイムでコメントを提供する動画ベースのAIアシスタントです。',
+      captureInterval: 'キャプチャ間隔',
+      captureIntervalUnit: 'ミリ秒',
+      world: '世界観',
+      toneStyle: '雰囲気/スタイル',
+      aiRole: 'AIの役割',
+      userRole: 'ユーザーの役割',
+      prompt: 'プロンプト',
+      assistant: 'アシスタント',
+      roleplay: 'ロールプレイ',
+      video: '動画',
+      deletePal: 'アシスタントを削除',
+      deletePalMessage: 'このアシスタントを削除してもよろしいですか？',
+      missingModel: 'モデルが見つかりません',
+      missingModelMessage:
+        'このアシスタントのデフォルトモデル「{{modelName}}」が利用できません。編集シートでダウンロードするか、別のモデルを選択してください。',
+    },
     validation: {
       nameRequired: '名前を入力してください',
       systemPromptRequired: 'システムプロンプトを入力してください',
@@ -1535,6 +1748,49 @@ export const l10n = {
       userRoleRequired: 'ユーザーの役割を入力してください',
       situationRequired: '状況を入力してください',
       toneStyleRequired: '雰囲気/スタイルを入力してください',
+    },
+    camera: {
+      permissionTitle: 'カメラ許可が必要',
+      permissionMessage:
+        'PocketPalが画像を分析するにはカメラへのアクセスが必要です',
+      requestingPermission: 'カメラの許可をリクエスト中...',
+      noDevice: 'カメラデバイスが見つかりません',
+      errorTitle: 'カメラエラー',
+      errorMessage: '写真撮影中にエラーが発生しました',
+      flip: '反転',
+      analyzing: '画像を分析中...',
+      startCamera: 'カメラを起動',
+      stopCamera: 'カメラを停止',
+      promptPlaceholder: 'この画像について何を知りたいですか？',
+      takePhoto: 'カメラ',
+    },
+    video: {
+      permissionTitle: 'カメラ許可が必要',
+      permissionMessage:
+        'PocketPalが動画を分析するにはカメラへのアクセスが必要です',
+      requestingPermission: 'カメラの許可をリクエスト中...',
+      noDevice: 'カメラデバイスが見つかりません',
+      errorTitle: 'カメラエラー',
+      errorMessage: 'カメラでエラーが発生しました',
+      flip: '反転',
+      analyzing: '動画を分析中...',
+      startCamera: 'カメラを起動',
+      stopCamera: 'カメラを停止',
+      promptPlaceholder: 'この動画について何を知りたいですか？',
+      captureInterval: 'キャプチャ間隔',
+      captureIntervalUnit: 'ミリ秒',
+      liveCommentary: 'ライブ解説',
+      emptyPlaceholder: {
+        title: 'Lookieへようこそ',
+        subtitle: 'プライベート・オンデバイス・リアルタイム動画解析',
+        experimentalNotice:
+          'これは実験的な機能です。精度は選択したモデルに依存し、速度はデバイスの性能に依存し、一部のモデルは失敗する可能性があります。',
+        howToUse: '使い方：',
+        step1: '• プロンプトを編集（任意）して解析を誘導',
+        step2: '• カメラボタンをタップしてライブ動画解析を開始',
+        step3: '• カメラ起動中にスナップショット頻度を調整',
+        step4: '• 通常のテキストチャットには別のアシスタントに切り替え',
+      },
     },
     screenTitles: {
       chat: 'チャット',
@@ -1556,6 +1812,8 @@ export const l10n = {
       goToModels: 'モデルへ移動',
       readyToChat: 'チャットを始めましょう。前回使用したモデルを読み込みます。',
       pleaseLoadModel: 'チャットを開始するにはモデルを読み込んでください。',
+      multimodalNotEnabled:
+        'このモデルではマルチモーダル機能が有効になっていません。画像は表示されますが、AIによって処理されません。',
     },
     benchmark: {
       title: 'ベンチマーク',
@@ -1703,6 +1961,14 @@ export const l10n = {
       downloadSetupFailedTitle: 'ダウンロード設定失敗',
       downloadSetupFailedMessage:
         'モデルのダウンロード準備に失敗しました: {message}',
+      cameraErrorTitle: 'カメラエラー',
+      cameraErrorMessage: '写真撮影に失敗しました',
+      galleryErrorTitle: 'ギャラリーエラー',
+      galleryErrorMessage: '画像選択に失敗しました',
+    },
+    simulator: {
+      cameraNotAvailable:
+        'シミュレーターではカメラを使用できません。実機をご使用ください。',
     },
   },
 
@@ -1733,6 +1999,10 @@ export const l10n = {
       minute: '分钟',
       minutes: '分钟',
       justNow: '刚刚',
+      ok: '确定',
+      close: '关闭',
+      clear: '全部清除',
+      gallery: '图库',
     },
     settings: {
       // Model Initialization Settings
@@ -1815,6 +2085,20 @@ export const l10n = {
       shortWarning: '内存警告',
       warning:
         '警告：模型大小可能会超过可用内存，这可能会影响设备的性能和稳定性',
+      multimodalWarning: '此设备可能没有足够的资源运行多模态模型。',
+      alerts: {
+        memoryWarningTitle: '内存警告',
+        memoryWarningMessage:
+          '此模型可能超过可用内存，这可能导致不稳定。继续加载吗？',
+        multimodalWarningTitle: '设备性能警告',
+        multimodalWarningMessage:
+          '此设备可能没有足够的资源运行多模态模型。加载可能导致不稳定。仍要继续吗？',
+        combinedWarningTitle: '性能警告',
+        combinedWarningMessage:
+          '此模型可能超过可用内存，且此设备可能没有足够的资源运行多模态模型。加载可能导致不稳定。仍要继续吗？',
+        cancel: '取消',
+        continue: '继续',
+      },
     },
     storage: {
       checkFailed: '检查存储失败',
@@ -1838,6 +2122,28 @@ export const l10n = {
         availableToUse: '可使用',
         availableToDownload: '可下载',
         useAddButtonForMore: '点击 + 按钮添加更多模型',
+      },
+      vision: '视觉',
+      mmproj: '投影仪',
+      multimodal: {
+        settings: '多模态设置',
+        projectionModels: '投影模型',
+        noCompatibleModels: '未找到兼容的投影模型',
+        selected: '已选择',
+        select: '选择',
+        download: '下载',
+        projectionNeededTitle: '需要投影模型',
+        projectionNeededMessage: '此模型需要投影模型才能使用多模态功能。',
+        reloadModelTitle: '重新加载模型',
+        reloadModelMessage:
+          '需要重新加载模型以应用新的投影模型。您想现在重新加载吗？',
+        reload: '重新加载',
+        deleteProjectionTitle: '删除投影模型',
+        deleteProjectionMessage: '您确定要删除此投影模型吗？',
+        cannotDeleteTitle: '无法删除',
+        cannotDeleteActive: '此投影模型当前处于活动状态。',
+        cannotDeleteInUse: '此投影模型被已下载的LLM模型使用：',
+        dependentModels: '依赖模型：',
       },
       buttons: {
         addFromHuggingFace: '从Hugging Face添加（镜像站）',
@@ -1962,6 +2268,7 @@ export const l10n = {
         multilingual: '多语言支持',
         rewriting: '重写文章',
         creativity: '创造性写作',
+        vision: '视觉',
       },
     },
     completionParams: {
@@ -2127,6 +2434,7 @@ export const l10n = {
         noDescription: '没有描述',
         assistantType: 'Pal',
         roleplayType: '角色扮演',
+        videoType: '视频',
         confirmationTitle: '确认',
         modelSwitchMessage:
           '此Pal具有不同的默认模型({{modelName}})，要切换到Pal的默认模型吗？',
@@ -2270,6 +2578,20 @@ export const l10n = {
         },
         create: '创建',
       },
+      lookiePalSheet: {
+        title: {
+          create: '创建Lookie帕尔',
+          edit: '编辑Lookie帕尔',
+        },
+        palName: '帕尔名',
+        palNamePlaceholder: '输入您的Lookie帕尔名称',
+        visionModel: '视觉模型',
+        visionModelPlaceholder: '选择视觉模型',
+        requiredModelsSection: '必需模型',
+        captureInterval: '捕获间隔',
+        captureIntervalHelper: '自动捕获之间的时间（毫秒）',
+        create: '创建',
+      },
       sendButton: {
         accessibilityLabel: '发送',
       },
@@ -2333,6 +2655,27 @@ export const l10n = {
         byteSizes: ['字节', 'KB', 'MB', 'GB'],
       },
     },
+    palsScreen: {
+      systemPrompt: '系统提示',
+      videoAnalysis: '视频分析',
+      videoAnalysisDescription:
+        '这是一个基于视频的AI助手，可以对来自设备摄像头的视频流提供实时评论。',
+      captureInterval: '捕获间隔',
+      captureIntervalUnit: '毫秒',
+      world: '世界',
+      toneStyle: '音调/风格',
+      aiRole: 'AI的角色',
+      userRole: '用户角色',
+      prompt: '提示',
+      assistant: '助手',
+      roleplay: '角色扮演',
+      video: '视频',
+      deletePal: '删除帕尔',
+      deletePalMessage: '您确定要删除此帕尔吗？',
+      missingModel: '缺少模型',
+      missingModelMessage:
+        '此帕尔的默认模型"{{modelName}}"不可用。请在编辑表中下载它或选择其他模型。',
+    },
     validation: {
       nameRequired: '需要填写名称',
       systemPromptRequired: '需要填写系统提示',
@@ -2342,6 +2685,47 @@ export const l10n = {
       userRoleRequired: '需要填写用户角色',
       situationRequired: '需要填写情况',
       toneStyleRequired: '需要填写语气/风格',
+    },
+    camera: {
+      permissionTitle: '需要相机权限',
+      permissionMessage: 'PocketPal需要访问相机来分析图像',
+      requestingPermission: '请求相机权限...',
+      noDevice: '未找到相机设备',
+      errorTitle: '相机错误',
+      errorMessage: '拍照时发生错误',
+      flip: '翻转',
+      analyzing: '分析图像中...',
+      startCamera: '启动相机',
+      stopCamera: '停止相机',
+      promptPlaceholder: '您想了解这张图片的什么信息？',
+      takePhoto: '相机',
+    },
+    video: {
+      permissionTitle: '需要相机权限',
+      permissionMessage: 'PocketPal需要访问相机来分析视频',
+      requestingPermission: '请求相机权限...',
+      noDevice: '未找到相机设备',
+      errorTitle: '相机错误',
+      errorMessage: '相机出现错误',
+      flip: '翻转',
+      analyzing: '分析视频中...',
+      startCamera: '启动相机',
+      stopCamera: '停止相机',
+      promptPlaceholder: '您想了解这个视频的什么信息？',
+      captureInterval: '捕获间隔',
+      captureIntervalUnit: '毫秒',
+      liveCommentary: '实时解说',
+      emptyPlaceholder: {
+        title: '欢迎使用Lookie',
+        subtitle: '私密设备端实时视频分析',
+        experimentalNotice:
+          '这是一个实验性功能。准确性取决于所选模型，速度取决于您的设备规格，某些模型可能会失败。',
+        howToUse: '使用方法：',
+        step1: '• 编辑提示词（可选）来指导分析',
+        step2: '• 点击相机按钮开始实时视频分析',
+        step3: '• 在相机激活时调整快照频率',
+        step4: '• 切换到其他助手进行正常文本聊天',
+      },
     },
     screenTitles: {
       chat: '聊天',
@@ -2362,6 +2746,8 @@ export const l10n = {
       goToModels: '转到模型',
       readyToChat: '准备好聊天了吗？加载上次使用的模型',
       pleaseLoadModel: '在你聊天前，请先加载模型',
+      multimodalNotEnabled:
+        '此模型未启用多模态功能。图片将显示但不会被AI处理。',
     },
     benchmark: {
       title: '基准测试',
@@ -2500,6 +2886,13 @@ export const l10n = {
       networkError: '网络错误：无法连接到API',
       downloadSetupFailedTitle: '下载设置失败',
       downloadSetupFailedMessage: '无法准备模型下载: {message}',
+      cameraErrorTitle: '相机错误',
+      cameraErrorMessage: '拍照失败',
+      galleryErrorTitle: '图库错误',
+      galleryErrorMessage: '选择图片失败',
+    },
+    simulator: {
+      cameraNotAvailable: '模拟器中无法使用相机。请使用真实设备。',
     },
   },
 };

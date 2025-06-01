@@ -19,12 +19,25 @@ export const createStyles = (theme: Theme) =>
     content: {
       padding: 16,
     },
-    modelAuthor: {
+    authorRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
       marginBottom: 8,
+      gap: 8,
+    },
+    modelAuthor: {
+      marginBottom: 0,
+    },
+    titleContainer: {
+      marginBottom: 16,
+    },
+    modelTitleRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      flexWrap: 'wrap',
     },
     modelTitle: {
       fontWeight: 'bold',
-      marginBottom: 16,
     },
     modelStats: {
       flexDirection: 'row',
@@ -41,5 +54,12 @@ export const createStyles = (theme: Theme) =>
       marginTop: 16,
       marginBottom: 8,
       color: theme.colors.onSurface,
+    },
+    sectionSubtitle: {
+      fontSize: 16,
+      fontWeight: '600',
+      marginTop: 12,
+      marginBottom: 4,
+      color: theme.colors.onSurfaceVariant,
     },
   });

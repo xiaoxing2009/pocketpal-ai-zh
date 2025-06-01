@@ -4,6 +4,7 @@ import {makePersistable} from 'mobx-persist-store';
 import {makeAutoObservable, runInAction} from 'mobx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {l10n} from '../utils/l10n';
+import {ErrorState} from '../utils/errors';
 
 // Define available languages type
 export type AvailableLanguage = keyof typeof l10n;
@@ -43,9 +44,24 @@ export class UIStore {
     shouldShow: true,
   };
 
+  // Warning state for chat-related warnings (like multimodal warnings)
+  chatWarning: ErrorState | null = null;
+
   showError(message: string) {
     // TODO: Implement error display logic (e.g., toast, alert, etc.)
     console.error(message);
+  }
+
+  setChatWarning(warning: ErrorState | null) {
+    runInAction(() => {
+      this.chatWarning = warning;
+    });
+  }
+
+  clearChatWarning() {
+    runInAction(() => {
+      this.chatWarning = null;
+    });
   }
 
   constructor() {

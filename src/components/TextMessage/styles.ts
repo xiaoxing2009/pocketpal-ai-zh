@@ -41,4 +41,37 @@ export const styles = ({
       marginHorizontal: theme.insets.messageInsetsHorizontal,
       marginVertical: theme.insets.messageInsetsVertical,
     },
+    imageContainer: {
+      marginBottom: 8,
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 8,
+    },
+    imageThumbnail: {
+      width: 80,
+      height: 80,
+      borderRadius: 8,
+      overflow: 'hidden',
+      backgroundColor: theme.colors.surfaceVariant,
+    },
+    imageContent: {
+      width: '100%',
+      height: '100%',
+    },
+    imagePreviewModal: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.9)',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    imagePreviewCloseButton: {
+      position: 'absolute',
+      top: 50,
+      right: 20,
+      zIndex: 1,
+    },
+    imagePreviewContent: {
+      width: '100%',
+      height: '80%',
+    },
   });

@@ -263,6 +263,9 @@ class ChatSessionRepository {
             role: msg.author.role,
           };
         }
+        if (msg.type === 'text' && msg.imageUris) {
+          metadata.imageUris = msg.imageUris;
+        }
 
         await database.collections.get('messages').create((record: any) => {
           record.sessionId = newSession.id;
@@ -353,6 +356,11 @@ class ChatSessionRepository {
           role: message.author.role,
           // Add any other User properties you need
         };
+      }
+
+      // Store imageUris in metadata for text messages
+      if (message.type === 'text' && (message as MessageType.Text).imageUris) {
+        metadata.imageUris = (message as MessageType.Text).imageUris;
       }
 
       newMessage = await database.collections

@@ -2,6 +2,7 @@ import {
   deepMerge,
   extractHFModelTitle,
   extractHFModelType,
+  extractModelPrecision,
   formatBytes,
   getTextSizeInBytes,
   safeParseJSON,
@@ -234,6 +235,27 @@ describe('safeParseJSON', () => {
         prompt: '',
         error: expect.any(Error),
       });
+    });
+  });
+
+  // Additional tests for extractModelPrecision function
+  describe('extractModelPrecision', () => {
+    it('extracts standard quantization levels correctly', () => {
+      expect(extractModelPrecision('model-q1_M.gguf')).toBe('q1');
+      expect(extractModelPrecision('model-q2_M.gguf')).toBe('q2');
+      expect(extractModelPrecision('model-q2.gguf')).toBe('q2');
+      expect(extractModelPrecision('model-iq4_xs.gguf')).toBe('q4');
+      expect(extractModelPrecision('model-q4_0.gguf')).toBe('q4');
+      expect(extractModelPrecision('model-q4.0.gguf')).toBe('q4');
+      expect(extractModelPrecision('model-q4-0.gguf')).toBe('q4');
+      expect(extractModelPrecision('model-Q4_k_m.gguf')).toBe('q4');
+      expect(extractModelPrecision('model-IQ4_XS.gguf')).toBe('q4');
+      expect(extractModelPrecision('model-q5_k_m.gguf')).toBe('q5');
+      expect(extractModelPrecision('model-q6_k_m.gguf')).toBe('q6');
+      expect(extractModelPrecision('model-q8_0.gguf')).toBe('q8');
+      expect(extractModelPrecision('model-f16.gguf')).toBe('f16');
+      expect(extractModelPrecision('model-bf16.gguf')).toBe('bf16');
+      expect(extractModelPrecision('model-f32.gguf')).toBe('f32');
     });
   });
 });

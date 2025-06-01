@@ -4,6 +4,8 @@ import {render} from '../../../../jest/test-utils';
 import {PalsScreen} from '../PalsScreen';
 import {PalType} from '../../../components/PalsSheets';
 import {palStore} from '../../../store/PalStore';
+import {L10nContext} from '../../../utils';
+import {l10n} from '../../../utils/l10n';
 
 // Mock the store
 jest.mock('../../../store/PalStore', () => ({
@@ -15,11 +17,13 @@ jest.mock('../../../store/PalStore', () => ({
 // Mock the sheets
 const mockAssistantSheet = jest.fn();
 const mockRoleplaySheet = jest.fn();
+const mockVideoPalSheet = jest.fn();
 
 jest.mock('../../../components/PalsSheets', () => ({
   PalType: {
     ASSISTANT: 'ASSISTANT',
     ROLEPLAY: 'ROLEPLAY',
+    VIDEO: 'VIDEO',
   },
   AssistantPalSheet: (props: any) => {
     mockAssistantSheet(props);
@@ -27,6 +31,10 @@ jest.mock('../../../components/PalsSheets', () => ({
   },
   RoleplayPalSheet: (props: any) => {
     mockRoleplaySheet(props);
+    return null;
+  },
+  VideoPalSheet: (props: any) => {
+    mockVideoPalSheet(props);
     return null;
   },
 }));
@@ -52,6 +60,13 @@ jest.mock('../../../assets/icons', () => {
     ),
   };
 });
+
+const renderWithL10n = (ui: React.ReactElement, options?: any) => {
+  return render(
+    <L10nContext.Provider value={l10n.en as any}>{ui}</L10nContext.Provider>,
+    options,
+  );
+};
 
 describe('PalsScreen', () => {
   const mockPals = [
@@ -79,17 +94,17 @@ describe('PalsScreen', () => {
   });
 
   it('renders create buttons', () => {
-    const {getByText, getAllByTestId} = render(<PalsScreen />, {
+    const {getByText, getAllByTestId} = renderWithL10n(<PalsScreen />, {
       withSafeArea: true,
     });
 
     expect(getByText('Assistant')).toBeDefined();
     expect(getByText('Roleplay')).toBeDefined();
-    expect(getAllByTestId('plus-icon')).toHaveLength(2);
+    expect(getAllByTestId('plus-icon')).toHaveLength(3); // Updated to 3 for Video
   });
 
   it('renders list of pals', () => {
-    const {getByText, getAllByTestId} = render(<PalsScreen />);
+    const {getByText, getAllByTestId} = renderWithL10n(<PalsScreen />);
 
     expect(getByText('Assistant Pal')).toBeDefined();
     expect(getByText('Roleplay Pal')).toBeDefined();
@@ -97,7 +112,7 @@ describe('PalsScreen', () => {
   });
 
   it('shows assistant details when expanded', () => {
-    const {getByText, getByTestId} = render(<PalsScreen />);
+    const {getByText, getByTestId} = renderWithL10n(<PalsScreen />);
 
     fireEvent.press(getByText('Assistant Pal'));
 
@@ -107,7 +122,7 @@ describe('PalsScreen', () => {
   });
 
   it('shows roleplay details when expanded', () => {
-    const {getByText, getByTestId} = render(<PalsScreen />);
+    const {getByText, getByTestId} = renderWithL10n(<PalsScreen />);
 
     fireEvent.press(getByText('Roleplay Pal'));
 
@@ -125,7 +140,7 @@ describe('PalsScreen', () => {
   });
 
   it('opens AssistantPalSheet when creating new assistant', () => {
-    const {getByText} = render(<PalsScreen />);
+    const {getByText} = renderWithL10n(<PalsScreen />);
 
     fireEvent.press(getByText('Assistant'));
 
@@ -138,7 +153,7 @@ describe('PalsScreen', () => {
   });
 
   it('opens RoleplayPalSheet when creating new roleplay', () => {
-    const {getByText} = render(<PalsScreen />);
+    const {getByText} = renderWithL10n(<PalsScreen />);
 
     fireEvent.press(getByText('Roleplay'));
 
@@ -151,7 +166,7 @@ describe('PalsScreen', () => {
   });
 
   it('opens AssistantPalSheet with pal data when editing assistant', () => {
-    const {getAllByTestId} = render(<PalsScreen />);
+    const {getAllByTestId} = renderWithL10n(<PalsScreen />);
 
     const pencilIcons = getAllByTestId('pencil-icon');
     fireEvent.press(pencilIcons[0]); // First pencil icon is for assistant pal
@@ -165,7 +180,7 @@ describe('PalsScreen', () => {
   });
 
   it('opens RoleplayPalSheet with pal data when editing roleplay', () => {
-    const {getAllByTestId} = render(<PalsScreen />);
+    const {getAllByTestId} = renderWithL10n(<PalsScreen />);
 
     const pencilIcons = getAllByTestId('pencil-icon');
     fireEvent.press(pencilIcons[1]); // Second pencil icon is for roleplay pal
@@ -179,7 +194,7 @@ describe('PalsScreen', () => {
   });
 
   it('closes sheets when onClose is called', () => {
-    const {getByText} = render(<PalsScreen />);
+    const {getByText} = renderWithL10n(<PalsScreen />);
 
     // Open and close assistant sheet
     fireEvent.press(getByText('Assistant'));

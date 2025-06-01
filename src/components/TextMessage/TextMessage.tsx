@@ -1,5 +1,13 @@
 import * as React from 'react';
-import {Linking, Text, View} from 'react-native';
+import {
+  Linking,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  Modal,
+} from 'react-native';
+import {IconButton} from 'react-native-paper';
 
 import ParsedText from 'react-native-parsed-text';
 import {
@@ -51,11 +59,31 @@ export const TextMessage = ({
   const theme = useTheme();
   const user = React.useContext(UserContext);
   const [previewData, setPreviewData] = React.useState(message.previewData);
-  const {descriptionText, headerText, titleText, text, textContainer} = styles({
+  const [selectedImageIndex, setSelectedImageIndex] = React.useState<
+    number | null
+  >(null);
+
+  const {
+    descriptionText,
+    headerText,
+    titleText,
+    text,
+    textContainer,
+    imageContainer,
+    imageThumbnail,
+    imageContent,
+    imagePreviewModal,
+    imagePreviewCloseButton,
+    imagePreviewContent,
+  } = styles({
     message,
     theme,
     user,
   });
+
+  // Extract imageUris from the message if available
+  const imageUris = (message as any).imageUris || [];
+  const hasImages = imageUris && imageUris.length > 0;
 
   const handleEmailPress = (email: string) => {
     try {
@@ -125,58 +153,121 @@ export const TextMessage = ({
     );
   };
 
-  return usePreviewData &&
-    !!onPreviewDataFetched &&
-    REGEX_LINK.test(message.text.toLowerCase()) ? (
-    <LinkPreview
-      containerStyle={{width: previewData?.image ? messageWidth : undefined}}
-      enableAnimation={enableAnimation}
-      header={showName ? getUserName(message.author) : undefined}
-      onPreviewDataFetched={handlePreviewDataFetched}
-      previewData={previewData}
-      renderDescription={renderPreviewDescription}
-      renderHeader={renderPreviewHeader}
-      renderText={renderPreviewText}
-      renderTitle={renderPreviewTitle}
-      text={message.text}
-      textContainerStyle={textContainer}
-      touchableWithoutFeedbackProps={{
-        accessibilityRole: undefined,
-        accessible: false,
-        disabled: true,
-      }}
-    />
-  ) : (
-    <View style={textContainer}>
-      {
-        // Tested inside the link preview
-        /* istanbul ignore next */ showName
-          ? renderPreviewHeader(getUserName(message.author))
-          : null
-      }
-      <MarkdownView
-        markdownText={message.text.trim()}
-        maxMessageWidth={messageWidth}
-        selectable={false}
-      />
+  // Render image thumbnails
+  const renderImages = () => {
+    if (!hasImages) {
+      return null;
+    }
 
-      {/*Platform.OS === 'ios' ? (
-        <TextInput
-          multiline
-          editable={false}
-          style={[
-            text,
-            {
-              lineHeight: undefined,
-            },
-          ]}>
-          {message.text.trim()}
-        </TextInput>
+    return (
+      <View style={imageContainer}>
+        {imageUris.map((uri: string, index: number) => (
+          <TouchableOpacity
+            key={index}
+            style={imageThumbnail}
+            onPress={() => setSelectedImageIndex(index)}>
+            <Image source={{uri}} style={imageContent} resizeMode="cover" />
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
+  };
+
+  // Render image preview modal
+  const renderImagePreview = () => {
+    if (selectedImageIndex === null) {
+      return null;
+    }
+
+    return (
+      <Modal
+        visible={selectedImageIndex !== null}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setSelectedImageIndex(null)}>
+        <View style={imagePreviewModal}>
+          <IconButton
+            icon="close"
+            size={24}
+            iconColor="white"
+            style={imagePreviewCloseButton}
+            onPress={() => setSelectedImageIndex(null)}
+          />
+          <Image
+            source={{uri: imageUris[selectedImageIndex]}}
+            style={imagePreviewContent}
+            resizeMode="contain"
+          />
+        </View>
+      </Modal>
+    );
+  };
+
+  return (
+    <>
+      {usePreviewData &&
+      !!onPreviewDataFetched &&
+      REGEX_LINK.test(message.text.toLowerCase()) ? (
+        <LinkPreview
+          containerStyle={{
+            width: previewData?.image ? messageWidth : undefined,
+          }}
+          enableAnimation={enableAnimation}
+          header={showName ? getUserName(message.author) : undefined}
+          onPreviewDataFetched={handlePreviewDataFetched}
+          previewData={previewData}
+          renderDescription={renderPreviewDescription}
+          renderHeader={renderPreviewHeader}
+          renderText={renderPreviewText}
+          renderTitle={renderPreviewTitle}
+          text={message.text}
+          textContainerStyle={textContainer}
+          touchableWithoutFeedbackProps={{
+            accessibilityRole: undefined,
+            accessible: false,
+            disabled: true,
+          }}
+        />
       ) : (
-        <Text selectable={true} style={text}>
-          {message.text}
-        </Text>
-      )*/}
-    </View>
+        <View style={textContainer}>
+          {
+            // Tested inside the link preview
+            /* istanbul ignore next */ showName
+              ? renderPreviewHeader(getUserName(message.author))
+              : null
+          }
+
+          {/* Render images above the text */}
+          {renderImages()}
+
+          <MarkdownView
+            markdownText={message.text.trim()}
+            maxMessageWidth={messageWidth}
+            selectable={false}
+          />
+
+          {/*Platform.OS === 'ios' ? (
+            <TextInput
+              multiline
+              editable={false}
+              style={[
+                text,
+                {
+                  lineHeight: undefined,
+                },
+              ]}>
+              {message.text.trim()}
+            </TextInput>
+          ) : (
+            <Text selectable={true} style={text}>
+              {message.text}
+            </Text>
+          )*/}
+        </View>
+      )}
+
+      {/* Image preview modal */}
+      {renderImagePreview()}
+    </>
   );
 };

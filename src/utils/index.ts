@@ -9,8 +9,9 @@ import Blob from 'react-native/Libraries/Blob/Blob';
 import * as RNFS from '@dr.pogodin/react-native-fs';
 
 import {l10n} from './l10n';
-import {formatBytes, formatNumber} from './formatters';
+import {modelStore} from '../store';
 import {getHFDefaultSettings} from './chat';
+import {formatBytes, formatNumber} from './formatters';
 import {getVerboseDateTimeRepresentation} from './formatters';
 import {
   HuggingFaceModel,
@@ -18,9 +19,17 @@ import {
   Model,
   ModelFile,
   ModelOrigin,
+  ModelType,
   PreviewImage,
   User,
 } from './types';
+import {
+  isVisionRepo,
+  getMmprojFiles,
+  isProjectionModel,
+  getRecommendedProjectionModel,
+  getVisionModelSizeBreakdown,
+} from './multimodalHelpers';
 
 export const L10nContext = React.createContext<
   (typeof l10n)[keyof typeof l10n]
@@ -245,7 +254,6 @@ export function bytesToGB(bytes: number): string {
 export const getModelDescription = (
   model: Model,
   isActiveModel: boolean,
-  modelStore: any,
   l10nData = l10n.en,
 ): string => {
   // Get size and params from context if the model is active.
@@ -263,7 +271,19 @@ export const getModelDescription = (
         };
 
   const notAvailable = l10nData.models.modelDescription.notAvailable;
-  const sizeString = size > 0 ? formatBytes(size) : notAvailable;
+  let sizeString = size > 0 ? formatBytes(size) : notAvailable;
+
+  // For vision models, show combined size if projection model is available
+  if (model.supportsMultimodal && model.hfModelFile && model.hfModel) {
+    const sizeBreakdown = getVisionModelSizeBreakdown(
+      model.hfModelFile,
+      model.hfModel,
+    );
+    if (sizeBreakdown.hasProjection) {
+      sizeString = `${formatBytes(sizeBreakdown.totalSize)}`;
+    }
+  }
+
   const paramsString =
     params > 0 ? formatNumber(params, 2, true, false) : notAvailable;
 
@@ -272,7 +292,18 @@ export const getModelDescription = (
 
 export async function hasEnoughSpace(model: Model): Promise<boolean> {
   try {
-    const requiredSpaceBytes = model.size;
+    let requiredSpaceBytes = model.size;
+
+    // For vision models, consider the total size including projection model
+    if (model.supportsMultimodal && model.hfModelFile && model.hfModel) {
+      const sizeBreakdown = getVisionModelSizeBreakdown(
+        model.hfModelFile,
+        model.hfModel,
+      );
+      if (sizeBreakdown.hasProjection) {
+        requiredSpaceBytes = sizeBreakdown.totalSize;
+      }
+    }
 
     if (isNaN(requiredSpaceBytes) || requiredSpaceBytes <= 0) {
       console.error('Invalid model size:', model.size);
@@ -342,6 +373,45 @@ export function hfAsModel(
 ): Model {
   const defaultSettings = getHFDefaultSettings(hfModel);
 
+  // Check if this is a vision repository
+  const isVision = isVisionRepo(hfModel.siblings || []);
+
+  // Check if this is a projection model
+  const isProjModel = isProjectionModel(modelFile.rfilename);
+
+  // Check if this is a vision LLM (in a vision repo but not a projection model)
+  const isVisionLLM = isVision && !isProjModel;
+
+  // Get compatible projection models if this is a vision LLM
+  let compatibleProjectionModels: string[] = [];
+  let defaultProjectionModel: string | undefined;
+
+  if (isVisionLLM) {
+    // Get mmproj files from the repository
+    const mmprojFiles = getMmprojFiles(hfModel.siblings || []);
+
+    // Convert to model IDs
+    compatibleProjectionModels = mmprojFiles.map(
+      file => `${hfModel.id}/${file.rfilename}`,
+    );
+
+    // Set default projection model based on quantization matching
+    if (compatibleProjectionModels.length > 0) {
+      // Get the filenames only
+      const mmprojFilenames = mmprojFiles.map(file => file.rfilename);
+
+      // Find the best matching projection model based on quantization
+      const recommendedFile = getRecommendedProjectionModel(
+        modelFile.rfilename,
+        mmprojFilenames,
+      );
+
+      if (recommendedFile) {
+        defaultProjectionModel = `${hfModel.id}/${recommendedFile}`;
+      }
+    }
+  }
+
   const _model: Model = {
     id: hfModel.id + '/' + modelFile.rfilename,
     type: extractHFModelType(hfModel.id),
@@ -354,6 +424,7 @@ export function hfAsModel(
     hfUrl: hfModel.url ?? '',
     progress: 0,
     filename: modelFile.rfilename,
+    capabilities: isVisionLLM ? ['vision'] : undefined,
     //fullPath: '',
     isLocal: false,
     origin: ModelOrigin.HF,
@@ -365,6 +436,18 @@ export function hfAsModel(
     stopWords: defaultSettings.completionParams.stop,
     hfModelFile: modelFile,
     hfModel: hfModel,
+
+    // Set multimodal fields
+    supportsMultimodal: isVisionLLM,
+    modelType: isProjModel
+      ? ModelType.PROJECTION
+      : isVisionLLM
+      ? ModelType.VISION
+      : undefined,
+    compatibleProjectionModels: isVisionLLM
+      ? compatibleProjectionModels
+      : undefined,
+    defaultProjectionModel: isVisionLLM ? defaultProjectionModel : undefined,
   };
 
   return _model;
@@ -391,7 +474,6 @@ export const getSHA256Hash = async (filePath: string): Promise<string> => {
  */
 export const checkModelFileIntegrity = async (
   model: Model,
-  modelStore: any,
 ): Promise<{
   isValid: boolean;
   errorMessage: string | null;
@@ -500,32 +582,181 @@ export const safeParseJSON = (json: string) => {
 };
 
 /**
- * Returns a localized string of model capabilities based on capability keys
- * @param model - The model object containing capabilities array
- * @param l10nData - The localization data to use
- * @returns A comma-separated string of localized capabilities
+ * Configuration for model capabilities with their visual representation
  */
-export const getLocalizedModelCapabilities = (
-  model: Model,
-  l10nData = l10n.en,
-): string => {
-  if (!model.capabilities?.length) {
-    return '';
+export const SKILL_CONFIG = {
+  vision: {
+    icon: 'eye',
+    color: 'tertiary' as const,
+    isSpecial: true, // Gets special visual treatment
+    labelKey: 'vision' as const,
+  },
+  questionAnswering: {
+    icon: 'help-circle-outline',
+    color: 'primary' as const,
+    isSpecial: false,
+    labelKey: 'questionAnswering' as const,
+  },
+  summarization: {
+    icon: 'text-short',
+    color: 'primary' as const,
+    isSpecial: false,
+    labelKey: 'summarization' as const,
+  },
+  reasoning: {
+    icon: 'brain',
+    color: 'primary' as const,
+    isSpecial: false,
+    labelKey: 'reasoning' as const,
+  },
+  roleplay: {
+    icon: 'account-voice',
+    color: 'primary' as const,
+    isSpecial: false,
+    labelKey: 'roleplay' as const,
+  },
+  instructions: {
+    icon: 'format-list-bulleted',
+    color: 'primary' as const,
+    isSpecial: false,
+    labelKey: 'instructions' as const,
+  },
+  code: {
+    icon: 'code-tags',
+    color: 'primary' as const,
+    isSpecial: false,
+    labelKey: 'code' as const,
+  },
+  math: {
+    icon: 'calculator',
+    color: 'primary' as const,
+    isSpecial: false,
+    labelKey: 'math' as const,
+  },
+  multilingual: {
+    icon: 'translate',
+    color: 'primary' as const,
+    isSpecial: false,
+    labelKey: 'multilingual' as const,
+  },
+  rewriting: {
+    icon: 'pencil',
+    color: 'primary' as const,
+    isSpecial: false,
+    labelKey: 'rewriting' as const,
+  },
+  creativity: {
+    icon: 'lightbulb-outline',
+    color: 'primary' as const,
+    isSpecial: false,
+    labelKey: 'creativity' as const,
+  },
+} as const;
+
+export type SkillKey = keyof typeof SKILL_CONFIG;
+
+/**
+ * Enhanced skill item with icon and styling information
+ */
+export interface SkillItem {
+  key: string;
+  labelKey: string;
+  icon?: string;
+  color?: 'primary' | 'tertiary';
+  isSpecial?: boolean;
+}
+
+/**
+ * Get unified skills list for a model, combining capabilities and multimodal support
+ * @param model - The model object
+ * @returns Array of skill items with icons and styling (localization done at render time)
+ */
+export const getModelSkills = (model: {
+  capabilities?: string[];
+  supportsMultimodal?: boolean;
+}): SkillItem[] => {
+  const skills: SkillItem[] = [];
+
+  // Add vision skill first if model supports multimodal
+  if (model.supportsMultimodal) {
+    const visionConfig = SKILL_CONFIG.vision;
+    skills.push({
+      key: 'vision',
+      labelKey: visionConfig.labelKey,
+      icon: visionConfig.icon,
+      color: visionConfig.color,
+      isSpecial: visionConfig.isSpecial,
+    });
   }
 
-  return model.capabilities
-    .map(
-      capability =>
-        l10nData.models.modelCapabilities[
-          capability as keyof typeof l10nData.models.modelCapabilities
-        ],
-    )
-    .filter(Boolean)
-    .join(', ');
+  // Add other capabilities (excluding vision to avoid duplication)
+  if (model.capabilities?.length) {
+    const otherCapabilities = model.capabilities.filter(
+      cap => cap !== 'vision',
+    );
+
+    otherCapabilities.forEach(capability => {
+      const config = SKILL_CONFIG[capability as SkillKey];
+
+      if (config) {
+        skills.push({
+          key: capability,
+          labelKey: config.labelKey,
+          icon: config.icon,
+          color: config.color,
+          isSpecial: config.isSpecial,
+        });
+      }
+    });
+  }
+
+  return skills;
 };
 
-export * from './formatters';
-export * from './network';
+/**
+ * Extract quantization level from filename
+ * @param filename The filename to extract quantization level from
+ * @returns The quantization level string (e.g., 'q4_0', 'q5_k_m', etc.) or null if not found
+ */
+export function extractModelPrecision(filename: string): string | null {
+  const lower = filename.toLowerCase();
+
+  // Match and return full-precision types
+  const fpMatch = lower.match(/\b(f16|bf16|f32)\b/);
+  if (fpMatch) {
+    return fpMatch[1];
+  }
+
+  // Match quantized types like iq4_k_m, q4_0_0, q5_k, etc., and normalize to just q4, q5, etc.
+  const quantMatch = lower.match(/\b[iq]?(q[1-8])(?:[_\-a-z0-9]*)?\b/);
+  if (quantMatch) {
+    return quantMatch[1];
+  }
+
+  return null;
+}
+
+const QUANT_ORDER = [
+  'q1',
+  'q2',
+  'q3',
+  'q4',
+  'q5',
+  'q6',
+  'q8',
+  'bf16',
+  'f16',
+  'f32',
+];
+
+export function getQuantRank(level: string): number {
+  const simplified = level.toLowerCase();
+  return QUANT_ORDER.indexOf(simplified);
+}
+
 export * from './errors';
 export * from './fb';
+export * from './formatters';
+export * from './multimodalHelpers';
+export * from './network';
 export * from './types';

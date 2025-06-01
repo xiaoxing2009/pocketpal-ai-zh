@@ -47,6 +47,8 @@ export const DownloadErrorDialog: React.FC<DownloadErrorDialogProps> = ({
     hfStore.isTokenPresent &&
     hfStore.useHfToken;
 
+  const notEnoughSpace = error?.code === 'storage';
+
   const getErrorType = ():
     | 'unauthorized'
     | 'forbidden'
@@ -109,10 +111,9 @@ export const DownloadErrorDialog: React.FC<DownloadErrorDialogProps> = ({
       case 'noToken':
         return alerts.getTokenMessage;
       default:
-        return (
-          error?.message ||
-          alerts.downloadFailedMessage.replace('{message}', '')
-        );
+        return !error?.message
+          ? alerts.downloadFailedMessage.replace('{message}', '')
+          : undefined;
     }
   };
 
@@ -145,7 +146,7 @@ export const DownloadErrorDialog: React.FC<DownloadErrorDialogProps> = ({
   const getActions = () => {
     const actions: DialogAction[] = [];
 
-    if (model?.hfUrl && !isTokenDisabledWhenAuthError) {
+    if (model?.hfUrl && !isTokenDisabledWhenAuthError && !notEnoughSpace) {
       actions.push({
         label: alerts.viewOnHuggingFace,
         onPress: () => {
@@ -155,7 +156,11 @@ export const DownloadErrorDialog: React.FC<DownloadErrorDialogProps> = ({
       });
     }
 
-    if (isTokenDisabledWhenAuthError || isTokenPresentWhenAuthError) {
+    if (
+      isTokenDisabledWhenAuthError ||
+      isTokenPresentWhenAuthError ||
+      notEnoughSpace
+    ) {
       actions.push({
         label: l10n.common.dismiss,
         onPress: () => {
@@ -194,18 +199,20 @@ export const DownloadErrorDialog: React.FC<DownloadErrorDialogProps> = ({
   };
 
   const steps = getSteps();
+  const message = getDialogMessage();
   const styles = createStyles(theme);
 
   return (
     <Portal>
       <Dialog
+        testID="download-error-dialog"
         visible={visible}
         onDismiss={onDismiss}
         title={getDialogTitle()}
         actions={getActions()}
         scrollable={true}>
         <View>
-          <Text variant="bodyMedium">{getDialogMessage()}</Text>
+          {message && <Text variant="bodyMedium">{message}</Text>}
 
           {steps.length > 0 && (
             <View style={styles.stepsContainer}>

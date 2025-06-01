@@ -11,6 +11,7 @@ interface UseMessageActionsProps {
   messages: MessageType.Any[];
   handleSendPress: (message: MessageType.PartialText) => Promise<void>;
   setInputText?: (text: string) => void;
+  setInputImages?: (images: string[]) => void;
 }
 
 export const useMessageActions = ({
@@ -18,6 +19,7 @@ export const useMessageActions = ({
   messages,
   handleSendPress,
   setInputText,
+  setInputImages,
 }: UseMessageActionsProps) => {
   const handleCopy = useCallback((message: MessageType.Text) => {
     if (message.type === 'text') {
@@ -31,11 +33,12 @@ export const useMessageActions = ({
         return;
       }
 
-      // Enter edit mode and set input text
+      // Enter edit mode and set input text and images
       chatSessionStore.enterEditMode(message.id);
       setInputText?.(message.text);
+      setInputImages?.(message.imageUris || []);
     },
-    [setInputText, user.id],
+    [setInputText, setInputImages, user.id],
   );
 
   const handleTryAgain = useCallback(
@@ -48,8 +51,17 @@ export const useMessageActions = ({
       if (message.author.id === user.id) {
         // Remove all messages from this point (inclusive)
         const messageText = message.text;
+        const relatedImages = message.imageUris;
+
         await chatSessionStore.removeMessagesFromId(message.id, true);
-        await handleSendPress({text: messageText, type: 'text'});
+        await handleSendPress({
+          text: messageText,
+          type: 'text',
+          imageUris:
+            relatedImages && relatedImages.length > 0
+              ? relatedImages
+              : undefined,
+        });
       } else {
         // If it's the assistant's message, find and resubmit the last user message
         const messageIndex = messages.findIndex(msg => msg.id === message.id);
@@ -61,8 +73,16 @@ export const useMessageActions = ({
 
         if (previousMessage && previousMessage.text) {
           const messageText = previousMessage.text;
+          const relatedImages = previousMessage.imageUris;
           await chatSessionStore.removeMessagesFromId(previousMessage.id, true);
-          await handleSendPress({text: messageText, type: 'text'});
+          await handleSendPress({
+            text: messageText,
+            type: 'text',
+            imageUris:
+              relatedImages && relatedImages.length > 0
+                ? relatedImages
+                : undefined,
+          });
         }
       }
     },

@@ -47,11 +47,13 @@ export interface ErrorState {
     | 'network'
     | 'storage'
     | 'server'
+    | 'multimodal'
     | 'unknown';
   service?: 'huggingface' | 'firebase' | 'localapi';
   message: string;
-  context: 'search' | 'download' | 'modelDetails';
+  context: 'search' | 'download' | 'modelDetails' | 'chat';
   recoverable: boolean;
+  severity?: 'error' | 'warning';
   metadata?: {
     modelId?: string;
     [key: string]: any;
@@ -66,6 +68,7 @@ export function createErrorState(
   context: ErrorState['context'],
   service?: ErrorState['service'],
   metadata?: ErrorState['metadata'],
+  severity: ErrorState['severity'] = 'error',
 ): ErrorState {
   const l10nObject = uiStore.l10n;
   let code: ErrorState['code'] = 'unknown';
@@ -171,6 +174,23 @@ export function createErrorState(
     message,
     context,
     recoverable,
+    severity,
     metadata,
+  };
+}
+
+/**
+ * Helper function to create a multimodal warning state
+ */
+export function createMultimodalWarning(
+  message: string,
+  context: ErrorState['context'] = 'chat',
+): ErrorState {
+  return {
+    code: 'multimodal',
+    message,
+    context,
+    recoverable: false,
+    severity: 'warning',
   };
 }

@@ -1,8 +1,9 @@
 import React, {useState, useEffect, memo, useContext} from 'react';
-import {Button} from 'react-native-paper';
+import {Button, Text, Divider} from 'react-native-paper';
 
 import {ModelSettings} from '../../screens/ModelsScreen/ModelSettings';
 import {Sheet} from '../Sheet';
+import {ProjectionModelSelector} from '../ProjectionModelSelector';
 import {Model} from '../../utils/types';
 import {modelStore} from '../../store';
 import {chatTemplates} from '../../utils/chat';
@@ -25,7 +26,7 @@ export const ModelSettingsSheet: React.FC<ModelSettingsSheetProps> = memo(
     const [tempStopWords, setTempStopWords] = useState<string[]>(
       model?.stopWords || [],
     );
-    const i10n = useContext(L10nContext);
+    const l10n = useContext(L10nContext);
 
     // Reset temp settings when model changes
     useEffect(() => {
@@ -78,7 +79,7 @@ export const ModelSettingsSheet: React.FC<ModelSettingsSheetProps> = memo(
       <Sheet
         isVisible={isVisible}
         onClose={handleCancelSettings}
-        title={i10n.components.modelSettingsSheet.modelSettings}
+        title={l10n.components.modelSettingsSheet.modelSettings}
         displayFullHeight>
         <Sheet.ScrollView
           bottomOffset={16}
@@ -89,18 +90,37 @@ export const ModelSettingsSheet: React.FC<ModelSettingsSheetProps> = memo(
             onChange={handleSettingsUpdate}
             onStopWordsChange={value => setTempStopWords(value || [])}
           />
+
+          {/* Multimodal Settings Section */}
+          {model.supportsMultimodal && (
+            <>
+              <Divider style={styles.multimodalDivider} />
+              <Text style={styles.multimodalSectionTitle}>
+                {l10n.models.multimodal.settings}
+              </Text>
+              <ProjectionModelSelector
+                model={model}
+                onProjectionModelSelect={projectionModelId => {
+                  modelStore.setDefaultProjectionModel(
+                    model.id,
+                    projectionModelId,
+                  );
+                }}
+              />
+            </>
+          )}
         </Sheet.ScrollView>
         <Sheet.Actions>
           <View style={styles.secondaryButtons}>
             <Button mode="text" onPress={handleReset}>
-              {i10n.common.reset}
+              {l10n.common.reset}
             </Button>
             <Button mode="text" onPress={handleCancelSettings}>
-              {i10n.common.cancel}
+              {l10n.common.cancel}
             </Button>
           </View>
           <Button mode="contained" onPress={handleSaveSettings}>
-            {i10n.components.modelSettingsSheet.saveChanges}
+            {l10n.components.modelSettingsSheet.saveChanges}
           </Button>
         </Sheet.Actions>
       </Sheet>

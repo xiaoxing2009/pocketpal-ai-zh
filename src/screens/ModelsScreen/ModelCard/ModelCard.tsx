@@ -10,7 +10,6 @@ import {
   Button,
   IconButton,
   Text,
-  Paragraph,
   TouchableRipple,
   HelperText,
   ActivityIndicator,
@@ -25,13 +24,18 @@ import {createStyles} from './styles';
 
 import {uiStore, modelStore} from '../../../store';
 
-import {Model, ModelOrigin, RootDrawerParamList} from '../../../utils/types';
+import {
+  Model,
+  ModelOrigin,
+  ModelType,
+  RootDrawerParamList,
+} from '../../../utils/types';
 import {
   getModelDescription,
   L10nContext,
   checkModelFileIntegrity,
-  getLocalizedModelCapabilities,
 } from '../../../utils';
+import {ProjectionModelSelector, SkillsDisplay} from '../../../components';
 
 type ChatScreenNavigationProp = DrawerNavigationProp<RootDrawerParamList>;
 
@@ -52,8 +56,10 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
 
     const [snackbarVisible, setSnackbarVisible] = useState(false); // Snackbar visibility
     const [integrityError, setIntegrityError] = useState<string | null>(null);
+    const [showProjectionSelector, setShowProjectionSelector] = useState(false);
 
-    const {memoryWarning, shortMemoryWarning} = useMemoryCheck(model);
+    const {memoryWarning, shortMemoryWarning, multimodalWarning} =
+      useMemoryCheck(model, model.supportsMultimodal);
     const {isOk: storageOk, message: storageNOkMessage} = useStorageCheck(
       model,
       {enablePeriodicCheck: true, checkInterval: 10000},
@@ -67,7 +73,7 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
     // Check integrity when model is downloaded
     useEffect(() => {
       if (isDownloaded) {
-        checkModelFileIntegrity(model, modelStore).then(({errorMessage}) => {
+        checkModelFileIntegrity(model).then(({errorMessage}) => {
           setIntegrityError(errorMessage);
         });
       } else {
@@ -77,19 +83,78 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
 
     const handleDelete = useCallback(() => {
       if (model.isDownloaded) {
-        Alert.alert(
-          l10n.models.modelCard.alerts.deleteTitle,
-          l10n.models.modelCard.alerts.deleteMessage,
-          [
-            {text: l10n.common.cancel, style: 'cancel'},
-            {
-              text: l10n.common.delete,
-              onPress: async () => {
-                await modelStore.deleteModel(model);
+        // Special handling for projection models
+        if (model.modelType === ModelType.PROJECTION) {
+          const canDeleteResult = modelStore.canDeleteProjectionModel(model.id);
+
+          if (!canDeleteResult.canDelete) {
+            // Show error dialog with specific reason
+            let message =
+              canDeleteResult.reason ||
+              l10n.models.multimodal.cannotDeleteTitle;
+
+            if (
+              canDeleteResult.reason === 'Projection model is currently active'
+            ) {
+              message = l10n.models.multimodal.cannotDeleteActive;
+            } else if (
+              canDeleteResult.dependentModels &&
+              canDeleteResult.dependentModels.length > 0
+            ) {
+              const modelNames = canDeleteResult.dependentModels
+                .map(m => m.name)
+                .join(', ');
+              message = `${l10n.models.multimodal.cannotDeleteInUse}\n\n${l10n.models.multimodal.dependentModels} ${modelNames}`;
+            }
+
+            Alert.alert(l10n.models.multimodal.cannotDeleteTitle, message, [
+              {text: l10n.common.ok, style: 'default'},
+            ]);
+            return;
+          }
+
+          // Show projection-specific confirmation dialog
+          Alert.alert(
+            l10n.models.multimodal.deleteProjectionTitle,
+            l10n.models.multimodal.deleteProjectionMessage,
+            [
+              {text: l10n.common.cancel, style: 'cancel'},
+              {
+                text: l10n.common.delete,
+                style: 'destructive',
+                onPress: async () => {
+                  try {
+                    await modelStore.deleteModel(model);
+                  } catch (error) {
+                    console.error('Failed to delete projection model:', error);
+                    Alert.alert(
+                      l10n.models.multimodal.cannotDeleteTitle,
+                      error instanceof Error
+                        ? error.message
+                        : 'Unknown error occurred',
+                      [{text: l10n.common.ok, style: 'default'}],
+                    );
+                  }
+                },
               },
-            },
-          ],
-        );
+            ],
+          );
+        } else {
+          // Standard model deletion
+          Alert.alert(
+            l10n.models.modelCard.alerts.deleteTitle,
+            l10n.models.modelCard.alerts.deleteMessage,
+            [
+              {text: l10n.common.cancel, style: 'cancel'},
+              {
+                text: l10n.common.delete,
+                onPress: async () => {
+                  await modelStore.deleteModel(model);
+                },
+              },
+            ],
+          );
+        }
       }
     }, [model, l10n]);
 
@@ -101,6 +166,17 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
         });
       }
     }, [model.hfUrl]);
+
+    const handleProjectionModelSelect = useCallback(
+      (projectionModelId: string) => {
+        modelStore.setDefaultProjectionModel(model.id, projectionModelId);
+      },
+      [model.id],
+    );
+
+    const toggleProjectionSelector = useCallback(() => {
+      setShowProjectionSelector(prev => !prev);
+    }, []);
 
     const handleRemove = useCallback(() => {
       Alert.alert(
@@ -236,28 +312,21 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
                     )}
                   </View>
                   <Text style={styles.modelDescription}>
-                    {getModelDescription(
-                      model,
-                      isActiveModel,
-                      modelStore,
-                      l10n,
-                    )}
+                    {getModelDescription(model, isActiveModel, l10n)}
                   </Text>
-                  {model.capabilities && (
-                    <View style={styles.skillsContainer}>
-                      <Text style={styles.skillsLabel}>
-                        {l10n.models.modelCard.labels.skills}
-                      </Text>
-                      <Text style={styles.skillsText}>
-                        {getLocalizedModelCapabilities(model, l10n)}
-                      </Text>
-                    </View>
-                  )}
+                  <SkillsDisplay
+                    model={model}
+                    onVisionPress={
+                      model.supportsMultimodal
+                        ? toggleProjectionSelector
+                        : undefined
+                    }
+                  />
                 </View>
               </View>
 
-              {/* Display warning icon if there's a memory warning */}
-              {shortMemoryWarning && isDownloaded && (
+              {/* Display warning icon if there's a memory or multimodal warning */}
+              {(shortMemoryWarning || multimodalWarning) && isDownloaded && (
                 <TouchableRipple
                   testID="memory-warning-button"
                   onPress={handleWarningPress}
@@ -269,9 +338,19 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
                       size={20}
                       style={styles.warningIcon}
                     />
-                    <Text style={styles.warningText}>{shortMemoryWarning}</Text>
+                    <Text style={styles.warningText}>
+                      {shortMemoryWarning || multimodalWarning}
+                    </Text>
                   </View>
                 </TouchableRipple>
+              )}
+
+              {/* Show projection model selector for multimodal models */}
+              {model.supportsMultimodal && showProjectionSelector && (
+                <ProjectionModelSelector
+                  model={model}
+                  onProjectionModelSelect={handleProjectionModelSelect}
+                />
               )}
 
               {/* Display integrity warning if check fails */}
@@ -301,9 +380,9 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
                     style={styles.progressBar}
                   />
                   {model.downloadSpeed && (
-                    <Paragraph style={styles.downloadSpeed}>
+                    <Text style={styles.downloadSpeed}>
                       {model.downloadSpeed}
-                    </Paragraph>
+                    </Text>
                   )}
                 </>
               )}
@@ -370,7 +449,7 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
               setSnackbarVisible(false);
             },
           }}>
-          {memoryWarning}
+          {memoryWarning || multimodalWarning}
         </Snackbar>
       </>
     );

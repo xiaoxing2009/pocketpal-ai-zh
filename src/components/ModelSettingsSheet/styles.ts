@@ -8,4 +8,12 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 10,
   },
+  multimodalDivider: {
+    marginVertical: 16,
+  },
+  multimodalSectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 12,
+  },
 });

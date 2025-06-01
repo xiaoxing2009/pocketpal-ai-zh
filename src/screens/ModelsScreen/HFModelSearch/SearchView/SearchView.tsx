@@ -8,7 +8,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
 import {BottomSheetFlatList, BottomSheetView} from '@gorhom/bottom-sheet';
 
-import {Divider, Searchbar} from '../../../../components';
+import {Divider, Searchbar, ModelTypeTag} from '../../../../components';
 
 import {useTheme} from '../../../../hooks';
 
@@ -22,6 +22,7 @@ import {
   formatNumber,
   timeAgo,
   L10nContext,
+  isVisionRepo,
 } from '../../../../utils';
 
 interface SearchViewProps {
@@ -61,53 +62,63 @@ export const SearchView = observer(
       onChangeSearchQuery(query);
     };
 
-    const renderItem = ({item}: {item: HuggingFaceModel}) => (
-      <TouchableOpacity key={item.id} onPress={() => onModelSelect(item)}>
-        <Text variant="labelMedium" style={styles.modelAuthor}>
-          {item.author}
-        </Text>
-        <Text style={styles.modelName}>{extractHFModelTitle(item.id)}</Text>
-        <View style={styles.statsContainer}>
-          <View style={styles.statItem}>
-            <Icon
-              name="clock-outline"
-              size={12}
-              color={theme.colors.onSurfaceVariant}
-            />
-            <Text variant="labelSmall" style={styles.statText}>
-              {timeAgo(item.lastModified, l10n, 'short')}
-            </Text>
+    const renderItem = ({item}: {item: HuggingFaceModel}) => {
+      // Check if this is a vision repository
+      const isVision = isVisionRepo(item.siblings || []);
+
+      return (
+        <TouchableOpacity key={item.id} onPress={() => onModelSelect(item)}>
+          <Text variant="labelMedium" style={styles.modelAuthor}>
+            {item.author}
+          </Text>
+          <View style={styles.modelNameContainer}>
+            <Text style={styles.modelName}>{extractHFModelTitle(item.id)}</Text>
           </View>
-          <View style={styles.statItem}>
-            <Icon
-              name="download-outline"
-              size={12}
-              color={theme.colors.onSurfaceVariant}
-            />
-            <Text variant="labelSmall" style={styles.statText}>
-              {formatNumber(item.downloads)}
-            </Text>
+          <View style={styles.statsContainer}>
+            {isVision && (
+              <ModelTypeTag type="vision" label={l10n.models.vision} />
+            )}
+            <View style={styles.statItem}>
+              <Icon
+                name="clock-outline"
+                size={12}
+                color={theme.colors.onSurfaceVariant}
+              />
+              <Text variant="labelSmall" style={styles.statText}>
+                {timeAgo(item.lastModified, l10n, 'short')}
+              </Text>
+            </View>
+            <View style={styles.statItem}>
+              <Icon
+                name="download-outline"
+                size={12}
+                color={theme.colors.onSurfaceVariant}
+              />
+              <Text variant="labelSmall" style={styles.statText}>
+                {formatNumber(item.downloads)}
+              </Text>
+            </View>
+            <View style={styles.statItem}>
+              <Icon
+                name="heart-outline"
+                size={12}
+                color={theme.colors.onSurfaceVariant}
+              />
+              <Text variant="labelSmall" style={styles.statText}>
+                {formatNumber(item.likes)}
+              </Text>
+            </View>
+            {Boolean(item.gated) && (
+              <Chip compact mode="outlined" textStyle={styles.gatedChipText}>
+                <Icon name="lock" size={12} color={theme.colors.primary} />{' '}
+                {l10n.components.hfTokenSheet.gatedModelIndicator}
+              </Chip>
+            )}
           </View>
-          <View style={styles.statItem}>
-            <Icon
-              name="heart-outline"
-              size={12}
-              color={theme.colors.onSurfaceVariant}
-            />
-            <Text variant="labelSmall" style={styles.statText}>
-              {formatNumber(item.likes)}
-            </Text>
-          </View>
-          {Boolean(item.gated) && (
-            <Chip compact mode="outlined" textStyle={styles.gatedChipText}>
-              <Icon name="lock" size={12} color={theme.colors.primary} />{' '}
-              {l10n.components.hfTokenSheet.gatedModelIndicator}
-            </Chip>
-          )}
-        </View>
-        <Divider style={styles.divider} />
-      </TouchableOpacity>
-    );
+          <Divider style={styles.divider} />
+        </TouchableOpacity>
+      );
+    };
 
     // Renders the appropriate empty state based on loading, error or no results
     const renderEmptyState = observer(() => {

@@ -33,6 +33,8 @@ export default class Message extends Model {
         author,
         createdAt: this.createdAt,
         metadata,
+        // Extract imageUris from metadata if present
+        imageUris: metadata.imageUris,
       } as MessageType.Text;
     }
 

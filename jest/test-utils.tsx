@@ -20,6 +20,7 @@ type CustomRenderOptions = {
   user?: any;
   withNavigation?: boolean;
   withSafeArea?: boolean;
+  withBottomSheetProvider?: boolean;
 };
 
 const customRender = (
@@ -29,20 +30,29 @@ const customRender = (
     user = userFixture,
     withNavigation = false,
     withSafeArea = false,
+    withBottomSheetProvider = false,
     ...renderOptions
   }: CustomRenderOptions = {},
 ) => {
   const Wrapper = ({children}: {children: React.ReactNode}) => {
-    const content = withNavigation ? (
-      <NavigationContainer>{children}</NavigationContainer>
+    const withBottomSheetProviderWrapper = withBottomSheetProvider ? (
+      <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
     ) : (
       children
     );
 
-    const wrappedWithSafeArea = withSafeArea ? (
-      <SafeAreaProvider>{content}</SafeAreaProvider>
+    const withNavigationWrapper = withNavigation ? (
+      <NavigationContainer>
+        {withBottomSheetProviderWrapper}
+      </NavigationContainer>
     ) : (
-      content
+      withBottomSheetProviderWrapper
+    );
+
+    const withSafeAreaWrapper = withSafeArea ? (
+      <SafeAreaProvider>{withNavigationWrapper}</SafeAreaProvider>
+    ) : (
+      withNavigationWrapper
     );
 
     return (
@@ -50,7 +60,7 @@ const customRender = (
         <BottomSheetModalProvider>
           <PaperProvider theme={theme}>
             <UserContext.Provider value={user}>
-              {wrappedWithSafeArea}
+              {withSafeAreaWrapper}
             </UserContext.Provider>
           </PaperProvider>
         </BottomSheetModalProvider>

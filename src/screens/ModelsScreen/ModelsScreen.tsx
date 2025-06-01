@@ -197,7 +197,7 @@ export const ModelsScreen: React.FC = observer(() => {
   };
 
   const activeModelId = toJS(modelStore.activeModel?.id);
-  const models = toJS(modelStore.models);
+  const models = toJS(modelStore.displayModels);
 
   const filteredAndSortedModels = useMemo(() => {
     let result = models;

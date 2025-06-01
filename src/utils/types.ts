@@ -7,6 +7,7 @@ import {TokenData} from '@pocketpalai/llama.rn';
 import {CompletionParams} from './completionTypes';
 import {PreviewData} from '@flyerhq/react-native-link-preview';
 import {MD3Colors, MD3Typescale} from 'react-native-paper/lib/typescript/types';
+import {SkillKey} from '.';
 
 export namespace MessageType {
   export type Any = Custom | File | Image | Text | Unsupported;
@@ -105,6 +106,7 @@ export namespace MessageType {
     previewData?: PreviewData;
     text: string;
     type: 'text';
+    imageUris?: string[]; // Optional array of image URIs for multimodal messages
   }
 
   export interface Text extends Base, PartialText {
@@ -291,7 +293,13 @@ export interface ChatTemplateConfig extends TemplateConfig {
 
 export type ChatMessage = {
   role: 'system' | 'assistant' | 'user';
-  content: string;
+  content:
+    | string
+    | Array<{
+        type: 'text' | 'image_url';
+        text?: string;
+        image_url?: {url: string};
+      }>;
 };
 
 export enum ModelOrigin {
@@ -299,12 +307,19 @@ export enum ModelOrigin {
   LOCAL = 'local',
   HF = 'hf',
 }
+
+export enum ModelType {
+  PROJECTION = 'projection',
+  VISION = 'vision',
+  LLM = 'llm',
+}
+
 export interface Model {
   id: string;
   author: string;
   name: string;
   type?: string;
-  capabilities?: string[]; // Array of capability keys for localization
+  capabilities?: SkillKey[]; // Array of capability keys
   size: number; // Size in bytes
   params: number;
   isDownloaded: boolean;
@@ -319,6 +334,13 @@ export interface Model {
    */
   isLocal: boolean; // this need to be deprecated
   origin: ModelOrigin;
+  modelType?: ModelType; // Type of model for multimodal support
+
+  // Multimodal support fields
+  supportsMultimodal?: boolean; // Whether this model supports multimodal input
+  compatibleProjectionModels?: string[]; // Array of mmproj model IDs that work with this model
+  defaultProjectionModel?: string; // Default mmproj model ID to use with this model
+
   defaultChatTemplate: ChatTemplateConfig;
   chatTemplate: ChatTemplateConfig;
   defaultStopWords: CompletionParams['stop'];
@@ -354,6 +376,7 @@ export interface ModelFile {
   canFitInStorage?: boolean;
 }
 
+// Model data from HuggingFace search models
 export interface HuggingFaceModel {
   _id: string;
   id: string;

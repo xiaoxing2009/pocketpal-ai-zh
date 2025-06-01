@@ -1,9 +1,13 @@
 import React from 'react';
 import {View} from 'react-native';
-import {Text, Divider} from 'react-native-paper';
+
+import {Text} from 'react-native-paper';
 
 import {useTheme} from '../../hooks';
+
 import {createStyles} from './styles';
+
+import {Divider} from '..';
 
 interface SectionDividerProps {
   label: string;
@@ -16,7 +20,7 @@ export const SectionDivider: React.FC<SectionDividerProps> = ({label}) => {
   return (
     <View testID="section-divider-container" style={styles.dividerContainer}>
       <View testID="section-divider-content" style={styles.dividerContent}>
-        <Text style={[theme.fonts.bodyMedium, styles.dividerLabel]}>
+        <Text variant="labelSmall" style={styles.dividerLabel}>
           {label}
         </Text>
         <View testID="section-divider-line" style={styles.dividerLine}>

@@ -9,6 +9,7 @@ import {
   View,
   TouchableOpacity,
   Animated,
+  Platform,
 } from 'react-native';
 
 import dayjs from 'dayjs';
@@ -36,6 +37,7 @@ import {chatSessionStore, modelStore, palStore} from '../../store';
 
 import {MessageType, User} from '../../utils/types';
 import {calculateChatMessages, unwrap, UserContext} from '../../utils';
+import {PalType} from '../PalsSheets/types';
 
 import {
   Message,
@@ -49,6 +51,7 @@ import {
   ChatPalModelPickerSheet,
   ChatHeader,
   ChatEmptyPlaceholder,
+  VideoPalEmptyPlaceholder,
 } from '..';
 import {
   CopyIcon,
@@ -91,6 +94,8 @@ export interface ChatProps extends ChatTopLevelProps {
    * for example today, yesterday and before. Or you can just return the same
    * date header for any message. */
   customDateHeaderText?: (dateTime: number) => string;
+  /** Custom content to display between the header and chat list */
+  customContent?: React.ReactNode;
   /** Allows you to customize the date format. IMPORTANT: only for the date,
    * do not return time here. @see {@link ChatProps.timeFormat} to customize the time format.
    * @see {@link ChatProps.customDateHeaderText} for more customization. */
@@ -121,6 +126,10 @@ export interface ChatProps extends ChatTopLevelProps {
   /** Show user names for received messages. Useful for a group chat. Will be
    * shown only on text messages. */
   showUserNames?: boolean;
+  /** Whether to show the image upload button in the chat input */
+  showImageUpload?: boolean;
+  /** Whether to enable vision mode for the chat input */
+  isVisionEnabled?: boolean;
   /**
    * Allows you to customize the time format. IMPORTANT: only for the time,
    * do not return date here. @see {@link ChatProps.dateFormat} to customize the date format.
@@ -133,19 +142,18 @@ export interface ChatProps extends ChatTopLevelProps {
 /** Entry component, represents the complete chat */
 export const ChatView = observer(
   ({
+    customContent,
     customDateHeaderText,
     dateFormat,
     disableImageGallery,
     enableAnimation,
     flatListProps,
     inputProps,
-    isAttachmentUploading,
     isLastPage,
     isStopVisible,
     isStreaming = false,
     isThinking = false,
     messages,
-    onAttachmentPress,
     onEndReached,
     onMessageLongPress: externalOnMessageLongPress,
     onMessagePress,
@@ -160,6 +168,8 @@ export const ChatView = observer(
     sendButtonVisibilityMode = 'editing',
     showUserAvatars = false,
     showUserNames = false,
+    showImageUpload = false,
+    isVisionEnabled = false,
     textInputProps,
     timeFormat,
     usePreviewData = true,
@@ -169,6 +179,7 @@ export const ChatView = observer(
     const styles = createStyles({theme});
 
     const [inputText, setInputText] = React.useState('');
+    const [inputImages, setInputImages] = React.useState<string[]>([]);
     const [isPickerVisible, setIsPickerVisible] = React.useState(false);
 
     const animationRef = React.useRef(false);
@@ -218,7 +229,9 @@ export const ChatView = observer(
           const palDefaultModel = modelStore.availableModels.find(
             m => m.id === activePal.defaultModel?.id,
           );
+
           if (palDefaultModel) {
+            // Initialize the model context
             modelStore.initContext(palDefaultModel);
           }
         }
@@ -251,6 +264,7 @@ export const ChatView = observer(
 
     const handleCancelEdit = React.useCallback(() => {
       setInputText('');
+      setInputImages([]);
       chatSessionStore.exitEditMode();
     }, []);
 
@@ -260,6 +274,7 @@ export const ChatView = observer(
         messages,
         handleSendPress: wrappedOnSendPress,
         setInputText,
+        setInputImages,
       });
 
     const {chatMessages, gallery} = calculateChatMessages(messages, user, {
@@ -562,15 +577,23 @@ export const ChatView = observer(
       ],
     );
 
-    const renderListEmptyComponent = React.useCallback(
-      () => (
+    const renderListEmptyComponent = React.useCallback(() => {
+      // Show VideoPalEmptyPlaceholder for video pal, otherwise show regular ChatEmptyPlaceholder
+      if (inputProps?.palType === PalType.VIDEO) {
+        return (
+          <VideoPalEmptyPlaceholder
+            bottomComponentHeight={bottomComponentHeight}
+          />
+        );
+      }
+
+      return (
         <ChatEmptyPlaceholder
           bottomComponentHeight={bottomComponentHeight}
           onSelectModel={() => setIsPickerVisible(true)}
         />
-      ),
-      [bottomComponentHeight, setIsPickerVisible],
-    );
+      );
+    }, [bottomComponentHeight, setIsPickerVisible, inputProps?.palType]);
 
     const renderListFooterComponent = React.useCallback(
       () =>
@@ -690,7 +713,11 @@ export const ChatView = observer(
 
     const inputBackgroundColor = activePal?.color?.[1]
       ? activePal.color?.[1]
-      : theme.colors.secondaryContainer;
+      : Platform.OS === 'ios'
+      ? theme.colors.surface
+      : theme.colors.secondaryContainer; // Since on Android, we don't have shadow enabled, use secondaryContainer for better contrast
+    // Use surface for Android when new architecture is enabled
+
     return (
       <UserContext.Provider value={user}>
         <View style={styles.container} onLayout={onLayout}>
@@ -700,6 +727,7 @@ export const ChatView = observer(
             style={styles.container}>
             <View style={styles.chatContainer}>
               <ChatHeader />
+              {customContent}
               {renderChatList()}
               <Animated.View
                 onLayout={onLayoutChatInput}
@@ -716,9 +744,7 @@ export const ChatView = observer(
                 <ChatInput
                   {...{
                     ...unwrap(inputProps),
-                    isAttachmentUploading,
                     isStreaming,
-                    onAttachmentPress,
                     onSendPress: wrappedOnSendPress,
                     onStopPress,
                     chatInputHeight,
@@ -728,10 +754,17 @@ export const ChatView = observer(
                     isStopVisible,
                     isPickerVisible,
                     sendButtonVisibilityMode,
+                    showImageUpload,
+                    isVisionEnabled,
+                    defaultImages: inputImages,
+                    onDefaultImagesChange: setInputImages,
                     textInputProps: {
                       ...textInputProps,
-                      value: inputText,
-                      onChangeText: setInputText,
+                      // Only override value and onChangeText if not using promptText
+                      ...(!(inputProps?.palType === PalType.VIDEO) && {
+                        value: inputText,
+                        onChangeText: setInputText,
+                      }),
                     },
                   }}
                 />

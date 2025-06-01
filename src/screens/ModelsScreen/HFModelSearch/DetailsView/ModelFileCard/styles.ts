@@ -2,11 +2,13 @@ import {StyleSheet} from 'react-native';
 
 import {Theme} from '../../../../../utils/types';
 
-export const createStyles = (theme: Theme) =>
+export const createStyles = (theme: Theme, isProjectionModel) =>
   StyleSheet.create({
     fileCardContainer: {
       marginVertical: 6,
-      backgroundColor: theme.colors.surfaceVariant,
+      backgroundColor: isProjectionModel
+        ? theme.colors.tertiaryContainer
+        : theme.colors.surfaceVariant,
       borderRadius: 12,
       overflow: 'hidden', // Important for gradient containment
       position: 'relative', // For absolute positioning of gradient
@@ -25,17 +27,26 @@ export const createStyles = (theme: Theme) =>
     header: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: 4,
+      gap: 8,
       //marginBottom: 4,
     },
     fileInfo: {
       flex: 1,
       marginRight: 4,
     },
+    fileNameContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      flexWrap: 'wrap',
+      gap: 4,
+    },
     fileName: {
       //fontSize: 14,
-      color: theme.colors.onSurface,
+      color: isProjectionModel
+        ? theme.colors.onTertiaryContainer
+        : theme.colors.onSurface,
       letterSpacing: -0.2,
+      flex: 1,
     },
     metadataRow: {
       flexDirection: 'row',

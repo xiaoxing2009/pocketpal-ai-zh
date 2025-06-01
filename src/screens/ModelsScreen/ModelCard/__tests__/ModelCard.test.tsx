@@ -1,7 +1,5 @@
 import React from 'react';
-import {Linking} from 'react-native';
-
-import {createDrawerNavigator} from '@react-navigation/drawer';
+import {Linking, Alert} from 'react-native';
 
 import {render, fireEvent, waitFor, act} from '../../../../../jest/test-utils';
 import {
@@ -11,15 +9,17 @@ import {
   largeMemoryModel,
 } from '../../../../../jest/fixtures/models';
 
+// Unmock useMemoryCheck for memory warning tests
+jest.unmock('../../../../hooks/useMemoryCheck');
+
 import {ModelCard} from '../ModelCard';
 
 import {downloadManager} from '../../../../services/downloads';
 
 import {modelStore, uiStore} from '../../../../store';
+import {ModelType} from '../../../../utils/types';
 
 import {l10n} from '../../../../utils/l10n';
-
-const Drawer = createDrawerNavigator();
 
 jest.useFakeTimers(); // Mock all timers
 
@@ -40,12 +40,7 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 const customRender = (ui, {...renderOptions} = {}) => {
-  return render(
-    <Drawer.Navigator useLegacyImplementation={false}>
-      <Drawer.Screen name="Chat" component={() => ui} />
-    </Drawer.Navigator>,
-    {...renderOptions, withNavigation: true},
-  );
+  return render(ui, {...renderOptions, withNavigation: true});
 };
 
 describe('ModelCard', () => {
@@ -72,7 +67,9 @@ describe('ModelCard', () => {
     });
 
     // Snackbar
-    fireEvent.press(getByTestId('memory-warning-button'));
+    act(() => {
+      fireEvent.press(getByTestId('memory-warning-button'));
+    });
     await waitFor(() => {
       expect(getByText(l10n.en.common.dismiss)).toBeTruthy();
       expect(queryByTestId('memory-warning-snackbar')).toBeTruthy();
@@ -181,5 +178,220 @@ describe('ModelCard', () => {
     });
 
     expect(modelStore.manualReleaseContext).toHaveBeenCalled();
+  });
+
+  // Add tests for delete functionality
+  describe('Delete functionality', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      jest.spyOn(Alert, 'alert').mockImplementation();
+    });
+
+    it('shows delete confirmation for regular models', async () => {
+      const {getByTestId} = customRender(<ModelCard model={downloadedModel} />);
+
+      const deleteButton = getByTestId('delete-button');
+      fireEvent.press(deleteButton);
+
+      expect(Alert.alert).toHaveBeenCalledWith(
+        expect.stringContaining('Delete'),
+        expect.stringContaining('delete'),
+        expect.arrayContaining([
+          expect.objectContaining({text: 'Cancel'}),
+          expect.objectContaining({text: 'Delete'}),
+        ]),
+      );
+    });
+
+    it('handles delete confirmation for regular models', async () => {
+      (Alert.alert as jest.Mock).mockImplementation(
+        (title, message, buttons) => {
+          // Simulate pressing "Delete" button
+          buttons[1].onPress();
+        },
+      );
+
+      const {getByTestId} = customRender(<ModelCard model={downloadedModel} />);
+
+      const deleteButton = getByTestId('delete-button');
+      fireEvent.press(deleteButton);
+
+      expect(modelStore.deleteModel).toHaveBeenCalledWith(downloadedModel);
+    });
+
+    it('shows special confirmation for projection models', async () => {
+      const projectionModel = {
+        ...downloadedModel,
+        modelType: ModelType.PROJECTION,
+      };
+
+      const {getByTestId} = customRender(<ModelCard model={projectionModel} />);
+
+      const deleteButton = getByTestId('delete-button');
+      fireEvent.press(deleteButton);
+
+      expect(Alert.alert).toHaveBeenCalledWith(
+        expect.stringContaining('Delete'),
+        expect.stringContaining('projection'),
+        expect.arrayContaining([
+          expect.objectContaining({text: 'Cancel'}),
+          expect.objectContaining({text: 'Delete'}),
+        ]),
+      );
+    });
+  });
+
+  // Add tests for download cancellation
+  describe('Download cancellation', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('shows cancel button when downloading', async () => {
+      (downloadManager.isDownloading as jest.Mock).mockReturnValue(true);
+
+      const {getByTestId} = customRender(
+        <ModelCard model={downloadingModel} />,
+      );
+
+      await waitFor(() => {
+        expect(getByTestId('cancel-button')).toBeTruthy();
+      });
+    });
+
+    it('handles download cancellation', async () => {
+      (downloadManager.isDownloading as jest.Mock).mockReturnValue(true);
+
+      const {getByTestId} = customRender(
+        <ModelCard model={downloadingModel} />,
+      );
+
+      const cancelButton = getByTestId('cancel-button');
+      fireEvent.press(cancelButton);
+
+      expect(modelStore.cancelDownload).toHaveBeenCalledWith(
+        downloadingModel.id,
+      );
+    });
+  });
+
+  // Add tests for settings functionality
+  describe('Settings functionality', () => {
+    const mockOnOpenSettings = jest.fn();
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('calls onOpenSettings when settings button is pressed', async () => {
+      const {getByTestId} = customRender(
+        <ModelCard
+          model={downloadedModel}
+          onOpenSettings={mockOnOpenSettings}
+        />,
+      );
+
+      const settingsButton = getByTestId('settings-button');
+      fireEvent.press(settingsButton);
+
+      expect(mockOnOpenSettings).toHaveBeenCalled();
+    });
+  });
+
+  // Add tests for loading states
+  describe('Loading states', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+
+      // Reset modelStore to a clean state
+      modelStore.isContextLoading = false;
+      modelStore.loadingModel = undefined;
+      modelStore.initContext = jest.fn(); // optional: re-mock if necessary
+    });
+
+    it('shows loading indicator when model is being loaded', async () => {
+      modelStore.isContextLoading = true;
+      modelStore.loadingModel = downloadedModel;
+
+      const {getByTestId} = customRender(<ModelCard model={downloadedModel} />);
+
+      await waitFor(() => {
+        expect(getByTestId('loading-indicator')).toBeTruthy();
+      });
+    });
+
+    it('handles model loading errors', async () => {
+      const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
+      (modelStore.initContext as jest.Mock).mockRejectedValue(
+        new Error('Loading failed'),
+      );
+
+      const {getByTestId} = customRender(<ModelCard model={downloadedModel} />);
+
+      const loadButton = getByTestId('load-button');
+      fireEvent.press(loadButton);
+
+      await waitFor(() => {
+        expect(consoleLogSpy).toHaveBeenCalledWith(
+          'Error: Error: Loading failed',
+        );
+      });
+
+      consoleLogSpy.mockRestore();
+    });
+  });
+
+  // Add tests for projection model functionality
+  describe('Projection model functionality', () => {
+    const projectionModel = {
+      ...downloadedModel,
+      modelType: ModelType.PROJECTION,
+      id: 'test/projection-model',
+    };
+
+    const visionModel = {
+      ...downloadedModel,
+      supportsMultimodal: true,
+      defaultProjectionModel: projectionModel.id,
+    };
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('shows projection model selector for vision models', async () => {
+      const {getByTestId, getByText} = customRender(
+        <ModelCard model={visionModel} />,
+      );
+
+      await waitFor(() => {
+        expect(getByText('Vision')).toBeTruthy();
+      });
+      const visionTag = getByTestId('vision-skill-touchable');
+      fireEvent.press(visionTag);
+
+      // Should toggle projection selector visibility
+      expect(getByTestId('projection-model-selector')).toBeTruthy();
+    });
+
+    it('handles projection model selection', async () => {
+      const {getByTestId} = customRender(<ModelCard model={visionModel} />);
+      (modelStore.getCompatibleProjectionModels as jest.Mock) = jest
+        .fn()
+        .mockReturnValue([projectionModel]);
+
+      const visionTag = getByTestId('vision-skill-touchable');
+      fireEvent.press(visionTag);
+
+      const projectionModelButton = getByTestId(
+        'select-projection-model-button',
+      );
+      fireEvent.press(projectionModelButton);
+
+      expect(modelStore.setDefaultProjectionModel).toHaveBeenCalledWith(
+        visionModel.id,
+        expect.any(String),
+      );
+    });
   });
 });

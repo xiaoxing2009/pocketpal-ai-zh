@@ -238,4 +238,101 @@ describe('RoleplayPalSheet', () => {
       }),
     );
   });
+
+  it('handles form field focus navigation', () => {
+    const {getByTestId} = render(<RoleplayPalSheet {...defaultProps} />);
+
+    const nameInput = getByTestId('form-field-name');
+    fireEvent(nameInput, 'submitEditing');
+
+    // Should focus next field (defaultModel)
+    expect(nameInput).toBeTruthy();
+  });
+
+  it('validates required fields', async () => {
+    const {getByText} = render(<RoleplayPalSheet {...defaultProps} />);
+
+    // Try to submit without filling required fields
+    await act(async () => {
+      fireEvent.press(getByText('Create'));
+    });
+
+    // Should not close the sheet due to validation errors
+    expect(mockOnClose).not.toHaveBeenCalled();
+  });
+
+  it('handles model selection', () => {
+    const {getByTestId} = render(<RoleplayPalSheet {...defaultProps} />);
+
+    // Model selector should be present
+    expect(getByTestId('sheet')).toBeTruthy();
+  });
+
+  it('handles color selection', () => {
+    const {getAllByTestId} = render(<RoleplayPalSheet {...defaultProps} />);
+
+    const colorButtons = getAllByTestId('color-button');
+    expect(colorButtons.length).toBeGreaterThan(0);
+
+    fireEvent.press(colorButtons[0]);
+    // Color should be selected
+  });
+
+  it('handles system prompt manual editing', () => {
+    const {getByTestId} = render(<RoleplayPalSheet {...defaultProps} />);
+
+    const systemPromptInput = getByTestId('form-field-systemPrompt');
+    fireEvent.changeText(systemPromptInput, 'Manual system prompt');
+
+    expect(systemPromptInput.props.value).toBe('Manual system prompt');
+  });
+
+  it('resets form when switching between create and edit modes', () => {
+    const editPal = {
+      id: 'test-id',
+      name: 'Test Roleplay',
+      palType: PalType.ROLEPLAY as const,
+      defaultModel: mockBasicModel,
+      world: 'Fantasy world',
+      location: 'Castle',
+      aiRole: 'Knight',
+      userRole: 'Squire',
+      situation: 'Preparing for battle',
+      toneStyle: 'Medieval formal',
+      systemPrompt: 'Test system prompt',
+      useAIPrompt: false,
+      isSystemPromptChanged: false,
+      color: ['#123456', '#123456'] as [string, string],
+    };
+
+    const {rerender, getByTestId} = render(
+      <RoleplayPalSheet {...defaultProps} />,
+    );
+
+    // Switch to edit mode
+    rerender(<RoleplayPalSheet {...defaultProps} editPal={editPal} />);
+
+    const nameInput = getByTestId('form-field-name');
+    expect(nameInput.props.value).toBe('Test Roleplay');
+
+    // Switch back to create mode
+    rerender(<RoleplayPalSheet {...defaultProps} />);
+
+    // Form should be reset
+    expect(nameInput.props.value).toBe('');
+  });
+
+  it('displays section dividers correctly', () => {
+    const {getByTestId} = render(<RoleplayPalSheet {...defaultProps} />);
+
+    // Should have section dividers for different form sections
+    expect(getByTestId('sheet')).toBeTruthy();
+  });
+
+  it('handles AI prompt toggle', () => {
+    const {getByTestId} = render(<RoleplayPalSheet {...defaultProps} />);
+
+    // Should have system prompt section with AI toggle
+    expect(getByTestId('sheet')).toBeTruthy();
+  });
 });

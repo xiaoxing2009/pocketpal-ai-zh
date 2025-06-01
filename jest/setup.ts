@@ -49,6 +49,12 @@ jest.mock('@react-native-clipboard/clipboard', () => mockClipboard);
 
 jest.mock('react-native/Libraries/EventEmitter/NativeEventEmitter');
 
+// Mock NativeModules.DeviceInfoModule specifically
+const {NativeModules} = require('react-native');
+NativeModules.DeviceInfoModule = {
+  getCPUInfo: jest.fn(() => Promise.resolve({cores: 4})),
+};
+
 jest.mock('react-native-safe-area-context', () => {
   const inset = {top: 0, right: 0, bottom: 0, left: 0};
   return {
@@ -80,6 +86,16 @@ jest.mock('../src/hooks/useTheme', () => {
   };
 });
 
+jest.mock('../src/hooks/useMemoryCheck', () => ({
+  useMemoryCheck: jest.fn().mockReturnValue({
+    memoryWarning: '',
+    shortMemoryWarning: '',
+    multimodalWarning: '',
+  }),
+  hasEnoughMemory: jest.fn().mockResolvedValue(true),
+  isHighEndDevice: jest.fn().mockResolvedValue(true),
+}));
+
 jest.mock('../src/services/downloads', () => ({
   downloadManager: require('../__mocks__/services/downloads').downloadManager,
 }));
@@ -102,3 +118,6 @@ jest.mock('../src/utils/keepAwake', () => ({
 jest.mock('react-native-share', () => ({
   default: jest.fn(),
 }));
+
+jest.mock('react-native-image-picker');
+jest.mock('react-native-vision-camera');

@@ -28,7 +28,6 @@ interface MarkdownViewProps {
 
 // Helper function to check if content is empty
 const isEmptyContent = (content: string): boolean => {
-  console.log('isEmptyContent: ', content);
   return !content || content.trim() === '';
 };
 

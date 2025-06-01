@@ -14,7 +14,6 @@ import {chatSessionStore, modelStore} from '../../store';
 
 import {l10n} from '../../utils/l10n';
 import {assistant} from '../../utils/chat';
-import {ChatMessage} from '../../utils/types';
 
 const mockAssistant = {
   id: 'h3o3lc5xj',
@@ -31,6 +30,7 @@ beforeEach(() => {
 });
 modelStore.models = modelsList;
 
+// Mock the applyChatTemplate function from utils/chat
 const applyChatTemplateSpy = jest
   .spyOn(require('../../utils/chat'), 'applyChatTemplate')
   .mockImplementation(async () => 'mocked prompt');
@@ -266,6 +266,17 @@ describe('useChatSession', () => {
       modelStore.models = [testModel];
       modelStore.setActiveModel(testModel.id);
 
+      // Mock the completion function to capture the messages passed to it
+      let capturedMessages: any[] = [];
+      if (modelStore.context) {
+        modelStore.context.completion = jest
+          .fn()
+          .mockImplementation((params, _onData) => {
+            capturedMessages = params.messages || [];
+            return Promise.resolve({timings: {total: 100}, usage: {}});
+          });
+      }
+
       const {result} = renderHook(() =>
         useChatSession({current: null}, textMessage.author, mockAssistant),
       );
@@ -274,21 +285,16 @@ describe('useChatSession', () => {
         await result.current.handleSendPress(textMessage);
       });
 
-      if (shouldInclude && systemPrompt) {
-        expect(applyChatTemplateSpy).toHaveBeenCalledWith(
-          expect.arrayContaining([
-            expect.objectContaining({
-              role: 'system',
-              content: systemPrompt,
-            }),
-          ]),
-          expect.any(Object),
-          expect.any(Object),
+      if (shouldInclude && systemPrompt?.trim()) {
+        // Check that a system message was included in the messages passed to completion
+        expect(capturedMessages.some(msg => msg.role === 'system')).toBe(true);
+        const systemMessage = capturedMessages.find(
+          msg => msg.role === 'system',
         );
+        expect(systemMessage.content).toBe(systemPrompt);
       } else {
-        const call = applyChatTemplateSpy.mock.calls[0];
-        const messages = call[0] as ChatMessage[];
-        expect(messages.some(msg => msg.role === 'system')).toBe(false);
+        // Check that no system message was included
+        expect(capturedMessages.some(msg => msg.role === 'system')).toBe(false);
       }
     },
   );

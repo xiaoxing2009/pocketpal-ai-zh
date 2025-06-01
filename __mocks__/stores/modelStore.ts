@@ -36,6 +36,14 @@ class MockModelStore {
   addHFModel: jest.Mock;
   downloadHFModel: jest.Mock;
   cancelDownload: jest.Mock;
+  disableAutoRelease: jest.Mock;
+  enableAutoRelease: jest.Mock;
+  deleteModel: jest.Mock;
+  removeModelFromList: jest.Mock;
+  canDeleteProjectionModel: jest.Mock;
+  setDefaultProjectionModel: jest.Mock;
+  isContextLoading: boolean = false;
+  loadingModel: Model | undefined;
 
   constructor() {
     makeAutoObservable(this, {
@@ -53,8 +61,16 @@ class MockModelStore {
       addHFModel: false,
       downloadHFModel: false,
       cancelDownload: false,
+      disableAutoRelease: false,
+      enableAutoRelease: false,
+      deleteModel: false,
+      removeModelFromList: false,
+      canDeleteProjectionModel: false,
+      setDefaultProjectionModel: false,
       lastUsedModel: computed,
       activeModel: computed,
+      displayModels: computed,
+      availableModels: computed,
       isDownloading: computed,
     });
     this.refreshDownloadStatuses = jest.fn();
@@ -71,6 +87,16 @@ class MockModelStore {
     this.addHFModel = jest.fn();
     this.downloadHFModel = jest.fn();
     this.cancelDownload = jest.fn();
+    this.disableAutoRelease = jest.fn();
+    this.enableAutoRelease = jest.fn();
+    this.deleteModel = jest.fn().mockResolvedValue(Promise.resolve());
+    this.removeModelFromList = jest.fn();
+    this.canDeleteProjectionModel = jest.fn().mockReturnValue({
+      canDelete: true,
+      reason: null,
+      dependentModels: [],
+    });
+    this.setDefaultProjectionModel = jest.fn();
   }
 
   setActiveModel = (modelId: string) => {
@@ -101,6 +127,11 @@ class MockModelStore {
     return this.models.find(model => model.id === this.activeModelId);
   }
 
+  get displayModels(): Model[] {
+    // Filter out projection models for display purposes
+    return this.models.filter(model => model.modelType !== 'projection');
+  }
+
   get availableModels() {
     return this.models.filter(model => model.isDownloaded);
   }
@@ -108,6 +139,18 @@ class MockModelStore {
   isModelAvailable(modelId: string) {
     return this.availableModels.some(model => model.id === modelId);
   }
+
+  async isMultimodalEnabled(): Promise<boolean> {
+    // Mock implementation - return false by default for tests
+    return false;
+  }
+
+  async getModelFullPath(model: Model): Promise<string> {
+    // Mock implementation - return a simple path for tests
+    return `/mock/path/${model.filename || model.name}`;
+  }
+
+  getCompatibleProjectionModels = jest.fn().mockReturnValue([]);
 }
 
 export const mockModelStore = new MockModelStore();

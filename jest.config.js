@@ -67,5 +67,9 @@ module.exports = {
     '@nozbe/sqlite': '<rootDir>/__mocks__/external/@nozbe/sqlite.js',
     '../database': '<rootDir>/__mocks__/database.js',
     'mobx-persist-store': '<rootDir>/__mocks__/external/mobx-persist-store.js',
+    'react-native-image-picker':
+      '<rootDir>/__mocks__/external/react-native-image-picker.js',
+    'react-native-vision-camera':
+      '<rootDir>/__mocks__/external/react-native-vision-camera.ts',
   },
 };

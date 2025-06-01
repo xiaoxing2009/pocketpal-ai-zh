@@ -8,7 +8,14 @@ import {IconButton, Text, Tooltip, Snackbar, Portal} from 'react-native-paper';
 import {useTheme, useMemoryCheck} from '../../../../../hooks';
 import {createStyles} from './styles';
 import {modelStore} from '../../../../../store';
-import {formatBytes, hfAsModel, L10nContext} from '../../../../../utils';
+import {
+  formatBytes,
+  hfAsModel,
+  L10nContext,
+  isProjectionModel,
+  getVisionModelSizeBreakdown,
+  isVisionRepo,
+} from '../../../../../utils';
 import {isLegacyQuantization} from '../../../../../utils/modelSettings';
 import {
   HuggingFaceModel,
@@ -34,7 +41,7 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
     const [showWarning, setShowWarning] = useState(false);
     const theme = useTheme();
     const l10n = useContext(L10nContext);
-    const styles = createStyles(theme);
+    const styles = createStyles(theme, isProjectionModel(modelFile.rfilename));
     const HF_YELLOW = '#FFD21E';
 
     // Check if we have all the necessary data, as some are fetched async, like size.
@@ -62,7 +69,11 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
       ),
     ).get();
 
-    const {shortMemoryWarning} = useMemoryCheck(hfAsModel(hfModel, modelFile));
+    const convertedModel = hfAsModel(hfModel, modelFile);
+    const {shortMemoryWarning, multimodalWarning} = useMemoryCheck(
+      convertedModel,
+      convertedModel.supportsMultimodal,
+    );
 
     const warnings = [
       !modelFile.canFitInStorage && {
@@ -76,6 +87,12 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
         icon: 'memory',
         message: l10n.models.modelFile.warnings.memory.message,
         shortMessage: shortMemoryWarning,
+      },
+      multimodalWarning && {
+        type: 'multimodal',
+        icon: 'alert-circle-outline',
+        message: multimodalWarning,
+        shortMessage: l10n.memory.shortWarning,
       },
       isLegacyQuantization(modelFile.rfilename) && {
         type: 'legacy',
@@ -190,6 +207,32 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
       setShowWarning(false);
     };
 
+    // Get enhanced size display for vision models
+    const getEnhancedSizeDisplay = () => {
+      if (!modelFile.size) {
+        return '';
+      }
+
+      // Check if this is a vision model
+      const isVision = isVisionRepo(hfModel.siblings || []);
+      const isProjModel = isProjectionModel(modelFile.rfilename);
+      const isVisionLLM = isVision && !isProjModel;
+
+      if (isVisionLLM) {
+        const sizeBreakdown = getVisionModelSizeBreakdown(modelFile, hfModel);
+        if (sizeBreakdown.hasProjection) {
+          return `${formatBytes(
+            sizeBreakdown.totalSize,
+            2,
+            false,
+            true,
+          )} (includes vision support)`;
+        }
+      }
+
+      return formatBytes(modelFile.size, 2, false, true);
+    };
+
     return (
       <View style={styles.fileCardContainer}>
         <LinearGradient
@@ -216,7 +259,7 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
               <View style={styles.metadataRow}>
                 {isModelInfoReady && modelFile.size && (
                   <Text variant="labelSmall" style={styles.fileSize}>
-                    {formatBytes(modelFile.size, 2, false, true)}
+                    {getEnhancedSizeDisplay()}
                   </Text>
                 )}
                 {isModelInfoReady && warnings.length > 0 && (

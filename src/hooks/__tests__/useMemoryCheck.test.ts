@@ -3,6 +3,9 @@ import {renderHook} from '@testing-library/react-hooks';
 
 import {largeMemoryModel, localModel} from '../../../jest/fixtures/models';
 
+// Unmock the hook for actual testing
+jest.unmock('../useMemoryCheck');
+
 import {useMemoryCheck} from '../useMemoryCheck';
 
 import {l10n} from '../../utils/l10n';
@@ -30,6 +33,7 @@ describe('useMemoryCheck', () => {
     expect(result.current).toEqual({
       memoryWarning: '',
       shortMemoryWarning: '',
+      multimodalWarning: '',
     });
   });
 
@@ -47,6 +51,7 @@ describe('useMemoryCheck', () => {
     expect(result.current).toEqual({
       memoryWarning: l10n.en.memory.warning,
       shortMemoryWarning: l10n.en.memory.shortWarning,
+      multimodalWarning: '',
     });
   });
 
@@ -74,6 +79,7 @@ describe('useMemoryCheck', () => {
     expect(result.current).toEqual({
       memoryWarning: '',
       shortMemoryWarning: '',
+      multimodalWarning: '',
     });
 
     // Ensure the error is logged. TODO: check if there is a better way.
