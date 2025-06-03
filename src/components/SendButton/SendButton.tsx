@@ -55,5 +55,10 @@ export const SendButton = ({
 const styles = StyleSheet.create({
   sendButton: {
     marginLeft: 16,
+    // Minimum 40pt touch target for accessibility
+    minHeight: 40,
+    minWidth: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

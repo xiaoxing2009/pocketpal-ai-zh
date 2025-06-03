@@ -1,15 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import DeviceInfo from 'react-native-device-info';
 import {NativeModules} from 'react-native';
-import {Model} from '../utils/types';
 import {L10nContext} from '../utils';
 
 const {DeviceInfoModule} = NativeModules;
 
-function memoryRequirementEstimate(model: Model, isMultimodal = false) {
+function memoryRequirementEstimate(modelSize: number, isMultimodal = false) {
   // Model parameters derived by fitting a linear regression to benchmark data
   // from: https://huggingface.co/spaces/a-ghorbani/ai-phone-leaderboard
-  const baseRequirement = 0.43 + (0.92 * model.size) / 1000 / 1000 / 1000;
+  const baseRequirement = 0.43 + (0.92 * modelSize) / 1000 / 1000 / 1000;
 
   // Add overhead for multimodal models
   if (isMultimodal) {
@@ -46,18 +45,18 @@ export const isHighEndDevice = async (): Promise<boolean> => {
 };
 
 export const hasEnoughMemory = async (
-  model: Model,
+  modelSize: number,
   isMultimodal = false,
 ): Promise<boolean> => {
   const totalMemory = await DeviceInfo.getTotalMemory();
   const totalMemoryGB = totalMemory / 1000 / 1000 / 1000;
   const availableMemory = Math.min(totalMemoryGB * 0.65, totalMemoryGB - 1.2);
-  const memoryRequirement = memoryRequirementEstimate(model, isMultimodal);
+  const memoryRequirement = memoryRequirementEstimate(modelSize, isMultimodal);
 
   return memoryRequirement <= availableMemory;
 };
 
-export const useMemoryCheck = (model: Model, isMultimodal = false) => {
+export const useMemoryCheck = (modelSize: number, isMultimodal = false) => {
   const l10n = React.useContext(L10nContext);
   const [memoryWarning, setMemoryWarning] = useState('');
   const [shortMemoryWarning, setShortMemoryWarning] = useState('');
@@ -71,8 +70,7 @@ export const useMemoryCheck = (model: Model, isMultimodal = false) => {
       setMultimodalWarning('');
 
       try {
-        // Parameters derived from observations of max device memory usage for each device ram category in the benchmark data.
-        const hasMemory = await hasEnoughMemory(model, isMultimodal);
+        const hasMemory = await hasEnoughMemory(modelSize, isMultimodal);
 
         if (!hasMemory) {
           setShortMemoryWarning(l10n.memory.shortWarning);
@@ -96,7 +94,7 @@ export const useMemoryCheck = (model: Model, isMultimodal = false) => {
     };
 
     checkMemory();
-  }, [model.size, l10n, model, isMultimodal]);
+  }, [modelSize, isMultimodal, l10n]);
 
   return {memoryWarning, shortMemoryWarning, multimodalWarning};
 };

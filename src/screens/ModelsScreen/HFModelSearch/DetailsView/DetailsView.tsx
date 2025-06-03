@@ -82,9 +82,9 @@ export const DetailsView = ({hfModel}: DetailsViewProps) => {
 
       {/* Show LLM files only - projection models are hidden per enhanced UX */}
       {llmFiles.length > 0 &&
-        llmFiles.map((file, index) => (
+        llmFiles.map(file => (
           <ModelFileCard
-            key={`llm-${index}`}
+            key={file.rfilename}
             modelFile={file}
             hfModel={hfModel}
           />

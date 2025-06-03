@@ -229,8 +229,7 @@ export const chatTemplates: Record<string, ChatTemplateConfig> = {
   smolVLM: {
     name: 'smolVLM',
     addGenerationPrompt: true,
-    systemPrompt:
-      'You are Lookie, an AI assistant that analyzes images through the camera.',
+    systemPrompt: '',
     bosToken: '<|im_start|>',
     eosToken: '<|im_end|>',
     addBosToken: false,

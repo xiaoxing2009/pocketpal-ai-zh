@@ -1,4 +1,4 @@
-import React, {FC, useState, useContext} from 'react';
+import React, {FC, useState, useContext, useMemo} from 'react';
 import {Alert, View, StyleSheet, Pressable} from 'react-native';
 import {computed} from 'mobx';
 import {observer} from 'mobx-react';
@@ -41,7 +41,16 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
     const [showWarning, setShowWarning] = useState(false);
     const theme = useTheme();
     const l10n = useContext(L10nContext);
-    const styles = createStyles(theme, isProjectionModel(modelFile.rfilename));
+
+    // Memoize to prevent unnecessary re-renders
+    const isProjection = useMemo(
+      () => isProjectionModel(modelFile.rfilename),
+      [modelFile.rfilename],
+    );
+    const styles = useMemo(
+      () => createStyles(theme, isProjection),
+      [theme, isProjection],
+    );
     const HF_YELLOW = '#FFD21E';
 
     // Check if we have all the necessary data, as some are fetched async, like size.
@@ -49,9 +58,12 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
       modelFile.size !== undefined && modelFile.canFitInStorage !== undefined,
     );
 
-    // Find the model in the store if exitst
-    const modelId = hfAsModel(hfModel, modelFile).id;
-    const storeModel = modelStore.models.find(m => m.id === modelId);
+    const convertedModel = useMemo(
+      () => hfAsModel(hfModel, modelFile),
+      [hfModel, modelFile],
+    );
+
+    const storeModel = modelStore.models.find(m => m.id === convertedModel.id);
 
     const isDownloading = storeModel
       ? modelStore.isDownloading(storeModel.id)
@@ -69,9 +81,8 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
       ),
     ).get();
 
-    const convertedModel = hfAsModel(hfModel, modelFile);
     const {shortMemoryWarning, multimodalWarning} = useMemoryCheck(
-      convertedModel,
+      convertedModel.size,
       convertedModel.supportsMultimodal,
     );
 

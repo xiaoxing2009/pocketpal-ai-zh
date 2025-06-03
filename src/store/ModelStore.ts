@@ -857,7 +857,7 @@ class ModelStore {
     // Check both memory and device capability for models
     let hasMemory = true;
     try {
-      hasMemory = await hasEnoughMemory(model, isMultimodalInit);
+      hasMemory = await hasEnoughMemory(model.size, isMultimodalInit);
     } catch (error) {
       console.error('Memory check failed:', error);
       return null;

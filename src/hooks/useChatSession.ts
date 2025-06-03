@@ -375,10 +375,6 @@ export const useChatSession = (
     });
 
     currentMessageInfo.current = messageInfo;
-    console.log(
-      'cleanCompletionParams: ',
-      JSON.stringify(cleanCompletionParams),
-    );
 
     try {
       const result = await context.completion(cleanCompletionParams, data => {

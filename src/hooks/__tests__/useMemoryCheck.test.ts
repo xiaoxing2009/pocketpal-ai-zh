@@ -21,7 +21,7 @@ describe('useMemoryCheck', () => {
 
   it('returns no warning when model size is within safe memory limits', async () => {
     const {result, waitForNextUpdate} = renderHook(() =>
-      useMemoryCheck(localModel),
+      useMemoryCheck(localModel.size),
     );
 
     try {
@@ -39,7 +39,7 @@ describe('useMemoryCheck', () => {
 
   it('returns memory warning when model size exceeds safe memory limits', async () => {
     const {result, waitForNextUpdate} = renderHook(() =>
-      useMemoryCheck(largeMemoryModel),
+      useMemoryCheck(largeMemoryModel.size),
     );
 
     try {
@@ -66,7 +66,7 @@ describe('useMemoryCheck', () => {
       .mockImplementation(() => {});
 
     const {result, waitForNextUpdate} = renderHook(() =>
-      useMemoryCheck(largeMemoryModel),
+      useMemoryCheck(largeMemoryModel.size),
     );
 
     try {

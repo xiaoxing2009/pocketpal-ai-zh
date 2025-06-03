@@ -55,5 +55,10 @@ export const StopButton = ({
 const styles = StyleSheet.create({
   stopButton: {
     marginLeft: 16,
+    // Minimum 44pt touch target for accessibility
+    minHeight: 40,
+    minWidth: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

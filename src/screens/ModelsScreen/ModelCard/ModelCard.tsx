@@ -59,7 +59,7 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
     const [showProjectionSelector, setShowProjectionSelector] = useState(false);
 
     const {memoryWarning, shortMemoryWarning, multimodalWarning} =
-      useMemoryCheck(model, model.supportsMultimodal);
+      useMemoryCheck(model.size, model.supportsMultimodal);
     const {isOk: storageOk, message: storageNOkMessage} = useStorageCheck(
       model,
       {enablePeriodicCheck: true, checkInterval: 10000},
