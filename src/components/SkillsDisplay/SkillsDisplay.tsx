@@ -16,6 +16,8 @@ interface SkillsDisplayProps {
   onVisionPress?: () => void;
   showLabel?: boolean;
   compact?: boolean;
+  hasProjectionModelWarning?: boolean;
+  onProjectionWarningPress?: () => void;
 }
 
 export const SkillsDisplay: React.FC<SkillsDisplayProps> = ({
@@ -23,6 +25,8 @@ export const SkillsDisplay: React.FC<SkillsDisplayProps> = ({
   onVisionPress,
   showLabel = true,
   compact = false,
+  hasProjectionModelWarning = false,
+  onProjectionWarningPress,
 }) => {
   const l10n = React.useContext(L10nContext);
   const theme = useTheme();
@@ -38,6 +42,7 @@ export const SkillsDisplay: React.FC<SkillsDisplayProps> = ({
     const isVision = skill.key === 'vision';
     const isClickable = isVision && onVisionPress;
     const color = theme.colors[skill.color || 'primary'];
+    const showWarning = isVision && hasProjectionModelWarning;
 
     // Get localized label
     const label =
@@ -63,6 +68,26 @@ export const SkillsDisplay: React.FC<SkillsDisplayProps> = ({
           ]}>
           {label}
         </Text>
+        {/* Show warning badge for vision skill when projection model is missing */}
+        {showWarning && (
+          <TouchableOpacity
+            testID="projection-warning-badge"
+            onPress={onProjectionWarningPress}
+            style={styles.warningBadge}
+            activeOpacity={0.7}>
+            <View style={styles.warningContent}>
+              <IconButton
+                icon="alert-circle"
+                size={compact ? 12 : 14}
+                iconColor={theme.colors.error}
+                style={styles.warningIcon}
+              />
+              <Text variant="labelSmall" style={styles.warningText}>
+                {l10n.models.multimodal.projectionMissingShort}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        )}
       </View>
     );
 

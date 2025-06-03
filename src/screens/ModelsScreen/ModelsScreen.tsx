@@ -1,4 +1,4 @@
-import React, {useState, useMemo, useContext, useEffect} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {
   FlatList,
   RefreshControl,
@@ -7,7 +7,7 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 
-import {toJS, reaction} from 'mobx';
+import {reaction, computed} from 'mobx';
 import {v4 as uuidv4} from 'uuid';
 import 'react-native-get-random-values';
 import {observer} from 'mobx-react-lite';
@@ -196,10 +196,13 @@ export const ModelsScreen: React.FC = observer(() => {
       .catch(e => console.log('No file picked, error: ', e.message));
   };
 
-  const activeModelId = toJS(modelStore.activeModel?.id);
-  const models = toJS(modelStore.displayModels);
+  const activeModelId = modelStore.activeModel?.id;
+  const models = modelStore.displayModels;
 
-  const filteredAndSortedModels = useMemo(() => {
+  // useMemo uses shallow comaprison for dependencies,
+  // so we use computed instead for deep comparison
+  // (model state changes not-downloaded -> downloaded)
+  const filteredAndSortedModels = computed(() => {
     let result = models;
     if (filters.includes('downloaded')) {
       result = result.filter(model => model.isDownloaded);
@@ -219,7 +222,7 @@ export const ModelsScreen: React.FC = observer(() => {
       result = result.filter(model => model.origin === ModelOrigin.HF);
     }
     return result;
-  }, [models, filters]);
+  }).get();
 
   const getGroupDisplayName = (key: string) => {
     switch (key) {
@@ -232,7 +235,7 @@ export const ModelsScreen: React.FC = observer(() => {
     }
   };
 
-  const groupedModels = useMemo(() => {
+  const groupedModels = computed(() => {
     if (!filters.includes('grouped')) {
       return {
         [UIStore.GROUP_KEYS.READY_TO_USE]: filteredAndSortedModels.filter(
@@ -255,12 +258,7 @@ export const ModelsScreen: React.FC = observer(() => {
       acc[groupKey].push(item);
       return acc;
     }, {} as Record<string, Model[]>);
-  }, [
-    filteredAndSortedModels,
-    filters,
-    l10n.models.labels.localModel,
-    l10n.models.labels.unknownGroup,
-  ]);
+  }).get();
 
   const toggleGroup = (type: string) => {
     const currentExpandedGroups =

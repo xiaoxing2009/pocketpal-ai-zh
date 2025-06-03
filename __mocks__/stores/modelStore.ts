@@ -151,6 +151,11 @@ class MockModelStore {
   }
 
   getCompatibleProjectionModels = jest.fn().mockReturnValue([]);
+  hasRequiredProjectionModel = jest.fn().mockReturnValue(true);
+  getProjectionModelStatus = jest.fn().mockReturnValue({
+    isAvailable: true,
+    state: 'not_needed',
+  });
 }
 
 export const mockModelStore = new MockModelStore();

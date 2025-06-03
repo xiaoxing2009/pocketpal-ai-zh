@@ -33,20 +33,6 @@ export const ModelNotAvailable = observer(
           modelToDownload.hfModel!,
           modelToDownload.hfModelFile!,
         );
-      } else if (
-        modelToDownload.supportsMultimodal &&
-        modelToDownload.defaultProjectionModel
-      ) {
-        // For vision models without hfModel, download both LLM and projection model
-        await modelStore.checkSpaceAndDownload(modelToDownload.id);
-
-        // Also download the default projection model
-        const projModel = modelStore.models.find(
-          m => m.id === modelToDownload.defaultProjectionModel,
-        );
-        if (projModel && !projModel.isDownloaded) {
-          await modelStore.checkSpaceAndDownload(projModel.id);
-        }
       } else {
         await modelStore.checkSpaceAndDownload(modelToDownload.id);
       }

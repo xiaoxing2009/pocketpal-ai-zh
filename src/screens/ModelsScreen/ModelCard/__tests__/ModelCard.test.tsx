@@ -393,5 +393,50 @@ describe('ModelCard', () => {
         expect.any(String),
       );
     });
+
+    it('shows projection model warning badge when projection model is missing', async () => {
+      const visionModelWithMissingProjection = {
+        ...downloadedModel,
+        supportsMultimodal: true,
+        defaultProjectionModel: 'missing/projection-model',
+      };
+
+      // Mock getProjectionModelStatus to return false
+      (modelStore.getProjectionModelStatus as jest.Mock) = jest
+        .fn()
+        .mockReturnValue({isAvailable: false, state: 'missing'});
+
+      const {getByTestId} = customRender(
+        <ModelCard model={visionModelWithMissingProjection} />,
+      );
+
+      await waitFor(() => {
+        expect(getByTestId('projection-warning-badge')).toBeTruthy();
+      });
+    });
+
+    it('handles projection warning badge press to download missing projection model', async () => {
+      const visionModelWithMissingProjection = {
+        ...downloadedModel,
+        supportsMultimodal: true,
+        defaultProjectionModel: 'missing/projection-model',
+      };
+
+      // Mock getProjectionModelStatus to return false
+      (modelStore.getProjectionModelStatus as jest.Mock) = jest
+        .fn()
+        .mockReturnValue({isAvailable: false, state: 'missing'});
+
+      const {getByTestId} = customRender(
+        <ModelCard model={visionModelWithMissingProjection} />,
+      );
+
+      const warningBadge = getByTestId('projection-warning-badge');
+      fireEvent.press(warningBadge);
+
+      expect(modelStore.checkSpaceAndDownload).toHaveBeenCalledWith(
+        'missing/projection-model',
+      );
+    });
   });
 });

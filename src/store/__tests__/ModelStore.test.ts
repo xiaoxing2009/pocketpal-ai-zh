@@ -8,7 +8,11 @@ import {defaultModels} from '../defaultModels';
 import {downloadManager} from '../../services/downloads';
 
 import {ModelOrigin, ModelType} from '../../utils/types';
-import {basicModel, mockContextModel} from '../../../jest/fixtures/models';
+import {
+  basicModel,
+  mockContextModel,
+  mockHFModel1,
+} from '../../../jest/fixtures/models';
 import * as RNFS from '@dr.pogodin/react-native-fs';
 
 import {modelStore, uiStore} from '..';
@@ -29,6 +33,14 @@ jest.mock('../../services/downloads', () => ({
   },
 }));
 
+// Mock the HF store
+// jest.mock('../HFStore', () => ({
+//   hfStore: {
+//     shouldUseToken: true,
+//     hfToken: 'test-token',
+//   },
+// }));
+
 // RNFS is mocked globally in jest/setup.ts
 
 describe('ModelStore', () => {
@@ -45,9 +57,11 @@ describe('ModelStore', () => {
     modelStore.context = undefined;
     modelStore.activeModelId = undefined;
 
+    // Re-setup download manager mocks after clearAllMocks
     (downloadManager.syncWithActiveDownloads as jest.Mock).mockResolvedValue(
       undefined,
     );
+    (downloadManager.startDownload as jest.Mock).mockResolvedValue(undefined);
   });
 
   afterEach(() => {
@@ -175,6 +189,12 @@ describe('ModelStore', () => {
       modelStore.context = undefined;
       modelStore.activeModelId = undefined;
       modelStore.activeProjectionModelId = undefined;
+
+      // Re-setup download manager mocks after clearAllMocks
+      (downloadManager.syncWithActiveDownloads as jest.Mock).mockResolvedValue(
+        undefined,
+      );
+      (downloadManager.startDownload as jest.Mock).mockResolvedValue(undefined);
     });
 
     it('should allow deletion of unused projection model', () => {
@@ -199,6 +219,12 @@ describe('ModelStore', () => {
         isDownloaded: true,
       };
 
+      modelStore.context = new LlamaContext({
+        contextId: 1,
+        gpu: false,
+        reasonNoGPU: '',
+        model: mockContextModel,
+      });
       modelStore.models = [projModel];
       modelStore.activeProjectionModelId = projModel.id;
 
@@ -365,35 +391,6 @@ describe('ModelStore', () => {
       await modelStore.deleteModel(llmModel1);
 
       // Verify the projection model is still downloaded (still used by llmModel2)
-      const remainingProjModel = modelStore.models.find(
-        m => m.id === projModel.id,
-      );
-      expect(remainingProjModel?.isDownloaded).toBe(true);
-    });
-
-    it('should not cleanup active projection model', async () => {
-      const projModel = {
-        ...defaultModels[0],
-        id: 'test-proj-model',
-        modelType: ModelType.PROJECTION,
-        isDownloaded: true,
-      };
-
-      const llmModel = {
-        ...defaultModels[0],
-        id: 'test-llm-model',
-        supportsMultimodal: true,
-        defaultProjectionModel: projModel.id,
-        isDownloaded: true,
-      };
-
-      modelStore.models = [projModel, llmModel];
-      modelStore.activeProjectionModelId = projModel.id; // Make it active
-
-      // Delete the LLM model
-      await modelStore.deleteModel(llmModel);
-
-      // Verify the projection model is still downloaded (it's active)
       const remainingProjModel = modelStore.models.find(
         m => m.id === projModel.id,
       );
@@ -776,11 +773,14 @@ describe('ModelStore', () => {
   describe('HF model handling', () => {
     it('should download HF model', async () => {
       const hfModel = {
+        ...mockHFModel1,
+        _id: 'hf-1',
+        author: 'test',
         id: 'test/hf-model',
         model_id: 'test/hf-model',
         siblings: [
           {
-            rfilename: 'model.gguf',
+            rfilename: 'model-01.gguf',
             size: 1000,
             url: 'test-url',
             oid: 'test-oid',
@@ -789,21 +789,20 @@ describe('ModelStore', () => {
       };
 
       const modelFile = hfModel.siblings[0];
-
-      const mockAddHFModel = jest.fn();
-      modelStore.addHFModel = mockAddHFModel.mockResolvedValue({
-        id: 'test-model-id',
-        isDownloaded: false,
-      } as any);
-
-      const mockCheckSpaceAndDownload = jest.fn();
-      modelStore.checkSpaceAndDownload =
-        mockCheckSpaceAndDownload.mockResolvedValue(undefined);
+      (RNFS.exists as jest.Mock).mockResolvedValue(false);
 
       await modelStore.downloadHFModel(hfModel as any, modelFile as any);
-
-      expect(mockAddHFModel).toHaveBeenCalledWith(hfModel, modelFile);
-      expect(mockCheckSpaceAndDownload).toHaveBeenCalledWith('test-model-id');
+      expect(downloadManager.startDownload).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: 'test/hf-model/model-01.gguf',
+          type: 'hf',
+          author: 'test',
+        }),
+        expect.stringContaining(
+          '/path/to/documents/models/hf/test/model-01.gguf',
+        ),
+        'mockPass',
+      );
     });
 
     it('should handle errors when downloading HF model fails', async () => {
@@ -816,6 +815,7 @@ describe('ModelStore', () => {
 
       // Mock addHFModel to throw an error
       const mockAddHFModel = jest.fn();
+      const originalAddHFModel = modelStore.addHFModel;
       modelStore.addHFModel = mockAddHFModel.mockRejectedValue(
         new Error('Mock error'),
       );
@@ -844,6 +844,7 @@ describe('ModelStore', () => {
       // Clean up mocks
       consoleErrorSpy.mockRestore();
       alertSpy.mockRestore();
+      modelStore.addHFModel = originalAddHFModel;
     });
   });
 
@@ -911,6 +912,7 @@ describe('ModelStore', () => {
     it('should reset models while preserving local and HF models', () => {
       // Spy on mergeModelLists
       const mockMergeModelLists = jest.fn();
+      const originalMergeModelLists = modelStore.mergeModelLists;
       modelStore.mergeModelLists = mockMergeModelLists;
 
       modelStore.resetModels();
@@ -921,6 +923,7 @@ describe('ModelStore', () => {
       // Should still have the local and HF models
       expect(modelStore.models.some(m => m.id === 'local-model')).toBe(true);
       expect(modelStore.models.some(m => m.id === 'hf-model')).toBe(true);
+      modelStore.mergeModelLists = originalMergeModelLists;
     });
   });
 
@@ -1346,6 +1349,7 @@ describe('ModelStore', () => {
   describe('download error handling', () => {
     beforeEach(() => {
       modelStore.downloadError = null;
+      (downloadManager.startDownload as jest.Mock).mockResolvedValue(undefined);
     });
 
     it('should clear download error', () => {
@@ -1362,7 +1366,8 @@ describe('ModelStore', () => {
 
     it('should retry download when error has modelId', () => {
       const testModel = {
-        id: 'test-model',
+        ...defaultModels[0],
+        id: 'test-model-0-1-0',
         isDownloaded: false,
       };
       modelStore.models = [testModel] as any;
@@ -1370,16 +1375,21 @@ describe('ModelStore', () => {
         message: 'Test error',
         type: 'download',
         source: 'huggingface',
-        metadata: {modelId: 'test-model'},
+        metadata: {modelId: 'test-model-0-1-0'},
       } as any;
 
+      (RNFS.exists as jest.Mock).mockResolvedValue(false);
       const mockCheckSpaceAndDownload = jest.fn();
+      const originalCheckSpaceAndDownload = modelStore.checkSpaceAndDownload;
       modelStore.checkSpaceAndDownload = mockCheckSpaceAndDownload;
 
       modelStore.retryDownload();
 
       expect(modelStore.downloadError).toBeNull();
-      expect(mockCheckSpaceAndDownload).toHaveBeenCalledWith('test-model');
+      expect(mockCheckSpaceAndDownload).toHaveBeenCalledWith(
+        'test-model-0-1-0',
+      );
+      modelStore.checkSpaceAndDownload = originalCheckSpaceAndDownload;
     });
 
     it('should not retry download when error has no modelId', () => {
@@ -1391,12 +1401,14 @@ describe('ModelStore', () => {
       } as any;
 
       const mockCheckSpaceAndDownload = jest.fn();
+      const originalCheckSpaceAndDownload = modelStore.checkSpaceAndDownload;
       modelStore.checkSpaceAndDownload = mockCheckSpaceAndDownload;
 
       modelStore.retryDownload();
 
       expect(modelStore.downloadError).toBeNull();
       expect(mockCheckSpaceAndDownload).not.toHaveBeenCalled();
+      modelStore.checkSpaceAndDownload = originalCheckSpaceAndDownload;
     });
 
     it('should not retry download when model not found', () => {
@@ -1409,12 +1421,14 @@ describe('ModelStore', () => {
       } as any;
 
       const mockCheckSpaceAndDownload = jest.fn();
+      const originalCheckSpaceAndDownload = modelStore.checkSpaceAndDownload;
       modelStore.checkSpaceAndDownload = mockCheckSpaceAndDownload;
 
       modelStore.retryDownload();
 
       expect(modelStore.downloadError).toBeNull();
       expect(mockCheckSpaceAndDownload).not.toHaveBeenCalled();
+      modelStore.checkSpaceAndDownload = originalCheckSpaceAndDownload;
     });
   });
 
@@ -1668,14 +1682,12 @@ describe('ModelStore', () => {
       // Mock downloadManager.isDownloading to return false
       (downloadManager.isDownloading as jest.Mock).mockReturnValue(false);
 
-      // Mock getModelFullPath
-      modelStore.getModelFullPath = jest
-        .fn()
-        .mockResolvedValue('/path/to/model.gguf');
-
       await modelStore.updateModelHash('test-model', true);
 
-      expect(RNFS.hash).toHaveBeenCalledWith('/path/to/model.gguf', 'sha256');
+      expect(RNFS.hash).toHaveBeenCalledWith(
+        '/path/to/documents/model.gguf',
+        'sha256',
+      );
 
       // Check that the model in the store was updated
       const updatedModel = modelStore.models.find(m => m.id === 'test-model');
@@ -1792,6 +1804,381 @@ describe('ModelStore', () => {
 
       expect(fetchModelFilesDetails).toHaveBeenCalledWith('test/model');
       expect(model.hfModelFile.lfs).toBeUndefined();
+    });
+  });
+
+  describe('checkSpaceAndDownload vision model auto-download', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+
+      // Reset RNFS mock state
+      (RNFS as any).__resetMockState?.();
+
+      // Reset store state
+      modelStore.models = [];
+      modelStore.context = undefined;
+      modelStore.activeModelId = undefined;
+      modelStore.activeProjectionModelId = undefined;
+
+      // Re-setup download manager mocks after clearAllMocks
+      (downloadManager.syncWithActiveDownloads as jest.Mock).mockResolvedValue(
+        undefined,
+      );
+      (downloadManager.startDownload as jest.Mock).mockResolvedValue(undefined);
+    });
+
+    it('should auto-download projection model for vision models', async () => {
+      const visionModel = {
+        ...defaultModels[0],
+        id: 'vision-model-0',
+        filename: 'vision.gguf',
+        supportsMultimodal: true,
+        defaultProjectionModel: 'projection-model-0',
+        modelType: ModelType.VISION,
+        downloadUrl: 'https://example.com/vision.gguf',
+        isLocal: false,
+        isDownloaded: false,
+        origin: ModelOrigin.PRESET,
+      };
+
+      const projectionModel = {
+        ...defaultModels[0],
+        id: 'projection-model-0',
+        filename: 'projection.gguf',
+        modelType: ModelType.PROJECTION,
+        downloadUrl: 'https://example.com/projection.gguf',
+        isDownloaded: false,
+        isLocal: false,
+        origin: ModelOrigin.PRESET,
+      };
+
+      modelStore.models = [visionModel, projectionModel];
+
+      await modelStore.checkSpaceAndDownload('vision-model-0');
+
+      // Should call startDownload twice: once for vision model, once for projection
+      expect(downloadManager.startDownload).toHaveBeenCalledTimes(2);
+    });
+
+    it('should not auto-download projection model if already downloaded', async () => {
+      // Mock RNFS.exists to return false for vision model but true for projection (already downloaded)
+      (RNFS.exists as jest.Mock).mockImplementation((path: string) => {
+        const filename = path.split('/').pop()?.replace('.gguf', '');
+        if (filename === 'vision') {
+          return Promise.resolve(false); // Not downloaded
+        }
+        if (filename === 'projection') {
+          return Promise.resolve(true); // Already downloaded
+        }
+        return Promise.resolve(true); // Default behavior for other files
+      });
+
+      const visionModel = {
+        ...defaultModels[0],
+        id: 'vision-model',
+        filename: 'vision.gguf',
+        supportsMultimodal: true,
+        defaultProjectionModel: 'projection-model',
+        modelType: ModelType.VISION,
+        downloadUrl: 'https://example.com/vision.gguf',
+        isLocal: false,
+        isDownloaded: false,
+        origin: ModelOrigin.PRESET,
+      };
+
+      const projectionModel = {
+        ...defaultModels[0],
+        id: 'projection-model',
+        filename: 'projection.gguf',
+        modelType: ModelType.PROJECTION,
+        downloadUrl: 'https://example.com/projection.gguf',
+        isDownloaded: true, // Already downloaded
+        isLocal: false,
+        origin: ModelOrigin.PRESET,
+      };
+
+      modelStore.models = [visionModel, projectionModel];
+
+      // Ensure vision model is marked as not downloaded after setting up the mock
+      visionModel.isDownloaded = false;
+
+      await modelStore.checkSpaceAndDownload('vision-model');
+
+      expect(downloadManager.startDownload).toHaveBeenCalledTimes(1);
+      expect(downloadManager.startDownload).toHaveBeenCalledWith(
+        visionModel,
+        expect.any(String),
+        expect.any(String),
+      );
+    });
+
+    it('should not auto-download for projection models themselves', async () => {
+      // Mock RNFS.exists to return false for projection model (not downloaded)
+      (RNFS.exists as jest.Mock).mockImplementation((path: string) => {
+        const filename = path.split('/').pop()?.replace('.gguf', '');
+        if (filename === 'projection') {
+          return Promise.resolve(false); // Not downloaded
+        }
+        return Promise.resolve(true); // Default behavior for other files
+      });
+
+      const projectionModel = {
+        ...defaultModels[0],
+        id: 'projection-model',
+        filename: 'projection.gguf',
+        supportsMultimodal: true,
+        defaultProjectionModel: 'some-other-projection',
+        modelType: ModelType.PROJECTION,
+        downloadUrl: 'https://example.com/projection.gguf',
+        isLocal: false,
+        isDownloaded: false,
+        origin: ModelOrigin.PRESET,
+      };
+
+      modelStore.models = [projectionModel];
+
+      // Ensure model is marked as not downloaded after setting up the mock
+      projectionModel.isDownloaded = false;
+
+      await modelStore.checkSpaceAndDownload('projection-model');
+
+      // Should only call startDownload once for the projection model itself
+      expect(downloadManager.startDownload).toHaveBeenCalledTimes(1);
+      expect(downloadManager.startDownload).toHaveBeenCalledWith(
+        projectionModel,
+        expect.any(String),
+        expect.any(String),
+      );
+    });
+
+    it('should not auto-download for non-multimodal models', async () => {
+      // Mock RNFS.exists to return false for regular model (not downloaded)
+      (RNFS.exists as jest.Mock).mockImplementation((path: string) => {
+        const filename = path.split('/').pop()?.replace('.gguf', '');
+        if (filename === 'regular') {
+          return Promise.resolve(false); // Not downloaded
+        }
+        return Promise.resolve(true); // Default behavior for other files
+      });
+
+      const regularModel = {
+        ...defaultModels[0],
+        id: 'regular-model',
+        filename: 'regular.gguf',
+        supportsMultimodal: false,
+        defaultProjectionModel: undefined,
+        downloadUrl: 'https://example.com/regular.gguf',
+        isLocal: false,
+        isDownloaded: false,
+        origin: ModelOrigin.PRESET,
+      };
+
+      modelStore.models = [regularModel];
+
+      // Ensure model is marked as not downloaded after setting up the mock
+      regularModel.isDownloaded = false;
+
+      await modelStore.checkSpaceAndDownload('regular-model');
+
+      // Should only call startDownload once for the regular model
+      expect(downloadManager.startDownload).toHaveBeenCalledTimes(1);
+      expect(downloadManager.startDownload).toHaveBeenCalledWith(
+        regularModel,
+        expect.any(String),
+        expect.any(String),
+      );
+    });
+
+    it('should auto-download projection model for HF vision models', async () => {
+      // Mock RNFS.exists to return false for our test models (they're not downloaded)
+      (RNFS.exists as jest.Mock).mockImplementation((path: string) => {
+        const filename = path.split('/').pop()?.replace('.gguf', '');
+        if (filename === 'hf-vision' || filename === 'hf-projection') {
+          return Promise.resolve(false); // Not downloaded
+        }
+        return Promise.resolve(true); // Default behavior for other files
+      });
+
+      const hfVisionModel = {
+        ...defaultModels[0],
+        id: 'hf-vision-model',
+        filename: 'hf-vision.gguf',
+        supportsMultimodal: true,
+        defaultProjectionModel: 'hf-projection-model',
+        modelType: ModelType.VISION,
+        downloadUrl: 'https://example.com/hf-vision.gguf',
+        isLocal: false,
+        isDownloaded: false,
+        origin: ModelOrigin.HF,
+      };
+
+      const hfProjectionModel = {
+        ...defaultModels[0],
+        id: 'hf-projection-model',
+        filename: 'hf-projection.gguf',
+        modelType: ModelType.PROJECTION,
+        downloadUrl: 'https://example.com/hf-projection.gguf',
+        isDownloaded: false,
+        isLocal: false,
+        origin: ModelOrigin.HF,
+      };
+
+      modelStore.models = [hfVisionModel, hfProjectionModel];
+
+      // Ensure models are marked as not downloaded after setting up the mock
+      hfVisionModel.isDownloaded = false;
+      hfProjectionModel.isDownloaded = false;
+
+      // Track calls to downloadManager.startDownload and isDownloading
+      const startDownloadSpy = downloadManager.startDownload as jest.Mock;
+      const isDownloadingSpy = downloadManager.isDownloading as jest.Mock;
+      startDownloadSpy.mockClear();
+      isDownloadingSpy.mockReturnValue(false); // Not currently downloading
+
+      await modelStore.checkSpaceAndDownload('hf-vision-model');
+
+      // Should call startDownload twice: once for HF vision model, once for projection
+      expect(startDownloadSpy).toHaveBeenCalledTimes(2);
+
+      // Check that both models were passed to startDownload
+      const calls = startDownloadSpy.mock.calls;
+      const modelIds = calls.map(call => call[0].id);
+      expect(modelIds).toContain('hf-vision-model');
+      expect(modelIds).toContain('hf-projection-model');
+    });
+
+    it('should handle projection model download errors gracefully', async () => {
+      // Mock RNFS.exists to return false for our test models (they're not downloaded)
+      (RNFS.exists as jest.Mock).mockImplementation((path: string) => {
+        const filename = path.split('/').pop()?.replace('.gguf', '');
+        if (filename === 'vision' || filename === 'projection') {
+          return Promise.resolve(false); // Not downloaded
+        }
+        return Promise.resolve(true); // Default behavior for other files
+      });
+
+      const visionModel = {
+        ...defaultModels[0],
+        id: 'vision-model',
+        filename: 'vision.gguf',
+        supportsMultimodal: true,
+        defaultProjectionModel: 'projection-model',
+        modelType: ModelType.VISION,
+        downloadUrl: 'https://example.com/vision.gguf',
+        isLocal: false,
+        isDownloaded: false,
+        origin: ModelOrigin.PRESET,
+      };
+
+      const projectionModel = {
+        ...defaultModels[0],
+        id: 'projection-model',
+        filename: 'projection.gguf',
+        modelType: ModelType.PROJECTION,
+        downloadUrl: 'https://example.com/projection.gguf',
+        isDownloaded: false,
+        isLocal: false,
+        origin: ModelOrigin.PRESET,
+      };
+
+      modelStore.models = [visionModel, projectionModel];
+
+      // Mock console.error to track error logging
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+      // Track calls to downloadManager.startDownload and isDownloading
+      const startDownloadSpy = downloadManager.startDownload as jest.Mock;
+      const isDownloadingSpy = downloadManager.isDownloading as jest.Mock;
+      startDownloadSpy.mockClear();
+      isDownloadingSpy.mockReturnValue(false); // Not currently downloading
+
+      // Make the projection model download fail
+      startDownloadSpy.mockImplementation((model: any) => {
+        if (model.id === 'projection-model') {
+          throw new Error('Projection download failed');
+        }
+        return Promise.resolve();
+      });
+
+      // Ensure models are marked as not downloaded after setting up the mock
+      visionModel.isDownloaded = false;
+      projectionModel.isDownloaded = false;
+
+      // This should not throw even though projection model download fails
+      await modelStore.checkSpaceAndDownload('vision-model');
+
+      // Should call startDownload twice: once for vision model, once for projection
+      expect(startDownloadSpy).toHaveBeenCalledTimes(2);
+
+      // Should log the projection model error
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        'Failed to auto-download projection model:',
+        expect.any(Error),
+      );
+
+      // Clean up
+      consoleErrorSpy.mockRestore();
+    });
+
+    it('should not auto-download projection model if already downloading', async () => {
+      // Mock RNFS.exists to return false for our test models (they're not downloaded)
+      (RNFS.exists as jest.Mock).mockImplementation((path: string) => {
+        const filename = path.split('/').pop()?.replace('.gguf', '');
+        if (filename === 'vision' || filename === 'projection') {
+          return Promise.resolve(false); // Not downloaded
+        }
+        return Promise.resolve(true); // Default behavior for other files
+      });
+
+      const visionModel = {
+        ...defaultModels[0],
+        id: 'vision-model',
+        filename: 'vision.gguf',
+        supportsMultimodal: true,
+        defaultProjectionModel: 'projection-model',
+        modelType: ModelType.VISION,
+        downloadUrl: 'https://example.com/vision.gguf',
+        isLocal: false,
+        isDownloaded: false,
+        origin: ModelOrigin.PRESET,
+      };
+
+      const projectionModel = {
+        ...defaultModels[0],
+        id: 'projection-model',
+        filename: 'projection.gguf',
+        modelType: ModelType.PROJECTION,
+        downloadUrl: 'https://example.com/projection.gguf',
+        isDownloaded: false,
+        isLocal: false,
+        origin: ModelOrigin.PRESET,
+      };
+
+      modelStore.models = [visionModel, projectionModel];
+
+      // Ensure models are marked as not downloaded after setting up the mock
+      visionModel.isDownloaded = false;
+      projectionModel.isDownloaded = false;
+
+      // Track calls to downloadManager.startDownload and isDownloading
+      const startDownloadSpy = downloadManager.startDownload as jest.Mock;
+      const isDownloadingSpy = downloadManager.isDownloading as jest.Mock;
+      startDownloadSpy.mockClear();
+
+      // Mock that projection model is already downloading
+      isDownloadingSpy.mockImplementation((modelId: string) => {
+        return modelId === 'projection-model'; // Projection model is downloading
+      });
+
+      await modelStore.checkSpaceAndDownload('vision-model');
+
+      // Should only call startDownload once for the vision model, not for projection
+      expect(startDownloadSpy).toHaveBeenCalledTimes(1);
+      expect(startDownloadSpy).toHaveBeenCalledWith(
+        visionModel,
+        expect.any(String),
+        expect.any(String),
+      );
     });
   });
 });

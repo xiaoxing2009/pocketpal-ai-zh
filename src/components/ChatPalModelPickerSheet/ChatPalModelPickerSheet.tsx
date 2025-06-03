@@ -17,6 +17,7 @@ import {getModelSkills, L10nContext, Model} from '../../utils';
 //import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {CloseIcon} from '../../assets/icons';
 import {PalType} from '../PalsSheets/types';
+import {SkillsDisplay} from '../SkillsDisplay';
 
 type Tab = 'models' | 'pals';
 
@@ -193,13 +194,20 @@ export const ChatPalModelPickerSheet = observer(
                 {model.name}
               </Text>
               {modelSkills && (
-                <Text
-                  style={[
-                    styles.itemSubtitle,
-                    isActiveModel && styles.activeItemSubtitle,
-                  ]}>
-                  {modelSkills}
-                </Text>
+                <SkillsDisplay
+                  model={model}
+                  hasProjectionModelWarning={
+                    model.supportsMultimodal &&
+                    modelStore.getProjectionModelStatus(model).state ===
+                      'missing'
+                  }
+                  onProjectionWarningPress={() =>
+                    model.defaultProjectionModel &&
+                    modelStore.checkSpaceAndDownload(
+                      model.defaultProjectionModel,
+                    )
+                  }
+                />
               )}
             </View>
           </Pressable>

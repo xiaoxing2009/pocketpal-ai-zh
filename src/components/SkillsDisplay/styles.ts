@@ -45,4 +45,23 @@ export const createStyles = (theme: Theme, compact: boolean = false) =>
       color: theme.colors.onSurfaceVariant,
       flexShrink: 1,
     },
+    warningBadge: {
+      marginLeft: 2,
+      padding: 0,
+    },
+    warningIcon: {
+      margin: 0,
+      padding: 0,
+      width: compact ? 14 : 16,
+      height: compact ? 14 : 16,
+    },
+    warningContent: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    warningText: {
+      fontSize: compact ? 10 : 12,
+      color: theme.colors.error,
+      marginLeft: 2,
+    },
   });

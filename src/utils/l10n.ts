@@ -173,6 +173,8 @@ export const l10n = {
         projectionNeededTitle: 'Projection Model Needed',
         projectionNeededMessage:
           'This model requires a projection model for multimodal capabilities.',
+        projectionMissingWarning: 'Projection model missing',
+        projectionMissingShort: 'Missing projection',
         reloadModelTitle: 'Reload Model',
         reloadModelMessage:
           'The model needs to be reloaded to apply the new projection model. Do you want to reload now?',
@@ -1160,6 +1162,8 @@ export const l10n = {
         projectionNeededTitle: '投影モデルが必要です',
         projectionNeededMessage:
           'このモデルはマルチモーダル機能のために投影モデルが必要です。',
+        projectionMissingWarning: '投影モデルが不足しています',
+        projectionMissingShort: '投影モデル不足',
         reloadModelTitle: 'モデルを再読み込み',
         reloadModelMessage:
           '新しい投影モデルを適用するにはモデルを再読み込みする必要があります。今すぐ再読み込みしますか？',
@@ -2134,6 +2138,8 @@ export const l10n = {
         download: '下载',
         projectionNeededTitle: '需要投影模型',
         projectionNeededMessage: '此模型需要投影模型才能使用多模态功能。',
+        projectionMissingWarning: '投影模型缺失',
+        projectionMissingShort: '缺少投影模型',
         reloadModelTitle: '重新加载模型',
         reloadModelMessage:
           '需要重新加载模型以应用新的投影模型。您想现在重新加载吗？',

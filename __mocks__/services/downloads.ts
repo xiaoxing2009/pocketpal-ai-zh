@@ -8,7 +8,7 @@ export const downloadManager = {
   getDownloadProgress: jest.fn().mockImplementation(modelId => {
     return modelId === downloadingModel.id ? 50 : 0;
   }),
-  startDownload: jest.fn(),
+  startDownload: jest.fn().mockResolvedValue(undefined),
   cancelDownload: jest.fn(),
   setCallbacks: jest.fn(),
   syncWithActiveDownloads: jest.fn(),

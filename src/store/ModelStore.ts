@@ -604,12 +604,51 @@ class ModelStore {
     });
   };
 
+  /**
+   * Private method to handle projection model download for vision models
+   * @param model The vision model that needs its projection model downloaded
+   */
+  private _downloadProjectionModelIfNeeded = async (model: Model) => {
+    // Only auto-download for vision models that aren't projection models themselves
+    if (
+      !model.supportsMultimodal ||
+      !model.defaultProjectionModel ||
+      model.modelType === ModelType.PROJECTION
+    ) {
+      return;
+    }
+
+    const projModelId = model.defaultProjectionModel;
+    const projModel = this.models.find(m => m.id === projModelId);
+
+    if (
+      projModel &&
+      !projModel.isDownloaded &&
+      !downloadManager.isDownloading(projModelId)
+    ) {
+      console.log('Auto-downloading projection model for vision model:', {
+        llm: model.id,
+        projection: projModelId,
+      });
+
+      try {
+        // Download the projection model
+        await this.checkSpaceAndDownload(projModelId);
+      } catch (error) {
+        console.error('Failed to auto-download projection model:', error);
+        // Don't re-throw - projection model download failure shouldn't fail the main model download
+        // The user can manually download the projection model later if needed
+      }
+    }
+  };
+
   checkSpaceAndDownload = async (modelId: string) => {
     const model = this.models.find(m => m.id === modelId);
-    // Skip if model is undefined, local or doesn't have a download URL
+    // Skip if model is undefined, already downloaded, local or doesn't have a download URL
     // TODO: we need a better way to handle this. Why this could ever happen?
     if (
       !model ||
+      model.isDownloaded ||
       model.isLocal ||
       model.origin === ModelOrigin.LOCAL ||
       !model.downloadUrl
@@ -621,6 +660,9 @@ class ModelStore {
       const destinationPath = await this.getModelFullPath(model);
       const authToken = hfStore.shouldUseToken ? hfStore.hfToken : null;
       await downloadManager.startDownload(model, destinationPath, authToken);
+
+      // For vision models, automatically download the projection model
+      await this._downloadProjectionModelIfNeeded(model);
     } catch (err) {
       console.error('Failed to start download:', err);
 
@@ -719,19 +761,20 @@ class ModelStore {
     const filePath = await this.getModelFullPath(_model);
     if (_model.isLocal || _model.origin === ModelOrigin.LOCAL) {
       // Local models are always removed from the list, when the file is deleted.
+
+      // Check if we need to release context (if this model is currently active)
+      const needsContextRelease = this.activeModelId === _model.id;
+
+      // Remove model from list first
       runInAction(() => {
         this.models.splice(modelIndex, 1);
-        if (this.activeModelId === _model.id) {
-          this.releaseContext();
-        }
-        // If this is a projection model, clear it from active projection
-        if (
-          _model.modelType === ModelType.PROJECTION &&
-          this.activeProjectionModelId === _model.id
-        ) {
-          this.activeProjectionModelId = undefined;
-        }
       });
+
+      // Release context if needed - this will handle all state cleanup
+      if (needsContextRelease) {
+        await this.releaseContext(true); // Clear active model and all related state
+      }
+
       // Delete the file from internal storage
       try {
         await RNFS.unlink(filePath);
@@ -745,21 +788,21 @@ class ModelStore {
       try {
         if (filePath) {
           await RNFS.unlink(filePath);
+
+          // Check if we need to release context (if this model is currently active)
+          const needsContextRelease = this.activeModelId === _model.id;
+
+          // Update model state first
           runInAction(() => {
             _model.progress = 0;
             _model.isDownloaded = false; // Mark as not downloaded after successful deletion
-            if (this.activeModelId === _model.id) {
-              this.releaseContext();
-              this.activeModelId = undefined;
-            }
-            // If this is a projection model, clear it from active projection
-            if (
-              _model.modelType === ModelType.PROJECTION &&
-              this.activeProjectionModelId === _model.id
-            ) {
-              this.activeProjectionModelId = undefined;
-            }
           });
+
+          // Release context if needed - this will handle all state cleanup
+          if (needsContextRelease) {
+            await this.releaseContext(true); // Clear active model and all related state
+          }
+
           //console.log('models: ', this.models);
         } else {
           console.error("Failed to delete, file doesn't exist: ", filePath);
@@ -984,10 +1027,18 @@ class ModelStore {
     }
   }
 
-  releaseContext = async () => {
+  releaseContext = async (clearActiveModel: boolean = false) => {
     console.log('attempt to release');
     chatSessionStore.exitEditMode();
     if (!this.context) {
+      // Even if no context exists, clear state if requested (for deletion scenarios)
+      if (clearActiveModel) {
+        runInAction(() => {
+          this.activeModelId = undefined;
+          this.isMultimodalActive = false;
+          this.activeProjectionModelId = undefined;
+        });
+      }
       return Promise.resolve('No context to release');
     }
 
@@ -998,8 +1049,19 @@ class ModelStore {
         console.log('Releasing multimodal context first');
         try {
           await this.context.releaseMultimodal();
+          // Immediately clear multimodal state after successful release
+          runInAction(() => {
+            this.isMultimodalActive = false;
+            this.activeProjectionModelId = undefined;
+          });
+          console.log('Multimodal context released and state cleared');
         } catch (error) {
           console.error('Error releasing multimodal context:', error);
+          // Even if release fails, clear the state to prevent blocking deletion
+          runInAction(() => {
+            this.isMultimodalActive = false;
+            this.activeProjectionModelId = undefined;
+          });
         }
       }
 
@@ -1012,17 +1074,20 @@ class ModelStore {
       runInAction(() => {
         this.context = undefined;
         this.activeContextSettings = undefined;
-        //this.activeModelId = undefined; // activeModelId is set to undefined in manualReleaseContext
+        // Ensure multimodal state is cleared even if something went wrong above
+        this.isMultimodalActive = false;
+        this.activeProjectionModelId = undefined;
+        // Clear active model if requested (for deletion scenarios)
+        if (clearActiveModel) {
+          this.activeModelId = undefined;
+        }
       });
     }
     return 'Context released successfully';
   };
 
   manualReleaseContext = async () => {
-    await this.releaseContext();
-    runInAction(() => {
-      this.activeModelId = undefined;
-    });
+    await this.releaseContext(true); // Clear active model for manual release
   };
 
   get activeModel(): Model | undefined {
@@ -1039,49 +1104,16 @@ class ModelStore {
     this.activeModelId = modelId;
   }
 
-  downloadHFModel = async (
-    hfModel: HuggingFaceModel,
-    modelFile: ModelFile,
-    options?: {
-      downloadProjectionModel?: boolean;
-    },
-  ) => {
+  downloadHFModel = async (hfModel: HuggingFaceModel, modelFile: ModelFile) => {
     try {
       const newModel = await this.addHFModel(hfModel, modelFile);
 
-      // For vision models, automatically download the projection model
-      if (
-        newModel.supportsMultimodal &&
-        newModel.defaultProjectionModel &&
-        (options?.downloadProjectionModel ?? true)
-      ) {
-        const projModelId = newModel.defaultProjectionModel;
+      // Wait a bit to ensure the projection model is added to the store
+      // This is needed because addHFModel adds mmproj models asynchronously
+      await new Promise(resolve => setTimeout(resolve, 200));
 
-        // Wait a bit to ensure the projection model is added to the store
-        await new Promise(resolve => setTimeout(resolve, 200));
-
-        const projModel = this.models.find(m => m.id === projModelId);
-
-        if (projModel && !projModel.isDownloaded) {
-          // Start downloading both models
-          console.log('Downloading vision model with projection model:', {
-            llm: newModel.id,
-            projection: projModelId,
-          });
-
-          // Download the LLM first
-          this.checkSpaceAndDownload(newModel.id);
-
-          // Then download the projection model
-          this.checkSpaceAndDownload(projModelId);
-        } else {
-          // Just download the LLM
-          this.checkSpaceAndDownload(newModel.id);
-        }
-      } else {
-        // Regular model download
-        this.checkSpaceAndDownload(newModel.id);
-      }
+      // Use the centralized download method which handles mmproj automatically
+      this.checkSpaceAndDownload(newModel.id);
 
       // The error handling is now done in the downloadManager callbacks
     } catch (error) {
@@ -1552,6 +1584,74 @@ class ModelStore {
   };
 
   /**
+   * Check if a vision model has its required projection model downloaded
+   * @param model The vision model to check
+   * @returns true if the model doesn't need a projection model or if it has one downloaded
+   */
+  hasRequiredProjectionModel = (model: Model): boolean => {
+    const status = this.getProjectionModelStatus(model);
+    return status.isAvailable;
+  };
+
+  /**
+   * Get detailed status of a vision model's projection model
+   * @param model The vision model to check
+   * @returns Object with availability status and detailed state information
+   */
+  getProjectionModelStatus = (
+    model: Model,
+  ): {
+    isAvailable: boolean;
+    state: 'not_needed' | 'downloaded' | 'downloading' | 'missing';
+    projectionModel?: Model;
+  } => {
+    // Non-multimodal models don't need projection models
+    if (!model.supportsMultimodal || !model.defaultProjectionModel) {
+      return {
+        isAvailable: true,
+        state: 'not_needed',
+      };
+    }
+
+    // Find the projection model
+    const projectionModel = this.models.find(
+      m => m.id === model.defaultProjectionModel,
+    );
+
+    if (!projectionModel) {
+      return {
+        isAvailable: false,
+        state: 'missing',
+      };
+    }
+
+    // Check if projection model is downloaded
+    if (projectionModel.isDownloaded) {
+      return {
+        isAvailable: true,
+        state: 'downloaded',
+        projectionModel,
+      };
+    }
+
+    // Check if projection model is currently downloading
+    if (downloadManager.isDownloading(projectionModel.id)) {
+      return {
+        isAvailable: true, // Consider it available during download
+        state: 'downloading',
+        projectionModel,
+      };
+    }
+
+    // Projection model exists but is not downloaded and not downloading
+    return {
+      isAvailable: false,
+      state: 'missing',
+      projectionModel,
+    };
+  };
+
+  /**
    * Check if a projection model can be safely deleted
    * @param projectionModelId The ID of the projection model to check
    * @returns Object with canDelete flag and reason if deletion is blocked
@@ -1571,12 +1671,21 @@ class ModelStore {
       };
     }
 
-    // Check if it's currently active
+    // Check if it's currently active - but also verify that we actually have a context
+    // This prevents false positives when the context has been released but state hasn't updated
     if (this.activeProjectionModelId === projectionModelId) {
-      return {
-        canDelete: false,
-        reason: 'Projection model is currently active',
-      };
+      // Double-check: if we don't have an active context, the projection model isn't really active
+      if (!this.context) {
+        console.log(
+          'Projection model marked as active but no context exists, allowing deletion:',
+          projectionModelId,
+        );
+      } else {
+        return {
+          canDelete: false,
+          reason: 'Projection model is currently active',
+        };
+      }
     }
 
     // Check if any downloaded LLMs use this as their default projection model
@@ -1584,6 +1693,11 @@ class ModelStore {
       this.getDownloadedLLMsUsingProjectionModel(projectionModelId);
 
     if (dependentModels.length > 0) {
+      console.log(
+        'Cannot delete projection model. Used by downloaded LLM models:',
+        dependentModels.map(m => m.id),
+      );
+
       return {
         canDelete: false,
         reason: 'Projection model is used by downloaded LLM models',
@@ -1613,6 +1727,7 @@ class ModelStore {
     }
 
     const canDeleteResult = this.canDeleteProjectionModel(projectionModelId);
+    console.log('Can delete projection model:', canDeleteResult);
 
     if (canDeleteResult.canDelete) {
       console.log(
