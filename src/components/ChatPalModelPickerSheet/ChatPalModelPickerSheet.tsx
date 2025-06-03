@@ -311,7 +311,7 @@ export const ChatPalModelPickerSheet = observer(
         enablePanDownToClose
         snapPoints={snapPoints} // Dynamic sizing is not working properly in all situations, like keyboard open/close android/ios ...
         enableDynamicSizing={false}
-        backdropComponent={CustomBackdrop}
+        backdropComponent={isVisible ? CustomBackdrop : null} // on android we need this check to ensure it doenst' block interaction
         backgroundStyle={{
           backgroundColor: theme.colors.background,
         }}

@@ -10,6 +10,7 @@ import {
   Image,
 } from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {useCameraPermission} from 'react-native-vision-camera';
 
 import Color from 'tinycolor2';
 import {observer} from 'mobx-react';
@@ -110,6 +111,9 @@ export const ChatInput = observer(
     const activePalId = chatSessionStore.activePalId;
     const activePal = palStore.pals.find(pal => pal.id === activePalId);
 
+    // Camera permission hook from react-native-vision-camera
+    const {hasPermission, requestPermission} = useCameraPermission();
+
     const hasActiveModel = !!modelStore.activeModelId;
 
     // Use `defaultValue` if provided
@@ -190,9 +194,23 @@ export const ChatInput = observer(
       setShowImageUploadMenu(true);
     };
 
-    // Handle taking a photo with the camera
+    // Need to figure this out:
+    // Handle taking a photo with the camera using react-native-image-picker
+    // but with permission checking from react-native-vision-camera
     const handleTakePhoto = async () => {
       try {
+        if (!hasPermission) {
+          const permissionResult = await requestPermission();
+          if (!permissionResult) {
+            Alert.alert(
+              l10n.camera.permissionTitle,
+              l10n.camera.permissionMessage,
+            );
+            setShowImageUploadMenu(false);
+            return;
+          }
+        }
+
         // Disable auto-release during camera operation
         // this is only needed on Android.
         modelStore.disableAutoRelease('camera-photo');
