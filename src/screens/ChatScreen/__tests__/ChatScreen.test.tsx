@@ -68,12 +68,14 @@ describe('ChatScreen', () => {
     const sendButton = getByTestId('send-button');
     fireEvent.press(sendButton);
 
-    expect(chatSessionStore.addMessageToCurrentSession).toHaveBeenCalledWith(
-      expect.objectContaining({
-        author: expect.objectContaining({id: 'y9d7f8pgn'}),
-        text: 'Hello, PocketPal AI!',
-      }),
-    );
+    await waitFor(() => {
+      expect(chatSessionStore.addMessageToCurrentSession).toHaveBeenCalledWith(
+        expect.objectContaining({
+          author: expect.objectContaining({id: 'y9d7f8pgn'}),
+          text: 'Hello, PocketPal AI!',
+        }),
+      );
+    });
 
     await waitFor(() => {
       expect(modelStore.context).toBeTruthy();

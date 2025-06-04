@@ -289,11 +289,10 @@ export const useChatSession = (
       return;
     }
 
-    // Check if we have images and if multimodal is enabled
+    // Check if we have images in the current message
     const hasImages = imageUris && imageUris.length > 0;
-    const isMultimodalEnabled = hasImages
-      ? await modelStore.isMultimodalEnabled()
-      : false;
+
+    const isMultimodalEnabled = await modelStore.isMultimodalEnabled();
 
     // Create the user message with embedded images
     const textMessage: MessageType.Text = {

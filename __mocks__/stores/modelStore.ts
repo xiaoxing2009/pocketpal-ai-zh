@@ -5,6 +5,7 @@ import {modelsList} from '../../jest/fixtures/models';
 import {downloadManager} from '../services/downloads';
 
 import {Model} from '../../src/utils/types';
+import {LlamaContext} from '@pocketpalai/llama.rn';
 
 class MockModelStore {
   models = modelsList;
@@ -20,6 +21,7 @@ class MockModelStore {
   activeModelId: string | undefined;
   inferencing = false;
   isStreaming = false;
+  context: LlamaContext | undefined = undefined;
 
   refreshDownloadStatuses: jest.Mock;
   addLocalModel: jest.Mock;
