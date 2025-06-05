@@ -3,7 +3,14 @@ import {Alert, View, StyleSheet, Pressable} from 'react-native';
 import {computed} from 'mobx';
 import {observer} from 'mobx-react';
 import LinearGradient from 'react-native-linear-gradient';
-import {IconButton, Text, Tooltip, Snackbar, Portal} from 'react-native-paper';
+import {
+  IconButton,
+  Text,
+  Tooltip,
+  Snackbar,
+  Portal,
+  Chip,
+} from 'react-native-paper';
 
 import {useTheme, useMemoryCheck} from '../../../../../hooks';
 import {createStyles} from './styles';
@@ -23,6 +30,8 @@ import {
   ModelFile,
   ModelOrigin,
 } from '../../../../../utils/types';
+import {VisionDownloadSheet} from '../../../../../components';
+import {ChevronRightIcon} from '../../../../../assets/icons';
 
 interface ModelFileCardProps {
   modelFile: ModelFile;
@@ -39,6 +48,7 @@ type Warning = {
 export const ModelFileCard: FC<ModelFileCardProps> = observer(
   ({modelFile, hfModel}) => {
     const [showWarning, setShowWarning] = useState(false);
+    const [showVisionSheet, setShowVisionSheet] = useState(false);
     const theme = useTheme();
     const l10n = useContext(L10nContext);
 
@@ -173,7 +183,9 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
           l10n.models.modelFile.alerts.alreadyDownloadedMessage,
         );
       } else {
-        modelStore.downloadHFModel(hfModel, modelFile);
+        // Direct download with default projection for all models
+        // VisionDownloadSheet is only opened via the vision chip
+        modelStore.downloadHFModel(hfModel, modelFile, {enableVision: true});
       }
     };
 
@@ -232,12 +244,7 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
       if (isVisionLLM) {
         const sizeBreakdown = getVisionModelSizeBreakdown(modelFile, hfModel);
         if (sizeBreakdown.hasProjection) {
-          return `${formatBytes(
-            sizeBreakdown.totalSize,
-            2,
-            false,
-            true,
-          )} (includes vision support)`;
+          return `${formatBytes(sizeBreakdown.totalSize, 2, false, true)}`;
         }
       }
 
@@ -307,6 +314,29 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
                   </View>
                 )}
               </View>
+
+              {/* Vision indicator chip for multimodal models */}
+              {convertedModel.supportsMultimodal && (
+                <View style={styles.visionChipContainer}>
+                  <Chip
+                    mode="flat"
+                    compact
+                    icon="eye"
+                    style={styles.visionChip}
+                    textStyle={styles.visionChipText}
+                    onPress={() => setShowVisionSheet(true)}>
+                    {isDownloaded
+                      ? l10n.models.multimodal.visionControls.visionEnabled
+                      : l10n.models.multimodal.visionControls
+                          .includesVisionCapability}
+                  </Chip>
+                  <ChevronRightIcon
+                    width={16}
+                    height={16}
+                    stroke={theme.colors.onSurfaceVariant}
+                  />
+                </View>
+              )}
 
               {/* Download Speed */}
               {isDownloading && downloadSpeed && (
@@ -388,6 +418,15 @@ export const ModelFileCard: FC<ModelFileCardProps> = observer(
             </View>
           </Snackbar>
         </Portal>
+
+        {/* Vision Download Options Sheet */}
+        <VisionDownloadSheet
+          isVisible={showVisionSheet}
+          onClose={() => setShowVisionSheet(false)}
+          hfModel={hfModel}
+          modelFile={modelFile}
+          convertedModel={convertedModel}
+        />
       </View>
     );
   },

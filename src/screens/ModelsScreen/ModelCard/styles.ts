@@ -144,4 +144,11 @@ export const createStyles = (theme: Theme) =>
     sheetScrollViewContainer: {
       padding: 16,
     },
+    visionToggleContainer: {
+      paddingHorizontal: 15,
+      paddingVertical: 8,
+    },
+    visionToggle: {
+      marginVertical: 4,
+    },
   });

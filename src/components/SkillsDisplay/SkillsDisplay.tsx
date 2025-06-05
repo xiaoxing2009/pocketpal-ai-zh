@@ -18,6 +18,8 @@ interface SkillsDisplayProps {
   compact?: boolean;
   hasProjectionModelWarning?: boolean;
   onProjectionWarningPress?: () => void;
+  visionEnabled?: boolean; // Whether vision is enabled for this model
+  visionAvailable?: boolean; // Whether vision is available (projection model downloaded)
 }
 
 export const SkillsDisplay: React.FC<SkillsDisplayProps> = ({
@@ -27,6 +29,10 @@ export const SkillsDisplay: React.FC<SkillsDisplayProps> = ({
   compact = false,
   hasProjectionModelWarning = false,
   onProjectionWarningPress,
+  visionEnabled = true,
+  // TODO: we need to find out if we need this?
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  visionAvailable = true,
 }) => {
   const l10n = React.useContext(L10nContext);
   const theme = useTheme();
@@ -41,7 +47,27 @@ export const SkillsDisplay: React.FC<SkillsDisplayProps> = ({
   const renderSkillItem = (skill: SkillItem) => {
     const isVision = skill.key === 'vision';
     const isClickable = isVision && onVisionPress;
-    const color = theme.colors[skill.color || 'primary'];
+
+    // Determine vision badge state and color
+    let color = theme.colors[skill.color || 'primary'];
+    let iconName = skill.icon;
+
+    if (isVision) {
+      if (!visionEnabled) {
+        // Vision disabled - use muted color and different icon
+        color = theme.colors.textSecondary;
+        iconName = 'eye-off';
+        /* } else if (!visionAvailable) {
+       //   // Vision enabled but not available - use warning color
+       //   color = theme.colors.error;
+         iconName = 'eye-off'; */
+      } else {
+        // Vision enabled and available - use primary color
+        color = color;
+        iconName = 'eye';
+      }
+    }
+
     const showWarning = isVision && hasProjectionModelWarning;
 
     // Get localized label
@@ -52,9 +78,9 @@ export const SkillsDisplay: React.FC<SkillsDisplayProps> = ({
 
     const skillContent = (
       <View style={[styles.skillItem, skill.isSpecial && styles.specialSkill]}>
-        {skill.icon && (
+        {(skill.icon || iconName) && (
           <IconButton
-            icon={skill.icon}
+            icon={(iconName || skill.icon) as string}
             size={compact ? 10 : 12}
             iconColor={color}
             style={styles.skillIcon}

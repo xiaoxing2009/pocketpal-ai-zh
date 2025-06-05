@@ -359,7 +359,7 @@ describe('ModelCard', () => {
       jest.clearAllMocks();
     });
 
-    it('shows projection model selector for vision models', async () => {
+    it('shows vision control sheet for vision models', async () => {
       const {getByTestId, getByText} = customRender(
         <ModelCard model={visionModel} />,
       );
@@ -370,8 +370,10 @@ describe('ModelCard', () => {
       const visionTag = getByTestId('vision-skill-touchable');
       fireEvent.press(visionTag);
 
-      // Should toggle projection selector visibility
-      expect(getByTestId('projection-model-selector')).toBeTruthy();
+      // Should open vision control sheet with projection selector inside
+      await waitFor(() => {
+        expect(getByTestId('projection-model-selector')).toBeTruthy();
+      });
     });
 
     it('handles projection model selection', async () => {
@@ -382,6 +384,10 @@ describe('ModelCard', () => {
 
       const visionTag = getByTestId('vision-skill-touchable');
       fireEvent.press(visionTag);
+
+      await waitFor(() => {
+        expect(getByTestId('projection-model-selector')).toBeTruthy();
+      });
 
       const projectionModelButton = getByTestId(
         'select-projection-model-button',

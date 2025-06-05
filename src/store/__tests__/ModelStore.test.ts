@@ -233,7 +233,7 @@ describe('ModelStore', () => {
       expect(result.reason).toBe('Projection model is currently active');
     });
 
-    it('should prevent deletion of projection model used by downloaded LLM', () => {
+    it('should allow deletion of projection model used by downloaded LLM with warning', () => {
       const projModel = {
         ...defaultModels[0],
         id: 'test-proj-model',
@@ -252,10 +252,7 @@ describe('ModelStore', () => {
       modelStore.models = [projModel, llmModel];
 
       const result = modelStore.canDeleteProjectionModel(projModel.id);
-      expect(result.canDelete).toBe(false);
-      expect(result.reason).toBe(
-        'Projection model is used by downloaded LLM models',
-      );
+      expect(result.canDelete).toBe(true);
       expect(result.dependentModels).toHaveLength(1);
       expect(result.dependentModels![0].id).toBe(llmModel.id);
     });
@@ -791,7 +788,9 @@ describe('ModelStore', () => {
       const modelFile = hfModel.siblings[0];
       (RNFS.exists as jest.Mock).mockResolvedValue(false);
 
-      await modelStore.downloadHFModel(hfModel as any, modelFile as any);
+      await modelStore.downloadHFModel(hfModel as any, modelFile as any, {
+        enableVision: true,
+      });
       expect(downloadManager.startDownload).toHaveBeenCalledWith(
         expect.objectContaining({
           id: 'test/hf-model/model-01.gguf',
@@ -824,7 +823,9 @@ describe('ModelStore', () => {
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       const alertSpy = jest.spyOn(Alert, 'alert').mockImplementation();
 
-      await modelStore.downloadHFModel(hfModel as any, modelFile as any);
+      await modelStore.downloadHFModel(hfModel as any, modelFile as any, {
+        enableVision: true,
+      });
 
       // Check that error is logged
       expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -1839,6 +1840,7 @@ describe('ModelStore', () => {
         isLocal: false,
         isDownloaded: false,
         origin: ModelOrigin.PRESET,
+        visionEnabled: true,
       };
 
       const projectionModel = {
@@ -1858,6 +1860,40 @@ describe('ModelStore', () => {
 
       // Should call startDownload twice: once for vision model, once for projection
       expect(downloadManager.startDownload).toHaveBeenCalledTimes(2);
+    });
+
+    it('should not auto-download projection model for vision models that are not enabled for vision', async () => {
+      const visionModel = {
+        ...defaultModels[0],
+        id: 'vision-model-0',
+        filename: 'vision.gguf',
+        supportsMultimodal: true,
+        defaultProjectionModel: 'projection-model-0',
+        modelType: ModelType.VISION,
+        downloadUrl: 'https://example.com/vision.gguf',
+        isLocal: false,
+        isDownloaded: false,
+        origin: ModelOrigin.PRESET,
+        visionEnabled: false,
+      };
+
+      const projectionModel = {
+        ...defaultModels[0],
+        id: 'projection-model-0',
+        filename: 'projection.gguf',
+        modelType: ModelType.PROJECTION,
+        downloadUrl: 'https://example.com/projection.gguf',
+        isDownloaded: false,
+        isLocal: false,
+        origin: ModelOrigin.PRESET,
+      };
+
+      modelStore.models = [visionModel, projectionModel];
+
+      await modelStore.checkSpaceAndDownload('vision-model-0');
+
+      // Should call startDownload twice: once for vision model, once for projection
+      expect(downloadManager.startDownload).toHaveBeenCalledTimes(1);
     });
 
     it('should not auto-download projection model if already downloaded', async () => {
@@ -2010,6 +2046,7 @@ describe('ModelStore', () => {
         isLocal: false,
         isDownloaded: false,
         origin: ModelOrigin.HF,
+        visionEnabled: true,
       };
 
       const hfProjectionModel = {
@@ -2068,6 +2105,7 @@ describe('ModelStore', () => {
         isLocal: false,
         isDownloaded: false,
         origin: ModelOrigin.PRESET,
+        visionEnabled: true,
       };
 
       const projectionModel = {

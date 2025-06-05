@@ -29,9 +29,11 @@ export const ModelNotAvailable = observer(
 
     const handleDownloadModel = async (modelToDownload: Model) => {
       if (modelToDownload.hfModel) {
+        // For HF models, use default vision preference (enabled) for backward compatibility
         await modelStore.downloadHFModel(
           modelToDownload.hfModel!,
           modelToDownload.hfModelFile!,
+          {enableVision: true},
         );
       } else {
         await modelStore.checkSpaceAndDownload(modelToDownload.id);

@@ -31,7 +31,7 @@ export const createStyles = (theme: Theme, compact: boolean = false) =>
       padding: 0,
       width: compact ? 14 : 16,
       height: compact ? 14 : 16,
-      marginRight: -2,
+      marginRight: 0,
     },
     skillText: {
       fontSize: compact ? 10 : 12,

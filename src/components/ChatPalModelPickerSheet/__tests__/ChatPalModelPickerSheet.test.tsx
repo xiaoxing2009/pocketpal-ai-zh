@@ -33,6 +33,7 @@ jest.mock('../../../store', () => ({
       isAvailable: true,
       state: 'not_needed',
     }),
+    getModelVisionPreference: jest.fn().mockReturnValue(true),
   },
   palStore: {
     pals: [

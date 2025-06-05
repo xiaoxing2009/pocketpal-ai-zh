@@ -95,6 +95,7 @@ describe('ModelFileCard', () => {
     expect(modelStore.downloadHFModel).toHaveBeenCalledWith(
       mockHFModel1,
       mockHFModel1.siblings[0],
+      {enableVision: true},
     );
   });
 

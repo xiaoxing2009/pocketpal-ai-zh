@@ -30,6 +30,43 @@ interface ChatPalModelPickerSheetProps {
   keyboardHeight: number;
 }
 
+const ObservedSkillsDisplay = observer(({model}) => {
+  const hasProjectionModelWarning =
+    model.supportsMultimodal &&
+    model.visionEnabled &&
+    modelStore.getProjectionModelStatus(model).state === 'missing';
+
+  const toggleVision = async () => {
+    if (!model.supportsMultimodal) {
+      return;
+    }
+    try {
+      await modelStore.setModelVisionEnabled(
+        model.id,
+        !modelStore.getModelVisionPreference(model),
+      );
+    } catch (error) {
+      console.error('Failed to toggle vision setting:', error);
+      // The error is already handled in setModelVisionEnabled (vision state is reverted)
+      // We could show a toast/snackbar here if needed
+    }
+  };
+  const visionEnabled = modelStore.getModelVisionPreference(model);
+
+  return (
+    <SkillsDisplay
+      model={model}
+      hasProjectionModelWarning={hasProjectionModelWarning}
+      onVisionPress={toggleVision}
+      onProjectionWarningPress={() =>
+        model.defaultProjectionModel &&
+        modelStore.checkSpaceAndDownload(model.defaultProjectionModel)
+      }
+      visionEnabled={visionEnabled}
+    />
+  );
+});
+
 export const ChatPalModelPickerSheet = observer(
   ({
     isVisible,
@@ -193,22 +230,7 @@ export const ChatPalModelPickerSheet = observer(
                 ]}>
                 {model.name}
               </Text>
-              {modelSkills && (
-                <SkillsDisplay
-                  model={model}
-                  hasProjectionModelWarning={
-                    model.supportsMultimodal &&
-                    modelStore.getProjectionModelStatus(model).state ===
-                      'missing'
-                  }
-                  onProjectionWarningPress={() =>
-                    model.defaultProjectionModel &&
-                    modelStore.checkSpaceAndDownload(
-                      model.defaultProjectionModel,
-                    )
-                  }
-                />
-              )}
+              {modelSkills && <ObservedSkillsDisplay model={model} />}
             </View>
           </Pressable>
         );

@@ -16,7 +16,7 @@ import {
   Snackbar,
 } from 'react-native-paper';
 
-import {Divider} from '../../../components';
+import {Divider, VisionControlSheet} from '../../../components';
 
 import {useTheme, useMemoryCheck, useStorageCheck} from '../../../hooks';
 
@@ -35,7 +35,7 @@ import {
   L10nContext,
   checkModelFileIntegrity,
 } from '../../../utils';
-import {ProjectionModelSelector, SkillsDisplay} from '../../../components';
+import {SkillsDisplay} from '../../../components';
 
 type ChatScreenNavigationProp = DrawerNavigationProp<RootDrawerParamList>;
 
@@ -56,7 +56,8 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
 
     const [snackbarVisible, setSnackbarVisible] = useState(false); // Snackbar visibility
     const [integrityError, setIntegrityError] = useState<string | null>(null);
-    const [showProjectionSelector, setShowProjectionSelector] = useState(false);
+
+    const [showVisionControlSheet, setShowVisionControlSheet] = useState(false);
 
     const {memoryWarning, shortMemoryWarning, multimodalWarning} =
       useMemoryCheck(model.size, model.supportsMultimodal);
@@ -75,6 +76,7 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
     const hasProjectionModelWarning =
       isDownloaded &&
       model.supportsMultimodal &&
+      modelStore.getModelVisionPreference(model) && // Only show warning when vision is enabled
       projectionModelStatus.state === 'missing';
 
     // Check integrity when model is downloaded
@@ -174,17 +176,6 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
       }
     }, [model.hfUrl]);
 
-    const handleProjectionModelSelect = useCallback(
-      (projectionModelId: string) => {
-        modelStore.setDefaultProjectionModel(model.id, projectionModelId);
-      },
-      [model.id],
-    );
-
-    const toggleProjectionSelector = useCallback(() => {
-      setShowProjectionSelector(prev => !prev);
-    }, []);
-
     const handleRemove = useCallback(() => {
       Alert.alert(
         l10n.models.modelCard.alerts.removeTitle,
@@ -209,8 +200,8 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
         // Try to download the missing projection model
         modelStore.checkSpaceAndDownload(model.defaultProjectionModel);
       } else {
-        // Show projection model selector if no default is set
-        setShowProjectionSelector(true);
+        // Show vision control sheet to select projection model
+        setShowVisionControlSheet(true);
       }
     }, [model.defaultProjectionModel]);
 
@@ -335,9 +326,11 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
                     model={model}
                     onVisionPress={
                       model.supportsMultimodal
-                        ? toggleProjectionSelector
+                        ? () => setShowVisionControlSheet(true)
                         : undefined
                     }
+                    visionEnabled={modelStore.getModelVisionPreference(model)}
+                    visionAvailable={projectionModelStatus.isAvailable}
                     hasProjectionModelWarning={hasProjectionModelWarning}
                     onProjectionWarningPress={handleProjectionWarningPress}
                   />
@@ -362,14 +355,6 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
                     </Text>
                   </View>
                 </TouchableRipple>
-              )}
-
-              {/* Show projection model selector for multimodal models */}
-              {model.supportsMultimodal && showProjectionSelector && (
-                <ProjectionModelSelector
-                  model={model}
-                  onProjectionModelSelect={handleProjectionModelSelect}
-                />
               )}
 
               {/* Display integrity warning if check fails */}
@@ -473,6 +458,13 @@ export const ModelCard: React.FC<ModelCardProps> = observer(
             (hasProjectionModelWarning &&
               l10n.models.multimodal.projectionMissingWarning)}
         </Snackbar>
+
+        {/* Vision Control Sheet */}
+        <VisionControlSheet
+          isVisible={showVisionControlSheet}
+          onClose={() => setShowVisionControlSheet(false)}
+          model={model}
+        />
       </>
     );
   },

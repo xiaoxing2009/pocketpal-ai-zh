@@ -94,6 +94,7 @@ describe('ModelNotAvailable', () => {
     expect(modelStore.downloadHFModel).toHaveBeenCalledWith(
       hfModel1.hfModel,
       hfModel1.hfModelFile,
+      {enableVision: true},
     );
   });
 });

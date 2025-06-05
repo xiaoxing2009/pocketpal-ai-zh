@@ -46,3 +46,5 @@ export * from './TextInput';
 export * from './TextMessage';
 export * from './UsageStats';
 export * from './VideoPalEmptyPlaceholder';
+export * from './VisionDownloadSheet';
+export * from './VisionControlSheet';

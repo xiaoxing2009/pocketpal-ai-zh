@@ -340,6 +340,7 @@ export interface Model {
   supportsMultimodal?: boolean; // Whether this model supports multimodal input
   compatibleProjectionModels?: string[]; // Array of mmproj model IDs that work with this model
   defaultProjectionModel?: string; // Default mmproj model ID to use with this model
+  visionEnabled?: boolean; // User preference for enabling vision capabilities (defaults to true for backward compatibility)
 
   defaultChatTemplate: ChatTemplateConfig;
   chatTemplate: ChatTemplateConfig;

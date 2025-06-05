@@ -55,6 +55,14 @@ export const createStyles = (theme: Theme, isProjectionModel) =>
       marginTop: 4,
       flexWrap: 'wrap',
     },
+    visionChipContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 0,
+      marginTop: 4,
+      flexWrap: 'wrap',
+      //backgroundColor: 'red',
+    },
     fileSize: {
       fontSize: 13,
       color: theme.colors.onSurfaceVariant,
@@ -127,5 +135,16 @@ export const createStyles = (theme: Theme, isProjectionModel) =>
     gatedText: {
       color: theme.colors.primary,
       fontSize: 10,
+    },
+    visionChip: {
+      backgroundColor: 'transparent',
+      marginStart: 0,
+      // borderColor: theme.colors.primary + '50',
+      //height: 24,
+    },
+    visionChipText: {
+      fontSize: 11,
+      color: theme.colors.text,
+      fontWeight: '500',
     },
   });
