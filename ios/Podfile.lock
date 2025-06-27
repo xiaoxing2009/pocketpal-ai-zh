@@ -140,7 +140,7 @@ PODS:
   - hermes-engine (0.76.3):
     - hermes-engine/Pre-built (= 0.76.3)
   - hermes-engine/Pre-built (0.76.3)
-  - llama-rn (0.6.0-rc.7):
+  - llama-rn (0.6.0-rc.8):
     - React-Core
   - nanopb (3.30910.0):
     - nanopb/decode (= 3.30910.0)
@@ -2387,7 +2387,7 @@ SPEC CHECKSUMS:
   GoogleAppMeasurement: ee5c2d2242816773fbf79e5b0563f5355ef1c315
   GoogleUtilities: 26a3abef001b6533cf678d3eb38fd3f614b7872d
   hermes-engine: 77f19b2923ed39b21649b7551471674e3ace7a0a
-  llama-rn: cfa35c898700dbfcbca7c4256e2fb6ea2207b6f7
+  llama-rn: c6f350d100e6b079194a09ee07f93857f16a4465
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   RCT-Folly: aac5a2e8a7b6b8108945e58a66d08f78b800a1ea
