@@ -37,6 +37,7 @@ import {chatSessionStore, modelStore, palStore} from '../../store';
 
 import {MessageType, User} from '../../utils/types';
 import {calculateChatMessages, unwrap, UserContext} from '../../utils';
+import {L10nContext} from '../../utils';
 import {PalType} from '../PalsSheets/types';
 
 import {
@@ -175,6 +176,7 @@ export const ChatView = observer(
     usePreviewData = true,
     user,
   }: ChatProps) => {
+    const l10n = React.useContext(L10nContext);
     const theme = useTheme();
     const styles = createStyles({theme});
 
@@ -406,6 +408,13 @@ export const ChatView = observer(
       setSelectedMessage(null);
     }, []);
 
+    const {
+      copy: copyLabel,
+      regenerate: regenerateLabel,
+      regenerateWith: regenerateWithLabel,
+      edit: editLabel,
+    } = l10n.components.chatView.menuItems;
+
     const menuItems = React.useMemo((): MenuItem[] => {
       if (!selectedMessage || selectedMessage.type !== 'text') {
         return [];
@@ -417,7 +426,7 @@ export const ChatView = observer(
 
       const baseItems: MenuItem[] = [
         {
-          label: 'Copy',
+          label: copyLabel,
           onPress: () => {
             handleCopy(selectedMessage);
             handleMenuDismiss();
@@ -429,7 +438,7 @@ export const ChatView = observer(
 
       if (!isAuthor) {
         baseItems.push({
-          label: 'Regenerate',
+          label: regenerateLabel,
           onPress: () => {
             handleTryAgain(selectedMessage);
             handleMenuDismiss();
@@ -439,7 +448,7 @@ export const ChatView = observer(
         });
 
         baseItems.push({
-          label: 'Regenerate with',
+          label: regenerateWithLabel,
           icon: () => <GridIcon stroke={theme.colors.primary} />,
           disabled: false,
           submenu: models.map(model => ({
@@ -455,7 +464,7 @@ export const ChatView = observer(
 
       if (isAuthor) {
         baseItems.push({
-          label: 'Edit',
+          label: editLabel,
           onPress: () => {
             handleEdit(selectedMessage);
             handleMenuDismiss();
@@ -476,6 +485,10 @@ export const ChatView = observer(
       handleMenuDismiss,
       size.width,
       theme.colors.primary,
+      copyLabel,
+      regenerateLabel,
+      regenerateWithLabel,
+      editLabel,
     ]);
 
     const renderMenuItem = React.useCallback(

@@ -754,6 +754,14 @@ export const l10n = {
         },
         byteSizes: ['Bytes', 'KB', 'MB', 'GB'],
       },
+      chatView: {
+        menuItems: {
+          copy: 'Copy',
+          regenerate: 'Regenerate',
+          regenerateWith: 'Regenerate with',
+          edit: 'Edit',
+        },
+      },
     },
     palsScreen: {
       systemPrompt: 'System Prompt',
@@ -1762,6 +1770,14 @@ export const l10n = {
         },
         byteSizes: ['B', 'KB', 'MB', 'GB'],
       },
+      chatView: {
+        menuItems: {
+          copy: 'コピー',
+          regenerate: '再生成',
+          regenerateWith: '再生成（モデル選択）',
+          edit: '編集',
+        },
+      },
     },
     palsScreen: {
       systemPrompt: 'システムプロンプト',
@@ -2719,6 +2735,14 @@ export const l10n = {
           usage: '使用率: ',
         },
         byteSizes: ['字节', 'KB', 'MB', 'GB'],
+      },
+      chatView: {
+        menuItems: {
+          copy: '复制',
+          regenerate: '重新生成',
+          regenerateWith: '重新生成（选择模型）',
+          edit: '编辑',
+        },
       },
     },
     palsScreen: {
