@@ -14,7 +14,7 @@ import {CompletionParams} from './completionTypes';
 
 // Current version of the completion settings schema
 // Increment this when adding new settings or changing existing ones
-export const CURRENT_COMPLETION_SETTINGS_VERSION = 1;
+export const CURRENT_COMPLETION_SETTINGS_VERSION = 2;
 
 /**
  * Default completion parameters used throughout the app
@@ -44,6 +44,7 @@ export const defaultCompletionParams: CompletionParams = {
   seed: -1,
   n_probs: 0, // If greater than 0, the response also contains the probabilities of top N tokens for each generated token given the sampling settings.
   stop: ['</s>'],
+  jinja: true, // Whether to use Jinja templating for chat formatting
   // emit_partial_completion: true, // This is not used in the current version of llama.rn
 };
 
@@ -69,11 +70,17 @@ export function migrateCompletionSettings(settings: any): any {
     migratedSettings.version = 1;
   }
 
+  if (migratedSettings.version < 2) {
+    // Migration to version 2: Add jinja parameter
+    migratedSettings.jinja = defaultCompletionParams.jinja;
+    migratedSettings.version = 2;
+  }
+
   // Add future migrations here as needed
-  // if (migratedSettings.version < 2) {
-  //   // Migration to version 2
+  // if (migratedSettings.version < 3) {
+  //   // Migration to version 3
   //   migratedSettings.new_field = defaultCompletionParams.new_field;
-  //   migratedSettings.version = 2;
+  //   migratedSettings.version = 3;
   // }
 
   return migratedSettings;

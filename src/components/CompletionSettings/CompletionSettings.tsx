@@ -172,6 +172,7 @@ export const CompletionSettings: React.FC<Props> = ({settings, onChange}) => {
         </>
       )}
       {renderIntegerInput({name: 'seed'})}
+      {renderSwitch('jinja')}
     </View>
   );
 };

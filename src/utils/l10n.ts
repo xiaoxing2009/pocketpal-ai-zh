@@ -345,6 +345,8 @@ export const l10n = {
     completionParams: {
       include_thinking_in_context:
         'Include AI thinking/reasoning parts in the context sent to the model. Disabling this can save context space. It might impact performance.',
+      jinja:
+        'Enable Jinja templating for chat formatting. When enabled, uses Jinja-based chat template processing for better compatibility with modern models.',
       grammar:
         'Enforce specific grammar rules to ensure the generated text follows a particular structure or format',
       stop: 'Define specific phrases that will stop text generation',
@@ -1362,6 +1364,8 @@ export const l10n = {
     completionParams: {
       include_thinking_in_context:
         'AIの思考/推論部分をモデルに送信するコンテキストに含めます。無効にするとコンテキスト容量を節約できますが、パフォーマンスに影響する可能性があります。',
+      jinja:
+        'チャットフォーマットにJinjaテンプレートを使用します。有効にすると、最新のモデルとの互換性を向上させるためにJinjaベースのチャットテンプレート処理を使用します。',
       grammar:
         '生成テキストが特定の構造や形式に従うよう、文法ルールを適用します',
       stop: 'テキスト生成を停止する特定のフレーズを設定します',
@@ -2356,6 +2360,8 @@ export const l10n = {
     completionParams: {
       include_thinking_in_context:
         '在发送给模型的上下文中包含AI的思考/推理部分，禁用此选项可以节省上下文空间，但可能会影响性能',
+      jinja:
+        '启用Jinja模板进行聊天格式化。启用时，使用基于Jinja的聊天模板处理以提高与现代模型的兼容性。',
       grammar: '应用特定的语法规则，以确保生成的文本遵循特定的结构或格式',
       stop: '定义将停止文本生成的特定短语',
       n_predict: '设置生成响应的长度（以token为单位）',

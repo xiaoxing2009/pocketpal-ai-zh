@@ -1,6 +1,6 @@
 // Mock for completionSettingsVersions.ts
 
-export const CURRENT_COMPLETION_SETTINGS_VERSION = 1;
+export const CURRENT_COMPLETION_SETTINGS_VERSION = 2;
 
 export const defaultCompletionParams = {
   // App-specific properties
@@ -27,6 +27,7 @@ export const defaultCompletionParams = {
   seed: -1,
   n_probs: 0,
   stop: ['</s>'],
+  jinja: true,
 };
 
 export function migrateCompletionSettings(settings) {
@@ -44,6 +45,12 @@ export function migrateCompletionSettings(settings) {
     migratedSettings.include_thinking_in_context =
       defaultCompletionParams.include_thinking_in_context;
     migratedSettings.version = 1;
+  }
+
+  if (migratedSettings.version < 2) {
+    // Migration to version 2: Add jinja parameter
+    migratedSettings.jinja = defaultCompletionParams.jinja;
+    migratedSettings.version = 2;
   }
 
   return migratedSettings;
