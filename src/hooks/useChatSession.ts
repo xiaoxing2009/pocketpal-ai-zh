@@ -21,7 +21,6 @@ import {
 const prepareCompletion = async ({
   imageUris,
   message,
-  textMessage,
   getSystemMessage,
   activeSession,
   context,
@@ -29,10 +28,10 @@ const prepareCompletion = async ({
   conversationIdRef,
   isMultimodalEnabled,
   l10n,
+  currentMessages,
 }: {
   imageUris: string[];
   message: MessageType.PartialText;
-  textMessage: MessageType.Text;
   getSystemMessage: () => any[];
   activeSession: any;
   context: any;
@@ -40,6 +39,7 @@ const prepareCompletion = async ({
   conversationIdRef: string;
   isMultimodalEnabled: boolean;
   l10n: any;
+  currentMessages: MessageType.Any[];
 }) => {
   const sessionCompletionSettings = toJS(activeSession?.completionSettings);
   const stopWords = toJS(modelStore.activeModel?.stopWords);
@@ -74,9 +74,7 @@ const prepareCompletion = async ({
   // Get system messages and convert chat session messages to llama.rn format
   const systemMessages = getSystemMessage();
   let chatMessages = convertToChatMessages(
-    chatSessionStore.currentSessionMessages.filter(
-      msg => msg.id !== textMessage.id && msg.type !== 'image',
-    ),
+    currentMessages.filter(msg => msg.type !== 'image'),
     isMultimodalEnabled,
   );
 
@@ -294,6 +292,10 @@ export const useChatSession = (
 
     const isMultimodalEnabled = await modelStore.isMultimodalEnabled();
 
+    // Get the current session messages BEFORE adding the new user message
+    // Use toJS to get a snapshot and avoid MobX reactivity issues
+    const currentMessages = toJS(chatSessionStore.currentSessionMessages);
+
     // Create the user message with embedded images
     const textMessage: MessageType.Text = {
       author: user,
@@ -363,7 +365,6 @@ export const useChatSession = (
     const {cleanCompletionParams, messageInfo} = await prepareCompletion({
       imageUris: imageUris || [],
       message,
-      textMessage,
       getSystemMessage,
       activeSession,
       context,
@@ -371,6 +372,7 @@ export const useChatSession = (
       conversationIdRef: conversationIdRef.current,
       isMultimodalEnabled,
       l10n,
+      currentMessages,
     });
 
     currentMessageInfo.current = messageInfo;
