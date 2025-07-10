@@ -90,8 +90,8 @@ android {
         applicationId "com.pocketpalai"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 88 
-        versionName "1.10.14"
+        versionCode 89 
+        versionName "1.10.15"
         ndk {
             abiFilters "arm64-v8a", "x86_64"
         }
