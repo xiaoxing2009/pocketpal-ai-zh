@@ -1,11 +1,12 @@
 // Mock for completionSettingsVersions.ts
 
-export const CURRENT_COMPLETION_SETTINGS_VERSION = 2;
+export const CURRENT_COMPLETION_SETTINGS_VERSION = 3;
 
 export const defaultCompletionParams = {
   // App-specific properties
   version: CURRENT_COMPLETION_SETTINGS_VERSION,
   include_thinking_in_context: true,
+  enable_thinking: true,
 
   // llama.rn API properties
   prompt: '',
@@ -51,6 +52,12 @@ export function migrateCompletionSettings(settings) {
     // Migration to version 2: Add jinja parameter
     migratedSettings.jinja = defaultCompletionParams.jinja;
     migratedSettings.version = 2;
+  }
+
+  if (migratedSettings.version < 3) {
+    // Migration to version 3: Add enable_thinking parameter
+    migratedSettings.enable_thinking = defaultCompletionParams.enable_thinking;
+    migratedSettings.version = 3;
   }
 
   return migratedSettings;

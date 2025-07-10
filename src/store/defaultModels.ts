@@ -177,6 +177,7 @@ const crossPlatformModels: Model[] = [
     },
     defaultStopWords: ['<|im_end|>'],
     stopWords: ['<|im_end|>'],
+    supportsThinking: false, // Qwen2.5 doesn't support thinking (Qwen3+ does)
     hfModelFile: {
       rfilename: 'qwen2.5-1.5b-instruct-q8_0.gguf',
       url: 'https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF/resolve/main/qwen2.5-1.5b-instruct-q8_0.gguf',
@@ -220,6 +221,7 @@ const crossPlatformModels: Model[] = [
     },
     defaultStopWords: ['<|im_end|>'],
     stopWords: ['<|im_end|>'],
+    supportsThinking: false, // Qwen2.5 doesn't support thinking (Qwen3+ does)
     hfModelFile: {
       rfilename: 'qwen2.5-3b-instruct-q5_k_m.gguf',
       url: 'https://huggingface.co/Qwen/Qwen2.5-3B-Instruct-GGUF/resolve/main/qwen2.5-3b-instruct-q5_k_m.gguf',
@@ -351,6 +353,7 @@ const crossPlatformModels: Model[] = [
     },
     defaultStopWords: ['<|endoftext|>', '<|im_end|>'],
     stopWords: ['<|endoftext|>', '<|im_end|>'],
+    supportsThinking: false, // SmolLM2 doesn't support thinking (SmolLM3+ does)
     hfModelFile: {
       rfilename: 'SmolLM2-1.7B-Instruct-Q8_0.gguf',
       url: 'https://huggingface.co/bartowski/SmolLM2-1.7B-Instruct-GGUF/resolve/main/SmolLM2-1.7B-Instruct-Q8_0.gguf',

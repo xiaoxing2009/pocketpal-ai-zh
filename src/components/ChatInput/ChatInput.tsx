@@ -12,13 +12,17 @@ import {
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {useCameraPermission} from 'react-native-vision-camera';
 
-import Color from 'tinycolor2';
 import {observer} from 'mobx-react';
 import {IconButton, Text} from 'react-native-paper';
 
 import {PalType} from '../PalsSheets/types';
 
-import {ChevronUpIcon, VideoRecorderIcon, PlusIcon} from '../../assets/icons';
+import {
+  ChevronUpIcon,
+  VideoRecorderIcon,
+  PlusIcon,
+  AtomIcon,
+} from '../../assets/icons';
 
 import {useTheme} from '../../hooks';
 
@@ -61,6 +65,12 @@ export interface ChatInputTopLevelProps {
   /** Whether to show the image upload button */
   showImageUpload?: boolean;
   isVisionEnabled?: boolean;
+  /** Whether to show the thinking toggle button */
+  showThinkingToggle?: boolean;
+  /** Whether thinking mode is currently enabled */
+  isThinkingEnabled?: boolean;
+  /** Callback when thinking toggle is pressed */
+  onThinkingToggle?: (enabled: boolean) => void;
 }
 
 export interface ChatInputAdditionalProps {
@@ -74,6 +84,12 @@ export interface ChatInputAdditionalProps {
   onPromptTextChange?: (text: string) => void;
   /** Whether to show the image upload button */
   showImageUpload?: boolean;
+  /** Whether to show the thinking toggle button */
+  showThinkingToggle?: boolean;
+  /** Whether thinking mode is currently enabled */
+  isThinkingEnabled?: boolean;
+  /** Callback when thinking toggle is pressed */
+  onThinkingToggle?: (enabled: boolean) => void;
 }
 
 export type ChatInputProps = ChatInputTopLevelProps & ChatInputAdditionalProps;
@@ -101,6 +117,9 @@ export const ChatInput = observer(
     isVisionEnabled = false,
     defaultImages,
     onDefaultImagesChange,
+    showThinkingToggle = false,
+    isThinkingEnabled = false,
+    onThinkingToggle,
   }: ChatInputProps) => {
     const l10n = React.useContext(L10nContext);
     const theme = useTheme();
@@ -299,12 +318,9 @@ export const ChatInput = observer(
       outputRange: ['0deg', '180deg'],
     });
 
-    const isBackgroundLight = Color(inputBackgroundColor).isLight();
-    // Since the background is dynamic, we need to calculate the onSurface color manually
-    // As opposed to using theme colors.
-    const onSurfaceColor = isBackgroundLight ? '#333333' : '#DADDE6';
-    const onSurfaceColorVariant = onSurfaceColor + '88';
-    // Plus button state
+    const onSurfaceColor = activePal?.color?.[0] || theme.colors.text;
+    const onSurfaceColorVariant = onSurfaceColor + '55'; // for disabled state or placeholder text
+    // // Plus button state
     const isPlusButtonEnabled = !isStreaming && isVisionEnabled;
     const plusColor = isPlusButtonEnabled
       ? onSurfaceColor
@@ -394,7 +410,6 @@ export const ChatInput = observer(
             <TextInput
               ref={inputRef}
               multiline
-              key={onSurfaceColor}
               placeholder={
                 palType === PalType.VIDEO
                   ? l10n.video.promptPlaceholder
@@ -426,38 +441,35 @@ export const ChatInput = observer(
             {/* Left Controls */}
             <View style={styles.leftControls}>
               {/* Plus Button for Image Upload (only for regular chat) */}
-              {showImageUpload &&
-                !isStreaming &&
-                !isStopVisible &&
-                palType !== PalType.VIDEO && (
-                  <Menu
-                    visible={showImageUploadMenu}
-                    onDismiss={() => setShowImageUploadMenu(false)}
-                    anchorPosition="top"
-                    anchor={
-                      <TouchableOpacity
-                        style={styles.plusButton}
-                        disabled={!isPlusButtonEnabled}
-                        onPress={
-                          isPlusButtonEnabled ? handlePlusButtonPress : () => {}
-                        }
-                        accessibilityLabel="Add image"
-                        accessibilityRole="button">
-                        <PlusIcon width={20} height={20} stroke={plusColor} />
-                      </TouchableOpacity>
-                    }>
-                    <Menu.Item
-                      label={l10n.camera?.takePhoto || 'Camera'}
-                      icon="camera"
-                      onPress={handleTakePhoto}
-                    />
-                    <Menu.Item
-                      label={l10n.common?.gallery || 'Gallery'}
-                      icon="image"
-                      onPress={handleSelectImages}
-                    />
-                  </Menu>
-                )}
+              {showImageUpload && palType !== PalType.VIDEO && (
+                <Menu
+                  visible={showImageUploadMenu}
+                  onDismiss={() => setShowImageUploadMenu(false)}
+                  anchorPosition="top"
+                  anchor={
+                    <TouchableOpacity
+                      style={styles.plusButton}
+                      disabled={!isPlusButtonEnabled}
+                      onPress={
+                        isPlusButtonEnabled ? handlePlusButtonPress : () => {}
+                      }
+                      accessibilityLabel="Add image"
+                      accessibilityRole="button">
+                      <PlusIcon width={20} height={20} stroke={plusColor} />
+                    </TouchableOpacity>
+                  }>
+                  <Menu.Item
+                    label={l10n.camera?.takePhoto || 'Camera'}
+                    icon="camera"
+                    onPress={handleTakePhoto}
+                  />
+                  <Menu.Item
+                    label={l10n.common?.gallery || 'Gallery'}
+                    icon="image"
+                    onPress={handleSelectImages}
+                  />
+                </Menu>
+              )}
 
               {/* Pal Selector */}
               <View style={styles.palSelector}>
@@ -481,7 +493,7 @@ export const ChatInput = observer(
                     style={{
                       transform: [{rotate: rotateInterpolate}],
                     }}>
-                    <ChevronUpIcon stroke={theme.colors.onSurface} />
+                    <ChevronUpIcon stroke={inputBackgroundColor} />
                   </Animated.View>
                 </TouchableOpacity>
 
@@ -491,7 +503,7 @@ export const ChatInput = observer(
                     style={[
                       styles.palNameCompact,
                       {
-                        color: activePal.color?.[0],
+                        color: onSurfaceColor,
                       },
                     ]}>
                     Pal:{' '}
@@ -499,7 +511,7 @@ export const ChatInput = observer(
                       style={[
                         styles.palNameValueCompact,
                         {
-                          color: activePal.color?.[0],
+                          color: onSurfaceColor,
                         },
                       ]}>
                       {activePal?.name}
@@ -507,25 +519,57 @@ export const ChatInput = observer(
                   </Text>
                 )}
               </View>
+
+              {/* Thinking Toggle Button */}
+              {showThinkingToggle && !isCameraActive && (
+                <TouchableOpacity
+                  style={[
+                    styles.thinkingToggleLeft,
+                    isThinkingEnabled && {backgroundColor: onSurfaceColor},
+                    {borderColor: onSurfaceColorVariant},
+                  ]}
+                  onPress={() => onThinkingToggle?.(!isThinkingEnabled)}
+                  accessibilityLabel={
+                    isThinkingEnabled
+                      ? l10n.components.chatInput.thinkingToggle.disableThinking
+                      : l10n.components.chatInput.thinkingToggle.enableThinking
+                  }
+                  accessibilityRole="button">
+                  <AtomIcon
+                    width={14}
+                    height={14}
+                    stroke={
+                      isThinkingEnabled
+                        ? inputBackgroundColor
+                        : onSurfaceColorVariant
+                    }
+                    strokeWidth={2}
+                  />
+                  <Text
+                    style={[
+                      styles.thinkingToggleText,
+                      isThinkingEnabled
+                        ? {color: inputBackgroundColor}
+                        : {color: onSurfaceColorVariant},
+                    ]}>
+                    {l10n.components.chatInput.thinkingToggle.thinkText}
+                  </Text>
+                </TouchableOpacity>
+              )}
             </View>
 
             {/* Right Controls */}
             <View style={styles.rightControls}>
               {/* Send/Stop Button */}
               {isStopVisible ? (
-                <StopButton
-                  key={onSurfaceColor}
-                  color={onSurfaceColor}
-                  onPress={onStopPress}
-                />
+                <StopButton color={onSurfaceColor} onPress={onStopPress} />
               ) : palType === PalType.VIDEO && !isCameraActive ? (
                 /* Compact Start Video Button for Video Pals */
                 <TouchableOpacity
                   style={[
                     styles.compactVideoButton,
                     {
-                      backgroundColor:
-                        activePal?.color?.[0] || theme.colors.primary,
+                      backgroundColor: onSurfaceColor,
                     },
                   ]}
                   onPress={onStartCamera}
@@ -545,7 +589,6 @@ export const ChatInput = observer(
                 isSendButtonVisible && (
                   <View style={{opacity: sendButtonOpacity}}>
                     <SendButton
-                      key={onSurfaceColor}
                       color={onSurfaceColor}
                       onPress={isSendButtonEnabled ? handleSend : () => {}}
                       touchableOpacityProps={{

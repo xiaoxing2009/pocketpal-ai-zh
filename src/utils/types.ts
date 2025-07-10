@@ -342,6 +342,9 @@ export interface Model {
   defaultProjectionModel?: string; // Default mmproj model ID to use with this model
   visionEnabled?: boolean; // User preference for enabling vision capabilities (defaults to true for backward compatibility)
 
+  // Thinking capabilities
+  supportsThinking?: boolean; // Whether this model supports thinking/reasoning mode
+
   defaultChatTemplate: ChatTemplateConfig;
   chatTemplate: ChatTemplateConfig;
   defaultStopWords: CompletionParams['stop'];

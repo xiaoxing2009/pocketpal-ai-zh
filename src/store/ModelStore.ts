@@ -52,6 +52,7 @@ import {
 import {ErrorState, createErrorState} from '../utils/errors';
 import {chatSessionRepository} from '../repositories/ChatSessionRepository';
 import {hasEnoughMemory, isHighEndDevice} from '../hooks/useMemoryCheck';
+import {supportsThinking} from '../utils/thinkingCapabilityDetection';
 
 class ModelStore {
   models: Model[] = [];
@@ -1010,6 +1011,9 @@ class ModelStore {
 
       await this.updateModelStopTokens(ctx, model);
 
+      // Check and update thinking capabilities
+      await this.updateModelThinkingCapabilities(ctx, model);
+
       // Initialize multimodal support if mmproj path was provided
       if (isMultimodalInit && mmProjPath) {
         try {
@@ -1518,6 +1522,33 @@ class ModelStore {
     } catch (error) {
       console.error('Error updating model stop tokens:', error);
       // Continue execution - stop token update is not critical
+    }
+  }
+
+  /**
+   * Update model thinking capabilities based on the loaded context
+   */
+  private async updateModelThinkingCapabilities(
+    ctx: LlamaContext,
+    model: Model,
+  ) {
+    try {
+      const storeModel = this.models.find(m => m.id === model.id);
+      if (!storeModel) {
+        return;
+      }
+
+      // Only check if supportsThinking is not already explicitly set
+      if (storeModel.supportsThinking === undefined) {
+        const thinkingSupported = await supportsThinking(storeModel, ctx);
+
+        runInAction(() => {
+          storeModel.supportsThinking = thinkingSupported;
+        });
+      }
+    } catch (error) {
+      console.error('Error updating model thinking capabilities:', error);
+      // Continue execution - thinking capability detection is not critical
     }
   }
 

@@ -499,6 +499,13 @@ export const l10n = {
       },
       chatInput: {
         inputPlaceholder: 'Message',
+        thinkingToggle: {
+          enableThinking: 'Enable thinking mode',
+          disableThinking: 'Disable thinking mode',
+          thinkingEnabled: 'Thinking mode enabled',
+          thinkingDisabled: 'Thinking mode disabled',
+          thinkText: 'Think',
+        },
       },
       chatGenerationSettingsSheet: {
         invalidValues: 'Invalid Values',
@@ -1519,6 +1526,13 @@ export const l10n = {
       },
       chatInput: {
         inputPlaceholder: 'メッセージを入力',
+        thinkingToggle: {
+          enableThinking: '思考モードを有効にする',
+          disableThinking: '思考モードを無効にする',
+          thinkingEnabled: '思考モードが有効',
+          thinkingDisabled: '思考モードが無効',
+          thinkText: '思考',
+        },
       },
       chatGenerationSettingsSheet: {
         invalidValues: '無効な値',
@@ -2491,6 +2505,13 @@ export const l10n = {
       },
       chatInput: {
         inputPlaceholder: '消息',
+        thinkingToggle: {
+          enableThinking: '启用思考模式',
+          disableThinking: '禁用思考模式',
+          thinkingEnabled: '思考模式已启用',
+          thinkingDisabled: '思考模式已禁用',
+          thinkText: '思考',
+        },
       },
       chatGenerationSettingsSheet: {
         invalidValues: '无效值',

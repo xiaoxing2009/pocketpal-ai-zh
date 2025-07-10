@@ -14,7 +14,7 @@ import {CompletionParams} from './completionTypes';
 
 // Current version of the completion settings schema
 // Increment this when adding new settings or changing existing ones
-export const CURRENT_COMPLETION_SETTINGS_VERSION = 2;
+export const CURRENT_COMPLETION_SETTINGS_VERSION = 3;
 
 /**
  * Default completion parameters used throughout the app
@@ -45,6 +45,7 @@ export const defaultCompletionParams: CompletionParams = {
   n_probs: 0, // If greater than 0, the response also contains the probabilities of top N tokens for each generated token given the sampling settings.
   stop: ['</s>'],
   jinja: true, // Whether to use Jinja templating for chat formatting
+  enable_thinking: true, // Whether to enable thinking mode for compatible models
   // emit_partial_completion: true, // This is not used in the current version of llama.rn
 };
 
@@ -77,10 +78,17 @@ export function migrateCompletionSettings(settings: any): any {
   }
 
   // Add future migrations here as needed
-  // if (migratedSettings.version < 3) {
-  //   // Migration to version 3
+  if (migratedSettings.version < 3) {
+    // Migration to version 3: Add enable_thinking parameter
+    migratedSettings.enable_thinking = defaultCompletionParams.enable_thinking;
+    migratedSettings.version = 3;
+  }
+
+  // Add future migrations here as needed
+  // if (migratedSettings.version < 4) {
+  //   // Migration to version 4
   //   migratedSettings.new_field = defaultCompletionParams.new_field;
-  //   migratedSettings.version = 3;
+  //   migratedSettings.version = 4;
   // }
 
   return migratedSettings;

@@ -29,11 +29,40 @@ export const createStyles = ({
       borderRadius: 100,
       opacity: 0.9,
     },
+    thinkingToggle: {
+      height: 28,
+      width: 28,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 100,
+      borderWidth: 1,
+      marginRight: 8,
+    },
+    thinkingToggleLeft: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 16,
+      borderWidth: 1,
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+      marginLeft: 8,
+    },
+    thinkingToggleLeftDisabled: {
+      backgroundColor: 'transparent',
+    },
+    thinkingToggleText: {
+      fontSize: 12,
+      fontWeight: '500',
+      marginLeft: 4,
+    },
+    thinkingToggleTextDisabled: {
+      // Dynamic color will be applied via theme
+    },
     palSelector: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: 4,
-      flex: 1,
     },
     inputWrapper: {
       flexDirection: 'row',

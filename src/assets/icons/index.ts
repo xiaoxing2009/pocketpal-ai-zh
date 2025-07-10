@@ -1,4 +1,5 @@
 export {default as AlertIcon} from './alert.svg';
+export {default as AtomIcon} from './atom.svg';
 export {default as BenchmarkIcon} from './benchmark.svg';
 export {default as CameraIcon} from './camera.svg';
 export {default as ChatIcon} from './chat.svg';

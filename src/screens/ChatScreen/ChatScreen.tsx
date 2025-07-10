@@ -57,8 +57,42 @@ export const ChatScreen: React.FC = observer(() => {
     checkMultimodal();
   }, [isMultimodalEnabled]);
 
+  const thinkingSupported = modelStore.activeModel?.supportsThinking ?? false;
+
+  const thinkingEnabled = (() => {
+    const currentSession = chatSessionStore.sessions.find(
+      s => s.id === chatSessionStore.activeSessionId,
+    );
+    const settings =
+      currentSession?.completionSettings ??
+      chatSessionStore.newChatCompletionSettings;
+    return settings.enable_thinking ?? true;
+  })();
+
   // Show loading bubble only during the thinking phase (inferencing but not streaming)
   const isThinking = modelStore.inferencing && !modelStore.isStreaming;
+
+  const handleThinkingToggle = async (enabled: boolean) => {
+    const currentSession = chatSessionStore.sessions.find(
+      s => s.id === chatSessionStore.activeSessionId,
+    );
+
+    if (currentSession) {
+      // Update session-specific settings
+      const updatedSettings = {
+        ...currentSession.completionSettings,
+        enable_thinking: enabled,
+      };
+      await chatSessionStore.updateSessionCompletionSettings(updatedSettings);
+    } else {
+      // Update global settings for new chats
+      const updatedSettings = {
+        ...chatSessionStore.newChatCompletionSettings,
+        enable_thinking: enabled,
+      };
+      await chatSessionStore.setNewChatCompletionSettings(updatedSettings);
+    }
+  };
 
   const activePalId = chatSessionStore.activePalId;
   const activePal = activePalId
@@ -86,6 +120,11 @@ export const ChatScreen: React.FC = observer(() => {
         sendButtonVisibilityMode="always"
         showImageUpload={true}
         isVisionEnabled={multimodalEnabled}
+        inputProps={{
+          showThinkingToggle: thinkingSupported,
+          isThinkingEnabled: thinkingEnabled,
+          onThinkingToggle: handleThinkingToggle,
+        }}
         textInputProps={{
           editable: !!modelStore.context,
           placeholder: !modelStore.context
