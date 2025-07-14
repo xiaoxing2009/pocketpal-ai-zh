@@ -2218,10 +2218,10 @@ export const l10n = {
         projectionMissingShort: '缺少Projection模型',
         reloadModelTitle: '重新加载模型',
         reloadModelMessage:
-          '需要重新加载模型以应用新的Projection模型，您想现在重新加载吗？',
+          '需要重新加载模型以应用新的Projection模型，你想现在重新加载吗？',
         reload: '重新加载',
         deleteProjectionTitle: '删除Projection模型',
-        deleteProjectionMessage: '您确定要删除此Projection模型吗？',
+        deleteProjectionMessage: '你确定要删除此Projection模型吗？',
         cannotDeleteTitle: '无法删除',
         // Vision control strings
         visionControls: {
@@ -2689,11 +2689,11 @@ export const l10n = {
       },
       lookiePalSheet: {
         title: {
-          create: '创建Lookie帕尔',
-          edit: '编辑Lookie帕尔',
+          create: '创建视觉Pal',
+          edit: '编辑视觉Pal',
         },
-        palName: '帕尔名',
-        palNamePlaceholder: '输入您的Lookie帕尔名称',
+        palName: 'Pal名',
+        palNamePlaceholder: '输入你的视觉Pal名称',
         visionModel: '视觉模型',
         visionModelPlaceholder: '选择视觉模型',
         requiredModelsSection: '必需模型',
@@ -2787,11 +2787,11 @@ export const l10n = {
       assistant: '助手',
       roleplay: '角色扮演',
       video: '视频',
-      deletePal: '删除帕尔',
-      deletePalMessage: '您确定要删除此帕尔吗？',
+      deletePal: '删除Pal',
+      deletePalMessage: '你确定要删除此Pal吗？',
       missingModel: '缺少模型',
       missingModelMessage:
-        '此帕尔的默认模型"{{modelName}}"不可用，请在编辑表中下载它或选择其他模型',
+        '此Pal的默认模型"{{modelName}}"不可用，请在编辑表中下载它或选择其他模型',
     },
     validation: {
       nameRequired: '需要填写名称',
@@ -2814,7 +2814,7 @@ export const l10n = {
       analyzing: '分析图像中...',
       startCamera: '启动相机',
       stopCamera: '停止相机',
-      promptPlaceholder: '您想了解这张图片的什么信息？',
+      promptPlaceholder: '你想了解这张图片的什么信息？',
       takePhoto: '相机',
     },
     video: {
@@ -2828,7 +2828,7 @@ export const l10n = {
       analyzing: '分析视频中...',
       startCamera: '启动相机',
       stopCamera: '停止相机',
-      promptPlaceholder: '您想了解这个视频的什么信息？',
+      promptPlaceholder: '你想了解这个视频的什么信息？',
       captureInterval: '捕获间隔',
       captureIntervalUnit: '毫秒',
       liveCommentary: '实时解说',
@@ -2836,7 +2836,7 @@ export const l10n = {
         title: '欢迎使用Lookie',
         subtitle: '私密设备端实时视频分析',
         experimentalNotice:
-          '这是一个实验性功能，准确性取决于所选模型，速度取决于您的设备规格，某些模型可能会失败',
+          '这是一个实验性功能，准确性取决于所选模型，速度取决于你的设备规格，某些模型可能会失败',
         howToUse: '使用方法：',
         step1: '• 编辑提示词（可选）来指导分析',
         step2: '• 点击相机按钮开始实时视频分析',
