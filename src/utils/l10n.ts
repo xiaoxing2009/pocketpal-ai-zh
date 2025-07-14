@@ -2051,6 +2051,7 @@ export const l10n = {
     },
   },
 
+  // Please do not translate "Pal", keep it as default!!
   zh: {
     common: {
       cancel: '取消',
