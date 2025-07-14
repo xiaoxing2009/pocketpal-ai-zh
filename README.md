@@ -1,6 +1,6 @@
 # 下载
 本仓库不提供构建版本，请前往以下仓库下载（内容是一样的）
-- [A-Ghorbani/PocketPal-AI]（https://github.com/a-ghorbani/pocketpal-ai/releases）
+- [a-ghorbani/pocketpal-ai](https://github.com/a-ghorbani/pocketpal-ai/releases)
 
 - [目录]（#table）
 
