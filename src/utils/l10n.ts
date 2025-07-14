@@ -3009,7 +3009,7 @@ export const l10n = {
       galleryErrorMessage: '选择图片失败',
     },
     simulator: {
-      cameraNotAvailable: '模拟器中无法使用相机，请使用真实设备',
+      cameraNotAvailable: '当前虚拟机无法使用摄像头，请使用物理机！！',
     },
   },
 };
