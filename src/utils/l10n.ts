@@ -2374,7 +2374,7 @@ export const l10n = {
     },
     completionParams: {
       include_thinking_in_context:
-        '在发送给模型的上下文中包含AI的思考/推理部分，禁用此选项可以节省上下文空间，但可能会影响性能',
+        '在发送给模型的上下文中包含AI的思考/推理部分，禁用此选项可以节省上下文空间；但可能会影响性能',
       jinja:
         '启用Jinja模板进行聊天格式化；启用时，使用基于Jinja的聊天模板处理以提高与现代模型的兼容性',
       grammar: '应用特定的语法规则，以确保生成的文本遵循特定的结构或格式',
@@ -2574,7 +2574,7 @@ export const l10n = {
         ],
         tokenDisabledTitle: '令牌已禁用',
         tokenDisabledMessage:
-          '你有一个Hugging Face令牌设置，但它目前被禁用，此模型需要令牌才能下载；请启用你的令牌以继续',
+          '你有一个Hugging Face令牌设置，但它目前被禁用；此模型需要令牌才能下载；请启用你的令牌以继续',
         enableAndRetry: '启用并重试',
         goToSettings: '前往设置',
         tryAgain: '重试',
@@ -2837,7 +2837,7 @@ export const l10n = {
         title: '欢迎使用Lookie',
         subtitle: '私密设备端实时视频分析',
         experimentalNotice:
-          '这是一个实验性功能，准确性取决于所选模型，速度取决于你的设备性能，某些模型可能会失败',
+          '这是一个实验性功能，准确性取决于所选模型，速度取决于你的设备性能；某些模型可能会失败',
         howToUse: '使用方法：',
         step1: '• 编辑提示词（可选）来指导分析',
         step2: '• 点击摄像头按钮开始实时视频分析',
