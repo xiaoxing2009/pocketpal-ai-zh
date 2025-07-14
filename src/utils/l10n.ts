@@ -2689,11 +2689,11 @@ export const l10n = {
       },
       lookiePalSheet: {
         title: {
-          create: '创建视觉Pal',
-          edit: '编辑视觉Pal',
+          create: '创建Lookie Pal',
+          edit: '编辑Lookie Pal',
         },
         palName: 'Pal名',
-        palNamePlaceholder: '输入你的视觉Pal名称',
+        palNamePlaceholder: '输入你的Lookie Pal名称',
         visionModel: '视觉模型',
         visionModelPlaceholder: '选择视觉模型',
         requiredModelsSection: '必需模型',
