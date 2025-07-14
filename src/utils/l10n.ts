@@ -2233,7 +2233,7 @@ export const l10n = {
           textOnlyMode: '仅文本',
           visionMode: '视觉已启用',
           downloadWithVision: '下载包含视觉能力的模型',
-          downloadTextOnly: '仅下载文本模型',
+          downloadTextOnly: '仅下载包含文本能力的模型',
           visionToggleDescription: '启用图像处理功能',
           projectionModelSize: '+{size} Projection模型',
           visionModeDescription: '处理图像和文本',
