@@ -1031,7 +1031,7 @@ export const l10n = {
       reset: 'リセット',
       save: '保存',
       update: '更新',
-      networkError:'ネットワークエラーが発生しました，もう一度お試しください',
+      networkError: 'ネットワークエラーが発生しました，もう一度お試しください',
       downloadETA: '残り',
       minutes: '分',
       second: '秒',
@@ -1264,7 +1264,7 @@ export const l10n = {
           removeMessage: 'このモデルをリストから削除してもよろしいですか？',
           removeError: 'モデルの削除に失敗しました',
           alreadyDownloadedTitle: '既にダウンロード済み',
-          alreadyDownloadedMessage:'このモデルは既にダウンロードされています',
+          alreadyDownloadedMessage: 'このモデルは既にダウンロードされています',
           deleteTitle: 'モデルを削除',
           deleteMessage:
             'このダウンロード済みモデルを削除してもよろしいですか？',
@@ -2862,7 +2862,7 @@ export const l10n = {
       goToModels: '转到模型',
       readyToChat: '准备好聊天了吗？加载上次使用的模型',
       pleaseLoadModel: '在你聊天前，请先加载模型',
-      multimodalNotEnabled:'此模型未启用多模态功能，图片将显示但不会被AI处理',
+      multimodalNotEnabled: '此模型未启用多模态功能，图片将显示但不会被AI处理',
     },
     benchmark: {
       title: '基准测试',
