@@ -2169,13 +2169,13 @@ export const l10n = {
       alerts: {
         memoryWarningTitle: '内存警告',
         memoryWarningMessage:
-          '此模型可能超过可用内存，这可能导致不稳定，继续加载吗？',
+          '此模型可能超过可用内存，这可能导致不稳定；继续加载吗？',
         multimodalWarningTitle: '设备性能警告',
         multimodalWarningMessage:
-          '此设备可能没有足够的资源运行多模态模型，加载可能导致不稳定，仍要继续吗？',
+          '此设备可能没有足够的资源运行多模态模型，加载可能导致不稳定；仍要继续吗？',
         combinedWarningTitle: '性能警告',
         combinedWarningMessage:
-          '此模型可能超过可用内存，且此设备可能没有足够的资源运行多模态模型，加载可能导致不稳定，仍要继续吗？',
+          '此模型可能超过可用内存，且此设备可能没有足够的资源运行多模态模型，加载可能导致不稳定；仍要继续吗？',
         cancel: '取消',
         continue: '继续',
       },
@@ -2376,7 +2376,7 @@ export const l10n = {
       include_thinking_in_context:
         '在发送给模型的上下文中包含AI的思考/推理部分，禁用此选项可以节省上下文空间，但可能会影响性能',
       jinja:
-        '启用Jinja模板进行聊天格式化，启用时，使用基于Jinja的聊天模板处理以提高与现代模型的兼容性',
+        '启用Jinja模板进行聊天格式化；启用时，使用基于Jinja的聊天模板处理以提高与现代模型的兼容性',
       grammar: '应用特定的语法规则，以确保生成的文本遵循特定的结构或格式',
       stop: '定义将停止文本生成的特定短语',
       n_predict: '设置生成响应的长度（以token为单位）',
@@ -2499,7 +2499,7 @@ export const l10n = {
         noModelsTitle: '没有可用的模型',
         noModelsDescription: '需要下载一个模型，才能与PocketPal开始聊天',
         noModelsButton: '下载模型',
-        activateModelTitle: '在你和PocketPal聊天前，请先激活模型~',
+        activateModelTitle: '在你和PocketPal开始聊天前，请先激活模型~',
         activateModelDescription: '选择并加载一个模型以开始聊天',
         activateModelButton: '选择模型',
         loading: '加载中...',
