@@ -1,3 +1,7 @@
+# 下载
+本仓库不提供构建版本，请前往以下仓库下载（内容是一样的）
+- [a-ghorbani/pocketpal-ai](https://github.com/a-ghorbani/pocketpal-ai/releases)
+
 # PocketPal AI 📱🚀
 
 PocketPal AI is a pocket-sized AI assistant powered by small language models (SLMs) that run directly on your phone. Designed for both iOS and Android, PocketPal AI lets you interact with various SLMs without the need for an internet connection. Your privacy is fully protected as all processing happens entirely on-device — your conversations, prompts, and data never leave your phone or get stored on external servers.
