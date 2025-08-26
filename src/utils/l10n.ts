@@ -74,6 +74,23 @@ export const l10n = {
       valueCacheTypeDescription: 'Select the cache type for value computation',
       valueCacheTypeDisabledDescription:
         'Enable Flash Attention to change cache type',
+      // Memory Settings
+      memorySettings: 'Memory Settings',
+      useMlock: 'Use Memory Lock',
+      useMlockDescription:
+        'Force system to keep model in RAM rather than swapping or compressing',
+      useMmap: 'Memory Mapping',
+      useMmapDescription: 'Use memory-mapped files for faster model loading',
+      useMmapTrue: 'Enabled',
+      useMmapFalse: 'Disabled',
+      useMmapSmart: 'Smart',
+      useMmapTrueDescription: 'Always use memory mapping for faster loading',
+      useMmapFalseDescription:
+        'Never use memory mapping (slower loading but may reduce memory usage)',
+      useMmapSmartDescription:
+        'Automatically choose based on model type (Android only)',
+      useMmapRecommended:
+        'Recommended for performance - Memory-mapped with locked pages. Combines fast loading with consistent performance',
       // Model Loading Settings
       modelLoadingSettings: 'Model Loading Settings',
       // Auto Offload/Load
@@ -449,13 +466,14 @@ export const l10n = {
         general: 'Error sending feedback. Please try again.',
       },
     },
+
     components: {
       attachmentButton: {
         attachmentButtonAccessibilityLabel: 'Send media',
       },
       bubble: {
         timingsString:
-          '{{predictedMs}}ms per token, {{predictedPerSecond}} tokens per second',
+          '{{predictedMs}}ms/token, {{predictedPerSecond}} tokens/sec',
       },
       exportUtils: {
         fileSaved: 'File Saved',
@@ -505,6 +523,41 @@ export const l10n = {
           thinkingEnabled: 'Thinking mode enabled',
           thinkingDisabled: 'Thinking mode disabled',
           thinkText: 'Think',
+        },
+      },
+      contentReportSheet: {
+        title: 'Report Content',
+        privacyNote:
+          'We do not send any message content or conversation details. Please describe the specific issue you encountered.',
+        categoryLabel: 'Report Category',
+        selectCategory: 'Select a category',
+        categories: {
+          hate: 'Hate Speech',
+          sexual: 'Sexual Content',
+          selfHarm: 'Self-Harm',
+          violence: 'Violence',
+          other: 'Other',
+        },
+        descriptionLabel: 'Description',
+        descriptionPlaceholder:
+          'Please describe the issue with this content...',
+        includeModelInfo: 'Include model information',
+        includeModelInfoDescription:
+          'Include the model name and identifier to help us investigate',
+        noActiveModelNote: 'No model is currently active',
+        submit: 'Submit Report',
+        validation: {
+          title: 'Missing Information',
+          message: 'Please select a category and provide a description.',
+        },
+        success: {
+          title: 'Report Submitted',
+          message:
+            'Thank you for your report. We will review it and take appropriate action.',
+        },
+        error: {
+          title: 'Report Failed',
+          message: 'Failed to submit report. Please try again.',
         },
       },
       chatGenerationSettingsSheet: {
@@ -708,7 +761,7 @@ export const l10n = {
         useAIPrompt: 'Use AI to generate system prompt',
         modelSelector: {
           label: 'Select Model for Generation*',
-          sublabel: 'Recommended: Llama 3.2 3B or Qwen2.5 3B.',
+          sublabel: 'Recommended: Llama 3.2 3B or Qwen3 4B Instruct 2507.',
           placeholder: 'Select model',
         },
         generatingPrompt: {
@@ -769,7 +822,14 @@ export const l10n = {
           regenerate: 'Regenerate',
           regenerateWith: 'Regenerate with',
           edit: 'Edit',
+          reportContent: 'Report Content',
         },
+      },
+      palHeaderRight: {
+        exportAllPals: 'Export all pals',
+        importPals: 'Import pals',
+        importSuccess: 'Successfully imported {{count}} pal(s).',
+        importError: 'Failed to import pals. Please check the file format.',
       },
     },
     palsScreen: {
@@ -1031,7 +1091,7 @@ export const l10n = {
       reset: 'リセット',
       save: '保存',
       update: '更新',
-      networkError: 'ネットワークエラーが発生しました，もう一度お試しください',
+      networkError: 'ネットワークエラーが発生しました、もう一度お試しください',
       downloadETA: '残り',
       minutes: '分',
       second: '秒',
@@ -1061,7 +1121,7 @@ export const l10n = {
       metal: 'Metal',
       metalDescription: 'Appleのハードウェア加速API',
       metalRequiresNewerIOS:
-        'Metal加速機能にはiOS 18以上が必要です，この機能を利用するにはデバイスを更新してください',
+        'Metal加速機能にはiOS 18以上が必要です、この機能を利用するにはデバイスを更新してください',
       layersOnGPU: 'GPUレイヤー：{{gpuLayers}}',
       // Context Size
       contextSize: 'コンテキストサイズ',
@@ -1097,6 +1157,22 @@ export const l10n = {
       valueCacheTypeDescription: '値計算用のキャッシュタイプを選択',
       valueCacheTypeDisabledDescription:
         'キャッシュタイプを変更するにはFlash Attentionを有効にしてください',
+      // Memory Settings
+      memorySettings: 'メモリ設定',
+      useMlock: 'メモリロックを使用',
+      useMlockDescription: 'モデルをRAMに保持し、スワップや圧縮を防ぎます',
+      useMmap: 'メモリマッピング',
+      useMmapDescription:
+        'メモリマップファイルを使用してモデルの読み込みを高速化',
+      useMmapTrue: '有効',
+      useMmapFalse: '無効',
+      useMmapSmart: 'スマート',
+      useMmapTrueDescription: '常にメモリマッピングを使用して高速読み込み',
+      useMmapFalseDescription:
+        'メモリマッピングを使用しない（読み込みは遅くなりますがメモリ使用量を削減する可能性があります）',
+      useMmapSmartDescription: 'モデルタイプに基づいて自動選択（Androidのみ）',
+      useMmapRecommended:
+        'パフォーマンス推奨 - ロックされたページでメモリマップ。高速読み込みと一貫したパフォーマンスを組み合わせます',
       // Model Loading Settings
       modelLoadingSettings: 'モデル読み込み設定',
       // Auto Offload/Load
@@ -1128,13 +1204,13 @@ export const l10n = {
       importButton: 'インポート',
       importSuccess: '{{count}}個のチャットセッションをインポートしました',
       importError:
-        'チャットセッションのインポートに失敗しました，ファイル形式を確認してください',
+        'チャットセッションのインポートに失敗しました、ファイル形式を確認してください',
       // API Settings
       apiSettingsTitle: 'API設定',
       // Hugging Face Token
       huggingFaceTokenLabel: 'Hugging Faceトークン',
       tokenIsSetDescription:
-        'トークンが設定されています，制限付きモデルへのアクセスに必要です',
+        'トークンが設定されています、制限付きモデルへのアクセスに必要です',
       setTokenDescription:
         'Hugging Faceから制限付きモデルにアクセスするためのトークンを設定します',
       setTokenButton: 'トークンを設定',
@@ -1145,19 +1221,19 @@ export const l10n = {
     memory: {
       shortWarning: 'メモリ警告',
       warning:
-        '警告：モデルサイズが利用可能なメモリを超える可能性があります，デバイスのパフォーマンスと安定性に影響する可能性があります',
+        '警告：モデルサイズが利用可能なメモリを超える可能性があります、デバイスのパフォーマンスと安定性に影響する可能性があります',
       multimodalWarning:
         'このデバイスはマルチモーダルモデルに十分なリソースがない可能性があります',
       alerts: {
         memoryWarningTitle: 'メモリ警告',
         memoryWarningMessage:
-          'このモデルは利用可能なメモリを超える可能性があり、不安定になる可能性があります，読み込みを続行しますか？',
+          'このモデルは利用可能なメモリを超える可能性があり、不安定になる可能性があります、読み込みを続行しますか？',
         multimodalWarningTitle: 'デバイス性能警告',
         multimodalWarningMessage:
-          'このデバイスはマルチモーダルモデルに十分なリソースがない可能性があります，読み込みにより不安定になる可能性があります，続行しますか？',
+          'このデバイスはマルチモーダルモデルに十分なリソースがない可能性があります、読み込みにより不安定になる可能性があります、続行しますか？',
         combinedWarningTitle: '性能警告',
         combinedWarningMessage:
-          'このモデルは利用可能なメモリを超える可能性があり、このデバイスはマルチモーダルモデルに十分なリソースがない可能性があります，読み込みにより不安定になる可能性があります，続行しますか？',
+          'このモデルは利用可能なメモリを超える可能性があり、このデバイスはマルチモーダルモデルに十分なリソースがない可能性があります、読み込みにより不安定になる可能性があります、続行しますか？',
         cancel: 'キャンセル',
         continue: '続行',
       },
@@ -1175,7 +1251,7 @@ export const l10n = {
       fileManagement: {
         fileAlreadyExists: 'ファイルが既に存在します',
         fileAlreadyExistsMessage:
-          'この名前のファイルは既に存在します，どうしますか？',
+          'この名前のファイルは既に存在します、どうしますか？',
         replace: '置き換え',
         keepBoth: '両方保持する',
       },
@@ -1204,7 +1280,7 @@ export const l10n = {
         projectionMissingShort: '投影モデル不足',
         reloadModelTitle: 'モデルを再読み込み',
         reloadModelMessage:
-          '新しい投影モデルを適用するにはモデルを再読み込みする必要があります，今すぐ再読み込みしますか？',
+          '新しい投影モデルを適用するにはモデルを再読み込みする必要があります、今すぐ再読み込みしますか？',
         reload: '再読み込み',
         deleteProjectionTitle: '投影モデルを削除',
         deleteProjectionMessage: 'この投影モデルを削除してもよろしいですか？',
@@ -1259,7 +1335,7 @@ export const l10n = {
           cannotRemoveTitle: '削除できません',
           modelPreset: 'このモデルはプリセットです',
           downloadedFirst:
-            'モデルがダウンロード済みです，先にファイルを削除してください',
+            'モデルがダウンロード済みです、先にファイルを削除してください',
           removeTitle: 'モデルを削除',
           removeMessage: 'このモデルをリストから削除してもよろしいですか？',
           removeError: 'モデルの削除に失敗しました',
@@ -1279,7 +1355,7 @@ export const l10n = {
           },
           memory: {
             message:
-              'モデルサイズがデバイスの総メモリに近いか超えています，予期しない動作が発生する可能性があります',
+              'モデルサイズがデバイスの総メモリに近いか超えています、予期しない動作が発生する可能性があります',
           },
           legacy: {
             message:
@@ -1300,7 +1376,7 @@ export const l10n = {
         modelUpdatedShort: '{{time}}前',
         modelUpdatedJustNowLong: 'たった今更新',
         modelUpdatedJustNowShort: 'たった今',
-        errorOccurred: 'モデルを読み込めませんでした，もう一度お試しください',
+        errorOccurred: 'モデルを読み込めませんでした、もう一度お試しください',
       },
       modelCard: {
         alerts: {
@@ -1329,7 +1405,7 @@ export const l10n = {
           note1:
             '注意: テンプレートを変更すると開始トークン、終了トークン、システムプロンプトが変更される可能性があります',
           note2:
-            'Nunjucksを使用します，空白の場合はモデルのデフォルトテンプレートを使用します',
+            'Nunjucksを使用します、空白の場合はモデルのデフォルトテンプレートを使用します',
           placeholder: 'チャットテンプレートをここに入力...',
           closeButton: '閉じる',
         },
@@ -1368,60 +1444,60 @@ export const l10n = {
     },
     completionParams: {
       include_thinking_in_context:
-        'AIの思考/推論部分をモデルに送信するコンテキストに含めます，無効にするとコンテキスト容量を節約できますが、パフォーマンスに影響する可能性があります',
+        'AIの思考/推論部分をモデルに送信するコンテキストに含めます、無効にするとコンテキスト容量を節約できますが、パフォーマンスに影響する可能性があります',
       jinja:
-        'チャットフォーマットにJinjaテンプレートを使用します，有効にすると、最新のモデルとの互換性を向上させるためにJinjaベースのチャットテンプレート処理を使用します',
+        'チャットフォーマットにJinjaテンプレートを使用します、有効にすると、最新のモデルとの互換性を向上させるためにJinjaベースのチャットテンプレート処理を使用します',
       grammar:
         '生成テキストが特定の構造や形式に従うよう、文法ルールを適用します',
       stop: 'テキスト生成を停止する特定のフレーズを設定します',
       n_predict: '生成する応答の長さをトークン単位で設定します',
       n_probs: '代替単語の確率スコアを表示します',
       top_k:
-        '最も可能性の高いK個の選択肢に単語の選択を限定することで創造性を制御します，値が低いほど応答がより焦点を絞ったものになります',
+        '最も可能性の高いK個の選択肢に単語の選択を限定することで創造性を制御します、値が低いほど応答がより焦点を絞ったものになります',
       top_p:
-        '創造性と一貫性のバランスを調整します，高い値（1.0に近い）ではより創造的ですが、焦点が少ない応答が生成される可能性があります',
+        '創造性と一貫性のバランスを調整します、高い値（1.0に近い）ではより創造的ですが、焦点が少ない応答が生成される可能性があります',
       min_p:
-        'トークンが考慮される最小確率です，確率の低い単語を除外して、不自然または文脈にそぐわない応答を減らします',
+        'トークンが考慮される最小確率です、確率の低い単語を除外して、不自然または文脈にそぐわない応答を減らします',
       temperature:
-        '創造性と予測可能性を制御します，値が高いほど応答がより創造的ですが焦点が少なくなります',
+        '創造性と予測可能性を制御します、値が高いほど応答がより創造的ですが焦点が少なくなります',
       penalty_last_n:
-        '繰り返しをチェックする範囲です，大きな値は長期的な繰り返しを防ぎます',
+        '繰り返しをチェックする範囲です、大きな値は長期的な繰り返しを防ぎます',
       penalty_repeat:
-        '単語の繰り返しを抑制します，値が高いほど応答はより多様な表現を使用します',
+        '単語の繰り返しを抑制します、値が高いほど応答はより多様な表現を使用します',
       penalty_freq:
-        '頻出用語にペナルティを与えます，値が高いほど幅広い語彙の使用を促します',
+        '頻出用語にペナルティを与えます、値が高いほど幅広い語彙の使用を促します',
       penalty_present:
-        'テーマやアイデアの繰り返しを減らします，値が高いほどより多様なコンテンツを生成します',
+        'テーマやアイデアの繰り返しを減らします、値が高いほどより多様なコンテンツを生成します',
       mirostat:
-        '応答の創造性を高度に制御します，1か2（よりスムーズ）に設定して、ランダム性と一貫性をリアルタイムに調整します',
+        '応答の創造性を高度に制御します、1か2（よりスムーズ）に設定して、ランダム性と一貫性をリアルタイムに調整します',
       mirostat_tau:
-        'Mirostatの創造性レベルを設定します，高い値ではより多様で想像力豊かな応答が、低い値ではより焦点を絞った出力が得られます',
+        'Mirostatの創造性レベルを設定します、高い値ではより多様で想像力豊かな応答が、低い値ではより焦点を絞った出力が得られます',
       mirostat_eta:
-        'Mirostatが創造性を調整する速さです，値が高いほど調整が速くなります',
+        'Mirostatが創造性を調整する速さです、値が高いほど調整が速くなります',
       dry_multiplier:
-        "DRY（Don't Repeat Yourself）機能の強さです，値が高いほど繰り返しを強く防ぎます",
+        "DRY（Don't Repeat Yourself）機能の強さです、値が高いほど繰り返しを強く防ぎます",
       dry_base:
-        'DRYモードでの繰り返しに対する基本ペナルティです，高い値は繰り返しをより防ぎます',
+        'DRYモードでの繰り返しに対する基本ペナルティです、高い値は繰り返しをより防ぎます',
       dry_allowed_length:
         'DRYペナルティが適用される前に繰り返し可能な単語数です',
       dry_penalty_last_n: 'DRYモードで繰り返しをチェックする範囲です',
       dry_sequence_breakers:
         'DRYモードで繰り返しチェックをリセットする記号です',
       ignore_eos:
-        'モデルが停止しようとしても生成を続けます，より長い応答を強制するのに役立ちます',
+        'モデルが停止しようとしても生成を続けます、より長い応答を強制するのに役立ちます',
       logit_bias: '特定の単語が応答に現れる確率を調整します',
-      seed: '乱数生成のシードを設定します，再現可能な結果に役立ちます',
+      seed: '乱数生成のシードを設定します、再現可能な結果に役立ちます',
       xtc_probability:
-        'XTCサンプラーによるトークン削除の確率を設定します，0は無効です',
+        'XTCサンプラーによるトークン削除の確率を設定します、0は無効です',
       xtc_threshold:
-        'XTCサンプラーによって削除されるトークンの最小確率閾値を設定します，0.5以上でXTCは無効になります',
+        'XTCサンプラーによって削除されるトークンの最小確率閾値を設定します、0.5以上でXTCは無効になります',
       typical_p:
-        'パラメータpを使用してローカルに典型的なサンプリングを有効にします，1.0は無効です',
+        'パラメータpを使用してローカルに典型的なサンプリングを有効にします、1.0は無効です',
     },
     about: {
       screenTitle: 'アプリ情報',
       description:
-        '言語モデルをスマートフォンで直接利用できるアプリです，llama.cppとllama.rnをベースに開発されています',
+        '言語モデルをスマートフォンで直接利用できるアプリです、llama.cppとllama.rnをベースに開発されています',
       supportProject: 'プロジェクトを応援する',
       supportProjectDescription:
         'PocketPal AIをご利用いただき楽しんでいただけているなら、以下の方法でプロジェクトを応援いただけると幸いです：',
@@ -1470,9 +1546,10 @@ export const l10n = {
       success: 'フィードバックをありがとうございます！',
       error: {
         general:
-          'フィードバックの送信中にエラーが発生しました，もう一度お試しください',
+          'フィードバックの送信中にエラーが発生しました、もう一度お試しください',
       },
     },
+
     components: {
       attachmentButton: {
         attachmentButtonAccessibilityLabel: 'メディアを送信',
@@ -1489,17 +1566,17 @@ export const l10n = {
         ok: 'OK',
         shareError: '共有エラー',
         shareErrorMessage:
-          'ファイルを共有できませんでした，もう一度お試しください',
+          'ファイルを共有できませんでした、もう一度お試しください',
         saveError: 'ダウンロードフォルダへの保存エラー',
         saveOptions: '保存オプション',
         saveOptionsMessage:
-          'ダウンロードフォルダに直接保存できません，代わりにファイルを共有しますか？',
+          'ダウンロードフォルダに直接保存できません、代わりにファイルを共有しますか？',
         cancel: 'キャンセル',
         shareContentErrorMessage:
-          'コンテンツを共有できませんでした，もう一度お試しください',
+          'コンテンツを共有できませんでした、もう一度お試しください',
         exportError: 'エクスポートエラー',
         exportErrorMessage:
-          'ファイルのエクスポート中にエラーが発生しました，もう一度お試しください',
+          'ファイルのエクスポート中にエラーが発生しました、もう一度お試しください',
         permissionRequired: 'ストレージへのアクセス許可が必要です',
         permissionMessage:
           'ダウンロードフォルダにファイルを保存するには許可が必要です',
@@ -1518,7 +1595,7 @@ export const l10n = {
         noModelsButton: 'モデルをダウンロード',
         activateModelTitle: '開始するにはモデルを有効化してください',
         activateModelDescription:
-          'モデルを選択してダウンロードしてください，ダウンロード後、モデルの横にある読み込みをタップしてチャットを開始します',
+          'モデルを選択してダウンロードしてください、ダウンロード後、モデルの横にある読み込みをタップしてチャットを開始します',
         activateModelButton: 'モデルを選択',
         loading: '読み込み中...',
       },
@@ -1530,6 +1607,41 @@ export const l10n = {
           thinkingEnabled: '思考モードが有効',
           thinkingDisabled: '思考モードが無効',
           thinkText: '思考',
+        },
+      },
+      contentReportSheet: {
+        title: 'コンテンツを報告',
+        privacyNote:
+          'メッセージの内容や会話の詳細は送信されません。遭遇した具体的な問題について説明してください。',
+        categoryLabel: '報告カテゴリ',
+        selectCategory: 'カテゴリを選択',
+        categories: {
+          hate: 'ヘイトスピーチ',
+          sexual: '性的コンテンツ',
+          selfHarm: '自傷行為',
+          violence: '暴力',
+          other: 'その他',
+        },
+        descriptionLabel: '説明',
+        descriptionPlaceholder:
+          'このコンテンツの問題について説明してください...',
+        includeModelInfo: 'モデル情報を含める',
+        includeModelInfoDescription:
+          '調査に役立つようにモデル名と識別子を含める',
+        noActiveModelNote: '現在アクティブなモデルがありません',
+        submit: '報告を送信',
+        validation: {
+          title: '情報が不足しています',
+          message: 'カテゴリを選択し、説明を入力してください。',
+        },
+        success: {
+          title: '報告が送信されました',
+          message:
+            'ご報告ありがとうございます。内容を確認し、適切な対応を取らせていただきます。',
+        },
+        error: {
+          title: '報告に失敗しました',
+          message: '報告の送信に失敗しました。もう一度お試しください。',
         },
       },
       chatGenerationSettingsSheet: {
@@ -1565,7 +1677,7 @@ export const l10n = {
         videoType: 'ビデオ',
         confirmationTitle: '確認',
         modelSwitchMessage:
-          'このアシスタントには別のデフォルトモデル({{modelName}})があります，アシスタントのデフォルトモデルに切り替えますか？',
+          'このアシスタントには別のデフォルトモデル({{modelName}})があります、アシスタントのデフォルトモデルに切り替えますか？',
         keepButton: '現在のモデルを使用',
         switchButton: '切り替える',
       },
@@ -1574,10 +1686,10 @@ export const l10n = {
         downloadFailedMessage: 'モデルのダウンロードに失敗しました: {message}',
         unauthorizedTitle: '認証失敗',
         unauthorizedMessage:
-          'Hugging Faceトークンが無効または期限切れのようです，設定でトークンを更新してください',
+          'Hugging Faceトークンが無効または期限切れのようです、設定でトークンを更新してください',
         forbiddenTitle: 'アクセス拒否',
         forbiddenMessage:
-          'このモデルにアクセスする権限がありません，以下を確認してください:',
+          'このモデルにアクセスする権限がありません、以下を確認してください:',
         forbiddenSteps: [
           'トークンに「読み取り」権限があること',
           'このモデルへのアクセスをリクエストし、許可されていること',
@@ -1594,7 +1706,7 @@ export const l10n = {
         ],
         tokenDisabledTitle: 'トークンが無効',
         tokenDisabledMessage:
-          'Hugging Faceトークンが設定されていますが、現在無効になっています，このモデルをダウンロードするにはトークンが必要です，続行するにはトークンを有効にしてください',
+          'Hugging Faceトークンが設定されていますが、現在無効になっています、このモデルをダウンロードするにはトークンが必要です、続行するにはトークンを有効にしてください',
         enableAndRetry: 'トークンを有効にして再試行',
         goToSettings: '設定へ移動',
         tryAgain: '再試行',
@@ -1639,7 +1751,7 @@ export const l10n = {
         gatedModelIndicator: 'トークンが必要',
         tokenRequired: 'このモデルはHugging Faceアクセストークンが必要です',
         searchErrorHint:
-          'Hugging Face APIトークンが無効または期限切れです，検索を続けるには、設定でトークンを削除するか、トークン認証を無効にしてください',
+          'Hugging Face APIトークンが無効または期限切れです、検索を続けるには、設定でトークンを削除するか、トークン認証を無効にしてください',
         disableAndRetry: 'トークンを無効にして再試行',
       },
       modelSettingsSheet: {
@@ -1673,10 +1785,10 @@ export const l10n = {
       },
       modelNotAvailable: {
         noModelsDownloaded:
-          'モデルがダウンロードされていません，先にモデルをダウンロードしてください',
+          'モデルがダウンロードされていません、先にモデルをダウンロードしてください',
         downloadAModel: 'モデルをダウンロード',
         defaultModelNotDownloaded:
-          'デフォルトモデルがダウンロードされていません，先にダウンロードしてください',
+          'デフォルトモデルがダウンロードされていません、先にダウンロードしてください',
         cancelDownload: 'キャンセル',
         download: 'ダウンロード',
       },
@@ -1732,7 +1844,7 @@ export const l10n = {
         useAIPrompt: 'AIを使用してシステムプロンプトを生成する',
         modelSelector: {
           label: '生成用モデルを選択*',
-          sublabel: '推奨: Llama 3.2 3B または Qwen2.5 3B.',
+          sublabel: '推奨: Llama 3.2 3B または Qwen3 4B Instruct 2507.',
           placeholder: 'モデルを選択',
         },
         generatingPrompt: {
@@ -1792,7 +1904,15 @@ export const l10n = {
           regenerate: '再生成',
           regenerateWith: '再生成（モデル選択）',
           edit: '編集',
+          reportContent: 'コンテンツを報告',
         },
+      },
+      palHeaderRight: {
+        exportAllPals: 'すべてのアシスタントをエクスポート',
+        importPals: 'アシスタントをインポート',
+        importSuccess: '{{count}}個のアシスタントをインポートしました。',
+        importError:
+          'アシスタントのインポートに失敗しました。ファイル形式を確認してください。',
       },
     },
     palsScreen: {
@@ -1814,7 +1934,7 @@ export const l10n = {
       deletePalMessage: 'このアシスタントを削除してもよろしいですか？',
       missingModel: 'モデルが見つかりません',
       missingModelMessage:
-        'このアシスタントのデフォルトモデル「{{modelName}}」が利用できません，編集シートでダウンロードするか、別のモデルを選択してください',
+        'このアシスタントのデフォルトモデル「{{modelName}}」が利用できません、編集シートでダウンロードするか、別のモデルを選択してください',
     },
     validation: {
       nameRequired: '名前を入力してください',
@@ -1861,7 +1981,7 @@ export const l10n = {
         title: 'Lookieへようこそ',
         subtitle: 'プライベート・オンデバイス・リアルタイム動画解析',
         experimentalNotice:
-          'これは実験的な機能です，精度は選択したモデルに依存し、速度はデバイスの性能に依存し、一部のモデルは失敗する可能性があります',
+          'これは実験的な機能です、精度は選択したモデルに依存し、速度はデバイスの性能に依存し、一部のモデルは失敗する可能性があります',
         howToUse: '使い方：',
         step1: '• プロンプトを編集（任意）して解析を誘導',
         step2: '• カメラボタンをタップしてライブ動画解析を開始',
@@ -1881,16 +2001,16 @@ export const l10n = {
     chat: {
       conversationReset: '会話をリセットしました',
       modelNotLoaded:
-        'モデルが読み込まれていません，モデルを初期化してください',
+        'モデルが読み込まれていません、モデルを初期化してください',
       completionFailed: '生成に失敗しました: ',
       loadingModel: 'モデルを読み込み中...',
       typeYourMessage: 'メッセージを入力',
       load: '読み込む',
       goToModels: 'モデルへ移動',
-      readyToChat: 'チャットを始めましょう，前回使用したモデルを読み込みます',
+      readyToChat: 'チャットを始めましょう、前回使用したモデルを読み込みます',
       pleaseLoadModel: 'チャットを開始するにはモデルを読み込んでください',
       multimodalNotEnabled:
-        'このモデルではマルチモーダル機能が有効になっていません，画像は表示されますが、AIによって処理されません',
+        'このモデルではマルチモーダル機能が有効になっていません、画像は表示されますが、AIによって処理されません',
     },
     benchmark: {
       title: 'ベンチマーク',
@@ -2045,7 +2165,7 @@ export const l10n = {
     },
     simulator: {
       cameraNotAvailable:
-        'シミュレーターではカメラを使用できません，実機をご使用ください',
+        'シミュレーターではカメラを使用できません、実機をご使用ください',
     },
   },
 
@@ -2121,6 +2241,20 @@ export const l10n = {
       valueCacheType: '值缓存类型',
       valueCacheTypeDescription: '选择值计算的缓存类型',
       valueCacheTypeDisabledDescription: '启用Flash Attention以更改缓存类型',
+      // Memory Settings
+      memorySettings: '内存设置',
+      useMlock: '使用内存锁定',
+      useMlockDescription: '强制系统将模型保留在RAM中，而不是交换或压缩',
+      useMmap: '内存映射',
+      useMmapDescription: '使用内存映射文件加快模型加载速度',
+      useMmapTrue: '启用',
+      useMmapFalse: '禁用',
+      useMmapSmart: '智能',
+      useMmapTrueDescription: '始终使用内存映射以实现更快的加载',
+      useMmapFalseDescription: '从不使用内存映射（加载较慢但可能减少内存使用）',
+      useMmapSmartDescription: '根据模型类型自动选择（仅限Android）',
+      useMmapRecommended:
+        '推荐性能设置 - 带锁定页面的内存映射。结合快速加载和一致的性能',
       // Model Loading Settings
       modelLoadingSettings: '模型加载设置',
       // Auto Offload/Load
@@ -2462,6 +2596,7 @@ export const l10n = {
         general: '发送反馈时出错，请再试一次',
       },
     },
+
     components: {
       attachmentButton: {
         attachmentButtonAccessibilityLabel: '发送媒体',
@@ -2510,6 +2645,38 @@ export const l10n = {
           thinkingEnabled: '思考模式已启用',
           thinkingDisabled: '思考模式已禁用',
           thinkText: '思考',
+        },
+      },
+      contentReportSheet: {
+        title: '举报内容',
+        privacyNote:
+          '我们不会发送任何消息内容或对话详情。请描述您遇到的具体问题。',
+        categoryLabel: '举报类别',
+        selectCategory: '选择类别',
+        categories: {
+          hate: '仇恨言论',
+          sexual: '性内容',
+          selfHarm: '自残',
+          violence: '暴力',
+          other: '其他',
+        },
+        descriptionLabel: '描述',
+        descriptionPlaceholder: '请描述此内容的问题...',
+        includeModelInfo: '包含模型信息',
+        includeModelInfoDescription: '包含模型名称和标识符以帮助我们调查',
+        noActiveModelNote: '当前没有活动模型',
+        submit: '提交举报',
+        validation: {
+          title: '信息缺失',
+          message: '请选择类别并提供描述。',
+        },
+        success: {
+          title: '举报已提交',
+          message: '感谢您的举报。我们将审查并采取适当行动。',
+        },
+        error: {
+          title: '举报失败',
+          message: '提交举报失败。请重试。',
         },
       },
       chatGenerationSettingsSheet: {
@@ -2708,7 +2875,7 @@ export const l10n = {
         useAIPrompt: '使用AI生成系统提示',
         modelSelector: {
           label: '选择生成用模型*',
-          sublabel: '推荐: Llama 3.2 3B 或 Qwen3 4B.',
+          sublabel: '推荐: Llama 3.2 3B 或 Qwen3 4B Instruct 2507',
           placeholder: '选择模型',
         },
         generatingPrompt: {
@@ -2768,7 +2935,14 @@ export const l10n = {
           regenerate: '重新生成',
           regenerateWith: '重新生成（重选模型）',
           edit: '编辑',
+          reportContent: '举报内容',
         },
+      },
+      palHeaderRight: {
+        exportAllPals: '导出所有帕尔',
+        importPals: '导入帕尔',
+        importSuccess: '成功导入{{count}}个帕尔',
+        importError: '导入帕尔失败，请检查文件格式',
       },
     },
     palsScreen: {
